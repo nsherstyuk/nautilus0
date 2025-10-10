@@ -1,0 +1,40 @@
+version: 1
+formatters:
+  standard:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: standard
+    stream: ext://sys.stdout
+  file:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: standard
+    filename: logs/application.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+  live_file:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: standard
+    filename: logs/live/live_trading.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+loggers:
+  nautilus_trader:  # Captures all NautilusTrader events including order execution, fills, and data updates
+    level: DEBUG
+    handlers: [console, file, live_file]
+    propagate: false
+  nautilus_trader.execution:  # Dedicated logger for order execution and fill events in live trading
+    level: DEBUG
+    handlers: [console, live_file]
+    propagate: false
+  live:
+    level: DEBUG
+    handlers: [console, live_file]
+    propagate: false
+root:
+  level: INFO
+  handlers: [console, file]

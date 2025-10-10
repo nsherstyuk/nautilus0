@@ -1,0 +1,36 @@
+# Live trading production configuration
+# Values in this file are intended for production/paper-trading readiness checks.
+# Environment variables can be referenced using the ${VAR_NAME} syntax.
+
+trading:
+  symbol: SPY
+  venue: SMART
+  bar_spec: 1-MINUTE-LAST
+  fast_period: 10
+  slow_period: 20
+  trade_size: 100
+  starting_capital: 100000.0
+
+risk_management:
+  max_daily_loss_pct: 2.0            # Maximum daily loss as a percentage of starting capital
+  max_daily_loss_absolute: 1000.0    # Maximum daily loss in absolute dollars
+  max_position_value: 50000.0        # Maximum notional value of any single position
+  max_total_exposure: 100000.0       # Maximum aggregate exposure across all positions
+  position_limit: 1                  # Maximum number of concurrent open positions
+
+circuit_breakers:
+  enable_circuit_breakers: true
+  max_consecutive_losses: 5
+  max_orders_per_minute: 10
+  cooldown_period_minutes: 30
+
+safety:
+  require_paper_account: true        # Ensure account ID corresponds to a paper trading account (e.g., starts with DU)
+  trading_hours_only: true           # Only operate during regular market hours
+  enable_position_monitoring: true
+  alert_on_fill: true
+
+account:
+  account_id: ${IB_ACCOUNT_ID}
+  operator_email: ${EMERGENCY_EMAIL:-ops@example.com}
+  operator_phone: ${EMERGENCY_PHONE:-+10000000000}

@@ -1,0 +1,39 @@
+=== Backtesting Diagnostic Report ===
+Generated: 2025-10-09 12:47:06 UTC
+
+[1] Catalog Directory Status
+  - Path: C:\TradingSystem\data\historical
+  - Existed prior to run: Yes
+  - Created during run: No
+  - Parquet files: 4
+  - Total size: 0.251 MB
+
+[2] Catalog Verification
+  - No catalog data available.
+
+[3] Bar Spec Validation
+  - All bar types include '-EXTERNAL': Yes
+
+[4] Backtest Configuration
+  - Symbol: EUR/USD
+  - Venue: IDEALPRO
+  - Date range: 2025-10-01 to 2025-10-03
+  - Bar spec: 1-MINUTE-MID-EXTERNAL
+  - Catalog path: data/historical
+  - Date range valid: Yes
+
+[5] Issues Detected
+  - Catalog verification failed: Traceback (most recent call last):
+  File "C:\TradingSystem\data\verify_catalog.py", line 367, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\TradingSystem\data\verify_catalog.py", line 335, in main
+    overlaps = check_date_overlap(summaries, target_start, target_end)
+  File "C:\TradingSystem\data\verify_catalog.py", line 185, in check_date_overlap
+    if summary.end_ts >= start and summary.start_ts <= end:
+       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "pandas/_libs/tslibs/timestamps.pyx", line 387, in pandas._libs.tslibs.timestamps._Timestamp.__richcmp__
+TypeError: Cannot compare tz-naive and tz-aware timestamps
+
+[6] Recommendations
+  - No critical issues detected. Backtest should be able to load catalog data.

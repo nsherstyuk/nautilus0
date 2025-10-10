@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.so
+.venv/
+venv/
+ENV/
+env/
+
+# Environment and secrets
+.env
+*.env
+!.env.example
+
+# Data and logs
+data/historical/*.csv
+data/historical/*.parquet
+logs/*.log
+logs/*.log.*
+
+# IDE and OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# NautilusTrader specific
+catalog/
+.nautilus/
