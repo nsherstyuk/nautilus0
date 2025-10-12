@@ -22,6 +22,11 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
+# Ensure project root is in sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 import pandas as pd
 import yaml
 
@@ -53,6 +58,9 @@ from utils.instruments import (
     validate_catalog_dataset_exists,
     format_instrument_diagnostic,
     log_instrument_metadata,
+    instrument_id_to_catalog_format,
+    catalog_format_to_instrument_id,
+    try_both_instrument_formats,
 )
 
 
@@ -67,7 +75,20 @@ def discover_catalog_bar_types(catalog_path: Path) -> list[str]:
             rel = parquet_file.parent.relative_to(bar_root)
         except ValueError:
             continue
-        dataset_names.add(rel.as_posix())
+        dataset_name = rel.as_posix()
+        dataset_names.add(dataset_name)
+        
+        # Check if this is a forex pair dataset and add normalized version
+        # Extract instrument ID from dataset name (first part before first dash)
+        parts = dataset_name.split('-')
+        if parts:
+            instrument_part = parts[0]
+            # Convert no-slash format back to slashed format for forex pairs
+            normalized_instrument = catalog_format_to_instrument_id(instrument_part)
+            if normalized_instrument != instrument_part:
+                # Reconstruct full dataset name with normalized instrument ID
+                normalized_dataset = '-'.join([normalized_instrument] + parts[1:])
+                dataset_names.add(normalized_dataset)
 
     # Fallback to include directories with metadata but no parquet files
     for metadata_name in ("_common_metadata", "_metadata"):
@@ -76,7 +97,17 @@ def discover_catalog_bar_types(catalog_path: Path) -> list[str]:
                 rel = metadata_file.parent.relative_to(bar_root)
             except ValueError:
                 continue
-            dataset_names.add(rel.as_posix())
+            dataset_name = rel.as_posix()
+            dataset_names.add(dataset_name)
+            
+            # Check if this is a forex pair dataset and add normalized version
+            parts = dataset_name.split('-')
+            if parts:
+                instrument_part = parts[0]
+                normalized_instrument = catalog_format_to_instrument_id(instrument_part)
+                if normalized_instrument != instrument_part:
+                    normalized_dataset = '-'.join([normalized_instrument] + parts[1:])
+                    dataset_names.add(normalized_dataset)
 
     return sorted(dataset_names)
 
@@ -218,6 +249,10 @@ def create_backtest_run_config(
     starting_capital: float,
     enforce_position_limit: bool,
     allow_position_reversal: bool,
+    stop_loss_pips: int,
+    take_profit_pips: int,
+    trailing_stop_activation_pips: int,
+    trailing_stop_distance_pips: int,
 ) -> BacktestRunConfig:
     """Create BacktestRunConfig wiring data, venue and strategy."""
     # Time bounds
@@ -275,6 +310,10 @@ def create_backtest_run_config(
             "trade_size": str(trade_size),
             "enforce_position_limit": enforce_position_limit,
             "allow_position_reversal": allow_position_reversal,
+            "stop_loss_pips": stop_loss_pips,
+            "take_profit_pips": take_profit_pips,
+            "trailing_stop_activation_pips": trailing_stop_activation_pips,
+            "trailing_stop_distance_pips": trailing_stop_distance_pips,
         },
     )
 
@@ -504,34 +543,40 @@ async def main() -> int:
             logger.warning("Candidate datasets with matching instrument: %s", candidates)
         else:
             logger.warning("No datasets share instrument_id %s; available: %s", normalized_id, available_datasets)
+            logger.warning("Note: Will try both slashed and no-slash format variants for forex pairs")
 
-    try:
-        catalog_bars = catalog.bars(
-            bar_types=[full_bar_type],
-            start=start_ts.value,
-            end=end_ts.value,
-        )
-    except Exception as exc:
-        logger.error(
-            "Catalog query failed for %s between %s and %s: %s",
-            full_bar_type,
-            cfg.start_date,
-            cfg.end_date,
-            exc,
-            exc_info=True,
-        )
-        logger.info("Run 'python data/verify_catalog.py --json' to inspect catalog contents or re-run ingestion.")
-        return 1
-
+    # Try both instrument ID formats for catalog query
+    instrument_id_variants = try_both_instrument_formats(normalized_id)
+    # Deduplicate variants to avoid redundant catalog queries for identical variants
+    instrument_id_variants = list(dict.fromkeys(instrument_id_variants))
+    bar_type_variants = [f"{variant}-{cfg.bar_spec}" for variant in instrument_id_variants]
+    
+    catalog_bars = []
+    successful_variant = None
+    
+    for attempt_num, bar_type_variant in enumerate(bar_type_variants, 1):
+        try:
+            catalog_bars = catalog.bars(
+                bar_types=[bar_type_variant],
+                start=start_ts.value,
+                end=end_ts.value,
+            )
+            if catalog_bars:
+                successful_variant = bar_type_variant
+                logger.info(f"Found {len(catalog_bars)} bars using format variant {attempt_num}: {bar_type_variant}")
+                break
+            else:
+                logger.debug(f"No bars found with variant {attempt_num}: {bar_type_variant}")
+        except Exception as exc:
+            logger.debug(f"Query failed with variant {attempt_num}: {bar_type_variant} - {exc}")
+            continue
+    
     if not catalog_bars:
         logger.error(
-            "No bars found in catalog for %s with bar_spec %s in date range %s to %s.",
-            normalized_id,
-            cfg.bar_spec,
-            cfg.start_date,
-            cfg.end_date,
+            "No bars found in catalog for any format variant. Tried: %s",
+            bar_type_variants
         )
-        logger.info("Run 'python data/verify_catalog.py' to inspect catalog or 'python data/ingest_historical.py' to download data.")
+        logger.info("Run 'python data/verify_catalog.py --json' to inspect catalog contents or re-run ingestion.")
         return 1
 
     logger.info(
@@ -568,6 +613,10 @@ async def main() -> int:
         starting_capital=cfg.starting_capital,
         enforce_position_limit=cfg.enforce_position_limit,
         allow_position_reversal=cfg.allow_position_reversal,
+        stop_loss_pips=cfg.stop_loss_pips,
+        take_profit_pips=cfg.take_profit_pips,
+        trailing_stop_activation_pips=cfg.trailing_stop_activation_pips,
+        trailing_stop_distance_pips=cfg.trailing_stop_distance_pips,
     )
 
     logger.info(

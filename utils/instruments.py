@@ -113,3 +113,86 @@ def normalize_instrument_id(symbol: str, venue: str) -> str:
         normalized_symbol = symbol.strip().upper()
 
     return f"{normalized_symbol}.{venue}"
+
+
+def instrument_id_to_catalog_format(instrument_id: str) -> str:
+    """Convert slashed forex IDs to no-slash format for catalog filesystem queries.
+    
+    Args:
+        instrument_id: Instrument ID in format like "EUR/USD.IDEALPRO"
+        
+    Returns:
+        Catalog format like "EURUSD.IDEALPRO" for forex pairs, unchanged for others
+        
+    Examples:
+        EUR/USD.IDEALPRO -> EURUSD.IDEALPRO
+        SPY.SMART -> SPY.SMART (unchanged)
+    """
+    parts = instrument_id.split('.')
+    if len(parts) != 2:
+        return instrument_id
+    
+    symbol, venue = parts
+    if '/' in symbol:
+        # Remove slash for forex pairs
+        symbol_no_slash = symbol.replace('/', '')
+        return f"{symbol_no_slash}.{venue}"
+    
+    return instrument_id
+
+
+def catalog_format_to_instrument_id(catalog_name: str) -> str:
+    """Convert no-slash catalog names back to slashed format for display/matching.
+    
+    Args:
+        catalog_name: Catalog name in format like "EURUSD.IDEALPRO"
+        
+    Returns:
+        Slashed format like "EUR/USD.IDEALPRO" for forex pairs, unchanged for others
+        
+    Examples:
+        EURUSD.IDEALPRO -> EUR/USD.IDEALPRO
+        SPY.SMART -> SPY.SMART (unchanged)
+    """
+    parts = catalog_name.split('.')
+    if len(parts) != 2:
+        return catalog_name
+    
+    symbol, venue = parts
+    # Check if symbol is 6 characters and all uppercase (likely forex pair)
+    if len(symbol) == 6 and symbol.isalpha() and symbol.isupper():
+        # Validate that both 3-letter parts are valid ISO currency codes
+        base_currency = symbol[:3]
+        quote_currency = symbol[3:]
+        try:
+            Currency.from_str(base_currency)
+            Currency.from_str(quote_currency)
+            # Insert slash at position 3 for forex pairs
+            symbol_with_slash = f"{base_currency}/{quote_currency}"
+            return f"{symbol_with_slash}.{venue}"
+        except Exception:
+            # Not valid currency codes, return unchanged
+            pass
+    
+    return catalog_name
+
+
+def try_both_instrument_formats(instrument_id: str) -> List[str]:
+    """Generate both possible formats for fallback queries.
+    
+    Args:
+        instrument_id: Instrument ID in either slashed or no-slash format
+        
+    Returns:
+        List with original format first, then alternative format
+        
+    Examples:
+        EUR/USD.IDEALPRO -> ['EUR/USD.IDEALPRO', 'EURUSD.IDEALPRO']
+        EURUSD.IDEALPRO -> ['EURUSD.IDEALPRO', 'EUR/USD.IDEALPRO']
+    """
+    if '/' in instrument_id:
+        # Input has slash, return slashed first, then no-slash
+        return [instrument_id, instrument_id_to_catalog_format(instrument_id)]
+    else:
+        # Input has no slash, return no-slash first, then slashed
+        return [instrument_id, catalog_format_to_instrument_id(instrument_id)]

@@ -22,7 +22,7 @@ class BacktestConfig:
     venue: str = "SMART"
     start_date: str = ""
     end_date: str = ""
-    bar_spec: str = "1-MINUTE-MID-EXTERNAL"
+    bar_spec: str = "15-MINUTE-MID-EXTERNAL"
     fast_period: int = 10
     slow_period: int = 20
     trade_size: int = 100
@@ -31,6 +31,10 @@ class BacktestConfig:
     output_dir: str = "logs/backtest_results"
     enforce_position_limit: bool = True
     allow_position_reversal: bool = False
+    stop_loss_pips: int = 25
+    take_profit_pips: int = 50
+    trailing_stop_activation_pips: int = 20
+    trailing_stop_distance_pips: int = 15
 
 
 def _require(name: str, value: Optional[str]) -> str:
@@ -70,7 +74,9 @@ def get_backtest_config() -> BacktestConfig:
     Required env vars: BACKTEST_SYMBOL, BACKTEST_START_DATE, BACKTEST_END_DATE
     Optional with defaults: BACKTEST_VENUE, BACKTEST_BAR_SPEC, BACKTEST_FAST_PERIOD,
     BACKTEST_SLOW_PERIOD, BACKTEST_TRADE_SIZE, BACKTEST_STARTING_CAPITAL,
-    CATALOG_PATH, OUTPUT_DIR, ENFORCE_POSITION_LIMIT, ALLOW_POSITION_REVERSAL
+    CATALOG_PATH, OUTPUT_DIR, ENFORCE_POSITION_LIMIT, ALLOW_POSITION_REVERSAL,
+    BACKTEST_STOP_LOSS_PIPS, BACKTEST_TAKE_PROFIT_PIPS, BACKTEST_TRAILING_STOP_ACTIVATION_PIPS,
+    BACKTEST_TRAILING_STOP_DISTANCE_PIPS
     """
     load_dotenv()
 
@@ -82,7 +88,7 @@ def get_backtest_config() -> BacktestConfig:
     _validate_date("BACKTEST_END_DATE", end_date)
 
     venue = os.getenv("BACKTEST_VENUE", "SMART")
-    bar_spec = os.getenv("BACKTEST_BAR_SPEC", "1-MINUTE-LAST-EXTERNAL")
+    bar_spec = os.getenv("BACKTEST_BAR_SPEC", "15-MINUTE-MID-EXTERNAL")
 
     fast_period = _parse_int("BACKTEST_FAST_PERIOD", os.getenv("BACKTEST_FAST_PERIOD"), 10)
     slow_period = _parse_int("BACKTEST_SLOW_PERIOD", os.getenv("BACKTEST_SLOW_PERIOD"), 20)
@@ -95,6 +101,22 @@ def get_backtest_config() -> BacktestConfig:
 
     if fast_period >= slow_period:
         raise ValueError("BACKTEST_FAST_PERIOD must be less than BACKTEST_SLOW_PERIOD")
+
+    stop_loss_pips = _parse_int("BACKTEST_STOP_LOSS_PIPS", os.getenv("BACKTEST_STOP_LOSS_PIPS"), 25)
+    take_profit_pips = _parse_int("BACKTEST_TAKE_PROFIT_PIPS", os.getenv("BACKTEST_TAKE_PROFIT_PIPS"), 50)
+    trailing_stop_activation_pips = _parse_int("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS", os.getenv("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS"), 20)
+    trailing_stop_distance_pips = _parse_int("BACKTEST_TRAILING_STOP_DISTANCE_PIPS", os.getenv("BACKTEST_TRAILING_STOP_DISTANCE_PIPS"), 15)
+
+    if take_profit_pips <= stop_loss_pips:
+        raise ValueError("BACKTEST_TAKE_PROFIT_PIPS must be greater than BACKTEST_STOP_LOSS_PIPS")
+    
+    if trailing_stop_activation_pips <= trailing_stop_distance_pips:
+        raise ValueError("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS must be greater than BACKTEST_TRAILING_STOP_DISTANCE_PIPS")
+    
+    if trailing_stop_activation_pips > take_profit_pips:
+        logger = logging.getLogger(__name__)
+        logger.warning("Trailing stop activation (%d pips) is greater than take profit (%d pips). Trailing may not activate before TP hit.", 
+                      trailing_stop_activation_pips, take_profit_pips)
 
     catalog_path = os.getenv("CATALOG_PATH", "data/historical")
     output_dir = os.getenv("OUTPUT_DIR", "logs/backtest_results")
@@ -150,6 +172,10 @@ def get_backtest_config() -> BacktestConfig:
         output_dir=output_dir,
         enforce_position_limit=enforce_position_limit,
         allow_position_reversal=allow_position_reversal,
+        stop_loss_pips=stop_loss_pips,
+        take_profit_pips=take_profit_pips,
+        trailing_stop_activation_pips=trailing_stop_activation_pips,
+        trailing_stop_distance_pips=trailing_stop_distance_pips,
     )
 
 

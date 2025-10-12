@@ -24,11 +24,17 @@ import logging
 import logging.config
 import inspect
 import logging.handlers  # ✅ FIXED: Added missing import
+import math
 import os
 import shutil
 import sys
 from decimal import Decimal
 from pathlib import Path
+
+# Ensure project root is in sys.path
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 import nautilus_trader
 import pandas as pd
@@ -108,6 +114,168 @@ def validate_bar_specification_string(bar_spec: str) -> bool:
         return False
 
     return True
+
+
+def _calculate_chunk_size_days(bar_spec: str) -> int | float:
+    """
+    Calculate maximum days per IBKR request based on bar specification.
+    
+    IBKR has documented limits and practical timeout thresholds:
+    - 1-MINUTE: 7 days (practical limit to avoid timeouts)
+    - 5-MINUTE: 30 days
+    - 15-MINUTE: 60 days
+    - 30-MINUTE: 120 days
+    - 1-HOUR: 365 days
+    - 1-DAY: math.inf (unlimited - no chunking needed)
+    
+    Args:
+        bar_spec: Bar specification string (e.g., "1-MINUTE-MID")
+        
+    Returns:
+        Maximum days per request chunk (int for limited, math.inf for unlimited)
+        
+    Note:
+        While IBKR officially supports up to 365 days for 1-minute bars,
+        practical experience shows timeouts occur beyond 7-10 days.
+        Daily bars can handle much larger date ranges without chunking.
+    """
+    spec_upper = bar_spec.upper()
+    
+    # Extract aggregation period from spec (format: STEP-AGGREGATION-PRICE)
+    if "1-MINUTE" in spec_upper or "1-MIN" in spec_upper:
+        return 7
+    elif "5-MINUTE" in spec_upper or "5-MIN" in spec_upper:
+        return 30
+    elif "15-MINUTE" in spec_upper or "15-MIN" in spec_upper:
+        return 60
+    elif "30-MINUTE" in spec_upper or "30-MIN" in spec_upper:
+        return 120
+    elif "1-HOUR" in spec_upper or "1-HR" in spec_upper or "HOUR" in spec_upper:
+        return 365
+    elif "1-DAY" in spec_upper or "DAILY" in spec_upper or "DAY" in spec_upper:
+        return math.inf  # Unlimited - no chunking needed for daily bars
+    else:
+        # Conservative default for unknown bar types
+        logging.warning(f"Unknown bar spec '{bar_spec}', using conservative 30-day chunk size")
+        return 30
+
+
+def get_int_env(name: str, default: int, min_value: int | None = None) -> int:
+    """
+    Safely parse integer environment variable with validation and error handling.
+    
+    Args:
+        name: Environment variable name
+        default: Default value to return on parse errors
+        min_value: Minimum allowed value (enforced if provided)
+        
+    Returns:
+        Parsed integer value or default on error
+        
+    Note:
+        Logs a warning when falling back to defaults due to parse errors.
+    """
+    try:
+        value_str = os.getenv(name)
+        if value_str is None:
+            return default
+            
+        value = int(value_str)
+        
+        # Enforce minimum value if specified
+        if min_value is not None and value < min_value:
+            logging.warning(
+                f"Environment variable {name}={value} is below minimum {min_value}, "
+                f"using default {default}"
+            )
+            return default
+            
+        return value
+        
+    except ValueError as e:
+        logging.warning(
+            f"Failed to parse environment variable {name}='{os.getenv(name)}' as integer: {e}. "
+            f"Using default {default}"
+        )
+        return default
+    except Exception as e:
+        logging.warning(
+            f"Unexpected error parsing environment variable {name}: {e}. "
+            f"Using default {default}"
+        )
+        return default
+
+
+def _chunk_date_range(
+    start_date: datetime.datetime,
+    end_date: datetime.datetime,
+    chunk_size_days: int,
+    overlap_minutes: int = 0
+) -> list[tuple[datetime.datetime, datetime.datetime]]:
+    """
+    Split date range into chunks based on IBKR request limits.
+    
+    Args:
+        start_date: Start of overall date range (naive datetime)
+        end_date: End of overall date range (naive datetime)
+        chunk_size_days: Maximum days per chunk
+        overlap_minutes: Minutes of overlap between chunks (default: 0)
+        
+    Returns:
+        List of (chunk_start, chunk_end) tuples
+        
+    Example:
+        >>> _chunk_date_range(
+        ...     datetime.datetime(2025, 9, 1),
+        ...     datetime.datetime(2025, 10, 10),
+        ...     7,
+        ...     0
+        ... )
+        [
+            (datetime(2025, 9, 1), datetime(2025, 9, 8)),
+            (datetime(2025, 9, 8), datetime(2025, 9, 15)),
+            (datetime(2025, 9, 15), datetime(2025, 9, 22)),
+            (datetime(2025, 9, 22), datetime(2025, 9, 29)),
+            (datetime(2025, 9, 29), datetime(2025, 10, 6)),
+            (datetime(2025, 10, 6), datetime(2025, 10, 10))
+        ]
+        
+    Note:
+        - Handles partial chunks at the end (last chunk may be < chunk_size_days)
+        - Overlap prevents gaps at chunk boundaries (useful for continuous data)
+        - Returns empty list if start_date >= end_date
+    """
+    if start_date >= end_date:
+        logging.warning(
+            f"Invalid date range for chunking: start ({start_date}) >= end ({end_date})"
+        )
+        return []
+    
+    chunks = []
+    current_start = start_date
+    overlap_delta = datetime.timedelta(minutes=overlap_minutes)
+    
+    while current_start < end_date:
+        # Calculate chunk end (min of chunk_size or remaining range)
+        chunk_end = min(
+            current_start + datetime.timedelta(days=chunk_size_days),
+            end_date
+        )
+        
+        chunks.append((current_start, chunk_end))
+        
+        # Next chunk starts where this one ended (minus overlap)
+        current_start = chunk_end - overlap_delta
+        
+        # Prevent infinite loop if overlap >= chunk size
+        if current_start <= chunks[-1][0]:
+            logging.warning(
+                f"Overlap ({overlap_minutes} min) >= chunk size ({chunk_size_days} days), "
+                f"stopping at {len(chunks)} chunks to prevent infinite loop"
+            )
+            break
+    
+    return chunks
 
 
 def create_instrument(symbol: str, venue: str = "SMART"):
@@ -313,8 +481,9 @@ async def download_historical_data(symbol: str, start_date: datetime.datetime, e
 
         if is_forex:
             bar_specs_config = [
-                (15, "MINUTE", "MID"),  # 15-minute bars for backtesting
-                (1, "DAY", "MID"),
+                (1, "MINUTE", "MID"),   # 1-minute bars for backtesting (default)
+                (15, "MINUTE", "MID"),  # 15-minute bars for multi-timeframe analysis
+                (1, "DAY", "MID"),      # Daily bars for longer-term analysis
             ]
         else:
             bar_specs_config = [
@@ -350,30 +519,70 @@ async def download_historical_data(symbol: str, start_date: datetime.datetime, e
 
         logger.info("Final bar specifications: %s", bar_specifications)
 
+        # Read chunking configuration from environment with robust parsing
+        enable_chunking = os.getenv("IBKR_ENABLE_CHUNKING", "true").lower() in {"true", "1", "yes"}
+        request_delay_seconds = get_int_env("IBKR_REQUEST_DELAY_SECONDS", 10, min_value=0)
+        chunk_overlap_minutes = get_int_env("IBKR_CHUNK_OVERLAP_MINUTES", 0, min_value=0)
+
+        logger.info(
+            "Chunking config: enabled=%s, delay=%ss, overlap=%smin",
+            enable_chunking,
+            request_delay_seconds,
+            chunk_overlap_minutes
+        )
+
         # Request historical bars with enhanced error handling
         logger.info(f"Requesting historical data for {symbol} from {start_date} to {end_date}")
         use_rth = not is_forex
         logger.info("Use regular trading hours: %s", use_rth)
 
+        # Determine if chunking is needed
+        if enable_chunking:
+            # Calculate chunk size based on smallest bar spec (most restrictive)
+            chunk_sizes = [_calculate_chunk_size_days(spec) for spec in bar_specifications]
+            min_chunk_size = min(chunk_sizes)
+            date_range_days = (end_date - start_date).days
+            
+            # Skip chunking if min_chunk_size is infinite (unlimited)
+            if math.isinf(min_chunk_size):
+                logger.info(
+                    f"Chunking not needed for bar specifications (unlimited chunk size), "
+                    f"using single request"
+                )
+                chunks = [(start_date, end_date)]
+            elif date_range_days > min_chunk_size:
+                logger.info(
+                    f"Date range ({date_range_days} days) exceeds chunk size ({min_chunk_size} days), "
+                    f"splitting into chunks"
+                )
+                chunks = _chunk_date_range(start_date, end_date, min_chunk_size, chunk_overlap_minutes)
+            else:
+                logger.info(
+                    f"Date range ({date_range_days} days) within chunk size ({min_chunk_size} days), "
+                    f"using single request"
+                )
+                chunks = [(start_date, end_date)]
+        else:
+            logger.info("Chunking disabled, using single request")
+            chunks = [(start_date, end_date)]
+
+        logger.info(f"Will request {len(chunks)} chunk(s) for {symbol}")
+
+        # Prepare retry spec variants (same as before)
         retry_specs: list[list[str] | list[BarSpecification]] = []
 
-        # Retry path 1: append -EXTERNAL suffix if not present
-        external_suffix_specs = []
-        for spec in bar_specifications:
-            if spec.upper().endswith("-EXTERNAL"):
-                external_suffix_specs.append(spec)
-            else:
-                external_suffix_specs.append(f"{spec}-EXTERNAL")
+        external_suffix_specs = [
+            spec if spec.upper().endswith("-EXTERNAL") else f"{spec}-EXTERNAL"
+            for spec in bar_specifications
+        ]
         retry_specs.append(external_suffix_specs)
 
-        # Retry path 2: swap MID with MIDPOINT (if applicable)
         midpoint_specs = [
             spec.replace("-MID-", "-MIDPOINT-") if "-MID-" in spec else spec
             for spec in external_suffix_specs
         ]
         retry_specs.append(midpoint_specs)
 
-        # Retry path 3: use BarSpecification objects directly (if accepted)
         retry_specs.append(bar_spec_objects)
 
         attempts: list[tuple[str, list[str] | list[BarSpecification]]] = [
@@ -383,71 +592,144 @@ async def download_historical_data(symbol: str, start_date: datetime.datetime, e
             ("object", bar_spec_objects),
         ]
 
-        bars = None
+        # Accumulate bars from all chunks
+        all_bars = []
         successful_attempt: str | None = None
-        for attempt_name, specs in attempts:
-            logger.info("Attempting bar request (%s) with specs: %s", attempt_name, specs)
-            try:
-                bars = await client.request_bars(
-                    bar_specifications=specs,
-                    start_date_time=start_date,
-                    end_date_time=end_date,
-                    tz_name="America/New_York",
-                    contracts=[contract],
-                    use_rth=use_rth,
-                    timeout=120,
-                )
-                logger.info("Bar request succeeded using '%s' specification variant.", attempt_name)
-                successful_attempt = attempt_name
-                break
-            except ValueError as request_error:
-                if "invalid literal for int()" in str(request_error):
-                    logger.warning(
-                        "Bar specification parsing error (attempt=%s) for %s: %s",
-                        attempt_name,
-                        symbol,
-                        request_error,
-                    )
-                    continue
-                logger.error(
-                    "ValueError during historical data request (attempt=%s) for %s: %s",
-                    attempt_name,
-                    symbol,
-                    request_error,
-                    exc_info=True,
-                )
-                return []
-            except Exception as request_error:
-                logger.error(
-                    "Unexpected error requesting historical bars (attempt=%s) for %s: %s",
-                    attempt_name,
-                    symbol,
-                    request_error,
-                    exc_info=True,
-                )
-                return []
+        failed_chunks = []
 
-        if bars is None:
-            logger.error(
-                "All bar specification attempts failed for %s. Last attempt specs: %s",
-                symbol,
-                attempts[-1][1],
+        for chunk_num, (chunk_start, chunk_end) in enumerate(chunks, 1):
+            logger.info(
+                f"Chunk {chunk_num}/{len(chunks)}: {chunk_start.strftime('%Y-%m-%d')} to {chunk_end.strftime('%Y-%m-%d')}"
             )
-            logger.error(
-                "This may indicate a NautilusTrader adapter compatibility issue. Consider adjusting specs or contacting support."
+            
+            chunk_bars = None
+            
+            # Try each spec variant for this chunk
+            for attempt_name, specs in attempts:
+                logger.debug(f"Chunk {chunk_num}/{len(chunks)}: Attempting '{attempt_name}' spec variant")
+                try:
+                    chunk_bars = await client.request_bars(
+                        bar_specifications=specs,
+                        start_date_time=chunk_start,
+                        end_date_time=chunk_end,
+                        tz_name="America/New_York",
+                        contracts=[contract],
+                        use_rth=use_rth,
+                        timeout=300,
+                    )
+                    
+                    if chunk_bars:
+                        logger.info(
+                            f"Chunk {chunk_num}/{len(chunks)}: Retrieved {len(chunk_bars)} bars using '{attempt_name}' variant"
+                        )
+                        successful_attempt = attempt_name
+                        break
+                    else:
+                        logger.debug(f"Chunk {chunk_num}/{len(chunks)}: No bars returned for '{attempt_name}' variant")
+                        
+                except ValueError as request_error:
+                    if "invalid literal for int()" in str(request_error):
+                        logger.debug(
+                            f"Chunk {chunk_num}/{len(chunks)}: Bar spec parsing error (attempt={attempt_name}): {request_error}"
+                        )
+                        continue
+                    logger.error(
+                        f"Chunk {chunk_num}/{len(chunks)}: ValueError during request (attempt={attempt_name}): {request_error}",
+                        exc_info=True,
+                    )
+                    # Don't return early, try next variant
+                    continue
+                    
+                except asyncio.CancelledError:
+                    logger.warning(
+                        f"Chunk {chunk_num}/{len(chunks)}: Request cancelled (likely IBKR error 162 or timeout)"
+                    )
+                    # Don't return early, try next variant
+                    continue
+                    
+                except Exception as request_error:
+                    logger.error(
+                        f"Chunk {chunk_num}/{len(chunks)}: Unexpected error (attempt={attempt_name}): {request_error}",
+                        exc_info=True,
+                    )
+                    # Don't return early, try next variant
+                    continue
+            
+            # Check if chunk succeeded
+            if chunk_bars:
+                all_bars.extend(chunk_bars)
+                logger.info(
+                    f"Chunk {chunk_num}/{len(chunks)}: Success, total bars accumulated: {len(all_bars)}"
+                )
+            else:
+                logger.warning(
+                    f"Chunk {chunk_num}/{len(chunks)}: All spec variants failed, no bars retrieved for this chunk"
+                )
+                failed_chunks.append((chunk_num, chunk_start, chunk_end))
+            
+            # IBKR pacing: wait between chunks (except last chunk)
+            if chunk_num < len(chunks):
+                logger.info(f"Waiting {request_delay_seconds}s before next chunk (IBKR pacing)...")
+                await asyncio.sleep(request_delay_seconds)
+
+        # Log final results
+        if failed_chunks:
+            logger.warning(
+                f"Failed to retrieve data for {len(failed_chunks)}/{len(chunks)} chunks: {failed_chunks}"
             )
+            
+        if not all_bars:
+            if failed_chunks:
+                logger.error(
+                    f"All chunks failed for {symbol}. This may indicate IBKR connectivity issues, "
+                    f"pacing violations, or invalid date range."
+                )
+            else:
+                logger.warning(
+                    f"No bar data returned for {symbol}. Potential causes: date range outside market hours, "
+                    f"symbol unavailable on venue, or IBKR returned no data (e.g., error 162)."
+                )
+            logger.warning("Consider adjusting DATA_START_DATE/DATA_END_DATE or verifying instrument availability in TWS.")
             return []
 
-        if not bars:
-            logger.warning(
-                "No bar data returned for %s. Potential causes: date range outside market hours, symbol unavailable on venue, or IBKR returned no data (e.g., error 162).",
-                symbol,
-            )
-            logger.warning("Consider adjusting DATA_START_DATE/DATA_END_DATE or verifying instrument availability in TWS.")
-            logger.warning("Sample bar_type from IBKR: <none>")
-        else:
-            logger.info(f"Successfully retrieved {len(bars) if bars else 0} bar records for {symbol}")
-            sample_bar = bars[0]
+        # Deduplicate bars if chunk overlap was used
+        if chunk_overlap_minutes > 0 and all_bars:
+            logger.info(f"Chunk overlap detected ({chunk_overlap_minutes} minutes), performing deduplication...")
+            
+            # Build set of keys for deduplication: (bar_type, timestamp)
+            seen_keys = set()
+            deduplicated_bars = []
+            duplicates_removed = 0
+            
+            for bar in all_bars:
+                # Create unique key from bar_type and timestamp
+                bar_type_str = str(bar.bar_type) if hasattr(bar, 'bar_type') else 'unknown'
+                timestamp = bar.ts_event if hasattr(bar, 'ts_event') and bar.ts_event else bar.ts if hasattr(bar, 'ts') else 0
+                key = (bar_type_str, timestamp)
+                
+                if key not in seen_keys:
+                    seen_keys.add(key)
+                    deduplicated_bars.append(bar)
+                else:
+                    duplicates_removed += 1
+            
+            if duplicates_removed > 0:
+                logger.info(f"Deduplication complete: removed {duplicates_removed} duplicate bars, {len(deduplicated_bars)} unique bars remaining")
+                all_bars = deduplicated_bars
+            else:
+                logger.info("No duplicate bars found during deduplication")
+
+        # Sort bars by timestamp to ensure monotonically increasing order
+        if all_bars:
+            logger.info("Sorting bars by timestamp to ensure chronological order...")
+            all_bars.sort(key=lambda x: x.ts_init)
+            logger.info(f"Successfully sorted {len(all_bars)} bars by timestamp")
+
+        logger.info(f"Successfully retrieved {len(all_bars)} total bar records for {symbol} across {len(chunks)} chunk(s)")
+
+        # Log sample bar metadata (same as before)
+        if all_bars:
+            sample_bar = all_bars[0]
             if hasattr(sample_bar, "bar_type"):
                 logger.info("Sample bar_type from IBKR: %s", sample_bar.bar_type)
                 logger.info(
@@ -474,7 +756,7 @@ async def download_historical_data(symbol: str, start_date: datetime.datetime, e
             else:
                 logger.debug("Sample bar_type unavailable on returned bars.")
 
-        return bars or []
+        return all_bars
     except asyncio.CancelledError:
         logger.warning(
             "Historical data request for %s was cancelled or returned no data (e.g., IB error 162).",
@@ -575,7 +857,7 @@ def save_data(bars: list, symbol: str, output_dir: str) -> None:
 
             if not requested_specs:
                 if is_forex:
-                    requested_specs = {"1-MINUTE-MID-EXTERNAL", "1-DAY-MID-EXTERNAL"}
+                    requested_specs = {"1-MINUTE-MID-EXTERNAL", "15-MINUTE-MID-EXTERNAL", "1-DAY-MID-EXTERNAL"}
                 else:
                     requested_specs = {"1-MINUTE-LAST-EXTERNAL", "1-DAY-LAST-EXTERNAL"}
 
@@ -815,7 +1097,7 @@ async def main() -> int:
             
             # Add delay between symbols to respect IBKR pacing limits
             if i < len(symbols) - 1:  # Don't delay after the last symbol
-                logger.info("Waiting 3 seconds before next request...")
+                logger.info("Waiting 3 seconds before next symbol (IBKR pacing)...")
                 await asyncio.sleep(3)
         logger.info("Data ingestion completed successfully.")
         logger.info("Run 'python data/verify_catalog.py --json' for a structured catalog summary.")
@@ -825,7 +1107,7 @@ async def main() -> int:
             is_forex = "/" in symbol
             venue = os.getenv("BACKTEST_VENUE", "IDEALPRO") if is_forex else os.getenv("STOCK_VENUE", "SMART")
             instrument_id = normalize_instrument_id(symbol, venue or ("IDEALPRO" if is_forex else "SMART"))
-            expected_bar_spec = "15-MINUTE-MID-EXTERNAL" if is_forex else "1-MINUTE-LAST-EXTERNAL"
+            expected_bar_spec = "1-MINUTE-MID-EXTERNAL" if is_forex else "1-MINUTE-LAST-EXTERNAL"
 
             bar_identifier = f"{instrument_id}-{expected_bar_spec}"
 
