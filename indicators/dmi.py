@@ -53,7 +53,8 @@ class DMI(Indicator):
         self._minus_di: float = 0.0
 
         # State tracking
-        self._count: int = 0
+        # Number of raw samples collected (DM/TR observations), excludes the very first bar
+        self._samples: int = 0
         self._prev_high: Optional[float] = None
         self._prev_low: Optional[float] = None
         self._prev_close: Optional[float] = None
@@ -63,12 +64,11 @@ class DMI(Indicator):
         low = float(bar.low)
         close = float(bar.close)
 
-        # First bar: store and return
+        # First bar: store previous values and return without producing a raw sample
         if self._prev_close is None:
             self._prev_high = high
             self._prev_low = low
             self._prev_close = close
-            self._count = 1 if self._count == 0 else self._count
             return
 
         # Calculate raw DM and TR
@@ -83,15 +83,15 @@ class DMI(Indicator):
         tr3 = abs(low - (self._prev_close if self._prev_close is not None else close))
         tr = max(tr1, tr2, tr3)
 
-        # Accumulation phase (fewer than `period` values collected)
-        if self._count < self.period:
+        # Accumulation phase (fewer than `period` raw samples collected)
+        if self._samples < self.period:
             self._plus_dm_buffer.append(plus_dm)
             self._minus_dm_buffer.append(minus_dm)
             self._tr_buffer.append(tr)
 
-            self._count += 1
+            self._samples += 1
 
-            if self._count == self.period:
+            if self._samples == self.period:
                 # Initialize smoothed sums
                 self._smoothed_plus_dm = float(sum(self._plus_dm_buffer))
                 self._smoothed_minus_dm = float(sum(self._minus_dm_buffer))
@@ -113,7 +113,7 @@ class DMI(Indicator):
             self._smoothed_tr = self._smoothed_tr - (self._smoothed_tr / self.period) + tr
 
             self._calculate_di_values()
-            self._count += 1
+            self._samples += 1
 
         # Update previous bar values
         self._prev_high = high
@@ -156,7 +156,7 @@ class DMI(Indicator):
         self._plus_di = 0.0
         self._minus_di = 0.0
 
-        self._count = 0
+        self._samples = 0
         self._prev_high = None
         self._prev_low = None
         self._prev_close = None
@@ -167,12 +167,13 @@ class DMI(Indicator):
 
     @property
     def has_inputs(self) -> bool:
-        return self._count > 0
+        # True after the first bar is seen
+        return self._prev_close is not None
 
     @property
     def initialized(self) -> bool:
-        # Indicator is considered ready after `period` bars
-        return self._count >= self.period
+        # Indicator is considered ready after `period` raw samples have been collected
+        return self._samples >= self.period
 
     @property
     def value(self) -> float:
@@ -194,5 +195,8 @@ class DMI(Indicator):
     @property
     def is_bearish(self) -> bool:
         return (self._minus_di > self._plus_di) if self.initialized else False
+
+    def update(self, bar: Bar) -> None:
+        self.handle_bar(bar)
 
 
