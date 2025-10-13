@@ -144,6 +144,8 @@ def _calculate_chunk_size_days(bar_spec: str) -> int | float:
     # Extract aggregation period from spec (format: STEP-AGGREGATION-PRICE)
     if "1-MINUTE" in spec_upper or "1-MIN" in spec_upper:
         return 7
+    elif "2-MINUTE" in spec_upper or "2-MIN" in spec_upper:
+        return 30
     elif "5-MINUTE" in spec_upper or "5-MIN" in spec_upper:
         return 30
     elif "15-MINUTE" in spec_upper or "15-MIN" in spec_upper:
@@ -486,7 +488,8 @@ async def download_historical_data(symbol: str, start_date: datetime.datetime, e
         if is_forex:
             bar_specs_config = [
                 (1, "MINUTE", "MID"),   # 1-minute bars for backtesting (default)
-                (15, "MINUTE", "MID"),  # 15-minute bars for multi-timeframe analysis
+                (2, "MINUTE", "MID"),   # 2-minute bars for DMI trend filter
+                (15, "MINUTE", "MID"),  # 15-minute bars for Stochastic momentum filter
                 (1, "DAY", "MID"),      # Daily bars for longer-term analysis
             ]
         else:
@@ -861,7 +864,12 @@ def save_data(bars: list, symbol: str, output_dir: str) -> None:
 
             if not requested_specs:
                 if is_forex:
-                    requested_specs = {"1-MINUTE-MID-EXTERNAL", "15-MINUTE-MID-EXTERNAL", "1-DAY-MID-EXTERNAL"}
+                    requested_specs = {
+                        "1-MINUTE-MID-EXTERNAL",
+                        "2-MINUTE-MID-EXTERNAL",
+                        "15-MINUTE-MID-EXTERNAL",
+                        "1-DAY-MID-EXTERNAL",
+                    }
                 else:
                     requested_specs = {"1-MINUTE-LAST-EXTERNAL", "1-DAY-LAST-EXTERNAL"}
 
