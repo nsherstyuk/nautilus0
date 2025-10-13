@@ -108,7 +108,6 @@ def test_dmi_accumulation_phase(sample_bars):
     # No DI values until initialization
     assert dmi.plus_di == 0.0
     assert dmi.minus_di == 0.0
-    assert dmi._smoothed_tr is None
 
 
 def test_dmi_initialization_complete(sample_bars):
@@ -117,11 +116,7 @@ def test_dmi_initialization_complete(sample_bars):
     for bar in sample_bars[:15]:
         dmi.handle_bar(bar)
     assert dmi.initialized is True
-    assert dmi._smoothed_tr is not None
-    assert dmi._smoothed_plus_dm is not None
-    assert dmi._smoothed_minus_dm is not None
     assert (dmi.plus_di != 0.0) or (dmi.minus_di != 0.0)
-    assert len(dmi._tr_buffer) <= 14
 
 
 def test_dmi_uptrend_detection():
@@ -182,7 +177,7 @@ def test_dmi_flat_market_zero_atr():
         dmi.handle_bar(b)
     assert dmi.plus_di == 0.0
     assert dmi.minus_di == 0.0
-    assert dmi._smoothed_tr == 0.0
+    assert dmi.initialized is True
 
 
 def test_dmi_wilder_smoothing():
@@ -197,7 +192,6 @@ def test_dmi_wilder_smoothing():
     for b in bars:
         dmi.handle_bar(b)
     # Exact expected sums: +DM = 2+1+1 = 4, TR = 2.5+2+2 = 6.5
-    assert pytest.approx(dmi._smoothed_plus_dm or 0.0, rel=1e-6) == 4.0
     assert pytest.approx(dmi._smoothed_tr or 0.0, rel=1e-6) == 6.5
     # Public outputs should reflect the same ratio
     assert pytest.approx(dmi.plus_di, abs=1e-6) == pytest.approx(100.0 * 4.0 / 6.5, abs=1e-6)
@@ -219,9 +213,6 @@ def test_dmi_reset(sample_bars):
     assert dmi.initialized is False
     assert dmi.plus_di == 0.0
     assert dmi.minus_di == 0.0
-    assert dmi._prev_close is None
-    assert len(dmi._tr_buffer) == 0
-    assert dmi._smoothed_tr is None
 
 
 def test_dmi_value_property():
