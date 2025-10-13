@@ -36,6 +36,15 @@ class BacktestConfig:
     trailing_stop_activation_pips: int = 20
     trailing_stop_distance_pips: int = 15
     crossover_threshold_pips: float = 0.7
+    dmi_enabled: bool = True
+    dmi_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
+    dmi_period: int = 14
+    stoch_enabled: bool = True
+    stoch_bar_spec: str = "15-MINUTE-MID-EXTERNAL"
+    stoch_period_k: int = 14
+    stoch_period_d: int = 3
+    stoch_bullish_threshold: int = 30
+    stoch_bearish_threshold: int = 70
 
 
 def _require(name: str, value: Optional[str]) -> str:
@@ -77,7 +86,10 @@ def get_backtest_config() -> BacktestConfig:
     BACKTEST_SLOW_PERIOD, BACKTEST_TRADE_SIZE, BACKTEST_STARTING_CAPITAL,
     CATALOG_PATH, OUTPUT_DIR, ENFORCE_POSITION_LIMIT, ALLOW_POSITION_REVERSAL,
     BACKTEST_STOP_LOSS_PIPS, BACKTEST_TAKE_PROFIT_PIPS, BACKTEST_TRAILING_STOP_ACTIVATION_PIPS,
-    BACKTEST_TRAILING_STOP_DISTANCE_PIPS, STRATEGY_CROSSOVER_THRESHOLD_PIPS
+    BACKTEST_TRAILING_STOP_DISTANCE_PIPS,     STRATEGY_CROSSOVER_THRESHOLD_PIPS,
+    STRATEGY_DMI_ENABLED, STRATEGY_DMI_BAR_SPEC, STRATEGY_DMI_PERIOD,
+    STRATEGY_STOCH_ENABLED, STRATEGY_STOCH_BAR_SPEC, STRATEGY_STOCH_PERIOD_K,
+    STRATEGY_STOCH_PERIOD_D, STRATEGY_STOCH_BULLISH_THRESHOLD, STRATEGY_STOCH_BEARISH_THRESHOLD
     """
     load_dotenv()
 
@@ -113,6 +125,79 @@ def get_backtest_config() -> BacktestConfig:
         0.7,
     )
 
+    dmi_enabled = os.getenv("STRATEGY_DMI_ENABLED", "true").lower() in ("true", "1", "yes")
+    dmi_bar_spec = os.getenv("STRATEGY_DMI_BAR_SPEC", "2-MINUTE-MID-EXTERNAL")
+    dmi_period = _parse_int("STRATEGY_DMI_PERIOD", os.getenv("STRATEGY_DMI_PERIOD"), 14)
+    
+    stoch_enabled = os.getenv("STRATEGY_STOCH_ENABLED", "true").lower() in ("true", "1", "yes")
+    stoch_bar_spec = os.getenv("STRATEGY_STOCH_BAR_SPEC", "15-MINUTE-MID-EXTERNAL")
+    stoch_period_k = _parse_int("STRATEGY_STOCH_PERIOD_K", os.getenv("STRATEGY_STOCH_PERIOD_K"), 14)
+    stoch_period_d = _parse_int("STRATEGY_STOCH_PERIOD_D", os.getenv("STRATEGY_STOCH_PERIOD_D"), 3)
+    stoch_bullish_threshold = _parse_int("STRATEGY_STOCH_BULLISH_THRESHOLD", os.getenv("STRATEGY_STOCH_BULLISH_THRESHOLD"), 30)
+    stoch_bearish_threshold = _parse_int("STRATEGY_STOCH_BEARISH_THRESHOLD", os.getenv("STRATEGY_STOCH_BEARISH_THRESHOLD"), 70)
+    
+    # Normalize DMI bar_spec for FX instruments (similar to primary bar_spec normalization)
+    if dmi_enabled and "/" in symbol:
+        original_dmi_bar_spec = dmi_bar_spec
+        if "-LAST-EXTERNAL" in dmi_bar_spec:
+            dmi_bar_spec = dmi_bar_spec.replace("-LAST-EXTERNAL", "-MID-EXTERNAL")
+        elif "-LAST-INTERNAL" in dmi_bar_spec:
+            dmi_bar_spec = dmi_bar_spec.replace("-LAST-INTERNAL", "-MID-INTERNAL")
+        elif dmi_bar_spec.endswith("-LAST"):
+            # Legacy format without aggregation source
+            dmi_bar_spec = dmi_bar_spec[:-4] + "MID-EXTERNAL"
+        elif "-MID" not in dmi_bar_spec and "-LAST" not in dmi_bar_spec:
+            # Missing price side entirely (e.g., "2-MINUTE"), default to MID for FX
+            if dmi_bar_spec.endswith("-EXTERNAL") or dmi_bar_spec.endswith("-INTERNAL"):
+                suffix = "-EXTERNAL" if dmi_bar_spec.endswith("-EXTERNAL") else "-INTERNAL"
+                dmi_bar_spec = dmi_bar_spec[: -len(suffix)] + "-MID" + suffix
+            else:
+                dmi_bar_spec = f"{dmi_bar_spec}-MID"
+
+        # Ensure aggregation suffix present for FX DMI bars (e.g., 2-MINUTE-MID -> 2-MINUTE-MID-EXTERNAL)
+        if not dmi_bar_spec.endswith("-EXTERNAL") and not dmi_bar_spec.endswith("-INTERNAL"):
+            dmi_bar_spec = f"{dmi_bar_spec}-EXTERNAL"
+            
+        if dmi_bar_spec != original_dmi_bar_spec:
+            logger = logging.getLogger(__name__)
+            logger.info(
+                "Normalized DMI bar_spec for %s: %s -> %s",
+                symbol,
+                original_dmi_bar_spec,
+                dmi_bar_spec,
+            )
+    
+    # Normalize Stochastic bar_spec for FX instruments (similar to DMI normalization)
+    if stoch_enabled and "/" in symbol:
+        original_stoch_bar_spec = stoch_bar_spec
+        if "-LAST-EXTERNAL" in stoch_bar_spec:
+            stoch_bar_spec = stoch_bar_spec.replace("-LAST-EXTERNAL", "-MID-EXTERNAL")
+        elif "-LAST-INTERNAL" in stoch_bar_spec:
+            stoch_bar_spec = stoch_bar_spec.replace("-LAST-INTERNAL", "-MID-INTERNAL")
+        elif stoch_bar_spec.endswith("-LAST"):
+            # Legacy format without aggregation source
+            stoch_bar_spec = stoch_bar_spec[:-4] + "MID-EXTERNAL"
+        elif "-MID" not in stoch_bar_spec and "-LAST" not in stoch_bar_spec:
+            # Missing price side entirely (e.g., "15-MINUTE"), default to MID for FX
+            if stoch_bar_spec.endswith("-EXTERNAL") or stoch_bar_spec.endswith("-INTERNAL"):
+                suffix = "-EXTERNAL" if stoch_bar_spec.endswith("-EXTERNAL") else "-INTERNAL"
+                stoch_bar_spec = stoch_bar_spec[: -len(suffix)] + "-MID" + suffix
+            else:
+                stoch_bar_spec = f"{stoch_bar_spec}-MID"
+
+        # Ensure aggregation suffix present for FX Stochastic bars (e.g., 15-MINUTE-MID -> 15-MINUTE-MID-EXTERNAL)
+        if not stoch_bar_spec.endswith("-EXTERNAL") and not stoch_bar_spec.endswith("-INTERNAL"):
+            stoch_bar_spec = f"{stoch_bar_spec}-EXTERNAL"
+            
+        if stoch_bar_spec != original_stoch_bar_spec:
+            logger = logging.getLogger(__name__)
+            logger.info(
+                "Normalized Stochastic bar_spec for %s: %s -> %s",
+                symbol,
+                original_stoch_bar_spec,
+                stoch_bar_spec,
+            )
+
     if take_profit_pips <= stop_loss_pips:
         raise ValueError("BACKTEST_TAKE_PROFIT_PIPS must be greater than BACKTEST_STOP_LOSS_PIPS")
     
@@ -135,6 +220,51 @@ def get_backtest_config() -> BacktestConfig:
             crossover_threshold_pips,
             stop_loss_pips
         )
+
+    if dmi_period <= 0:
+        raise ValueError("STRATEGY_DMI_PERIOD must be > 0")
+
+    if dmi_enabled:
+        # Validate bar spec format
+        if not dmi_bar_spec.upper().endswith("-EXTERNAL") and not dmi_bar_spec.upper().endswith("-INTERNAL"):
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "STRATEGY_DMI_BAR_SPEC '%s' missing aggregation suffix, will be normalized to '%s-EXTERNAL'",
+                dmi_bar_spec,
+                dmi_bar_spec
+            )
+    
+    # Validate Stochastic parameters
+    if stoch_period_k <= 0:
+        raise ValueError("STRATEGY_STOCH_PERIOD_K must be > 0")
+    
+    if stoch_period_d <= 0:
+        raise ValueError("STRATEGY_STOCH_PERIOD_D must be > 0")
+    
+    if not (0 <= stoch_bullish_threshold <= 100):
+        raise ValueError("STRATEGY_STOCH_BULLISH_THRESHOLD must be between 0 and 100")
+    
+    if not (0 <= stoch_bearish_threshold <= 100):
+        raise ValueError("STRATEGY_STOCH_BEARISH_THRESHOLD must be between 0 and 100")
+    
+    if stoch_bullish_threshold >= stoch_bearish_threshold:
+        raise ValueError("STRATEGY_STOCH_BULLISH_THRESHOLD must be less than STRATEGY_STOCH_BEARISH_THRESHOLD")
+    
+    if stoch_enabled:
+        # Warn about potentially restrictive thresholds
+        if stoch_bullish_threshold > 50:
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "STRATEGY_STOCH_BULLISH_THRESHOLD (%d) > 50 may reject many valid bullish signals",
+                stoch_bullish_threshold
+            )
+        
+        if stoch_bearish_threshold < 50:
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "STRATEGY_STOCH_BEARISH_THRESHOLD (%d) < 50 may reject many valid bearish signals",
+                stoch_bearish_threshold
+            )
 
     catalog_path = os.getenv("CATALOG_PATH", "data/historical")
     output_dir = os.getenv("OUTPUT_DIR", "logs/backtest_results")
@@ -195,6 +325,15 @@ def get_backtest_config() -> BacktestConfig:
         trailing_stop_activation_pips=trailing_stop_activation_pips,
         trailing_stop_distance_pips=trailing_stop_distance_pips,
         crossover_threshold_pips=crossover_threshold_pips,
+        dmi_enabled=dmi_enabled,
+        dmi_bar_spec=dmi_bar_spec,
+        dmi_period=dmi_period,
+        stoch_enabled=stoch_enabled,
+        stoch_bar_spec=stoch_bar_spec,
+        stoch_period_k=stoch_period_k,
+        stoch_period_d=stoch_period_d,
+        stoch_bullish_threshold=stoch_bullish_threshold,
+        stoch_bearish_threshold=stoch_bearish_threshold,
     )
 
 

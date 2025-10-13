@@ -14,11 +14,12 @@ from nautilus_trader.config import StrategyConfig
 from nautilus_trader.trading.strategy import Strategy
 from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.data import Bar, BarType
-from nautilus_trader.indicators import SimpleMovingAverage
+from nautilus_trader.indicators import SimpleMovingAverage, Stochastics
 from nautilus_trader.model.position import Position
 from nautilus_trader.model.objects import Quantity, Price
 from nautilus_trader.model.enums import OrderSide, TriggerType
 from nautilus_trader.model.orders import MarketOrder, StopMarketOrder, LimitOrder, OrderList
+from indicators.dmi import DMI
 
 
 _DEF_PRICE_ALIAS = {"MIDPOINT": "MID"}
@@ -46,6 +47,15 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     trailing_stop_activation_pips: int = 20
     trailing_stop_distance_pips: int = 15
     crossover_threshold_pips: float = 0.7
+    dmi_enabled: bool = True
+    dmi_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
+    dmi_period: int = 14
+    stoch_enabled: bool = True
+    stoch_bar_spec: str = "15-MINUTE-MID-EXTERNAL"
+    stoch_period_k: int = 14
+    stoch_period_d: int = 3
+    stoch_bullish_threshold: int = 30
+    stoch_bearish_threshold: int = 70
 
 
 class MovingAverageCrossover(Strategy):
@@ -74,6 +84,28 @@ class MovingAverageCrossover(Strategy):
         self._bar_count = 0
         self._warmup_complete = False
         self._is_fx: bool = False
+        
+        # DMI indicator for trend confirmation (optional, 2-minute bars)
+        self.dmi: Optional[DMI] = None
+        self.dmi_bar_type: Optional[BarType] = None
+        if config.dmi_enabled:
+            self.dmi = DMI(period=config.dmi_period)
+            # Construct 2-minute bar type with same instrument
+            dmi_bar_spec = config.dmi_bar_spec
+            if not dmi_bar_spec.upper().endswith("-EXTERNAL") and not dmi_bar_spec.upper().endswith("-INTERNAL"):
+                dmi_bar_spec = f"{dmi_bar_spec}-EXTERNAL"
+            self.dmi_bar_type = BarType.from_str(f"{config.instrument_id}-{dmi_bar_spec}")
+        
+        # Stochastic indicator for momentum confirmation (optional, 15-minute bars)
+        self.stoch: Optional[Stochastics] = None
+        self.stoch_bar_type: Optional[BarType] = None
+        if config.stoch_enabled:
+            self.stoch = Stochastics(period_k=config.stoch_period_k, period_d=config.stoch_period_d)
+            # Construct 15-minute bar type with same instrument
+            stoch_bar_spec = config.stoch_bar_spec
+            if not stoch_bar_spec.upper().endswith("-EXTERNAL") and not stoch_bar_spec.upper().endswith("-INTERNAL"):
+                stoch_bar_spec = f"{stoch_bar_spec}-EXTERNAL"
+            self.stoch_bar_type = BarType.from_str(f"{config.instrument_id}-{stoch_bar_spec}")
         
         # Trailing stop state tracking
         self._current_stop_order: Optional[StopMarketOrder] = None
@@ -111,6 +143,21 @@ class MovingAverageCrossover(Strategy):
         self.log.debug(
             f"Position limits enforced={self._enforce_position_limit}, allow_reversal={self._allow_reversal}"
         )
+        # Subscribe to 2-minute bars for DMI if enabled
+        if self.dmi is not None and self.dmi_bar_type is not None:
+            self.register_indicator_for_bars(self.dmi_bar_type, self.dmi)
+            self.subscribe_bars(self.dmi_bar_type)
+            self.log.info(f"DMI filter enabled: subscribed to {self.dmi_bar_type} (period={self.cfg.dmi_period})")
+        else:
+            self.log.info("DMI filter disabled")
+        
+        # Subscribe to 15-minute bars for Stochastic if enabled
+        if self.stoch is not None and self.stoch_bar_type is not None:
+            self.register_indicator_for_bars(self.stoch_bar_type, self.stoch)
+            self.subscribe_bars(self.stoch_bar_type)
+            self.log.info(f"Stochastic filter enabled: subscribed to {self.stoch_bar_type} (period_k={self.cfg.stoch_period_k}, period_d={self.cfg.stoch_period_d}, bullish_threshold={self.cfg.stoch_bullish_threshold}, bearish_threshold={self.cfg.stoch_bearish_threshold})")
+        else:
+            self.log.info("Stochastic filter disabled")
 
     def _current_position(self) -> Optional[Position]:
         """Get the current open position for this instrument."""
@@ -183,6 +230,138 @@ class MovingAverageCrossover(Strategy):
                 bar,
             )
             return False
+        return True
+
+    def _check_dmi_trend(self, direction: str, bar: Bar) -> bool:
+        """Check if DMI trend aligns with crossover direction.
+        
+        Args:
+            direction: "BUY" or "SELL"
+            bar: Current bar for logging
+            
+        Returns:
+            True if DMI check passes or is disabled/not ready, False if trend mismatch
+        """
+        # Skip check if DMI is disabled
+        if self.dmi is None:
+            return True
+        
+        # Skip check if DMI not initialized yet (not enough 2-minute bars)
+        if not self.dmi.initialized:
+            self.log.debug("DMI not initialized yet, skipping DMI check")
+            return True
+        
+        # Check trend alignment
+        if direction == "BUY":
+            # Bullish crossover requires +DI > -DI (bullish trend)
+            if self.dmi.minus_di > self.dmi.plus_di:
+                self._log_rejected_signal(
+                    "BUY",
+                    f"dmi_trend_mismatch (+DI={self.dmi.plus_di:.2f} < -DI={self.dmi.minus_di:.2f}, bearish trend)",
+                    bar
+                )
+                return False
+        elif direction == "SELL":
+            # Bearish crossover requires -DI > +DI (bearish trend)
+            if self.dmi.plus_di > self.dmi.minus_di:
+                self._log_rejected_signal(
+                    "SELL",
+                    f"dmi_trend_mismatch (-DI={self.dmi.minus_di:.2f} < +DI={self.dmi.plus_di:.2f}, bullish trend)",
+                    bar
+                )
+                return False
+        
+        # DMI confirms the trend
+        self.log.debug(f"DMI trend confirmed for {direction}: +DI={self.dmi.plus_di:.2f}, -DI={self.dmi.minus_di:.2f}")
+        return True
+
+    def _check_stochastic_momentum(self, direction: str, bar: Bar) -> bool:
+        """Check if Stochastic momentum aligns with crossover direction.
+        
+        Args:
+            direction: "BUY" or "SELL"
+            bar: Current bar for logging
+            
+        Returns:
+            True if Stochastic check passes or is disabled/not ready, False if momentum unfavorable
+        """
+        # Skip check if Stochastic is disabled
+        if self.stoch is None:
+            return True
+        
+        # Skip check if Stochastic not initialized yet (not enough 15-minute bars)
+        if not self.stoch.initialized:
+            self.log.debug("Stochastic not initialized yet, skipping Stochastic check")
+            return True
+        
+        # Get current Stochastic values
+        k_value = self.stoch.value_k
+        d_value = self.stoch.value_d
+        
+        if direction == "BUY":
+            # Bullish crossover requires:
+            # 1. %K > %D (fast line above slow line, bullish momentum)
+            # 2. %K > bullish_threshold (not oversold)
+            # 3. %D > bullish_threshold (not oversold)
+            if k_value <= d_value:
+                self._log_rejected_signal(
+                    "BUY",
+                    "stochastic_unfavorable",
+                    bar
+                )
+                return False
+            
+            if k_value <= self.cfg.stoch_bullish_threshold:
+                self._log_rejected_signal(
+                    "BUY",
+                    "stochastic_unfavorable",
+                    bar
+                )
+                return False
+            
+            if d_value <= self.cfg.stoch_bullish_threshold:
+                self._log_rejected_signal(
+                    "BUY",
+                    "stochastic_unfavorable",
+                    bar
+                )
+                return False
+            
+            # Stochastic confirms bullish momentum
+            self.log.debug(f"Stochastic momentum confirmed for {direction}: %K={k_value:.2f}, %D={d_value:.2f}")
+            
+        elif direction == "SELL":
+            # Bearish crossover requires:
+            # 1. %K < %D (fast line below slow line, bearish momentum)
+            # 2. %K < bearish_threshold (not overbought)
+            # 3. %D < bearish_threshold (not overbought)
+            if k_value >= d_value:
+                self._log_rejected_signal(
+                    "SELL",
+                    "stochastic_unfavorable",
+                    bar
+                )
+                return False
+            
+            if k_value >= self.cfg.stoch_bearish_threshold:
+                self._log_rejected_signal(
+                    "SELL",
+                    "stochastic_unfavorable",
+                    bar
+                )
+                return False
+            
+            if d_value >= self.cfg.stoch_bearish_threshold:
+                self._log_rejected_signal(
+                    "SELL",
+                    "stochastic_unfavorable",
+                    bar
+                )
+                return False
+            
+            # Stochastic confirms bearish momentum
+            self.log.debug(f"Stochastic momentum confirmed for {direction}: %K={k_value:.2f}, %D={d_value:.2f}")
+        
         return True
 
     def _calculate_pip_value(self) -> Decimal:
@@ -282,9 +461,29 @@ class MovingAverageCrossover(Strategy):
         pass
 
     def on_bar(self, bar: Bar) -> None:
-        # Tolerate dataset suffix differences and price aliases when matching
+        # Filter by instrument
         if bar.bar_type.instrument_id != self.instrument_id:
             return
+        
+        # Route DMI bars only if they are not the primary bar type
+        if (
+            self.dmi_bar_type is not None
+            and bar.bar_type == self.dmi_bar_type
+            and bar.bar_type != self.bar_type
+        ):
+            self.log.debug(f"Received DMI bar: close={bar.close}")
+            return
+        
+        # Route Stochastic bars only if they are not the primary bar type
+        if (
+            self.stoch_bar_type is not None
+            and bar.bar_type == self.stoch_bar_type
+            and bar.bar_type != self.bar_type
+        ):
+            self.log.debug(f"Received Stochastic bar: close={bar.close}")
+            return
+        
+        # Process 1-minute bars for MA crossover logic
         if _normalize_price_alias(bar.bar_type.spec) != _normalize_price_alias(self.bar_type.spec):
             return
 
@@ -335,6 +534,13 @@ class MovingAverageCrossover(Strategy):
             # Check crossover magnitude against threshold
             if not self._check_crossover_threshold("BUY", fast, slow, bar):
                 # Do NOT update prev_* here; just return
+                return
+            # Check DMI trend alignment
+            if not self._check_dmi_trend("BUY", bar):
+                return
+            
+            # Check Stochastic momentum alignment
+            if not self._check_stochastic_momentum("BUY", bar):
                 return
             
             can_trade, reason = self._check_can_open_position("BUY")
@@ -414,6 +620,13 @@ class MovingAverageCrossover(Strategy):
             # Check crossover magnitude against threshold
             if not self._check_crossover_threshold("SELL", fast, slow, bar):
                 # Do NOT update prev_* here; just return
+                return
+            # Check DMI trend alignment
+            if not self._check_dmi_trend("SELL", bar):
+                return
+            
+            # Check Stochastic momentum alignment
+            if not self._check_stochastic_momentum("SELL", bar):
                 return
             
             can_trade, reason = self._check_can_open_position("SELL")
@@ -510,3 +723,7 @@ class MovingAverageCrossover(Strategy):
         self._position_entry_price = None
         self._trailing_active = False
         self._last_stop_price = None
+        if self.dmi is not None:
+            self.dmi.reset()
+        if self.stoch is not None:
+            self.stoch.reset()
