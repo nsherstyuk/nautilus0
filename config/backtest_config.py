@@ -35,6 +35,7 @@ class BacktestConfig:
     take_profit_pips: int = 50
     trailing_stop_activation_pips: int = 20
     trailing_stop_distance_pips: int = 15
+    crossover_threshold_pips: float = 0.7
 
 
 def _require(name: str, value: Optional[str]) -> str:
@@ -76,7 +77,7 @@ def get_backtest_config() -> BacktestConfig:
     BACKTEST_SLOW_PERIOD, BACKTEST_TRADE_SIZE, BACKTEST_STARTING_CAPITAL,
     CATALOG_PATH, OUTPUT_DIR, ENFORCE_POSITION_LIMIT, ALLOW_POSITION_REVERSAL,
     BACKTEST_STOP_LOSS_PIPS, BACKTEST_TAKE_PROFIT_PIPS, BACKTEST_TRAILING_STOP_ACTIVATION_PIPS,
-    BACKTEST_TRAILING_STOP_DISTANCE_PIPS
+    BACKTEST_TRAILING_STOP_DISTANCE_PIPS, STRATEGY_CROSSOVER_THRESHOLD_PIPS
     """
     load_dotenv()
 
@@ -106,6 +107,11 @@ def get_backtest_config() -> BacktestConfig:
     take_profit_pips = _parse_int("BACKTEST_TAKE_PROFIT_PIPS", os.getenv("BACKTEST_TAKE_PROFIT_PIPS"), 50)
     trailing_stop_activation_pips = _parse_int("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS", os.getenv("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS"), 20)
     trailing_stop_distance_pips = _parse_int("BACKTEST_TRAILING_STOP_DISTANCE_PIPS", os.getenv("BACKTEST_TRAILING_STOP_DISTANCE_PIPS"), 15)
+    crossover_threshold_pips = _parse_float(
+        "STRATEGY_CROSSOVER_THRESHOLD_PIPS",
+        os.getenv("STRATEGY_CROSSOVER_THRESHOLD_PIPS"),
+        0.7,
+    )
 
     if take_profit_pips <= stop_loss_pips:
         raise ValueError("BACKTEST_TAKE_PROFIT_PIPS must be greater than BACKTEST_STOP_LOSS_PIPS")
@@ -117,6 +123,18 @@ def get_backtest_config() -> BacktestConfig:
         logger = logging.getLogger(__name__)
         logger.warning("Trailing stop activation (%d pips) is greater than take profit (%d pips). Trailing may not activate before TP hit.", 
                       trailing_stop_activation_pips, take_profit_pips)
+
+    if crossover_threshold_pips < 0:
+        raise ValueError("STRATEGY_CROSSOVER_THRESHOLD_PIPS must be >= 0")
+
+    if crossover_threshold_pips > stop_loss_pips:
+        logger = logging.getLogger(__name__)
+        logger.warning(
+            "Crossover threshold (%s pips) is greater than stop loss (%s pips). "
+            "This may result in very few or no signals being generated.",
+            crossover_threshold_pips,
+            stop_loss_pips
+        )
 
     catalog_path = os.getenv("CATALOG_PATH", "data/historical")
     output_dir = os.getenv("OUTPUT_DIR", "logs/backtest_results")
@@ -176,6 +194,7 @@ def get_backtest_config() -> BacktestConfig:
         take_profit_pips=take_profit_pips,
         trailing_stop_activation_pips=trailing_stop_activation_pips,
         trailing_stop_distance_pips=trailing_stop_distance_pips,
+        crossover_threshold_pips=crossover_threshold_pips,
     )
 
 

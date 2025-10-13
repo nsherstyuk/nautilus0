@@ -15,10 +15,25 @@ handlers:
     filename: logs/application.log
     maxBytes: 10485760  # 10MB
     backupCount: 5
+  live_file:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: standard
+    filename: logs/live/live_trading.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
 loggers:
   nautilus_trader:  # Captures all NautilusTrader events (backtest, ingestion, live trading)
     level: DEBUG
     handlers: [console, file]
+    propagate: false
+  nautilus_trader.execution:  # Order execution and fill events (live trading only)
+    level: DEBUG
+    handlers: [console, live_file]
+    propagate: false
+  live:  # Live trading application logger (used by live/run_live.py)
+    level: DEBUG
+    handlers: [console, live_file]
     propagate: false
 root:
   level: INFO

@@ -45,6 +45,7 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     take_profit_pips: int = 50
     trailing_stop_activation_pips: int = 20
     trailing_stop_distance_pips: int = 15
+    crossover_threshold_pips: float = 0.7
 
 
 class MovingAverageCrossover(Strategy):
@@ -168,6 +169,22 @@ class MovingAverageCrossover(Strategy):
     def get_rejected_signals(self) -> List[Dict[str, Any]]:
         return list(self._rejected_signals)
 
+    def _check_crossover_threshold(self, direction: str, fast: Decimal, slow: Decimal, bar: Bar) -> bool:
+        crossover_diff = abs(fast - slow)
+        pip_value = self._calculate_pip_value()
+        threshold_pips = Decimal(str(self.cfg.crossover_threshold_pips))
+        threshold_price = threshold_pips * pip_value
+        if crossover_diff < threshold_price:
+            crossover_diff_decimal = Decimal(str(crossover_diff))
+            crossover_diff_pips = crossover_diff_decimal / pip_value
+            self._log_rejected_signal(
+                direction,
+                f"crossover_threshold_not_met (diff={crossover_diff_pips:.2f} pips < {threshold_pips} pips threshold)",
+                bar,
+            )
+            return False
+        return True
+
     def _calculate_pip_value(self) -> Decimal:
         """Calculate pip value based on instrument precision."""
         if self.instrument.price_precision == 5:
@@ -175,8 +192,8 @@ class MovingAverageCrossover(Strategy):
         elif self.instrument.price_precision == 3:
             return Decimal('0.01')     # 1 pip for 3 decimal places (USD/JPY)
         else:
-            # Default to 0.0001 for most forex pairs
-            return Decimal('0.0001')
+            # For non-FX or other precisions, use the instrument's minimum tick/price increment
+            return Decimal(str(self.instrument.price_increment))
 
     def _calculate_sl_tp_prices(self, entry_price: Decimal, order_side: OrderSide) -> Tuple[Price, Price]:
         """Calculate stop loss and take profit prices based on entry price and order side."""
@@ -314,6 +331,12 @@ class MovingAverageCrossover(Strategy):
             self.log.info(
                 f"Bullish crossover detected (prev_fast={self._prev_fast}, prev_slow={self._prev_slow}, current_fast={fast}, current_slow={slow})"
             )
+            
+            # Check crossover magnitude against threshold
+            if not self._check_crossover_threshold("BUY", fast, slow, bar):
+                # Do NOT update prev_* here; just return
+                return
+            
             can_trade, reason = self._check_can_open_position("BUY")
             if not can_trade:
                 self._log_rejected_signal("BUY", reason, bar)
@@ -387,6 +410,12 @@ class MovingAverageCrossover(Strategy):
             self.log.info(
                 f"Bearish crossover detected (prev_fast={self._prev_fast}, prev_slow={self._prev_slow}, current_fast={fast}, current_slow={slow})"
             )
+            
+            # Check crossover magnitude against threshold
+            if not self._check_crossover_threshold("SELL", fast, slow, bar):
+                # Do NOT update prev_* here; just return
+                return
+            
             can_trade, reason = self._check_can_open_position("SELL")
             if not can_trade:
                 self._log_rejected_signal("SELL", reason, bar)

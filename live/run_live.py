@@ -38,7 +38,7 @@ from config.live_config import LiveConfig, get_live_config, validate_live_config
 
 def setup_logging(log_dir: Path) -> logging.Logger:
     """Configure logging for live trading."""
-    config_path = Path("config/logging.yaml")
+    config_path = Path("config/logging.live.yaml")
     with config_path.open("r", encoding="utf-8") as stream:
         logging_config = yaml.safe_load(stream)
 

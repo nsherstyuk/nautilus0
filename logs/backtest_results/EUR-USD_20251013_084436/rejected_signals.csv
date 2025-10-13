@@ -1,0 +1,516 @@
+timestamp,bar_close_time,signal_type,action,reason,fast_sma,slow_sma
+2025-08-06 23:45:00+00:00,2025-08-07 00:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.48 pips < 0.7 pips threshold),1.166115,1.1660672727272727
+2025-08-07 00:45:00+00:00,2025-08-07 01:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.7 pips threshold),1.165899,1.165902
+2025-08-07 01:00:00+00:00,2025-08-07 01:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.56 pips < 0.7 pips threshold),1.1658110000000002,1.165866875
+2025-08-07 01:15:00+00:00,2025-08-07 01:30:00+00:00,SELL,close_only,Closed existing long position,1.165677,1.1658182352941178
+2025-08-07 10:15:00+00:00,2025-08-07 10:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.7 pips threshold),1.1676540000000002,1.1676555
+2025-08-07 10:30:00+00:00,2025-08-07 10:45:00+00:00,SELL,close_only,Closed existing long position,1.16748,1.1676404999999999
+2025-08-07 19:00:00+00:00,2025-08-07 19:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.7 pips threshold),1.163168,1.163185
+2025-08-07 19:15:00+00:00,2025-08-07 19:30:00+00:00,SELL,close_only,Closed existing long position,1.163052,1.1631994999999997
+2025-08-08 01:45:00+00:00,2025-08-08 02:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.46 pips < 0.7 pips threshold),1.16683,1.166876
+2025-08-08 02:00:00+00:00,2025-08-08 02:15:00+00:00,SELL,close_only,Closed existing long position,1.166652,1.1668470000000002
+2025-08-08 08:30:00+00:00,2025-08-08 08:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.37 pips < 0.7 pips threshold),1.1653220000000002,1.1652855
+2025-08-08 08:45:00+00:00,2025-08-08 09:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.47 pips < 0.7 pips threshold),1.165218,1.1651715
+2025-08-08 09:00:00+00:00,2025-08-08 09:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.67 pips < 0.7 pips threshold),1.1651230000000001,1.1650565
+2025-08-08 09:15:00+00:00,2025-08-08 09:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.16494,1.1649195
+2025-08-08 12:45:00+00:00,2025-08-08 13:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.15 pips < 0.7 pips threshold),1.1642579999999998,1.1642425000000003
+2025-08-08 19:15:00+00:00,2025-08-08 19:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.165771,1.1657745
+2025-08-08 19:30:00+00:00,2025-08-08 19:45:00+00:00,SELL,close_only,Closed existing long position,1.1655909999999998,1.165702
+2025-08-11 06:45:00+00:00,2025-08-11 07:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.7 pips threshold),1.1668990000000001,1.1669325000000002
+2025-08-11 07:00:00+00:00,2025-08-11 07:15:00+00:00,SELL,close_only,Closed existing long position,1.1667619999999999,1.1668984999999998
+2025-08-11 18:00:00+00:00,2025-08-11 18:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.49 pips < 0.7 pips threshold),1.160744,1.1606945000000002
+2025-08-12 05:45:00+00:00,2025-08-12 06:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.162067,1.162071
+2025-08-12 06:00:00+00:00,2025-08-12 06:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.57 pips < 0.7 pips threshold),1.161985,1.1620415000000002
+2025-08-12 06:15:00+00:00,2025-08-12 06:30:00+00:00,SELL,close_only,Closed existing long position,1.1618920000000001,1.162019
+2025-08-12 21:45:00+00:00,2025-08-12 22:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.56 pips < 0.7 pips threshold),1.16739,1.1673339999999999
+2025-08-12 22:00:00+00:00,2025-08-12 22:15:00+00:00,BUY,close_only,Closed existing short position,1.167408,1.167308
+2025-08-13 12:15:00+00:00,2025-08-13 12:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.7 pips threshold),1.171714,1.1717400000000002
+2025-08-13 15:30:00+00:00,2025-08-13 15:45:00+00:00,BUY,close_only,Closed existing short position,1.1712360000000002,1.1711345
+2025-08-13 17:45:00+00:00,2025-08-13 18:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.7 pips threshold),1.171026,1.1710319999999999
+2025-08-13 21:30:00+00:00,2025-08-13 21:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.7 pips threshold),1.17031,1.170309
+2025-08-13 21:30:00+00:00,2025-08-13 21:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.45 pips < 0.7 pips threshold),1.17034,1.170295
+2025-08-13 21:45:00+00:00,2025-08-13 22:00:00+00:00,BUY,close_only,Closed existing short position,1.1704120000000002,1.1702965000000003
+2025-08-14 02:15:00+00:00,2025-08-14 02:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.19 pips < 0.7 pips threshold),1.171178,1.1711969999999998
+2025-08-14 04:30:00+00:00,2025-08-14 04:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.7 pips threshold),1.1703899999999998,1.170382
+2025-08-14 04:45:00+00:00,2025-08-14 05:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.15 pips < 0.7 pips threshold),1.170392,1.1703765000000002
+2025-08-14 04:45:00+00:00,2025-08-14 05:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.170394,1.170371
+2025-08-14 05:00:00+00:00,2025-08-14 05:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.7 pips threshold),1.1703879999999998,1.1703640000000002
+2025-08-14 05:00:00+00:00,2025-08-14 05:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.7 pips threshold),1.1703819999999998,1.170357
+2025-08-14 05:15:00+00:00,2025-08-14 05:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.7 pips threshold),1.1703409999999999,1.17033
+2025-08-14 09:45:00+00:00,2025-08-14 10:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.7 pips threshold),1.168094,1.1680670000000002
+2025-08-14 10:00:00+00:00,2025-08-14 10:15:00+00:00,BUY,close_only,Closed existing short position,1.16825,1.1680850000000003
+2025-08-14 12:00:00+00:00,2025-08-14 12:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.58 pips < 0.7 pips threshold),1.168836,1.1688939999999997
+2025-08-14 15:00:00+00:00,2025-08-14 15:15:00+00:00,BUY,close_only,Closed existing short position,1.165834,1.1657600000000001
+2025-08-14 15:30:00+00:00,2025-08-14 15:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.65 pips < 0.7 pips threshold),1.1653260000000003,1.165391
+2025-08-14 18:00:00+00:00,2025-08-14 18:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.16376,1.1637400000000002
+2025-08-14 18:15:00+00:00,2025-08-14 18:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.7 pips threshold),1.163744,1.163732
+2025-08-14 18:15:00+00:00,2025-08-14 18:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.1637279999999999,1.1637240000000002
+2025-08-14 18:45:00+00:00,2025-08-14 19:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.53 pips < 0.7 pips threshold),1.1638639999999998,1.163811
+2025-08-14 19:00:00+00:00,2025-08-14 19:15:00+00:00,BUY,close_only,Closed existing short position,1.1639549999999999,1.1638515
+2025-08-14 21:45:00+00:00,2025-08-14 22:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.7 pips threshold),1.1648509999999999,1.1648385
+2025-08-14 21:45:00+00:00,2025-08-14 22:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.7 pips threshold),1.1648899999999998,1.164865
+2025-08-14 22:00:00+00:00,2025-08-14 22:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.48 pips < 0.7 pips threshold),1.164939,1.1648905
+2025-08-14 23:15:00+00:00,2025-08-14 23:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.39 pips < 0.7 pips threshold),1.1649100000000003,1.1649489999999996
+2025-08-14 23:30:00+00:00,2025-08-14 23:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.44 pips < 0.7 pips threshold),1.164926,1.1649704999999997
+2025-08-14 23:30:00+00:00,2025-08-14 23:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.50 pips < 0.7 pips threshold),1.164942,1.1649919999999998
+2025-08-14 23:45:00+00:00,2025-08-15 00:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.50 pips < 0.7 pips threshold),1.164947,1.1649965
+2025-08-14 23:45:00+00:00,2025-08-15 00:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.49 pips < 0.7 pips threshold),1.164952,1.165001
+2025-08-15 00:00:00+00:00,2025-08-15 00:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.52 pips < 0.7 pips threshold),1.164957,1.165009
+2025-08-15 00:00:00+00:00,2025-08-15 00:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.55 pips < 0.7 pips threshold),1.1649620000000003,1.1650170000000002
+2025-08-15 00:15:00+00:00,2025-08-15 00:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.1649820000000002,1.1650045000000002
+2025-08-15 11:00:00+00:00,2025-08-15 11:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.7 pips threshold),1.168606,1.168608
+2025-08-15 11:15:00+00:00,2025-08-15 11:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.7 pips threshold),1.168603,1.1686375
+2025-08-15 11:15:00+00:00,2025-08-15 11:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.67 pips < 0.7 pips threshold),1.1686,1.168667
+2025-08-15 11:30:00+00:00,2025-08-15 11:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.44 pips < 0.7 pips threshold),1.168619,1.168663
+2025-08-15 11:30:00+00:00,2025-08-15 11:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.21 pips < 0.7 pips threshold),1.168638,1.168659
+2025-08-15 16:00:00+00:00,2025-08-15 16:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.21 pips < 0.7 pips threshold),1.1708029999999998,1.1708240000000003
+2025-08-15 18:30:00+00:00,2025-08-15 18:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.7 pips threshold),1.170354,1.1703455
+2025-08-15 18:30:00+00:00,2025-08-15 18:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.38 pips < 0.7 pips threshold),1.1703719999999997,1.170334
+2025-08-15 18:45:00+00:00,2025-08-15 19:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.1703519999999998,1.170329
+2025-08-15 18:45:00+00:00,2025-08-15 19:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.7 pips threshold),1.170332,1.170324
+2025-08-15 20:15:00+00:00,2025-08-15 20:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.7 pips threshold),1.1703100000000002,1.1703000000000003
+2025-08-15 20:30:00+00:00,2025-08-15 20:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.7 pips threshold),1.170319,1.1702890000000004
+2025-08-15 20:30:00+00:00,2025-08-15 20:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.50 pips < 0.7 pips threshold),1.170328,1.1702780000000002
+2025-08-15 20:45:00+00:00,2025-08-15 21:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.58 pips < 0.7 pips threshold),1.170331,1.1702725000000003
+2025-08-15 20:45:00+00:00,2025-08-15 21:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.67 pips < 0.7 pips threshold),1.170334,1.1702670000000004
+2025-08-17 21:15:00+00:00,2025-08-17 21:30:00+00:00,BUY,close_only,Closed existing short position,1.170436,1.1703105000000003
+2025-08-18 00:45:00+00:00,2025-08-18 01:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.7 pips threshold),1.170727,1.170735
+2025-08-18 04:30:00+00:00,2025-08-18 04:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.7 pips threshold),1.170251,1.1702185
+2025-08-18 04:45:00+00:00,2025-08-18 05:00:00+00:00,BUY,close_only,Closed existing short position,1.17034,1.1702285
+2025-08-18 07:00:00+00:00,2025-08-18 07:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.7 pips threshold),1.1701960000000002,1.1702235
+2025-08-18 19:45:00+00:00,2025-08-18 20:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.166504,1.166484
+2025-08-18 20:00:00+00:00,2025-08-18 20:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.50 pips < 0.7 pips threshold),1.166548,1.1664980000000003
+2025-08-18 20:15:00+00:00,2025-08-18 20:30:00+00:00,BUY,close_only,Closed existing short position,1.166587,1.1664845000000004
+2025-08-18 23:00:00+00:00,2025-08-18 23:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.19 pips < 0.7 pips threshold),1.1665499999999998,1.1665685
+2025-08-18 23:15:00+00:00,2025-08-18 23:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.7 pips threshold),1.1665489999999998,1.16656
+2025-08-19 01:00:00+00:00,2025-08-19 01:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.52 pips < 0.7 pips threshold),1.166442,1.1664944999999995
+2025-08-19 04:45:00+00:00,2025-08-19 05:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.7 pips threshold),1.165646,1.1656345
+2025-08-19 05:00:00+00:00,2025-08-19 05:15:00+00:00,BUY,close_only,Closed existing short position,1.165748,1.1656080000000002
+2025-08-19 23:00:00+00:00,2025-08-19 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.7 pips threshold),1.1647270000000003,1.1647010000000004
+2025-08-19 23:15:00+00:00,2025-08-19 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.164687,1.1646635
+2025-08-19 23:30:00+00:00,2025-08-19 23:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.164649,1.1646260000000002
+2025-08-20 04:45:00+00:00,2025-08-20 05:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.1632450000000003,1.163217
+2025-08-20 16:00:00+00:00,2025-08-20 16:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.7 pips threshold),1.165658,1.1656665
+2025-08-20 16:15:00+00:00,2025-08-20 16:30:00+00:00,SELL,close_only,Closed existing long position,1.165665,1.165741
+2025-08-20 18:00:00+00:00,2025-08-20 18:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.43 pips < 0.7 pips threshold),1.166057,1.1660144999999997
+2025-08-20 20:00:00+00:00,2025-08-20 20:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.39 pips < 0.7 pips threshold),1.1658009999999996,1.1658395
+2025-08-20 20:15:00+00:00,2025-08-20 20:30:00+00:00,SELL,close_only,Closed existing long position,1.1655589999999998,1.165767
+2025-08-20 22:30:00+00:00,2025-08-20 22:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.05 pips < 0.7 pips threshold),1.165325,1.16532
+2025-08-20 22:30:00+00:00,2025-08-20 22:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.7 pips threshold),1.1653179999999999,1.1653120000000001
+2025-08-20 22:45:00+00:00,2025-08-20 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.7 pips threshold),1.1653179999999999,1.1652845
+2025-08-20 22:45:00+00:00,2025-08-20 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.53 pips < 0.7 pips threshold),1.1653179999999999,1.1652650000000002
+2025-08-20 23:00:00+00:00,2025-08-20 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.58 pips < 0.7 pips threshold),1.165293,1.1652345000000002
+2025-08-20 23:00:00+00:00,2025-08-20 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.45 pips < 0.7 pips threshold),1.1652679999999997,1.1652225
+2025-08-20 23:15:00+00:00,2025-08-20 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.16527,1.1652425
+2025-08-20 23:15:00+00:00,2025-08-20 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.7 pips threshold),1.1652719999999999,1.16527
+2025-08-21 02:30:00+00:00,2025-08-21 02:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.1646910000000001,1.1646635
+2025-08-21 02:30:00+00:00,2025-08-21 02:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.56 pips < 0.7 pips threshold),1.164704,1.1646480000000001
+2025-08-21 02:45:00+00:00,2025-08-21 03:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.42 pips < 0.7 pips threshold),1.164687,1.1646445
+2025-08-21 02:45:00+00:00,2025-08-21 03:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.29 pips < 0.7 pips threshold),1.1646700000000003,1.164641
+2025-08-21 03:00:00+00:00,2025-08-21 03:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.7 pips threshold),1.1646830000000004,1.164656
+2025-08-21 03:00:00+00:00,2025-08-21 03:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.7 pips threshold),1.1646960000000004,1.1646709999999998
+2025-08-21 04:45:00+00:00,2025-08-21 05:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.7 pips threshold),1.164568,1.1645619999999997
+2025-08-21 05:15:00+00:00,2025-08-21 05:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.7 pips threshold),1.1645459999999999,1.164535
+2025-08-21 05:30:00+00:00,2025-08-21 05:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.7 pips threshold),1.1645709999999998,1.164538
+2025-08-21 05:30:00+00:00,2025-08-21 05:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.55 pips < 0.7 pips threshold),1.164596,1.1645410000000003
+2025-08-21 05:45:00+00:00,2025-08-21 06:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.54 pips < 0.7 pips threshold),1.164626,1.1645720000000002
+2025-08-21 05:45:00+00:00,2025-08-21 06:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.53 pips < 0.7 pips threshold),1.164656,1.1646030000000003
+2025-08-21 06:00:00+00:00,2025-08-21 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.36 pips < 0.7 pips threshold),1.164632,1.1645955000000003
+2025-08-21 06:00:00+00:00,2025-08-21 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.164608,1.1645880000000002
+2025-08-21 10:15:00+00:00,2025-08-21 10:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.7 pips threshold),1.1655020000000003,1.165512
+2025-08-21 10:30:00+00:00,2025-08-21 10:45:00+00:00,SELL,close_only,Closed existing long position,1.1654120000000001,1.1654914999999997
+2025-08-21 17:15:00+00:00,2025-08-21 17:30:00+00:00,BUY,close_only,Closed existing short position,1.1611460000000002,1.161054
+2025-08-21 18:45:00+00:00,2025-08-21 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.1611740000000002,1.1612025
+2025-08-21 21:15:00+00:00,2025-08-21 21:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.160756,1.1607330000000002
+2025-08-21 21:30:00+00:00,2025-08-21 21:45:00+00:00,BUY,close_only,Closed existing short position,1.160798,1.1607260000000001
+2025-08-22 01:45:00+00:00,2025-08-22 02:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.42 pips < 0.7 pips threshold),1.161253,1.1612955
+2025-08-22 06:00:00+00:00,2025-08-22 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.15 pips < 0.7 pips threshold),1.1588180000000001,1.1588030000000002
+2025-08-22 06:15:00+00:00,2025-08-22 06:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.47 pips < 0.7 pips threshold),1.1588569999999998,1.1588100000000003
+2025-08-22 06:15:00+00:00,2025-08-22 06:30:00+00:00,BUY,close_only,Closed existing short position,1.158896,1.1588170000000004
+2025-08-22 10:30:00+00:00,2025-08-22 10:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.7 pips threshold),1.1597000000000002,1.1597059999999997
+2025-08-22 10:45:00+00:00,2025-08-22 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.38 pips < 0.7 pips threshold),1.15968,1.1597184999999997
+2025-08-22 11:30:00+00:00,2025-08-22 11:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.7 pips threshold),1.159834,1.1598020000000004
+2025-08-22 11:45:00+00:00,2025-08-22 12:00:00+00:00,BUY,close_only,Closed existing short position,1.1599309999999998,1.1598330000000003
+2025-08-22 18:45:00+00:00,2025-08-22 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.1730059999999998,1.173026
+2025-08-24 21:15:00+00:00,2025-08-24 21:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.60 pips < 0.7 pips threshold),1.1721830000000002,1.1721230000000002
+2025-08-24 21:30:00+00:00,2025-08-24 21:45:00+00:00,BUY,close_only,Closed existing short position,1.1722240000000002,1.172113
+2025-08-24 22:30:00+00:00,2025-08-24 22:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.7 pips threshold),1.1720409999999999,1.1720525
+2025-08-25 04:15:00+00:00,2025-08-25 04:30:00+00:00,BUY,close_only,Closed existing short position,1.170207,1.1701165000000002
+2025-08-25 09:00:00+00:00,2025-08-25 09:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.56 pips < 0.7 pips threshold),1.170642,1.1706984999999999
+2025-08-25 13:15:00+00:00,2025-08-25 13:30:00+00:00,BUY,close_only,Closed existing short position,1.1696630000000001,1.1695889999999998
+2025-08-25 15:30:00+00:00,2025-08-25 15:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.60 pips < 0.7 pips threshold),1.169454,1.1695135
+2025-08-25 23:00:00+00:00,2025-08-25 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.7 pips threshold),1.161975,1.16194
+2025-08-25 23:15:00+00:00,2025-08-25 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.59 pips < 0.7 pips threshold),1.1618700000000002,1.1618115
+2025-08-26 04:00:00+00:00,2025-08-26 04:15:00+00:00,SELL,close_only,Closed existing long position,1.1633609999999999,1.1635039999999999
+2025-08-26 10:00:00+00:00,2025-08-26 10:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.162812,1.1627915
+2025-08-26 17:30:00+00:00,2025-08-26 17:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.7 pips threshold),1.165257,1.1652685
+2025-08-26 17:45:00+00:00,2025-08-26 18:00:00+00:00,SELL,close_only,Closed existing long position,1.165086,1.1652274999999999
+2025-08-26 22:15:00+00:00,2025-08-26 22:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.7 pips threshold),1.164276,1.1642685
+2025-08-27 00:15:00+00:00,2025-08-27 00:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.7 pips threshold),1.1642409999999999,1.1642485
+2025-08-27 00:30:00+00:00,2025-08-27 00:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.59 pips < 0.7 pips threshold),1.164139,1.1641975000000002
+2025-08-27 00:45:00+00:00,2025-08-27 01:00:00+00:00,SELL,close_only,Closed existing long position,1.164048,1.1641620000000004
+2025-08-27 13:15:00+00:00,2025-08-27 13:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.45 pips < 0.7 pips threshold),1.158858,1.1588135
+2025-08-27 13:30:00+00:00,2025-08-27 13:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.36 pips < 0.7 pips threshold),1.158855,1.1588195
+2025-08-28 03:45:00+00:00,2025-08-28 04:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.164816,1.1648319999999999
+2025-08-28 06:45:00+00:00,2025-08-28 07:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.7 pips threshold),1.1640160000000002,1.163992
+2025-08-28 07:00:00+00:00,2025-08-28 07:15:00+00:00,BUY,close_only,Closed existing short position,1.1640710000000003,1.1639975
+2025-08-28 08:00:00+00:00,2025-08-28 08:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.163984,1.1639999999999997
+2025-08-28 09:15:00+00:00,2025-08-28 09:30:00+00:00,BUY,close_only,Closed existing short position,1.164192,1.1640880000000002
+2025-08-28 13:30:00+00:00,2025-08-28 13:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.14 pips < 0.7 pips threshold),1.1668459999999998,1.16686
+2025-08-28 14:15:00+00:00,2025-08-28 14:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.7 pips threshold),1.167284,1.1672809999999998
+2025-08-28 14:30:00+00:00,2025-08-28 14:45:00+00:00,BUY,close_only,Closed existing short position,1.167416,1.1672829999999998
+2025-08-28 16:30:00+00:00,2025-08-28 16:45:00+00:00,BUY,close_only,Closed existing short position,1.1675650000000002,1.1674880000000003
+2025-08-28 18:30:00+00:00,2025-08-28 18:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.37 pips < 0.7 pips threshold),1.168746,1.168783
+2025-08-28 18:45:00+00:00,2025-08-28 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.69 pips < 0.7 pips threshold),1.1687480000000001,1.168817
+2025-08-29 00:00:00+00:00,2025-08-29 00:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.47 pips < 0.7 pips threshold),1.167863,1.1678160000000002
+2025-08-29 00:00:00+00:00,2025-08-29 00:15:00+00:00,BUY,close_only,Closed existing short position,1.167918,1.1678180000000002
+2025-08-29 00:45:00+00:00,2025-08-29 01:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.7 pips threshold),1.167712,1.167718
+2025-08-29 01:00:00+00:00,2025-08-29 01:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.47 pips < 0.7 pips threshold),1.167671,1.1677184999999999
+2025-08-29 03:45:00+00:00,2025-08-29 04:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.13 pips < 0.7 pips threshold),1.16617,1.1661569999999999
+2025-08-29 04:00:00+00:00,2025-08-29 04:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.7 pips threshold),1.166136,1.1661249999999999
+2025-08-29 04:00:00+00:00,2025-08-29 04:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.09 pips < 0.7 pips threshold),1.166102,1.1660929999999996
+2025-08-29 04:15:00+00:00,2025-08-29 04:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.05 pips < 0.7 pips threshold),1.16611,1.166105
+2025-08-29 04:15:00+00:00,2025-08-29 04:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.7 pips threshold),1.1661179999999998,1.1661169999999998
+2025-08-29 04:30:00+00:00,2025-08-29 04:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.166127,1.1661225000000002
+2025-08-29 04:30:00+00:00,2025-08-29 04:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.7 pips threshold),1.166136,1.166128
+2025-08-29 04:45:00+00:00,2025-08-29 05:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.1661700000000002,1.16615
+2025-08-29 04:45:00+00:00,2025-08-29 05:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.7 pips threshold),1.166204,1.166172
+2025-08-29 05:00:00+00:00,2025-08-29 05:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.7 pips threshold),1.166207,1.1661810000000001
+2025-08-29 05:00:00+00:00,2025-08-29 05:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.16621,1.1661899999999998
+2025-08-29 05:15:00+00:00,2025-08-29 05:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.61 pips < 0.7 pips threshold),1.166257,1.1661964999999999
+2025-08-29 05:15:00+00:00,2025-08-29 05:30:00+00:00,BUY,close_only,Closed existing short position,1.1663039999999998,1.1662029999999999
+2025-08-29 09:45:00+00:00,2025-08-29 10:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.7 pips threshold),1.1675460000000002,1.167558
+2025-08-29 13:45:00+00:00,2025-08-29 14:00:00+00:00,BUY,close_only,Closed existing short position,1.1661939999999997,1.166108
+2025-08-29 17:45:00+00:00,2025-08-29 18:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.169947,1.1699625000000002
+2025-08-29 17:45:00+00:00,2025-08-29 18:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.45 pips < 0.7 pips threshold),1.1699040000000003,1.1699490000000001
+2025-08-29 19:45:00+00:00,2025-08-29 20:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.169691,1.1696684999999998
+2025-08-29 19:45:00+00:00,2025-08-29 20:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.53 pips < 0.7 pips threshold),1.1697199999999999,1.169667
+2025-08-29 20:00:00+00:00,2025-08-29 20:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.55 pips < 0.7 pips threshold),1.169706,1.169651
+2025-08-29 20:00:00+00:00,2025-08-29 20:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.57 pips < 0.7 pips threshold),1.169692,1.169635
+2025-08-29 20:15:00+00:00,2025-08-29 20:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.70 pips < 0.7 pips threshold),1.1697020000000002,1.1696324999999999
+2025-08-29 20:15:00+00:00,2025-08-29 20:30:00+00:00,BUY,close_only,Closed existing short position,1.1697119999999999,1.1696299999999997
+2025-08-29 20:45:00+00:00,2025-08-29 21:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.56 pips < 0.7 pips threshold),1.1695,1.1695564999999999
+2025-09-01 00:45:00+00:00,2025-09-01 01:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.48 pips < 0.7 pips threshold),1.169151,1.1691025000000002
+2025-09-01 01:00:00+00:00,2025-09-01 01:15:00+00:00,BUY,close_only,Closed existing short position,1.169178,1.1690865000000001
+2025-09-01 11:15:00+00:00,2025-09-01 11:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.61 pips < 0.7 pips threshold),1.172336,1.172397
+2025-09-01 11:30:00+00:00,2025-09-01 11:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.51 pips < 0.7 pips threshold),1.17229,1.1723415
+2025-09-01 19:00:00+00:00,2025-09-01 19:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.7 pips threshold),1.1705159999999997,1.1705045
+2025-09-01 19:15:00+00:00,2025-09-01 19:30:00+00:00,BUY,close_only,Closed existing short position,1.1705739999999998,1.1705035000000001
+2025-09-02 00:30:00+00:00,2025-09-02 00:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.7 pips threshold),1.171115,1.1711390000000002
+2025-09-02 00:45:00+00:00,2025-09-02 01:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.65 pips < 0.7 pips threshold),1.1710369999999999,1.171102
+2025-09-02 06:45:00+00:00,2025-09-02 07:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.47 pips < 0.7 pips threshold),1.1696339999999998,1.1695865
+2025-09-02 07:00:00+00:00,2025-09-02 07:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.7 pips threshold),1.1695399999999998,1.169534
+2025-09-02 13:30:00+00:00,2025-09-02 13:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.7 pips threshold),1.163451,1.163439
+2025-09-02 17:30:00+00:00,2025-09-02 17:45:00+00:00,SELL,close_only,Closed existing long position,1.164912,1.165101
+2025-09-02 21:45:00+00:00,2025-09-02 22:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.7 pips threshold),1.164049,1.1640145
+2025-09-02 23:45:00+00:00,2025-09-03 00:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.48 pips < 0.7 pips threshold),1.1637939999999998,1.163842
+2025-09-03 00:00:00+00:00,2025-09-03 00:15:00+00:00,SELL,close_only,Closed existing long position,1.1636780000000002,1.163821
+2025-09-03 06:00:00+00:00,2025-09-03 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.1629589999999999,1.1629389999999997
+2025-09-03 12:15:00+00:00,2025-09-03 12:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.55 pips < 0.7 pips threshold),1.164787,1.1648415
+2025-09-03 18:30:00+00:00,2025-09-03 18:45:00+00:00,SELL,close_only,Closed existing long position,1.166853,1.1669645
+2025-09-03 22:30:00+00:00,2025-09-03 22:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.1660529999999998,1.166049
+2025-09-03 22:30:00+00:00,2025-09-03 22:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.7 pips threshold),1.166076,1.166051
+2025-09-03 22:45:00+00:00,2025-09-03 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.18 pips < 0.7 pips threshold),1.16608,1.1660619999999997
+2025-09-03 22:45:00+00:00,2025-09-03 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.13 pips < 0.7 pips threshold),1.1660840000000001,1.1660709999999996
+2025-09-03 23:00:00+00:00,2025-09-03 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.166087,1.1660709999999999
+2025-09-03 23:00:00+00:00,2025-09-03 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.7 pips threshold),1.16609,1.1660825
+2025-09-03 23:15:00+00:00,2025-09-03 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.7 pips threshold),1.1660879999999998,1.1660865
+2025-09-03 23:15:00+00:00,2025-09-03 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.7 pips threshold),1.166086,1.1660739999999998
+2025-09-03 23:30:00+00:00,2025-09-03 23:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.166079,1.166063
+2025-09-03 23:30:00+00:00,2025-09-03 23:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.21 pips < 0.7 pips threshold),1.1660720000000002,1.1660510000000002
+2025-09-03 23:45:00+00:00,2025-09-04 00:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.1660619999999997,1.1660575000000002
+2025-09-04 06:00:00+00:00,2025-09-04 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.36 pips < 0.7 pips threshold),1.165348,1.1653115
+2025-09-04 07:15:00+00:00,2025-09-04 07:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.14 pips < 0.7 pips threshold),1.16539,1.165404
+2025-09-04 07:30:00+00:00,2025-09-04 07:45:00+00:00,SELL,close_only,Closed existing long position,1.1653449999999999,1.1654195
+2025-09-04 08:45:00+00:00,2025-09-04 09:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.16534,1.16532
+2025-09-04 09:00:00+00:00,2025-09-04 09:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.7 pips threshold),1.1653410000000002,1.1653059999999997
+2025-09-04 09:00:00+00:00,2025-09-04 09:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.50 pips < 0.7 pips threshold),1.165342,1.1652919999999996
+2025-09-04 09:15:00+00:00,2025-09-04 09:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.7 pips threshold),1.165244,1.1652429999999998
+2025-09-04 10:45:00+00:00,2025-09-04 11:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.67 pips < 0.7 pips threshold),1.165194,1.1651274999999996
+2025-09-04 11:30:00+00:00,2025-09-04 11:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.7 pips threshold),1.164818,1.164825
+2025-09-04 11:45:00+00:00,2025-09-04 12:00:00+00:00,SELL,close_only,Closed existing long position,1.164691,1.1648290000000001
+2025-09-04 14:45:00+00:00,2025-09-04 15:00:00+00:00,SELL,close_only,Closed existing long position,1.164214,1.16432
+2025-09-04 16:15:00+00:00,2025-09-04 16:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.7 pips threshold),1.1641370000000002,1.1641045
+2025-09-04 17:00:00+00:00,2025-09-04 17:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.45 pips < 0.7 pips threshold),1.1639129999999998,1.1639575
+2025-09-04 17:00:00+00:00,2025-09-04 17:15:00+00:00,SELL,close_only,Closed existing long position,1.1638099999999998,1.1639590000000002
+2025-09-04 18:15:00+00:00,2025-09-04 18:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.7 pips threshold),1.1639379999999997,1.1639255
+2025-09-04 22:00:00+00:00,2025-09-04 22:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.165,1.1650199999999997
+2025-09-04 22:00:00+00:00,2025-09-04 22:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.52 pips < 0.7 pips threshold),1.164984,1.1650360000000002
+2025-09-04 22:15:00+00:00,2025-09-04 22:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.40 pips < 0.7 pips threshold),1.1649990000000001,1.1650390000000002
+2025-09-04 22:15:00+00:00,2025-09-04 22:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.165014,1.1650420000000001
+2025-09-04 22:30:00+00:00,2025-09-04 22:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.165007,1.165035
+2025-09-04 22:30:00+00:00,2025-09-04 22:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.1649999999999998,1.1650280000000002
+2025-09-04 22:45:00+00:00,2025-09-04 23:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.164998,1.165026
+2025-09-04 22:45:00+00:00,2025-09-04 23:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.1649959999999997,1.1650239999999998
+2025-09-04 23:00:00+00:00,2025-09-04 23:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.7 pips threshold),1.1649990000000001,1.1650164999999997
+2025-09-04 23:00:00+00:00,2025-09-04 23:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.7 pips threshold),1.165002,1.165009
+2025-09-05 04:00:00+00:00,2025-09-05 04:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.7 pips threshold),1.167112,1.1671230000000001
+2025-09-05 04:15:00+00:00,2025-09-05 04:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.7 pips threshold),1.167114,1.1671145000000003
+2025-09-05 04:30:00+00:00,2025-09-05 04:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.14 pips < 0.7 pips threshold),1.167061,1.1670750000000003
+2025-09-05 04:30:00+00:00,2025-09-05 04:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.38 pips < 0.7 pips threshold),1.167006,1.1670440000000002
+2025-09-05 04:45:00+00:00,2025-09-05 05:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.58 pips < 0.7 pips threshold),1.16696,1.167018
+2025-09-05 04:45:00+00:00,2025-09-05 05:00:00+00:00,SELL,close_only,Closed existing long position,1.166914,1.166992
+2025-09-05 05:45:00+00:00,2025-09-05 06:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.39 pips < 0.7 pips threshold),1.167084,1.1670450000000003
+2025-09-05 07:00:00+00:00,2025-09-05 07:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.13 pips < 0.7 pips threshold),1.167058,1.1670710000000004
+2025-09-05 07:15:00+00:00,2025-09-05 07:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.167075,1.1670945000000004
+2025-09-05 07:15:00+00:00,2025-09-05 07:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.7 pips threshold),1.167092,1.1671179999999999
+2025-09-05 07:30:00+00:00,2025-09-05 07:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.7 pips threshold),1.1671170000000002,1.1671425
+2025-09-05 07:30:00+00:00,2025-09-05 07:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.7 pips threshold),1.1671420000000003,1.1671669999999998
+2025-09-05 11:30:00+00:00,2025-09-05 11:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.7 pips threshold),1.168862,1.168889
+2025-09-05 11:45:00+00:00,2025-09-05 12:00:00+00:00,SELL,close_only,Closed existing long position,1.168786,1.1688760000000002
+2025-09-05 17:00:00+00:00,2025-09-05 17:15:00+00:00,SELL,close_only,Closed existing long position,1.174436,1.1746210000000001
+2025-09-05 20:30:00+00:00,2025-09-05 20:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.7 pips threshold),1.1718079999999997,1.1718069999999996
+2025-09-05 20:45:00+00:00,2025-09-05 21:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.7 pips threshold),1.1718159999999997,1.1717919999999997
+2025-09-05 20:45:00+00:00,2025-09-05 21:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.47 pips < 0.7 pips threshold),1.171824,1.1717769999999998
+2025-09-07 21:15:00+00:00,2025-09-07 21:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.7 pips threshold),1.171821,1.1717874999999998
+2025-09-07 21:30:00+00:00,2025-09-07 21:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.1718240000000002,1.1718009999999999
+2025-09-07 21:45:00+00:00,2025-09-07 22:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.1718240000000002,1.171808
+2025-09-08 02:30:00+00:00,2025-09-08 02:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.57 pips < 0.7 pips threshold),1.171136,1.171079
+2025-09-08 10:45:00+00:00,2025-09-08 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.69 pips < 0.7 pips threshold),1.172577,1.1726459999999999
+2025-09-08 11:00:00+00:00,2025-09-08 11:15:00+00:00,SELL,close_only,Closed existing long position,1.172589,1.1726865
+2025-09-08 12:30:00+00:00,2025-09-08 12:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.17285,1.1728265
+2025-09-08 17:15:00+00:00,2025-09-08 17:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.174488,1.1745155000000003
+2025-09-08 17:30:00+00:00,2025-09-08 17:45:00+00:00,SELL,close_only,Closed existing long position,1.174428,1.174555
+2025-09-09 04:00:00+00:00,2025-09-09 04:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.22 pips < 0.7 pips threshold),1.1769759999999998,1.1769975
+2025-09-09 04:15:00+00:00,2025-09-09 04:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.67 pips < 0.7 pips threshold),1.1769179999999997,1.1769849999999997
+2025-09-09 04:30:00+00:00,2025-09-09 04:45:00+00:00,SELL,close_only,Closed existing long position,1.176872,1.176994
+2025-09-09 05:45:00+00:00,2025-09-09 06:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.7 pips threshold),1.177158,1.1771275
+2025-09-09 07:30:00+00:00,2025-09-09 07:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.29 pips < 0.7 pips threshold),1.176825,1.1768535000000002
+2025-09-09 10:45:00+00:00,2025-09-09 11:00:00+00:00,BUY,close_only,Closed existing short position,1.17626,1.1761714999999997
+2025-09-09 22:30:00+00:00,2025-09-09 22:45:00+00:00,BUY,close_only,Closed existing short position,1.1709140000000002,1.1708399999999997
+2025-09-10 00:00:00+00:00,2025-09-10 00:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.7 pips threshold),1.170674,1.1706905000000003
+2025-09-10 03:30:00+00:00,2025-09-10 03:45:00+00:00,BUY,close_only,Closed existing short position,1.170372,1.1702584999999999
+2025-09-10 07:15:00+00:00,2025-09-10 07:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.7 pips threshold),1.1709279999999997,1.1709300000000002
+2025-09-10 11:00:00+00:00,2025-09-10 11:15:00+00:00,BUY,close_only,Closed existing short position,1.1704520000000003,1.1703610000000002
+2025-09-10 12:00:00+00:00,2025-09-10 12:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.7 pips threshold),1.170224,1.1702340000000002
+2025-09-10 17:15:00+00:00,2025-09-10 17:30:00+00:00,SELL,close_only,Closed existing long position,1.1712630000000002,1.1714725
+2025-09-10 22:15:00+00:00,2025-09-10 22:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.54 pips < 0.7 pips threshold),1.16997,1.169916
+2025-09-11 00:15:00+00:00,2025-09-11 00:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.1701679999999999,1.1701960000000002
+2025-09-11 00:30:00+00:00,2025-09-11 00:45:00+00:00,SELL,close_only,Closed existing long position,1.1701,1.170182
+2025-09-11 02:15:00+00:00,2025-09-11 02:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.7 pips threshold),1.1698499999999998,1.169825
+2025-09-11 02:15:00+00:00,2025-09-11 02:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.51 pips < 0.7 pips threshold),1.16984,1.1697890000000002
+2025-09-11 02:30:00+00:00,2025-09-11 02:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.7 pips threshold),1.169803,1.1697725
+2025-09-11 02:30:00+00:00,2025-09-11 02:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.7 pips threshold),1.1697659999999999,1.169756
+2025-09-11 04:00:00+00:00,2025-09-11 04:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.1697399999999998,1.1697359999999999
+2025-09-11 04:00:00+00:00,2025-09-11 04:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.169738,1.169718
+2025-09-11 04:15:00+00:00,2025-09-11 04:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.05 pips < 0.7 pips threshold),1.169719,1.1697135
+2025-09-11 07:45:00+00:00,2025-09-11 08:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.7 pips threshold),1.1691999999999996,1.1691730000000002
+2025-09-11 08:00:00+00:00,2025-09-11 08:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.49 pips < 0.7 pips threshold),1.169192,1.1691430000000003
+2025-09-11 09:00:00+00:00,2025-09-11 09:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.7 pips threshold),1.1691630000000002,1.169173
+2025-09-11 09:00:00+00:00,2025-09-11 09:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.41 pips < 0.7 pips threshold),1.1691180000000003,1.169159
+2025-09-11 09:15:00+00:00,2025-09-11 09:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.46 pips < 0.7 pips threshold),1.1691000000000003,1.169146
+2025-09-11 09:15:00+00:00,2025-09-11 09:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.51 pips < 0.7 pips threshold),1.1690820000000002,1.169133
+2025-09-11 09:30:00+00:00,2025-09-11 09:45:00+00:00,SELL,close_only,Closed existing long position,1.1689700000000003,1.1690745000000002
+2025-09-11 12:30:00+00:00,2025-09-11 12:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.00 pips < 0.7 pips threshold),1.1685879999999997,1.1685875000000001
+2025-09-11 15:45:00+00:00,2025-09-11 16:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.7 pips threshold),1.173388,1.1734234999999997
+2025-09-11 15:45:00+00:00,2025-09-11 16:00:00+00:00,SELL,close_only,Closed existing long position,1.173362,1.173456
+2025-09-11 17:15:00+00:00,2025-09-11 17:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.40 pips < 0.7 pips threshold),1.173498,1.173538
+2025-09-11 17:30:00+00:00,2025-09-11 17:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.17349,1.1735179999999998
+2025-09-11 17:30:00+00:00,2025-09-11 17:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.173482,1.173498
+2025-09-11 17:45:00+00:00,2025-09-11 18:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.1734509999999998,1.1734674999999997
+2025-09-11 17:45:00+00:00,2025-09-11 18:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.7 pips threshold),1.1734200000000001,1.1734369999999996
+2025-09-11 18:00:00+00:00,2025-09-11 18:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.45 pips < 0.7 pips threshold),1.1733870000000002,1.1734319999999996
+2025-09-11 18:00:00+00:00,2025-09-11 18:15:00+00:00,SELL,close_only,Closed existing long position,1.1733540000000002,1.1734269999999998
+2025-09-11 19:00:00+00:00,2025-09-11 19:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.7 pips threshold),1.173434,1.1734269999999998
+2025-09-11 19:15:00+00:00,2025-09-11 19:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.39 pips < 0.7 pips threshold),1.173465,1.1734259999999996
+2025-09-11 21:30:00+00:00,2025-09-11 21:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.173647,1.173663
+2025-09-11 21:30:00+00:00,2025-09-11 21:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.53 pips < 0.7 pips threshold),1.1736080000000002,1.173661
+2025-09-11 21:45:00+00:00,2025-09-11 22:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.66 pips < 0.7 pips threshold),1.173586,1.1736525
+2025-09-11 21:45:00+00:00,2025-09-11 22:00:00+00:00,SELL,close_only,Closed existing long position,1.173564,1.1736440000000001
+2025-09-11 22:45:00+00:00,2025-09-11 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.22 pips < 0.7 pips threshold),1.1736909999999998,1.1736690000000003
+2025-09-11 22:45:00+00:00,2025-09-11 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.60 pips < 0.7 pips threshold),1.173728,1.173668
+2025-09-12 00:00:00+00:00,2025-09-12 00:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.38 pips < 0.7 pips threshold),1.1736140000000002,1.1736524999999998
+2025-09-12 00:00:00+00:00,2025-09-12 00:15:00+00:00,SELL,close_only,Closed existing long position,1.1735280000000003,1.1736280000000001
+2025-09-12 05:15:00+00:00,2025-09-12 05:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.15 pips < 0.7 pips threshold),1.172514,1.1724985
+2025-09-12 05:15:00+00:00,2025-09-12 05:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.64 pips < 0.7 pips threshold),1.1725660000000002,1.1725020000000002
+2025-09-12 08:30:00+00:00,2025-09-12 08:45:00+00:00,SELL,close_only,Closed existing long position,1.173272,1.173465
+2025-09-12 10:30:00+00:00,2025-09-12 10:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.55 pips < 0.7 pips threshold),1.172422,1.1723674999999998
+2025-09-12 12:00:00+00:00,2025-09-12 12:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.46 pips < 0.7 pips threshold),1.1726089999999998,1.1726545000000004
+2025-09-12 12:00:00+00:00,2025-09-12 12:15:00+00:00,SELL,close_only,Closed existing long position,1.1724299999999999,1.1726530000000002
+2025-09-12 14:15:00+00:00,2025-09-12 14:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.7 pips threshold),1.1713160000000002,1.1712845
+2025-09-12 16:00:00+00:00,2025-09-12 16:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.55 pips < 0.7 pips threshold),1.1718020000000002,1.1718570000000001
+2025-09-12 16:15:00+00:00,2025-09-12 16:30:00+00:00,SELL,close_only,Closed existing long position,1.1717730000000002,1.1718955000000002
+2025-09-12 20:00:00+00:00,2025-09-12 20:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.55 pips < 0.7 pips threshold),1.1735760000000002,1.1736309999999999
+2025-09-12 20:15:00+00:00,2025-09-12 20:30:00+00:00,SELL,close_only,Closed existing long position,1.1735200000000001,1.173632
+2025-09-15 03:15:00+00:00,2025-09-15 03:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.40 pips < 0.7 pips threshold),1.1727340000000002,1.1726945
+2025-09-15 06:30:00+00:00,2025-09-15 06:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.7 pips threshold),1.1728450000000001,1.1728705
+2025-09-15 06:45:00+00:00,2025-09-15 07:00:00+00:00,SELL,close_only,Closed existing long position,1.1727539999999999,1.1728575
+2025-09-15 08:30:00+00:00,2025-09-15 08:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.7 pips threshold),1.173095,1.1730925000000003
+2025-09-15 15:15:00+00:00,2025-09-15 15:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.62 pips < 0.7 pips threshold),1.175952,1.1760140000000001
+2025-09-15 15:30:00+00:00,2025-09-15 15:45:00+00:00,SELL,close_only,Closed existing long position,1.175943,1.1760490000000001
+2025-09-15 17:00:00+00:00,2025-09-15 17:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.44 pips < 0.7 pips threshold),1.176214,1.1761700000000002
+2025-09-15 21:45:00+00:00,2025-09-15 22:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.70 pips < 0.7 pips threshold),1.176542,1.1766115000000004
+2025-09-15 22:00:00+00:00,2025-09-15 22:15:00+00:00,SELL,close_only,Closed existing long position,1.1764649999999999,1.1766365
+2025-09-16 02:15:00+00:00,2025-09-16 02:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.176434,1.1764305
+2025-09-16 02:30:00+00:00,2025-09-16 02:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.63 pips < 0.7 pips threshold),1.1765329999999998,1.17647
+2025-09-16 20:30:00+00:00,2025-09-16 20:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.7 pips threshold),1.186419,1.1864505
+2025-09-16 22:45:00+00:00,2025-09-16 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.186524,1.1865014999999999
+2025-09-16 23:00:00+00:00,2025-09-16 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.47 pips < 0.7 pips threshold),1.186568,1.1865215
+2025-09-16 23:15:00+00:00,2025-09-16 23:30:00+00:00,BUY,close_only,Closed existing short position,1.186655,1.186537
+2025-09-17 06:30:00+00:00,2025-09-17 06:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.09 pips < 0.7 pips threshold),1.185496,1.1854874999999998
+2025-09-17 06:45:00+00:00,2025-09-17 07:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.7 pips threshold),1.1855220000000002,1.1854869999999997
+2025-09-17 13:45:00+00:00,2025-09-17 14:00:00+00:00,BUY,close_only,Closed existing short position,1.184305,1.184203
+2025-09-17 17:45:00+00:00,2025-09-17 18:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.09 pips < 0.7 pips threshold),1.1850120000000002,1.1850209999999999
+2025-09-17 22:45:00+00:00,2025-09-17 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.58 pips < 0.7 pips threshold),1.1818380000000002,1.1817799999999998
+2025-09-17 23:00:00+00:00,2025-09-17 23:15:00+00:00,BUY,close_only,Closed existing short position,1.1819190000000002,1.1817344999999997
+2025-09-18 00:45:00+00:00,2025-09-18 01:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.19 pips < 0.7 pips threshold),1.182209,1.1822279999999998
+2025-09-18 03:00:00+00:00,2025-09-18 03:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.31 pips < 0.7 pips threshold),1.1817970000000002,1.1817665
+2025-09-18 03:00:00+00:00,2025-09-18 03:15:00+00:00,BUY,close_only,Closed existing short position,1.181848,1.181767
+2025-09-18 03:45:00+00:00,2025-09-18 04:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.7 pips threshold),1.1816099999999998,1.181617
+2025-09-18 07:00:00+00:00,2025-09-18 07:15:00+00:00,BUY,close_only,Closed existing short position,1.1795440000000001,1.179442
+2025-09-18 10:45:00+00:00,2025-09-18 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.41 pips < 0.7 pips threshold),1.183576,1.1836169999999995
+2025-09-18 18:45:00+00:00,2025-09-18 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.7 pips threshold),1.1786780000000001,1.1787129999999997
+2025-09-18 19:00:00+00:00,2025-09-18 19:15:00+00:00,SELL,close_only,Closed existing long position,1.1786919999999999,1.1787714999999996
+2025-09-18 21:30:00+00:00,2025-09-18 21:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.1786439999999998,1.178628
+2025-09-18 21:45:00+00:00,2025-09-18 22:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.52 pips < 0.7 pips threshold),1.178673,1.1786215
+2025-09-18 23:15:00+00:00,2025-09-18 23:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.09 pips < 0.7 pips threshold),1.1787160000000003,1.1787249999999998
+2025-09-18 23:15:00+00:00,2025-09-18 23:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.21 pips < 0.7 pips threshold),1.1787240000000003,1.178745
+2025-09-18 23:30:00+00:00,2025-09-18 23:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.178751,1.178755
+2025-09-19 00:00:00+00:00,2025-09-19 00:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.48 pips < 0.7 pips threshold),1.178626,1.178674
+2025-09-19 00:15:00+00:00,2025-09-19 00:30:00+00:00,SELL,close_only,Closed existing long position,1.1785409999999998,1.178628
+2025-09-19 03:15:00+00:00,2025-09-19 03:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.70 pips < 0.7 pips threshold),1.1780399999999998,1.1779704999999996
+2025-09-19 04:30:00+00:00,2025-09-19 04:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.14 pips < 0.7 pips threshold),1.1781840000000003,1.1781979999999999
+2025-09-19 04:45:00+00:00,2025-09-19 05:00:00+00:00,SELL,close_only,Closed existing long position,1.1780490000000001,1.1781899999999998
+2025-09-19 09:45:00+00:00,2025-09-19 10:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.56 pips < 0.7 pips threshold),1.176282,1.1762260000000002
+2025-09-19 10:45:00+00:00,2025-09-19 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.1761000000000004,1.1761040000000003
+2025-09-19 10:45:00+00:00,2025-09-19 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.56 pips < 0.7 pips threshold),1.1760740000000003,1.1761300000000001
+2025-09-19 11:00:00+00:00,2025-09-19 11:15:00+00:00,SELL,close_only,Closed existing long position,1.1760189999999997,1.1761265
+2025-09-19 15:30:00+00:00,2025-09-19 15:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.51 pips < 0.7 pips threshold),1.1754609999999999,1.1755119999999997
+2025-09-19 15:30:00+00:00,2025-09-19 15:45:00+00:00,SELL,close_only,Closed existing long position,1.17531,1.1754849999999997
+2025-09-19 18:45:00+00:00,2025-09-19 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.39 pips < 0.7 pips threshold),1.174924,1.1749635
+2025-09-19 18:45:00+00:00,2025-09-19 19:00:00+00:00,SELL,close_only,Closed existing long position,1.1749,1.1749939999999999
+2025-09-22 06:00:00+00:00,2025-09-22 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.7 pips threshold),1.173258,1.1732515000000003
+2025-09-22 14:30:00+00:00,2025-09-22 14:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.31 pips < 0.7 pips threshold),1.177623,1.1776535000000001
+2025-09-22 14:45:00+00:00,2025-09-22 15:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.46 pips < 0.7 pips threshold),1.1775769999999999,1.1776225
+2025-09-22 15:00:00+00:00,2025-09-22 15:15:00+00:00,SELL,close_only,Closed existing long position,1.177386,1.177546
+2025-09-23 04:15:00+00:00,2025-09-23 04:30:00+00:00,SELL,close_only,Closed existing long position,1.180344,1.1804675
+2025-09-23 09:30:00+00:00,2025-09-23 09:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.7 pips threshold),1.179742,1.1797095
+2025-09-23 12:00:00+00:00,2025-09-23 12:15:00+00:00,SELL,close_only,Closed existing long position,1.179569,1.1796555
+2025-09-23 14:30:00+00:00,2025-09-23 14:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.7 pips threshold),1.179621,1.1795950000000004
+2025-09-24 00:15:00+00:00,2025-09-24 00:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.38 pips < 0.7 pips threshold),1.1813749999999998,1.1814129999999998
+2025-09-24 00:30:00+00:00,2025-09-24 00:45:00+00:00,SELL,close_only,Closed existing long position,1.181283,1.1813905000000002
+2025-09-24 06:00:00+00:00,2025-09-24 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.7 pips threshold),1.1799509999999998,1.1799469999999999
+2025-09-24 17:45:00+00:00,2025-09-24 18:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.7 pips threshold),1.1738519999999997,1.1738455
+2025-09-24 21:15:00+00:00,2025-09-24 21:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.14 pips < 0.7 pips threshold),1.1737140000000001,1.1736999999999997
+2025-09-24 21:15:00+00:00,2025-09-24 21:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.7 pips threshold),1.173739,1.1737039999999999
+2025-09-24 21:30:00+00:00,2025-09-24 21:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.66 pips < 0.7 pips threshold),1.173787,1.173721
+2025-09-25 00:15:00+00:00,2025-09-25 00:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.7 pips threshold),1.1743320000000002,1.1743379999999999
+2025-09-25 00:30:00+00:00,2025-09-25 00:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.29 pips < 0.7 pips threshold),1.1743160000000001,1.174345
+2025-09-25 00:30:00+00:00,2025-09-25 00:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.52 pips < 0.7 pips threshold),1.1743000000000001,1.1743519999999996
+2025-09-25 00:45:00+00:00,2025-09-25 01:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.51 pips < 0.7 pips threshold),1.174326,1.1743774999999996
+2025-09-25 00:45:00+00:00,2025-09-25 01:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.51 pips < 0.7 pips threshold),1.174352,1.1744029999999999
+2025-09-25 01:00:00+00:00,2025-09-25 01:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.31 pips < 0.7 pips threshold),1.1743789999999998,1.1744094999999999
+2025-09-25 01:00:00+00:00,2025-09-25 01:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.7 pips threshold),1.1744059999999998,1.1744160000000001
+2025-09-25 05:00:00+00:00,2025-09-25 05:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.7 pips threshold),1.17502,1.175037
+2025-09-25 05:15:00+00:00,2025-09-25 05:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.43 pips < 0.7 pips threshold),1.1749649999999998,1.1750075
+2025-09-25 05:15:00+00:00,2025-09-25 05:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.68 pips < 0.7 pips threshold),1.1749100000000001,1.1749779999999999
+2025-09-25 05:30:00+00:00,2025-09-25 05:45:00+00:00,SELL,close_only,Closed existing long position,1.174824,1.1749515000000001
+2025-09-25 07:15:00+00:00,2025-09-25 07:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.36 pips < 0.7 pips threshold),1.174531,1.1744945
+2025-09-25 07:45:00+00:00,2025-09-25 08:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.67 pips < 0.7 pips threshold),1.174282,1.174349
+2025-09-25 07:45:00+00:00,2025-09-25 08:00:00+00:00,SELL,close_only,Closed existing long position,1.17414,1.174296
+2025-09-25 09:15:00+00:00,2025-09-25 09:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.7 pips threshold),1.1741030000000001,1.174087
+2025-09-25 09:15:00+00:00,2025-09-25 09:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.67 pips < 0.7 pips threshold),1.174136,1.174069
+2025-09-25 11:15:00+00:00,2025-09-25 11:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.7 pips threshold),1.1745899999999998,1.174597
+2025-09-25 11:30:00+00:00,2025-09-25 11:45:00+00:00,SELL,close_only,Closed existing long position,1.1744609999999998,1.174535
+2025-09-25 17:00:00+00:00,2025-09-25 17:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.15 pips < 0.7 pips threshold),1.1675079999999998,1.167493
+2025-09-25 19:30:00+00:00,2025-09-25 19:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.54 pips < 0.7 pips threshold),1.1656090000000003,1.1655555
+2025-09-25 22:15:00+00:00,2025-09-25 22:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.7 pips threshold),1.166432,1.1664349999999999
+2025-09-25 23:45:00+00:00,2025-09-26 00:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.7 pips threshold),1.166435,1.1664654999999997
+2025-09-25 23:45:00+00:00,2025-09-26 00:00:00+00:00,SELL,close_only,Closed existing long position,1.1663720000000002,1.166466
+2025-09-26 00:45:00+00:00,2025-09-26 01:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.22 pips < 0.7 pips threshold),1.166542,1.1665200000000002
+2025-09-26 06:30:00+00:00,2025-09-26 06:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.05 pips < 0.7 pips threshold),1.167872,1.167877
+2025-09-26 06:30:00+00:00,2025-09-26 06:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.51 pips < 0.7 pips threshold),1.1678039999999998,1.167855
+2025-09-26 06:45:00+00:00,2025-09-26 07:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.56 pips < 0.7 pips threshold),1.1678149999999998,1.1678705
+2025-09-26 06:45:00+00:00,2025-09-26 07:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.60 pips < 0.7 pips threshold),1.167826,1.1678859999999998
+2025-09-26 07:00:00+00:00,2025-09-26 07:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.52 pips < 0.7 pips threshold),1.167823,1.1678754999999998
+2025-09-26 07:00:00+00:00,2025-09-26 07:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.45 pips < 0.7 pips threshold),1.1678200000000003,1.1678650000000002
+2025-09-26 07:15:00+00:00,2025-09-26 07:30:00+00:00,SELL,close_only,Closed existing long position,1.167769,1.1678465
+2025-09-26 08:30:00+00:00,2025-09-26 08:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.40 pips < 0.7 pips threshold),1.167798,1.167758
+2025-09-26 10:15:00+00:00,2025-09-26 10:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.7 pips threshold),1.167927,1.1679500000000003
+2025-09-26 10:15:00+00:00,2025-09-26 10:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.63 pips < 0.7 pips threshold),1.167882,1.1679450000000002
+2025-09-26 10:30:00+00:00,2025-09-26 10:45:00+00:00,SELL,close_only,Closed existing long position,1.1677470000000003,1.1678965000000001
+2025-09-26 16:00:00+00:00,2025-09-26 16:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.13 pips < 0.7 pips threshold),1.169115,1.169128
+2025-09-26 16:00:00+00:00,2025-09-26 16:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.66 pips < 0.7 pips threshold),1.16908,1.169146
+2025-09-26 16:15:00+00:00,2025-09-26 16:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.50 pips < 0.7 pips threshold),1.1691470000000002,1.1691975
+2025-09-26 16:15:00+00:00,2025-09-26 16:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.7 pips threshold),1.1692140000000002,1.1692489999999998
+2025-09-26 16:30:00+00:00,2025-09-26 16:45:00+00:00,SELL,close_only,Closed existing long position,1.169157,1.1692409999999998
+2025-09-26 17:00:00+00:00,2025-09-26 17:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.44 pips < 0.7 pips threshold),1.1692380000000002,1.1691939999999998
+2025-09-28 21:45:00+00:00,2025-09-28 22:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.7 pips threshold),1.170281,1.170283
+2025-09-28 22:00:00+00:00,2025-09-28 22:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.7 pips threshold),1.170279,1.1702865
+2025-09-28 22:15:00+00:00,2025-09-28 22:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.7 pips threshold),1.1702949999999999,1.1702964999999999
+2025-09-29 06:45:00+00:00,2025-09-29 07:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.13 pips < 0.7 pips threshold),1.1725819999999998,1.1725945000000002
+2025-09-29 07:00:00+00:00,2025-09-29 07:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.21 pips < 0.7 pips threshold),1.172604,1.1726250000000003
+2025-09-29 07:15:00+00:00,2025-09-29 07:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.19 pips < 0.7 pips threshold),1.1726439999999998,1.1726625000000002
+2025-09-29 07:30:00+00:00,2025-09-29 07:45:00+00:00,SELL,close_only,Closed existing long position,1.1725889999999999,1.1726600000000003
+2025-09-29 20:15:00+00:00,2025-09-29 20:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.45 pips < 0.7 pips threshold),1.1727830000000001,1.172738
+2025-09-29 20:30:00+00:00,2025-09-29 20:45:00+00:00,BUY,close_only,Closed existing short position,1.1727950000000003,1.1727155
+2025-09-29 22:00:00+00:00,2025-09-29 22:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.7 pips threshold),1.172665,1.172676
+2025-09-29 22:15:00+00:00,2025-09-29 22:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.40 pips < 0.7 pips threshold),1.1726280000000002,1.1726680000000003
+2025-09-29 22:30:00+00:00,2025-09-29 22:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.68 pips < 0.7 pips threshold),1.1726100000000002,1.1726784999999997
+2025-09-29 22:45:00+00:00,2025-09-29 23:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.65 pips < 0.7 pips threshold),1.172634,1.1726985
+2025-09-29 23:00:00+00:00,2025-09-29 23:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.49 pips < 0.7 pips threshold),1.172685,1.172734
+2025-09-29 23:15:00+00:00,2025-09-29 23:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.17274,1.1727675
+2025-09-29 23:30:00+00:00,2025-09-29 23:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.7 pips threshold),1.172781,1.172783
+2025-09-30 01:30:00+00:00,2025-09-30 01:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.38 pips < 0.7 pips threshold),1.17261,1.1726475
+2025-09-30 04:45:00+00:00,2025-09-30 05:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.59 pips < 0.7 pips threshold),1.172355,1.1722955000000002
+2025-09-30 05:00:00+00:00,2025-09-30 05:15:00+00:00,BUY,close_only,Closed existing short position,1.172456,1.1723035
+2025-09-30 15:45:00+00:00,2025-09-30 16:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.7 pips threshold),1.173716,1.1736825000000002
+2025-09-30 16:00:00+00:00,2025-09-30 16:15:00+00:00,BUY,close_only,Closed existing short position,1.1737560000000002,1.1736695000000001
+2025-10-01 01:00:00+00:00,2025-10-01 01:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.19 pips < 0.7 pips threshold),1.1735730000000002,1.1735545
+2025-10-01 01:15:00+00:00,2025-10-01 01:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.37 pips < 0.7 pips threshold),1.1736080000000002,1.1735715
+2025-10-01 03:00:00+00:00,2025-10-01 03:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.45 pips < 0.7 pips threshold),1.173663,1.1736175
+2025-10-01 03:15:00+00:00,2025-10-01 03:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.49 pips < 0.7 pips threshold),1.173675,1.173626
+2025-10-01 03:30:00+00:00,2025-10-01 03:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.57 pips < 0.7 pips threshold),1.1736879999999998,1.1736305000000002
+2025-10-01 03:45:00+00:00,2025-10-01 04:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.39 pips < 0.7 pips threshold),1.1736870000000001,1.1736475000000002
+2025-10-01 04:00:00+00:00,2025-10-01 04:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.51 pips < 0.7 pips threshold),1.1736970000000002,1.1736460000000002
+2025-10-01 04:15:00+00:00,2025-10-01 04:30:00+00:00,BUY,close_only,Closed existing short position,1.173755,1.1736720000000003
+2025-10-01 09:00:00+00:00,2025-10-01 09:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.52 pips < 0.7 pips threshold),1.17559,1.1756420000000003
+2025-10-01 15:45:00+00:00,2025-10-01 16:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.7 pips threshold),1.1741840000000001,1.1742195
+2025-10-01 19:15:00+00:00,2025-10-01 19:30:00+00:00,BUY,close_only,Closed existing short position,1.173214,1.17309
+2025-10-01 21:45:00+00:00,2025-10-01 22:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.38 pips < 0.7 pips threshold),1.1730319999999999,1.17307
+2025-10-01 23:15:00+00:00,2025-10-01 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.13 pips < 0.7 pips threshold),1.1732919999999998,1.1732785000000001
+2025-10-01 23:30:00+00:00,2025-10-01 23:45:00+00:00,BUY,close_only,Closed existing short position,1.1733859999999996,1.1732685000000003
+2025-10-02 01:15:00+00:00,2025-10-02 01:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.7 pips threshold),1.173128,1.1731299999999998
+2025-10-02 01:30:00+00:00,2025-10-02 01:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.40 pips < 0.7 pips threshold),1.1731400000000003,1.1731804999999995
+2025-10-02 01:45:00+00:00,2025-10-02 02:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.60 pips < 0.7 pips threshold),1.173171,1.1732314999999998
+2025-10-02 02:30:00+00:00,2025-10-02 02:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.7 pips threshold),1.1734120000000001,1.1733824999999996
+2025-10-02 02:45:00+00:00,2025-10-02 03:00:00+00:00,BUY,close_only,Closed existing short position,1.1735200000000001,1.1733999999999998
+2025-10-02 07:00:00+00:00,2025-10-02 07:15:00+00:00,BUY,close_only,Closed existing short position,1.1737900000000001,1.1736769999999999
+2025-10-02 11:45:00+00:00,2025-10-02 12:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.49 pips < 0.7 pips threshold),1.1751429999999998,1.1751915
+2025-10-02 12:00:00+00:00,2025-10-02 12:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.51 pips < 0.7 pips threshold),1.175168,1.175219
+2025-10-02 22:00:00+00:00,2025-10-02 22:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.7 pips threshold),1.1717979999999997,1.17183
+2025-10-02 22:15:00+00:00,2025-10-02 22:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.62 pips < 0.7 pips threshold),1.1717849999999999,1.171847
+2025-10-02 22:30:00+00:00,2025-10-02 22:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.58 pips < 0.7 pips threshold),1.171799,1.1718575
+2025-10-02 22:45:00+00:00,2025-10-02 23:00:00+00:00,SELL,close_only,Closed existing long position,1.1717929999999999,1.1718695000000001
+2025-10-02 23:30:00+00:00,2025-10-02 23:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.7 pips threshold),1.171967,1.1719604999999997
+2025-10-02 23:45:00+00:00,2025-10-03 00:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.66 pips < 0.7 pips threshold),1.172058,1.1719924999999998
+2025-10-03 05:00:00+00:00,2025-10-03 05:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.172272,1.1723005
+2025-10-03 05:15:00+00:00,2025-10-03 05:30:00+00:00,SELL,close_only,Closed existing long position,1.1721869999999999,1.1722629999999998
+2025-10-03 12:30:00+00:00,2025-10-03 12:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.37 pips < 0.7 pips threshold),1.173569,1.1736065
+2025-10-03 12:45:00+00:00,2025-10-03 13:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.36 pips < 0.7 pips threshold),1.173606,1.173642
+2025-10-03 13:00:00+00:00,2025-10-03 13:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.52 pips < 0.7 pips threshold),1.173578,1.1736295
+2025-10-03 13:15:00+00:00,2025-10-03 13:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.7 pips threshold),1.173622,1.173648
+2025-10-03 18:00:00+00:00,2025-10-03 18:15:00+00:00,SELL,close_only,Closed existing long position,1.1739519999999999,1.1740595
+2025-10-03 20:30:00+00:00,2025-10-03 20:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.14 pips < 0.7 pips threshold),1.1739799999999998,1.1739659999999998
+2025-10-05 21:45:00+00:00,2025-10-05 22:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.56 pips < 0.7 pips threshold),1.173667,1.1737235
+2025-10-06 02:15:00+00:00,2025-10-06 02:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.54 pips < 0.7 pips threshold),1.171808,1.1717539999999995
+2025-10-06 02:30:00+00:00,2025-10-06 02:45:00+00:00,BUY,close_only,Closed existing short position,1.171947,1.1717659999999999
+2025-10-06 05:30:00+00:00,2025-10-06 05:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.7 pips threshold),1.17222,1.1722405
+2025-10-06 21:45:00+00:00,2025-10-06 22:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.29 pips < 0.7 pips threshold),1.1711719999999999,1.1712010000000002
+2025-10-06 22:00:00+00:00,2025-10-06 22:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.50 pips < 0.7 pips threshold),1.171147,1.1711965000000002
+2025-10-06 22:15:00+00:00,2025-10-06 22:30:00+00:00,SELL,close_only,Closed existing long position,1.171116,1.171207
+2025-10-07 15:30:00+00:00,2025-10-07 15:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.63 pips < 0.7 pips threshold),1.166515,1.1664525
+2025-10-07 18:45:00+00:00,2025-10-07 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.7 pips threshold),1.16684,1.1668465000000001
+2025-10-07 19:00:00+00:00,2025-10-07 19:15:00+00:00,SELL,close_only,Closed existing long position,1.1666570000000003,1.1668205
+2025-10-07 22:45:00+00:00,2025-10-07 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.7 pips threshold),1.165786,1.1657600000000001
+2025-10-08 00:30:00+00:00,2025-10-08 00:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.7 pips threshold),1.165454,1.1654885000000001
+2025-10-08 00:45:00+00:00,2025-10-08 01:00:00+00:00,SELL,close_only,Closed existing long position,1.165331,1.1654745
+2025-10-08 08:00:00+00:00,2025-10-08 08:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.19 pips < 0.7 pips threshold),1.161902,1.161883
+2025-10-08 08:15:00+00:00,2025-10-08 08:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.69 pips < 0.7 pips threshold),1.1619769999999998,1.1619075
+2025-10-08 15:00:00+00:00,2025-10-08 15:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.7 pips threshold),1.16305,1.163078
+2025-10-08 15:15:00+00:00,2025-10-08 15:30:00+00:00,SELL,close_only,Closed existing long position,1.162897,1.163027
+2025-10-08 19:15:00+00:00,2025-10-08 19:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.58 pips < 0.7 pips threshold),1.1613020000000003,1.1612445
+2025-10-09 06:00:00+00:00,2025-10-09 06:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.7 pips threshold),1.1642629999999998,1.1642744999999999
+2025-10-09 06:15:00+00:00,2025-10-09 06:30:00+00:00,SELL,close_only,Closed existing long position,1.164048,1.164166
+2025-10-09 12:30:00+00:00,2025-10-09 12:45:00+00:00,SELL,close_only,Closed existing long position,1.1614799999999998,1.1615800000000003
+2025-10-09 21:15:00+00:00,2025-10-09 21:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.14 pips < 0.7 pips threshold),1.155912,1.155898

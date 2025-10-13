@@ -133,6 +133,10 @@ def setup_logging() -> logging.Logger:
     """Setup logging from YAML or fallback to env-based config."""
     config_path = Path(__file__).parent.parent / "config" / "logging.yaml"
     try:
+        # Create base logs directory before dictConfig
+        base_log_dir = Path(__file__).parent.parent / "logs"
+        base_log_dir.mkdir(parents=True, exist_ok=True)
+        
         with open(config_path, "r", encoding="utf-8") as f:
             cfg = yaml.safe_load(f)
         logging.config.dictConfig(cfg)
