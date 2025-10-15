@@ -18,6 +18,7 @@ Environment variables required:
 - DATA_END_DATE: End date in YYYY-MM-DD format
 """
 
+import argparse
 import asyncio
 import datetime
 import logging
@@ -44,6 +45,14 @@ from nautilus_trader.adapters.interactive_brokers.historical.client import Histo
 from nautilus_trader.adapters.interactive_brokers.common import IBContract
 from nautilus_trader.persistence.catalog.parquet import ParquetDataCatalog
 from nautilus_trader.model.data import BarSpecification, BarAggregation  # Requires NautilusTrader >= 1.220.0
+from data.cleanup_catalog import delete_all
+try:
+    from nautilus_trader.model.data import Bar
+except Exception as e:  # noqa: BLE001
+    raise RuntimeError(
+        "NautilusTrader upgrade required: Bar model is unavailable. "
+        "Please install NautilusTrader >= 1.220.0."
+    ) from e
 from nautilus_trader.model.enums import AggregationSource, PriceType
 from nautilus_trader.model.identifiers import InstrumentId, Symbol
 from nautilus_trader.model.instruments import Equity, CurrencyPair
@@ -56,6 +65,7 @@ from utils.instruments import (
     validate_instrument_id_match,
     log_instrument_metadata,
     validate_catalog_dataset_exists,
+    instrument_id_to_catalog_format,
 )
 
 def create_bar_specification(step: int, aggregation: str, price_type: str) -> BarSpecification:
@@ -278,6 +288,214 @@ def _chunk_date_range(
             break
     
     return chunks
+
+
+def deduplicate_bars_by_interval(bars: list, bar_type_str: str, logger) -> tuple[list, dict]:
+    """
+    Deduplicate bars by detecting exact timestamp duplicates and overlapping intervals.
+
+    Args:
+        bars: Bars already sorted by ts_event ascending.
+        bar_type_str: String form of the bar_type for logging context.
+        logger: Logger-like object with info/debug/warning methods.
+
+    Returns:
+        (unique_bars, stats) where stats contains counts for timestamp duplicates and interval overlaps.
+    """
+    # Safe logger handling for when logger is the logging module
+    is_logger = isinstance(logger, logging.Logger)
+    debug_enabled = bool(getattr(logger, 'isEnabledFor', lambda *_: False)(logging.DEBUG))
+    
+    # Helper function for safe timestamp formatting
+    def _fmt_ts(ts):
+        """Safely convert ns timestamp to datetime string, never raises."""
+        try:
+            if ts is None:
+                return 'None'
+            return str(pd.to_datetime(ts, unit='ns', utc=True))
+        except Exception:
+            return f'<invalid:{ts}>'
+    
+    if not bars:
+        return [], {
+            'timestamp_duplicates': 0,
+            'interval_overlaps': 0,
+            'invalid_bars': 0,
+            'total_removed': 0,
+            'original_count': 0,
+            'final_count': 0,
+        }
+
+    original_count = len(bars)
+
+    # Defensive: ensure bars are sorted by ts_event ascending to satisfy interval checks
+    # This matches the optional robustness recommendation to enforce sorting inside dedup.
+    bars = sorted(bars, key=lambda x: getattr(x, 'ts_event', 0) or 0)
+
+    # Default to timestamp-only dedup if we cannot resolve interval duration
+    interval_ns: int | None = None
+    is_time_aggregated = False
+
+    try:
+        first_bar = bars[0]
+        spec = getattr(getattr(first_bar, 'bar_type', None), 'spec', None)
+
+        if spec is not None:
+            # Try a provided helper first if available
+            try:
+                if hasattr(spec, 'is_time_aggregated'):
+                    is_time_aggregated = bool(spec.is_time_aggregated())
+                else:
+                    # Fallback: infer from aggregation
+                    agg = getattr(spec, 'aggregation', None)
+                    if agg is not None:
+                        time_aggs = {
+                            BarAggregation.SECOND,
+                            BarAggregation.MINUTE,
+                            BarAggregation.HOUR,
+                            BarAggregation.DAY,
+                            BarAggregation.WEEK,
+                        }
+                        is_time_aggregated = agg in time_aggs
+            except Exception:
+                # If any error, conservatively attempt to infer via aggregation
+                agg = getattr(spec, 'aggregation', None)
+                time_aggs = {
+                    BarAggregation.SECOND,
+                    BarAggregation.MINUTE,
+                    BarAggregation.HOUR,
+                    BarAggregation.DAY,
+                    BarAggregation.WEEK,
+                }
+                is_time_aggregated = agg in time_aggs
+
+            if is_time_aggregated:
+                # Determine interval in nanoseconds
+                try:
+                    if hasattr(spec, 'get_interval_ns'):
+                        interval_ns = int(spec.get_interval_ns())  # type: ignore[call-arg]
+                    elif hasattr(spec, 'timedelta') and getattr(spec, 'timedelta') is not None:
+                        td = getattr(spec, 'timedelta')
+                        interval_ns = int(td.total_seconds() * 1_000_000_000)
+                    else:
+                        # Derive from step and aggregation
+                        step = int(getattr(spec, 'step', 1))
+                        agg = getattr(spec, 'aggregation', None)
+                        unit_to_ns: dict = {
+                            BarAggregation.SECOND: 1_000_000_000,
+                            BarAggregation.MINUTE: 60 * 1_000_000_000,
+                            BarAggregation.HOUR: 3600 * 1_000_000_000,
+                            BarAggregation.DAY: 86_400 * 1_000_000_000,
+                            BarAggregation.WEEK: 7 * 86_400 * 1_000_000_000,
+                        }
+                        interval_ns = int(step * unit_to_ns.get(agg, 0)) if agg in unit_to_ns else None
+                except Exception:
+                    interval_ns = None
+    except Exception:
+        # If we cannot inspect spec, we'll fallback below
+        interval_ns = None
+        is_time_aggregated = False
+
+    # Add debug logging for bar specification analysis
+    if debug_enabled:
+        logger.debug("Bar type %s: is_time_aggregated=%s", bar_type_str, is_time_aggregated)
+        logger.debug("Bar type %s: interval_ns=%s", bar_type_str, interval_ns)
+        logger.debug("Bar type %s: using %s deduplication", bar_type_str, 'interval-aware' if (is_time_aggregated and interval_ns and interval_ns > 0) else 'timestamp-only')
+
+    # Perform deduplication
+    timestamp_duplicates = 0
+    interval_overlaps = 0
+    invalid_bars = 0
+
+    unique_bars: list = []
+
+    if not is_time_aggregated or not interval_ns or interval_ns <= 0:
+        # Fallback to timestamp-only deduplication
+        if debug_enabled:
+            logger.debug("Interval-based dedup not applicable for %s; using timestamp-only.", bar_type_str)
+
+        seen_ts: set[int] = set()
+        for bar in bars:
+            ts = getattr(bar, 'ts_event', None)
+            if ts is None:
+                invalid_bars += 1
+                continue
+            
+            # Log bar details for debugging
+            if debug_enabled:
+                logger.debug("Processing bar (timestamp-only): ts_event=%s (%s)", ts, _fmt_ts(ts))
+            
+            if ts in seen_ts:
+                timestamp_duplicates += 1
+                if debug_enabled:
+                    logger.debug("  → REMOVED: Timestamp duplicate (ts_event=%s)", ts)
+                continue
+            seen_ts.add(ts)
+            unique_bars.append(bar)
+            if debug_enabled:
+                logger.debug("  → KEPT: Bar added to unique set")
+    else:
+        # Interval-aware deduplication
+        prev_end_ns: int | None = None
+        prev_end_ns_seen_ts: set[int] = set()  # track exact timestamp duplicates too
+
+        for bar in bars:
+            ts_event = getattr(bar, 'ts_event', None)
+            if ts_event is None:
+                # Skip malformed bar entries lacking ts_event
+                invalid_bars += 1
+                continue
+
+            # Compute start/end boundaries once
+            start_ns = int(ts_event) - int(interval_ns)
+            end_ns = int(ts_event)
+            
+            # Log bar details for debugging
+            if debug_enabled:
+                logger.debug("Processing bar: ts_event=%s (%s), start_ns=%s, end_ns=%s", ts_event, _fmt_ts(ts_event), start_ns, end_ns)
+
+            # Timestamp duplicate check
+            if ts_event in prev_end_ns_seen_ts:
+                timestamp_duplicates += 1
+                if debug_enabled:
+                    logger.debug("  → REMOVED: Timestamp duplicate (ts_event=%s already seen)", ts_event)
+                continue
+
+            # Overlap if current start < previous end (and not same timestamp duplicate)
+            if prev_end_ns is not None and start_ns < prev_end_ns:
+                interval_overlaps += 1
+                if debug_enabled:
+                    overlap_ns = prev_end_ns - start_ns
+                    logger.debug("  → REMOVED: Interval overlap (start_ns=%s < prev_end_ns=%s, overlap=%sns)", start_ns, prev_end_ns, overlap_ns)
+                # Skip current bar, keep the first occurrence
+                continue
+
+            unique_bars.append(bar)
+            if debug_enabled:
+                logger.debug("  → KEPT: Bar added to unique set (prev_end_ns updated to %s)", end_ns)
+            prev_end_ns = end_ns
+            prev_end_ns_seen_ts.add(ts_event)
+
+    final_count = len(unique_bars)
+    total_removed = original_count - final_count
+
+    stats = {
+        'timestamp_duplicates': int(timestamp_duplicates),
+        'interval_overlaps': int(interval_overlaps),
+        'invalid_bars': int(invalid_bars),
+        'total_removed': int(total_removed),
+        'original_count': int(original_count),
+        'final_count': int(final_count),
+    }
+
+    if invalid_bars > 0 and hasattr(logger, 'info'):
+        logger.info("Bar type %s: encountered %s bars with missing ts_event; excluded from results", bar_type_str, invalid_bars)
+
+    # Add summary debug logging
+    if debug_enabled:
+        logger.debug("Deduplication complete for %s: %s", bar_type_str, stats)
+
+    return unique_bars, stats
 
 
 def create_instrument(symbol: str, venue: str = "SMART"):
@@ -699,37 +917,44 @@ async def download_historical_data(symbol: str, start_date: datetime.datetime, e
             logger.warning("Consider adjusting DATA_START_DATE/DATA_END_DATE or verifying instrument availability in TWS.")
             return []
 
-        # Deduplicate bars if chunk overlap was used
+        # If chunk overlap was used, rely solely on interval-aware dedup per bar type
         if chunk_overlap_minutes > 0 and all_bars:
-            logger.info(f"Chunk overlap detected ({chunk_overlap_minutes} minutes), performing deduplication...")
-            
-            # Build set of keys for deduplication: (bar_type, timestamp)
-            seen_keys = set()
-            deduplicated_bars = []
-            duplicates_removed = 0
-            
+            logger.info(
+                f"Chunk overlap detected ({chunk_overlap_minutes} minutes); skipping preliminary set-based dedup and deferring to interval-aware ts_init-based dedup per bar type."
+            )
+
+        # Additional deduplication for any remaining overlaps using interval-aware logic
+        if all_bars:
+            logger.info("Performing final deduplication to ensure no overlapping intervals...")
+
+            # Group bars by bar_type for interval validation
+            bars_by_type = {}
             for bar in all_bars:
-                # Create unique key from bar_type and timestamp
                 bar_type_str = str(bar.bar_type) if hasattr(bar, 'bar_type') else 'unknown'
-                timestamp = bar.ts_event if hasattr(bar, 'ts_event') and bar.ts_event else bar.ts if hasattr(bar, 'ts') else 0
-                key = (bar_type_str, timestamp)
-                
-                if key not in seen_keys:
-                    seen_keys.add(key)
-                    deduplicated_bars.append(bar)
-                else:
-                    duplicates_removed += 1
-            
-            if duplicates_removed > 0:
-                logger.info(f"Deduplication complete: removed {duplicates_removed} duplicate bars, {len(deduplicated_bars)} unique bars remaining")
-                all_bars = deduplicated_bars
-            else:
-                logger.info("No duplicate bars found during deduplication")
+                if bar_type_str not in bars_by_type:
+                    bars_by_type[bar_type_str] = []
+                bars_by_type[bar_type_str].append(bar)
+
+            final_bars = []
+            for bar_type_str, type_bars in bars_by_type.items():
+                # Sort by timestamp to ensure chronological order (handle possible None ts_event)
+                type_bars.sort(key=lambda x: getattr(x, 'ts_event', 0) or 0)
+
+                # Use interval-aware deduplication helper
+                unique_bars, stats = deduplicate_bars_by_interval(type_bars, bar_type_str, logger)
+                logger.info(
+                    f"Bar type {bar_type_str}: {stats['original_count']} -> {stats['final_count']} bars (removed {stats['timestamp_duplicates']} timestamp duplicates, {stats['interval_overlaps']} interval overlaps, {stats['invalid_bars']} invalid bars without ts_event)"
+                )
+                final_bars.extend(unique_bars)
+
+            if len(final_bars) != len(all_bars):
+                logger.info(f"Final deduplication: {len(all_bars)} -> {len(final_bars)} bars")
+                all_bars = final_bars
 
         # Sort bars by timestamp to ensure monotonically increasing order
         if all_bars:
             logger.info("Sorting bars by timestamp to ensure chronological order...")
-            all_bars.sort(key=lambda x: x.ts_init)
+            all_bars.sort(key=lambda x: x.ts_event)
             logger.info(f"Successfully sorted {len(all_bars)} bars by timestamp")
 
         logger.info(f"Successfully retrieved {len(all_bars)} total bar records for {symbol} across {len(chunks)} chunk(s)")
@@ -838,123 +1063,74 @@ def save_data(bars: list, symbol: str, output_dir: str) -> None:
         except Exception as inst_err:
             logging.debug("Instrument registration skipped or failed: %s", inst_err)
 
-        catalog.write_data(bars)
-        logging.info(f"Saved Parquet data for {symbol} to {output_dir}")
+        # Validate bars for interval conflicts before writing using interval-aware deduplication
+        if bars:
+            logging.info("Validating bar intervals for potential conflicts...")
+
+            # Group bars by bar_type and check for overlaps
+            bars_by_type = {}
+            for bar in bars:
+                bar_type_str = str(bar.bar_type) if hasattr(bar, 'bar_type') else 'unknown'
+                if bar_type_str not in bars_by_type:
+                    bars_by_type[bar_type_str] = []
+                bars_by_type[bar_type_str].append(bar)
+
+            # Check each bar type for chronological order and duplicates using helper
+            validated_bars = []
+            total_timestamp_duplicates = 0
+            total_interval_overlaps = 0
+            for bar_type_str, type_bars in bars_by_type.items():
+                # Sort by timestamp (handle possible None ts_event)
+                type_bars.sort(key=lambda x: getattr(x, 'ts_event', 0) or 0)
+
+                unique_bars, stats = deduplicate_bars_by_interval(type_bars, bar_type_str, logging)
+                logging.info(
+                    f"Bar type {bar_type_str}: validated {stats['original_count']} -> {stats['final_count']} bars (removed {stats['timestamp_duplicates']} timestamp duplicates, {stats['interval_overlaps']} interval overlaps, {stats['invalid_bars']} invalid bars without ts_event)"
+                )
+                validated_bars.extend(unique_bars)
+                total_timestamp_duplicates += stats['timestamp_duplicates']
+                total_interval_overlaps += stats['interval_overlaps']
+
+            if len(validated_bars) != len(bars):
+                logging.info(
+                    f"Bar validation: {len(bars)} -> {len(validated_bars)} bars (removed {total_timestamp_duplicates} timestamp duplicates, {total_interval_overlaps} interval overlaps)"
+                )
+                bars = validated_bars
+
+        logging.info(
+            "Writing %s bars to catalog with skip_disjoint_check=True (symbol=%s, dir=%s)",
+            len(bars),
+            symbol,
+            output_dir,
+        )
+        catalog.write_data(bars, skip_disjoint_check=True)
+        logging.info(f"Successfully wrote Parquet data for {symbol} to {output_dir}")
         parquet_saved = True
-    except AssertionError as e:
-        if "Intervals are not disjoint" in str(e):
-            logging.warning(
-                "Duplicate data detected for %s, clearing existing Parquet files before retrying...",
-                symbol,
+        try:
+            # before consolidation (scoped to current instrument)
+            inst_id_str = str(instrument.id)
+            pre_files = len(catalog.get_intervals(Bar, identifier=inst_id_str))
+
+            logging.info("Consolidating bar data to merge overlapping intervals...")
+            catalog.consolidate_data(
+                data_cls=Bar,
+                identifier=inst_id_str,
+                deduplicate=True,
+                ensure_contiguous_files=True,
             )
 
-            is_forex = "/" in symbol
-            instrument_venue = os.getenv("BACKTEST_VENUE", "IDEALPRO") if is_forex else os.getenv("STOCK_VENUE", "SMART")
-            instrument_id = normalize_instrument_id(symbol, instrument_venue or ("IDEALPRO" if is_forex else "SMART"))
-
-            requested_specs: set[str] = set()
-            for bar in bars:
-                if hasattr(bar, "bar_type"):
-                    bar_type_str = str(bar.bar_type)
-                    prefix = f"{instrument_id}-"
-                    if bar_type_str.startswith(prefix):
-                        requested_specs.add(bar_type_str[len(prefix):])
-                    else:
-                        requested_specs.add(bar_type_str)
-
-            if not requested_specs:
-                if is_forex:
-                    requested_specs = {
-                        "1-MINUTE-MID-EXTERNAL",
-                        "2-MINUTE-MID-EXTERNAL",
-                        "15-MINUTE-MID-EXTERNAL",
-                        "1-DAY-MID-EXTERNAL",
-                    }
-                else:
-                    requested_specs = {"1-MINUTE-LAST-EXTERNAL", "1-DAY-LAST-EXTERNAL"}
-
-            catalog_path = Path(output_dir)
-            dataset_root = catalog_path / "data" / "bar"
-            deleted_any = False
-
-            instrument_prefix = f"{instrument_id}-"
-            target_specs = requested_specs or None
-
-            dataset_names_seen: set[str] = set()
-            deleted_datasets: set[str] = set()
-            try:
-                dataset_iter = dataset_root.rglob("*") if dataset_root.exists() else []
-            except Exception as iter_err:
-                logging.warning("Failed to enumerate dataset directories under %s: %s", dataset_root, iter_err)
-                dataset_iter = []
-
-            for entry in dataset_iter:
-                if not entry.is_dir() or "-" not in entry.name:
-                    continue
-                dataset_name = entry.relative_to(dataset_root).as_posix()
-                if not dataset_name.startswith(instrument_prefix):
-                    continue
-                spec = dataset_name[len(instrument_prefix):]
-                if target_specs is not None and spec not in target_specs:
-                    continue
-                if dataset_name in dataset_names_seen:
-                    continue
-                dataset_names_seen.add(dataset_name)
-                try:
-                    shutil.rmtree(entry, ignore_errors=True)
-                    logging.info("Deleted existing dataset directory: %s", entry)
-                    deleted_datasets.add(dataset_name)
-                    deleted_any = True
-                except Exception as cleanup_error:
-                    logging.warning(
-                        "Failed to delete dataset directory %s during cleanup: %s",
-                        entry,
-                        cleanup_error,
-                    )
-
-            if not deleted_any:
-                logging.warning(
-                    "No existing Parquet files found to remove for %s despite duplicate interval error.",
-                    symbol,
-                )
-            else:
-                logging.info("Removed %s dataset directories prior to rewrite: %s", len(deleted_datasets), sorted(deleted_datasets))
-
-            try:
-                bar_type_spec = None
-                if bars and hasattr(bars[0], "bar_type"):
-                    bar_type_spec = str(bars[0].bar_type).split("-", 1)[-1]
-                logging.info(
-                    "Writing %s bars to catalog: instrument_id=%s output_dir=%s expected_dataset=%s",
-                    len(bars),
-                    instrument.id,
-                    output_dir,
-                    f"{instrument.id}-{bar_type_spec}" if bar_type_spec else "<unknown>",
-                )
-                catalog.write_data(bars)
-                logging.info(
-                    "Successfully wrote %s bars for %s to catalog %s",
-                    len(bars),
-                    instrument.id,
-                    output_dir,
-                )
-                parquet_saved = True
-            except AssertionError as retry_error:
-                logging.error(
-                    "Parquet write failed for %s after clearing duplicates: %s",
-                    symbol,
-                    retry_error,
-                )
-            except Exception as retry_error:
-                logging.error(
-                    "Unexpected error re-writing Parquet data for %s: %s",
-                    symbol,
-                    retry_error,
-                    exc_info=True,
-                )
-        else:
-            logging.error(
-                "Failed to save Parquet data for %s: %s", symbol, e, exc_info=True
+            # after consolidation
+            post_files = len(catalog.get_intervals(Bar, identifier=inst_id_str))
+            merged = max(0, pre_files - post_files)
+            logging.info(
+                "Consolidated bar data for %s: merged %d files (%d -> %d)",
+                symbol, merged, pre_files, post_files
+            )
+        except Exception as consolidation_error:
+            logging.warning(
+                "Consolidation failed for %s: %s. Data was written successfully but may contain overlapping intervals.",
+                symbol,
+                consolidation_error,
             )
     except (IOError, PermissionError) as e:
         logging.error(f"Failed to write Parquet data for {symbol}: {e}")
@@ -985,7 +1161,7 @@ def save_data(bars: list, symbol: str, output_dir: str) -> None:
             }
 
             for bar in spec_bars:
-                ts = pd.to_datetime(bar.ts_init, unit='ns', utc=True).tz_convert('America/New_York')
+                ts = pd.to_datetime(bar.ts_event, unit='ns', utc=True).tz_convert('America/New_York')
                 data["timestamp"].append(ts.isoformat())
                 data["open"].append(float(bar.open))
                 data["high"].append(float(bar.high))
@@ -1022,13 +1198,32 @@ def save_data(bars: list, symbol: str, output_dir: str) -> None:
         )
 
 
-async def main() -> int:
+async def main(argv: list[str] | None = None) -> int:
     """
     Main execution function for historical data ingestion.
     
     Returns:
         int: Exit code (0 for success, 1 for failure)
     """
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description="Historical data ingestion from Interactive Brokers")
+    parser.add_argument(
+        "--force-clean", 
+        action="store_true", 
+        help="Clean existing catalog data before ingestion to prevent interval overlaps"
+    )
+    parser.add_argument(
+        "--catalog-path", 
+        type=str, 
+        help="Override CATALOG_PATH environment variable for output directory"
+    )
+    # Accept argv for programmatic callers; default to [] to ignore global CLI args
+    try:
+        args, _ = parser.parse_known_args(argv or [])
+    except TypeError:
+        # Python <3.10 compatibility if list[str] typing not available at runtime
+        args, _ = parser.parse_known_args(argv or [])
+    
     logger = setup_logging()
     logger.info("Starting IBKR historical data ingestion...")
     
@@ -1063,7 +1258,7 @@ async def main() -> int:
             return 1
         
         # Define output directory (use same CATALOG_PATH as backtest)
-        output_dir = os.getenv("CATALOG_PATH", "data/historical")
+        output_dir = args.catalog_path if args.catalog_path else os.getenv("CATALOG_PATH", "data/historical")
         try:
             Path(output_dir).mkdir(parents=True, exist_ok=True)
         except PermissionError as exc:
@@ -1081,6 +1276,19 @@ async def main() -> int:
         logger.info("Catalog directory ready: %s", output_dir)
         logger.info(f"Symbols to process: {symbols}")
         logger.info(f"Date range: {start_date.strftime('%Y-%m-%d')} to {end_date.strftime('%Y-%m-%d')}")
+        
+        # Clean existing catalog data if --force-clean is specified
+        if args.force_clean:
+            logger.info("--force-clean specified: cleaning existing catalog data...")
+            try:
+                cleanup_success = delete_all(catalog_path=output_dir, confirm=True, dry_run=False)
+                if not cleanup_success:
+                    logger.error("Failed to clean catalog data")
+                    return 1
+                logger.info("Successfully cleaned catalog data, proceeding with ingestion")
+            except Exception as exc:
+                logger.error(f"Error during catalog cleanup: {exc}")
+                return 1
         
         # Process each symbol
         catalog = ParquetDataCatalog(output_dir)
@@ -1124,7 +1332,9 @@ async def main() -> int:
             bar_identifier = f"{instrument_id}-{expected_bar_spec}"
 
             try:
-                if not validate_catalog_dataset_exists(Path(output_dir), instrument_id, expected_bar_spec, logger):
+                # Convert to catalog format (removes slash for forex pairs: EUR/USD.IDEALPRO -> EURUSD.IDEALPRO)
+                catalog_instrument_id = instrument_id_to_catalog_format(instrument_id)
+                if not validate_catalog_dataset_exists(Path(output_dir), catalog_instrument_id, expected_bar_spec, logger):
                     logger.error("Dataset %s not found in catalog after ingestion.", bar_identifier)
                     continue
                 bars = catalog.bars(bar_types=[bar_identifier])

@@ -1,0 +1,41 @@
+# Test Configuration for Grid Search
+# ===================================
+# Small grid for testing the implementation (4 combinations)
+
+optimization:
+  objective: total_pnl
+  workers: 2  # Use fewer workers for testing
+  checkpoint_interval: 2
+  timeout_seconds: 300
+
+parameters:
+  # Very small parameter ranges for testing
+  fast_period:
+    values: [10, 20]
+  
+  slow_period:
+    values: [30, 40]
+  
+  # Keep other parameters fixed for testing
+  crossover_threshold_pips:
+    values: [0.5]
+  
+  stop_loss_pips:
+    values: [25]
+  
+  take_profit_pips:
+    values: [50]
+
+# Fixed parameters
+fixed:
+  dmi_enabled: true
+  stoch_enabled: true
+  dmi_period: 14
+  stoch_period_k: 14
+  stoch_period_d: 3
+  stoch_bullish_threshold: 30
+  stoch_bearish_threshold: 70
+  trailing_stop_activation_pips: 20
+  trailing_stop_distance_pips: 15
+
+# Total combinations: 2 × 2 × 1 × 1 × 1 = 4 combinations
