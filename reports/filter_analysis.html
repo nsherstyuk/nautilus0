@@ -1,0 +1,122 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Filter Effectiveness Analysis - EUR-USD_20251013_201415</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #34495e; margin-top: 30px; }
+        .summary { display: flex; justify-content: space-around; margin: 20px 0; }
+        .metric { text-align: center; padding: 20px; border: 2px solid #ecf0f1; border-radius: 8px; background: #f8f9fa; }
+        .metric h3 { margin: 0 0 10px 0; color: #2c3e50; }
+        .metric .value { font-size: 24px; font-weight: bold; }
+        .pass { color: #27ae60; }
+        .reject { color: #e74c3c; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .chart { text-align: center; margin: 30px 0; }
+        .chart img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px; }
+        .recommendations { background: #e8f4fd; padding: 20px; border-left: 4px solid #3498db; margin: 20px 0; }
+        .recommendations ul { margin: 10px 0; }
+        .recommendations li { margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Filter Effectiveness Analysis</h1>
+        <h2>Backtest Run: EUR-USD_20251013_201415</h2>
+        
+        <div class="summary">
+            <div class="metric">
+                <h3>Total Crossovers</h3>
+                <p class="value">6263</p>
+            </div>
+            <div class="metric">
+                <h3>Final Trades</h3>
+                <p class="value pass">190 (3.0%)</p>
+            </div>
+            <div class="metric">
+                <h3>Total Rejections</h3>
+                <p class="value reject">6073 (97.0%)</p>
+            </div>
+        </div>
+        
+        <h2>Filter Cascade Flow</h2>
+        <div class="chart">
+            <img src="charts/cascade_funnel.png" alt="Filter Cascade Funnel Chart">
+        </div>
+        
+        <h2>Rejection Breakdown</h2>
+        <div class="chart">
+            <img src="charts/rejection_breakdown.png" alt="Rejection Breakdown Pie Chart">
+        </div>
+        
+        <h2>Filter Statistics</h2>
+        <table>
+            <tr>
+                <th>Filter</th>
+                <th>Signals In</th>
+                <th>Passed</th>
+                <th>Rejected</th>
+                <th>Pass Rate</th>
+            </tr>
+
+            <tr>
+                <td>Threshold Filter</td>
+                <td>6263</td>
+                <td class="pass">3238</td>
+                <td class="reject">3025</td>
+                <td>51.7%</td>
+            </tr>
+
+            <tr>
+                <td>DMI Filter</td>
+                <td>3238</td>
+                <td class="pass">3238</td>
+                <td class="reject">0</td>
+                <td>100.0%</td>
+            </tr>
+
+            <tr>
+                <td>Stochastic Filter</td>
+                <td>3238</td>
+                <td class="pass">377</td>
+                <td class="reject">2861</td>
+                <td>11.6%</td>
+            </tr>
+
+            <tr>
+                <td>Position Limit</td>
+                <td>377</td>
+                <td class="pass">190</td>
+                <td class="reject">187</td>
+                <td>50.4%</td>
+            </tr>
+
+        </table>
+        
+        <h2>Signal Type Comparison</h2>
+        <div class="chart">
+            <img src="charts/signal_type_comparison.png" alt="BUY vs SELL Rejection Rates">
+        </div>
+        
+        <h2>Threshold Proximity Analysis</h2>
+        <div class="chart">
+            <img src="charts/threshold_proximity.png" alt="Threshold Proximity Histogram">
+        </div>
+        
+        <div class="recommendations">
+            <h2>Recommendations</h2>
+            <ul>
+                <li>Threshold filter is most active (48.3% rejection rate)</li>
+                <li>Consider running comparative backtests to measure PnL contribution</li>
+                <li>Analyze threshold proximity to optimize crossover threshold</li>
+                <li>Monitor DMI and Stochastic filter effectiveness over time</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

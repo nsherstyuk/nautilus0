@@ -1,0 +1,255 @@
+# Grid Search Optimization Configuration
+# ======================================
+#
+# This file defines parameter ranges for grid search optimization.
+# The optimizer will test all combinations of the specified parameter values.
+#
+# Total combinations = product of all parameter value counts
+# Example: 5 fast_period values × 5 slow_period values × 5 threshold values = 125 combinations
+#
+# Optimization Settings:
+#   - objective: Metric to maximize (total_pnl, sharpe_ratio, win_rate, profit_factor)
+#   - workers: Number of parallel workers (default: 8, max: CPU count)
+#   - checkpoint_interval: Save progress every N backtests (default: 10)
+#   - timeout_seconds: Max time per backtest (default: 300 = 5 minutes)
+#
+# Parameter Ranges:
+#   - Each parameter has a 'values' list with possible values to test
+#   - Use fewer values for coarse grid (faster), more values for fine grid (slower)
+#   - Ensure parameter relationships are valid (e.g., fast < slow, tp > sl)
+#
+# Fixed Parameters:
+#   - Parameters in 'fixed' section are not optimized (same value for all runs)
+#   - Use for parameters you don't want to tune (e.g., trade_size, filter toggles)
+
+optimization:
+  # Objective function to maximize
+  # Options: total_pnl, sharpe_ratio, win_rate, profit_factor, calmar_ratio, sortino_ratio
+  objective: total_pnl
+  
+  # Number of parallel workers (default: 8)
+  # Recommended: 50-75% of CPU cores (leave headroom for system)
+  workers: 8
+  
+  # Save checkpoint every N backtests (default: 10)
+  # Lower values = more frequent saves (safer) but slower I/O
+  checkpoint_interval: 10
+  
+  # Maximum time per backtest in seconds (default: 300 = 5 minutes)
+  # Backtests exceeding this will be killed and marked as timeout
+  timeout_seconds: 300
+
+parameters:
+  # Moving Average Periods
+  # Recommendation: Test wider spacing for coarse grid (every 20-30 periods)
+  fast_period:
+    values: [20, 40, 60, 80, 100]
+  
+  slow_period:
+    values: [100, 150, 200, 250, 300]
+  
+  # Crossover Threshold (pips)
+  # Recommendation: Test 0.0 (disabled) through 2.0 (aggressive)
+  crossover_threshold_pips:
+    values: [0.0, 0.5, 0.7, 1.0, 1.5, 2.0]
+  
+  # Stop Loss (pips)
+  # Recommendation: Test range from tight (15) to wide (50)
+  stop_loss_pips:
+    values: [15, 20, 25, 30, 40, 50]
+  
+  # Take Profit (pips)
+  # Recommendation: Test 1.5x to 3x stop loss ratio
+  take_profit_pips:
+    values: [30, 40, 50, 75, 100, 150]
+  
+  # Trailing Stop Activation (pips)
+  # Recommendation: Test 50-100% of take profit distance
+  trailing_stop_activation_pips:
+    values: [15, 20, 25, 30]
+  
+  # Trailing Stop Distance (pips)
+  # Recommendation: Test 50-75% of activation distance
+  trailing_stop_distance_pips:
+    values: [10, 15, 20]
+  
+  # DMI Period
+  # Recommendation: Test standard periods (7, 14, 21, 28)
+  dmi_period:
+    values: [7, 14, 21, 28]
+  
+  # Stochastic %K Period
+  # Recommendation: Test standard periods (9, 14, 21)
+  stoch_period_k:
+    values: [9, 14, 21]
+  
+  # Stochastic %D Period (smoothing)
+  # Recommendation: Keep at 3 (standard) or test 3, 5, 7
+  stoch_period_d:
+    values: [3, 5, 7]
+  
+  # Stochastic Bullish Threshold
+  # Recommendation: Test 20 (aggressive) to 40 (conservative)
+  stoch_bullish_threshold:
+    values: [20, 25, 30, 35, 40]
+  
+  # Stochastic Bearish Threshold
+  # Recommendation: Test 60 (conservative) to 80 (aggressive)
+  stoch_bearish_threshold:
+    values: [60, 65, 70, 75, 80]
+
+# Total combinations with above values:
+# 5 × 5 × 6 × 6 × 6 × 4 × 3 × 4 × 3 × 3 × 5 × 5 = 29,160,000 combinations
+# This is TOO LARGE! See examples below for practical configurations.
+
+# Fixed Parameters (Not Optimized)
+# =================================
+# These parameters remain constant across all backtest runs.
+# Use for parameters you don't want to tune or want to test separately.
+
+fixed:
+  # Filter toggles (enable/disable filters)
+  dmi_enabled: true
+  stoch_enabled: true
+  
+  # Trade sizing (keep constant to isolate strategy performance)
+  trade_size: 100000  # 1 standard lot for forex
+  
+  # Position management (keep constant for fair comparison)
+  enforce_position_limit: true
+  allow_position_reversal: false
+  
+  # Bar specifications (don't optimize timeframes in grid search)
+  dmi_bar_spec: "2-MINUTE-MID-EXTERNAL"
+  stoch_bar_spec: "15-MINUTE-MID-EXTERNAL"
+
+# Example Configurations
+# ========================
+# Below are practical example configurations for different optimization scenarios.
+# Copy and modify these examples for your specific needs.
+
+# Example 1: Coarse Grid Search (125 combinations, ~1.5 hours with 8 workers)
+# Use this for initial exploration to identify promising parameter regions
+# Uncomment and modify the parameters section above to use this configuration:
+
+# parameters:
+#   fast_period:
+#     values: [20, 40, 60, 80, 100]
+#   slow_period:
+#     values: [100, 150, 200, 250, 300]
+#   crossover_threshold_pips:
+#     values: [0.0, 0.5, 1.0, 1.5, 2.0]
+#   stop_loss_pips:
+#     values: [25]  # Fixed for coarse grid
+#   take_profit_pips:
+#     values: [50]  # Fixed for coarse grid
+# 
+# # Total: 5 × 5 × 5 × 1 × 1 = 125 combinations
+
+# Example 2: Fine Grid Search (125 combinations, ~1.5 hours with 8 workers)
+# Use this after coarse grid to zoom into best parameter region
+# Assume coarse grid found best around: fast=40, slow=200, threshold=1.0
+
+# parameters:
+#   fast_period:
+#     values: [35, 38, 40, 42, 45]  # ±5 around best
+#   slow_period:
+#     values: [180, 190, 200, 210, 220]  # ±20 around best
+#   crossover_threshold_pips:
+#     values: [0.8, 0.9, 1.0, 1.1, 1.2]  # ±0.2 around best
+#   stop_loss_pips:
+#     values: [25]  # Keep fixed
+#   take_profit_pips:
+#     values: [50]  # Keep fixed
+# 
+# # Total: 5 × 5 × 5 × 1 × 1 = 125 combinations
+
+# Example 3: Risk Management Optimization (150 combinations, ~2 hours)
+# Optimize SL/TP while keeping MA parameters fixed
+
+# parameters:
+#   fast_period:
+#     values: [50]  # Fixed from previous optimization
+#   slow_period:
+#     values: [150]  # Fixed from previous optimization
+#   crossover_threshold_pips:
+#     values: [0.7]  # Fixed
+#   stop_loss_pips:
+#     values: [15, 20, 25, 30, 35, 40]
+#   take_profit_pips:
+#     values: [30, 40, 50, 60, 75, 100]
+#   trailing_stop_activation_pips:
+#     values: [15, 20, 25]
+#   trailing_stop_distance_pips:
+#     values: [10, 15]
+# 
+# # Total: 1 × 1 × 1 × 6 × 6 × 3 × 2 = 216 combinations
+# # Note: Invalid combinations (tp <= sl) will be skipped automatically
+
+# Example 4: Filter Optimization (108 combinations, ~1.5 hours)
+# Optimize filter parameters while keeping MA and risk management fixed
+
+# parameters:
+#   fast_period:
+#     values: [50]  # Fixed
+#   slow_period:
+#     values: [150]  # Fixed
+#   crossover_threshold_pips:
+#     values: [0.7]  # Fixed
+#   stop_loss_pips:
+#     values: [25]  # Fixed
+#   take_profit_pips:
+#     values: [50]  # Fixed
+#   dmi_period:
+#     values: [7, 14, 21]
+#   stoch_period_k:
+#     values: [9, 14, 21]
+#   stoch_bullish_threshold:
+#     values: [20, 30, 40]
+#   stoch_bearish_threshold:
+#     values: [60, 70, 80]
+# 
+# # Total: 1 × 1 × 1 × 1 × 1 × 3 × 3 × 3 × 3 = 81 combinations
+# # Note: Invalid combinations (bullish >= bearish) will be skipped
+
+# Best Practices for Grid Search:
+# ================================
+#
+# 1. Start with Coarse Grid:
+#    - Test 3-5 values per parameter (wider spacing)
+#    - Total combinations: 100-500 (completes in 1-3 hours)
+#    - Identifies promising parameter regions
+#
+# 2. Refine with Fine Grid:
+#    - Zoom into best region from coarse grid
+#    - Test 5-7 values per parameter (narrower spacing)
+#    - Total combinations: 100-300 (completes in 1-2 hours)
+#    - Finds optimal combination within region
+#
+# 3. Optimize Sequentially:
+#    - First: MA periods (fast, slow)
+#    - Second: Threshold and risk management (sl, tp)
+#    - Third: Filter parameters (dmi, stochastic)
+#    - Reduces search space, faster convergence
+#
+# 4. Validate with Walk-Forward:
+#    - After finding optimal parameters, run walk-forward validation
+#    - Prevents overfitting to specific market conditions
+#    - Use: python optimization/walk_forward.py --params results/top_10.json
+#
+# 5. Monitor Resource Usage:
+#    - 8 workers × 45s/backtest = ~5.6 backtests/minute
+#    - 1,000 backtests = ~3 hours
+#    - 10,000 backtests = ~30 hours (overnight + next day)
+#    - Adjust workers based on CPU/RAM availability
+#
+# 6. Checkpoint Management:
+#    - Checkpoints saved to: optimization/checkpoints/grid_search_checkpoint.csv
+#    - Resume automatically on restart (use --no-resume to start fresh)
+#    - Keep checkpoints for audit trail (don't delete after completion)
+#
+# 7. Result Interpretation:
+#    - Top 10 results: Export to JSON for walk-forward validation
+#    - Parameter sensitivity: Check which parameters had biggest impact
+#    - Avoid overfitting: If top results are very close, parameters may not matter
+#    - Validate out-of-sample: Run walk-forward before deploying to live trading

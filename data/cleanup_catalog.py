@@ -24,18 +24,22 @@ from utils.instruments import (
     catalog_format_to_instrument_id,
 )
 
-# Module-level logger
-logger = None
+# Module-level logger initialized at import to be safe for programmatic calls
+logger = logging.getLogger(__name__)
+# Attach a NullHandler to avoid "No handler found" errors if logging isn't configured by caller
+try:
+    logger.addHandler(logging.NullHandler())
+except Exception:
+    # If a handler is already present or logging not initialized, safely ignore
+    pass
 
 def setup_logging():
     """Setup basic logging for the cleanup script."""
-    global logger
     logging.basicConfig(
         level=logging.INFO,
         format='%(asctime)s - %(levelname)s - %(message)s'
     )
-    logger = logging.getLogger(__name__)
-    return logger
+    return logging.getLogger(__name__)
 
 
 def calculate_directory_size(directory: Path) -> int:
