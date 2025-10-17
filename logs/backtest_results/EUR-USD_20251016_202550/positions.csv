@@ -1,0 +1,2 @@
+trader_id,strategy_id,instrument_id,account_id,opening_order_id,closing_order_id,entry,side,quantity,peak_qty,ts_init,ts_opened,ts_last,ts_closed,duration_ns,avg_px_open,avg_px_close,commissions,realized_return,realized_pnl,is_snapshot
+BACKTESTER-001,MovingAverageCrossover-MA_CROSS,EUR/USD.IDEALPRO,IDEALPRO-001,O-20240102-010800-001-MA_CROSS-1,O-20240102-020400-001-MA_CROSS-4,BUY,FLAT,0.00,100000.00,1704157680000000000,2024-01-02 01:08:00+00:00,1704161040000000000,2024-01-02 02:04:00+00:00,3360000000000,1.104219999999,1.103480000001,['4.42 USD'],-0.00067,-78.42 USD,False

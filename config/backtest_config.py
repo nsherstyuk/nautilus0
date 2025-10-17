@@ -45,6 +45,9 @@ class BacktestConfig:
     stoch_period_d: int = 3
     stoch_bullish_threshold: int = 30
     stoch_bearish_threshold: int = 70
+    stoch_max_bars_since_crossing: int = 9
+    use_limit_orders: bool = True
+    limit_order_timeout_bars: int = 1
 
 
 def _require(name: str, value: Optional[str]) -> str:
@@ -135,6 +138,9 @@ def get_backtest_config() -> BacktestConfig:
     stoch_period_d = _parse_int("STRATEGY_STOCH_PERIOD_D", os.getenv("STRATEGY_STOCH_PERIOD_D"), 3)
     stoch_bullish_threshold = _parse_int("STRATEGY_STOCH_BULLISH_THRESHOLD", os.getenv("STRATEGY_STOCH_BULLISH_THRESHOLD"), 30)
     stoch_bearish_threshold = _parse_int("STRATEGY_STOCH_BEARISH_THRESHOLD", os.getenv("STRATEGY_STOCH_BEARISH_THRESHOLD"), 70)
+    stoch_max_bars_since_crossing = _parse_int("STRATEGY_STOCH_MAX_BARS_SINCE_CROSSING", os.getenv("STRATEGY_STOCH_MAX_BARS_SINCE_CROSSING"), 9)
+    use_limit_orders = os.getenv("STRATEGY_USE_LIMIT_ORDERS", "true").lower() in ("true", "1", "yes")
+    limit_order_timeout_bars = _parse_int("STRATEGY_LIMIT_ORDER_TIMEOUT_BARS", os.getenv("STRATEGY_LIMIT_ORDER_TIMEOUT_BARS"), 1)
     
     # Normalize DMI bar_spec for FX instruments (similar to primary bar_spec normalization)
     if dmi_enabled and "/" in symbol:
@@ -334,6 +340,9 @@ def get_backtest_config() -> BacktestConfig:
         stoch_period_d=stoch_period_d,
         stoch_bullish_threshold=stoch_bullish_threshold,
         stoch_bearish_threshold=stoch_bearish_threshold,
+        stoch_max_bars_since_crossing=stoch_max_bars_since_crossing,
+        use_limit_orders=use_limit_orders,
+        limit_order_timeout_bars=limit_order_timeout_bars,
     )
 
 

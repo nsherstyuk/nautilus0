@@ -83,6 +83,32 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+# Objective direction metadata
+# Single source of truth for whether an objective should be maximized or minimized
+OBJECTIVE_DIRECTIONS: Dict[str, str] = {
+    # Existing objectives (maximize)
+    "total_pnl": "maximize",
+    "sharpe_ratio": "maximize",
+    "win_rate": "maximize",
+    "profit_factor": "maximize",
+    "calmar_ratio": "maximize",
+    "sortino_ratio": "maximize",
+    # Aliases for clarity (maximize)
+    "max_win_rate": "maximize",
+    "max_profit_factor": "maximize",
+    # New minimization objectives
+    "max_drawdown": "minimize",
+    "min_max_drawdown": "minimize",
+    "consecutive_losses": "minimize",
+    "min_consecutive_losses": "minimize",
+}
+
+
+def is_minimization_objective(objective: str) -> bool:
+    """Return True if the objective should be minimized."""
+    return OBJECTIVE_DIRECTIONS.get(objective, "maximize") == "minimize"
+
+
 @dataclass
 class OptimizationConfig:
     """Configuration for optimization settings."""
@@ -177,6 +203,7 @@ class BacktestResult:
     error_message: str
     backtest_duration_seconds: float
     output_directory: str
+    consecutive_losses: int = 0
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to flat dictionary for CSV export."""
@@ -197,6 +224,7 @@ class BacktestResult:
             "error_message": self.error_message,
             "backtest_duration_seconds": self.backtest_duration_seconds,
             "output_directory": self.output_directory,
+            "consecutive_losses": self.consecutive_losses,
         })
         return result
 
@@ -210,13 +238,21 @@ class BacktestResult:
             return self.win_rate
         elif objective == "profit_factor":
             return self.profit_factor
+        elif objective == "max_win_rate":
+            return self.win_rate
+        elif objective == "max_profit_factor":
+            return self.profit_factor
+        elif objective == "max_drawdown" or objective == "min_max_drawdown":
+            return self.max_drawdown
+        elif objective == "consecutive_losses" or objective == "min_consecutive_losses":
+            return float(self.consecutive_losses)
         elif objective == "calmar_ratio":
             return self.total_pnl / abs(self.max_drawdown) if self.max_drawdown != 0 else 0.0
         elif objective == "sortino_ratio":
             # Simplified sortino (would need downside deviation calculation)
             return self.sharpe_ratio
         else:
-            return self.total_pnl
+            raise ValueError(f"Unknown objective: {objective}")
 
 
 def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, List[Any]], Dict[str, Any]]:
@@ -233,8 +269,10 @@ def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, L
     opt_section = config.get("optimization", {})
     objective = opt_section.get("objective", "total_pnl")
     
-    if objective not in ["total_pnl", "sharpe_ratio", "win_rate", "profit_factor", "calmar_ratio", "sortino_ratio"]:
+    if objective not in OBJECTIVE_DIRECTIONS.keys():
         raise ValueError(f"Invalid objective: {objective}")
+    if is_minimization_objective(objective):
+        logger.warning(f"Using minimization objective: {objective}")
 
     opt_config = OptimizationConfig(
         objective=objective,
@@ -354,8 +392,10 @@ def validate_parameter_combination(params: ParameterSet) -> Tuple[bool, Optional
     return True, None
 
 
-def extract_metrics(stats: Dict[str, Any]) -> Dict[str, float]:
-    """Extract all relevant metrics from performance_stats.json."""
+def extract_metrics(stats: Dict[str, Any], output_directory: Optional[Path] = None) -> Dict[str, float]:
+    """Extract all relevant metrics from performance_stats.json and optionally compute
+    consecutive_losses from positions.csv in the provided output directory.
+    """
     metrics = {}
     
     # Extract PnL metrics
@@ -372,11 +412,71 @@ def extract_metrics(stats: Dict[str, Any]) -> Dict[str, float]:
     metrics["max_loser"] = general.get("Max loser", 0.0)
     metrics["profit_factor"] = general.get("Profit factor", 0.0)
     metrics["expectancy"] = general.get("Expectancy", 0.0)
-    metrics["max_drawdown"] = general.get("Max drawdown", 0.0)
+    metrics["max_drawdown"] = abs(general.get("Max drawdown", 0.0))
     
     # Extract rejected signals count
     metrics["rejected_signals_count"] = stats.get("rejected_signals_count", 0)
-    
+
+    # Compute consecutive_losses if output_directory is provided
+    metrics["consecutive_losses"] = 0
+    try:
+        if output_directory is not None:
+            positions_file = Path(output_directory) / "positions.csv"
+            if positions_file.exists():
+                df_pos = pd.read_csv(positions_file)
+                if not df_pos.empty:
+                    # Filter to closed positions if column exists
+                    if "ts_closed" in df_pos.columns:
+                        df_pos = df_pos[df_pos["ts_closed"].notna()].copy()
+                    # Sort by close time if present, otherwise by open time or index
+                    sort_col = "ts_closed" if "ts_closed" in df_pos.columns else ("ts_opened" if "ts_opened" in df_pos.columns else None)
+                    if sort_col is not None:
+                        df_pos = df_pos.sort_values(sort_col)
+
+                    # Parse realized PnL column name variants
+                    pnl_col = None
+                    for candidate in [
+                        "realized_pnl",
+                        "realized_pnl_ccy",
+                        "realized_pnl_quote",
+                        "realized_pnl_usd",
+                        "pnl_realized",
+                    ]:
+                        if candidate in df_pos.columns:
+                            pnl_col = candidate
+                            break
+
+                    # If not found, try to derive from any column containing 'pnl' and 'real'
+                    if pnl_col is None:
+                        for c in df_pos.columns:
+                            cs = str(c).lower()
+                            if "pnl" in cs and ("real" in cs or "realized" in cs):
+                                pnl_col = c
+                                break
+
+                    max_streak = 0
+                    current_streak = 0
+                    if pnl_col is not None:
+                        # Ensure numeric; strip possible currency suffixes
+                        series = df_pos[pnl_col]
+                        if series.dtype == object:
+                            series = series.astype(str).str.replace(r"[^0-9+\-\.eE]", "", regex=True)
+                        pnl_values = pd.to_numeric(series, errors="coerce").fillna(0.0).tolist()
+
+                        # Optional toggle to include break-evens in loss streak (default: exclude)
+                        include_breakeven = parse_bool(os.environ.get("INCLUDE_BREAKEVEN_IN_LOSS_STREAK", False))
+                        for pnl in pnl_values:
+                            if (pnl < 0) or (include_breakeven and pnl == 0):
+                                current_streak += 1
+                                if current_streak > max_streak:
+                                    max_streak = current_streak
+                            else:
+                                current_streak = 0
+                    metrics["consecutive_losses"] = int(max_streak)
+    except Exception as e:
+        logger.warning(f"Failed to compute consecutive_losses: {e}")
+        metrics["consecutive_losses"] = 0
+
     return metrics
 
 
@@ -417,7 +517,7 @@ def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout:
                     trade_count=0, avg_winner=0.0, avg_loser=0.0, profit_factor=0.0,
                     expectancy=0.0, rejected_signals_count=0,
                     status="failed", error_message=f"Missing environment variable: {var}",
-                    backtest_duration_seconds=0.0, output_directory=""
+                    backtest_duration_seconds=0.0, output_directory="", consecutive_losses=0
                 )
         
         # Execute backtest subprocess
@@ -441,7 +541,7 @@ def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout:
                 trade_count=0, avg_winner=0.0, avg_loser=0.0, profit_factor=0.0,
                 expectancy=0.0, rejected_signals_count=0,
                 status="failed", error_message=result.stderr.strip(),
-                backtest_duration_seconds=duration, output_directory=""
+                backtest_duration_seconds=duration, output_directory="", consecutive_losses=0
             )
         
         # Find output directory
@@ -465,7 +565,7 @@ def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout:
                 trade_count=0, avg_winner=0.0, avg_loser=0.0, profit_factor=0.0,
                 expectancy=0.0, rejected_signals_count=0,
                 status="failed", error_message="No backtest output directory found",
-                backtest_duration_seconds=duration, output_directory=""
+                backtest_duration_seconds=duration, output_directory="", consecutive_losses=0
             )
         
         # Load performance stats
@@ -478,13 +578,13 @@ def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout:
                 trade_count=0, avg_winner=0.0, avg_loser=0.0, profit_factor=0.0,
                 expectancy=0.0, rejected_signals_count=0,
                 status="failed", error_message="No performance stats generated",
-                backtest_duration_seconds=duration, output_directory=str(output_dir)
+                backtest_duration_seconds=duration, output_directory=str(output_dir), consecutive_losses=0
             )
         
         with open(stats_file, 'r') as f:
             stats = json.load(f)
         
-        metrics = extract_metrics(stats)
+        metrics = extract_metrics(stats, output_dir)
         
         # Create BacktestResult
         return BacktestResult(
@@ -503,7 +603,8 @@ def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout:
             status="completed",
             error_message="",
             backtest_duration_seconds=duration,
-            output_directory=str(output_dir)
+            output_directory=str(output_dir),
+            consecutive_losses=metrics.get("consecutive_losses", 0)
         )
         
     except subprocess.TimeoutExpired:
@@ -514,7 +615,7 @@ def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout:
             trade_count=0, avg_winner=0.0, avg_loser=0.0, profit_factor=0.0,
             expectancy=0.0, rejected_signals_count=0,
             status="timeout", error_message=f"Backtest timed out after {timeout} seconds",
-            backtest_duration_seconds=timeout, output_directory=""
+            backtest_duration_seconds=timeout, output_directory="", consecutive_losses=0
         )
     except Exception as e:
         return BacktestResult(
@@ -524,7 +625,7 @@ def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout:
             trade_count=0, avg_winner=0.0, avg_loser=0.0, profit_factor=0.0,
             expectancy=0.0, rejected_signals_count=0,
             status="failed", error_message=str(e),
-            backtest_duration_seconds=0.0, output_directory=""
+            backtest_duration_seconds=0.0, output_directory="", consecutive_losses=0
         )
 
 
@@ -600,6 +701,7 @@ def load_checkpoint(checkpoint_file: str) -> List[BacktestResult]:
                 error_message=str(row["error_message"]),
                 backtest_duration_seconds=float(row["backtest_duration_seconds"]),
                 output_directory=str(row["output_directory"]),
+                consecutive_losses=int(row.get("consecutive_losses", 0)) if "consecutive_losses" in row else 0,
             )
             
             results.append(result)
@@ -682,20 +784,21 @@ def run_grid_search_parallel(combinations: List[ParameterSet], opt_config: Optim
 
 
 def rank_results(results: List[BacktestResult], objective: str) -> List[BacktestResult]:
-    """Sort results by objective function."""
+    """Sort results by objective function, supporting minimization and maximization."""
     completed = [r for r in results if r.status == "completed"]
     if not completed:
         logger.warning("No completed backtests to rank")
         return results
     
-    # Sort by objective value (descending)
-    ranked = sorted(completed, key=lambda r: r.get_objective_value(objective), reverse=True)
+    # Determine sort order based on objective direction
+    minimize = is_minimization_objective(objective)
+    ranked = sorted(completed, key=lambda r: r.get_objective_value(objective), reverse=not minimize)
     
     # Add failed runs at the end
     failed = [r for r in results if r.status != "completed"]
     ranked.extend(failed)
     
-    logger.info(f"Ranked {len(completed)} completed results by {objective}")
+    logger.info(f"Ranked {len(completed)} completed results by {objective} ({'minimizing' if minimize else 'maximizing'})")
     return ranked
 
 
@@ -716,8 +819,9 @@ def generate_summary_statistics(results: List[BacktestResult], objective: str) -
     }
     
     if completed:
-        # Best result
-        best = max(completed, key=lambda r: r.get_objective_value(objective))
+        # Best/worst depend on objective direction
+        minimize = is_minimization_objective(objective)
+        best = (min if minimize else max)(completed, key=lambda r: r.get_objective_value(objective))
         summary["best"] = {
             "run_id": best.run_id,
             "objective_value": best.get_objective_value(objective),
@@ -732,7 +836,7 @@ def generate_summary_statistics(results: List[BacktestResult], objective: str) -
         }
         
         # Worst result
-        worst = min(completed, key=lambda r: r.get_objective_value(objective))
+        worst = (max if minimize else min)(completed, key=lambda r: r.get_objective_value(objective))
         summary["worst"] = {
             "run_id": worst.run_id,
             "objective_value": worst.get_objective_value(objective),
@@ -767,6 +871,8 @@ def generate_summary_statistics(results: List[BacktestResult], objective: str) -
         for col in param_columns:
             if col in df.columns:
                 correlation = df[col].corr(pd.Series(objective_values))
+                if minimize and not pd.isna(correlation):
+                    correlation = abs(correlation)
                 sensitivity[col] = correlation if not pd.isna(correlation) else 0.0
         
         summary["sensitivity"] = sensitivity
@@ -774,31 +880,76 @@ def generate_summary_statistics(results: List[BacktestResult], objective: str) -
     return summary
 
 
-def export_results(results: List[BacktestResult], output_file: str, summary: Dict[str, Any], objective: str) -> None:
+def _dominates(a: BacktestResult, b: BacktestResult, objectives: List[str]) -> bool:
+    """Return True if a dominates b under the given objectives and their directions."""
+    all_better_or_equal = True
+    strictly_better = False
+    for obj in objectives:
+        a_val = a.get_objective_value(obj)
+        b_val = b.get_objective_value(obj)
+        if is_minimization_objective(obj):
+            if a_val > b_val:
+                all_better_or_equal = False
+                break
+            if a_val < b_val:
+                strictly_better = True
+        else:
+            if a_val < b_val:
+                all_better_or_equal = False
+                break
+            if a_val > b_val:
+                strictly_better = True
+    return all_better_or_equal and strictly_better
+
+
+def calculate_pareto_frontier(results: List[BacktestResult], objectives: List[str]) -> List[BacktestResult]:
+    """Compute non-dominated set (Pareto frontier) across objectives."""
+    completed = [r for r in results if r.status == "completed"]
+    frontier: List[BacktestResult] = []
+    for r in completed:
+        dominated = False
+        for q in completed:
+            if q is r:
+                continue
+            if _dominates(q, r, objectives):
+                dominated = True
+                break
+        if not dominated:
+            frontier.append(r)
+    logger.info(f"Pareto frontier size: {len(frontier)} across objectives {objectives}")
+    return frontier
+
+
+def export_results(results: List[BacktestResult], output_file: str, summary: Dict[str, Any], objective: str, pareto_objectives: Optional[List[str]] = None) -> None:
     """Export results to CSV with summary header."""
     if not results:
         logger.warning("No results to export")
         return
     
-    # Convert results to DataFrame and sort by objective
+    # Convert results to DataFrame respecting the existing order (already ranked)
     results_dicts = [result.to_dict() for result in results]
     df = pd.DataFrame(results_dicts)
-    
-    # Add objective value column
-    obj_vals = [r.get_objective_value(objective) for r in results]
-    df["objective_value"] = obj_vals
-    
-    # Sort by objective value (best first)
-    df = df.sort_values("objective_value", ascending=False)
-    
-    # Add rank column
-    df["rank"] = range(1, len(df) + 1)
+
+    # Add objective value column; set to NaN for non-completed to ensure they sort last if re-sorted externally
+    objective_values = []
+    for r in results:
+        if r.status == "completed":
+            objective_values.append(r.get_objective_value(objective))
+        else:
+            objective_values.append(pd.NA)
+    df["objective_value"] = objective_values
+
+    # Derive rank only for completed runs, preserving their current order; non-completed have rank as NaN
+    completed_mask = df["status"] == "completed"
+    ranks = pd.Series(pd.NA, index=df.index, dtype="Int64")
+    ranks.loc[completed_mask] = range(1, completed_mask.sum() + 1)
+    df["rank"] = ranks
     
     # Write to CSV
     df.to_csv(output_file, index=False)
     logger.info(f"Results exported to {output_file}: {len(results)} runs")
     
-    # Export top 10 parameters as JSON
+    # Export top 10 parameters as JSON (trusting pre-ranked order among completed)
     output_path = Path(output_file)
     top_10_file = output_path.parent / f"{output_path.stem}_top_10.json"
     top_10_params = []
@@ -827,6 +978,27 @@ def export_results(results: List[BacktestResult], output_file: str, summary: Dic
     
     logger.info(f"Summary statistics exported to {summary_file}")
 
+    # Optional: export Pareto frontier
+    if pareto_objectives:
+        # Validate objectives
+        invalid = [o for o in pareto_objectives if o not in OBJECTIVE_DIRECTIONS]
+        if invalid:
+            logger.warning(f"Skipping Pareto export due to invalid objectives: {invalid}")
+            return
+        frontier = calculate_pareto_frontier(results, pareto_objectives)
+        pf = [
+            {
+                "run_id": r.run_id,
+                "parameters": asdict(r.parameters),
+                **{obj: r.get_objective_value(obj) for obj in pareto_objectives},
+            }
+            for r in frontier
+        ]
+        pareto_file = output_path.parent / f"{output_path.stem}_pareto_frontier.json"
+        with open(pareto_file, "w") as f:
+            json.dump({"objectives": pareto_objectives, "frontier": pf}, f, indent=2)
+        logger.info(f"Pareto frontier exported to {pareto_file}")
+
 
 def parse_arguments() -> argparse.Namespace:
     """Parse command line arguments."""
@@ -847,7 +1019,7 @@ def parse_arguments() -> argparse.Namespace:
     
     parser.add_argument(
         "--objective",
-        help="Objective function to maximize (overrides config)"
+        help="Objective function to optimize (overrides config)"
     )
     
     parser.add_argument(
@@ -862,6 +1034,11 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--verbose", action="store_true",
         help="Enable debug logging"
+    )
+
+    parser.add_argument(
+        "--pareto", nargs='+',
+        help="Calculate Pareto frontier across multiple objectives (specify 2+ objectives)"
     )
     
     return parser.parse_args()
@@ -892,6 +1069,10 @@ def main() -> int:
             opt_config.workers = args.workers
         if args.objective:
             opt_config.objective = args.objective
+            # Validate CLI objective override
+            if opt_config.objective not in OBJECTIVE_DIRECTIONS:
+                logger.error(f"Invalid objective override: {opt_config.objective}. Allowed: {list(OBJECTIVE_DIRECTIONS.keys())}")
+                return 2
         if args.output:
             opt_config.output_file = args.output
         
@@ -939,8 +1120,20 @@ def main() -> int:
                        f"slow={best['parameters']['slow_period']}, "
                        f"{opt_config.objective}={best['objective_value']:.2f}")
         
-        # Export results
-        export_results(ranked_results, opt_config.output_file, summary, opt_config.objective)
+        # Optional Pareto frontier objectives from CLI
+        pareto_objectives: Optional[List[str]] = None
+        if getattr(args, "pareto", None):
+            if len(args.pareto) < 2:
+                logger.warning("--pareto requires at least 2 objectives; skipping Pareto analysis")
+            else:
+                invalid = [o for o in args.pareto if o not in OBJECTIVE_DIRECTIONS]
+                if invalid:
+                    logger.error(f"Invalid Pareto objectives: {invalid}")
+                else:
+                    pareto_objectives = args.pareto
+
+        # Export results (and Pareto frontier if requested)
+        export_results(ranked_results, opt_config.output_file, summary, opt_config.objective, pareto_objectives)
         logger.info(f"Results exported to {opt_config.output_file}")
         
         # Print summary

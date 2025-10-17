@@ -59,6 +59,11 @@ class DMI(Indicator):
         self._prev_low: Optional[float] = None
         self._prev_close: Optional[float] = None
 
+        # ADX state
+        self._dx_buffer: deque[float] = deque(maxlen=period)
+        self._smoothed_adx: Optional[float] = None
+        self._adx: float = 0.0
+
     def handle_bar(self, bar: Bar) -> None:
         high = float(bar.high)
         low = float(bar.low)
@@ -96,7 +101,11 @@ class DMI(Indicator):
                 self._smoothed_plus_dm = float(sum(self._plus_dm_buffer))
                 self._smoothed_minus_dm = float(sum(self._minus_dm_buffer))
                 self._smoothed_tr = float(sum(self._tr_buffer))
-                self._calculate_di_values()
+            dx = self._calculate_di_values()
+            # Accumulate DX values to seed initial ADX once smoothing starts
+            # (DX meaningful only after DI values are available)
+            if dx is not None:
+                self._dx_buffer.append(dx)
         else:
             # Smoothing phase
             # smoothed[t] = smoothed[t-1] - smoothed[t-1]/n + raw[t]
@@ -112,7 +121,21 @@ class DMI(Indicator):
             )
             self._smoothed_tr = self._smoothed_tr - (self._smoothed_tr / self.period) + tr
 
-            self._calculate_di_values()
+            dx = self._calculate_di_values()
+
+            # ADX smoothing using Wilder's method
+            if dx is not None:
+                if self._smoothed_adx is None:
+                    # Seed initial ADX using simple average of first `period` DX values
+                    self._dx_buffer.append(dx)
+                    if len(self._dx_buffer) == self.period:
+                        self._smoothed_adx = float(sum(self._dx_buffer)) / float(self.period)
+                        self._adx = self._smoothed_adx
+                else:
+                    self._smoothed_adx = (
+                        (self._smoothed_adx * (self.period - 1)) + dx
+                    ) / float(self.period)
+                    self._adx = self._smoothed_adx
             self._samples += 1
 
         # Update previous bar values
@@ -120,11 +143,11 @@ class DMI(Indicator):
         self._prev_low = low
         self._prev_close = close
 
-    def _calculate_di_values(self) -> None:
+    def _calculate_di_values(self) -> Optional[float]:
         if self._smoothed_tr is None or self._smoothed_tr == 0.0:
             self._plus_di = 0.0
             self._minus_di = 0.0
-            return
+            return None
 
         # Scale to 0-100
         self._plus_di = 100.0 * (
@@ -135,6 +158,13 @@ class DMI(Indicator):
             (self._smoothed_minus_dm if self._smoothed_minus_dm is not None else 0.0)
             / self._smoothed_tr
         )
+        # Compute DX = 100 * |+DI - -DI| / (+DI + -DI)
+        di_sum = self._plus_di + self._minus_di
+        if di_sum <= 0.0:
+            return 0.0
+        di_diff = abs(self._plus_di - self._minus_di)
+        dx = 100.0 * (di_diff / di_sum)
+        return dx
 
     def handle_quote_tick(self, tick) -> None:  # noqa: D401 - no-op
         # DMI only uses bar data
@@ -160,6 +190,10 @@ class DMI(Indicator):
         self._prev_high = None
         self._prev_low = None
         self._prev_close = None
+        # Reset ADX state
+        self._dx_buffer.clear()
+        self._smoothed_adx = None
+        self._adx = 0.0
 
     @property
     def name(self) -> str:
@@ -195,6 +229,15 @@ class DMI(Indicator):
     @property
     def is_bearish(self) -> bool:
         return (self._minus_di > self._plus_di) if self.initialized else False
+
+    @property
+    def adx(self) -> float:
+        return self._adx
+
+    @property
+    def adx_initialized(self) -> bool:
+        # ADX becomes initialized when the smoothed ADX value has been seeded
+        return self._smoothed_adx is not None
 
     def update(self, bar: Bar) -> None:
         self.handle_bar(bar)
