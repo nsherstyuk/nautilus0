@@ -1,0 +1,82 @@
+{
+  "overall": {
+    "total_runs": 2,
+    "completed": 2,
+    "failed": 0,
+    "timeout": 0,
+    "success_rate": 1.0
+  },
+  "best": {
+    "run_id": 2,
+    "objective_value": 1.1470384186913443,
+    "parameters": {
+      "run_id": 2,
+      "fast_period": 38,
+      "slow_period": 230,
+      "crossover_threshold_pips": 0.35,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "metrics": {
+      "total_pnl": 968.62,
+      "sharpe_ratio": 1.1470384186913443,
+      "win_rate": 0.6666666666666666,
+      "max_drawdown": 0.0,
+      "trade_count": 3
+    }
+  },
+  "worst": {
+    "run_id": 1,
+    "objective_value": 0.4917795914706293,
+    "parameters": {
+      "run_id": 1,
+      "fast_period": 36,
+      "slow_period": 230,
+      "crossover_threshold_pips": 0.35,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "metrics": {
+      "total_pnl": 723.46,
+      "sharpe_ratio": 0.4917795914706293,
+      "win_rate": 0.5,
+      "max_drawdown": 0.0,
+      "trade_count": 4
+    }
+  },
+  "averages": {
+    "total_pnl": 846.04,
+    "sharpe_ratio": 0.8194090050809868,
+    "win_rate": 0.5833333333333333,
+    "max_drawdown": 0.0,
+    "trade_count": 3.5,
+    "profit_factor": 0.0,
+    "expectancy": 251.86916666666664
+  },
+  "sensitivity": {
+    "fast_period": 0.9999999999999999,
+    "slow_period": 0.0,
+    "crossover_threshold_pips": 0.0,
+    "stop_loss_pips": 0.0,
+    "take_profit_pips": 0.0
+  },
+  "objective": "sharpe_ratio"
+}

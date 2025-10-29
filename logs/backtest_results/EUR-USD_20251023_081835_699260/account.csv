@@ -1,0 +1,975 @@
+total,locked,free,currency,account_id,account_type,base_currency,margins,reported,info
+100000.00,0.00,100000.00,USD,IDEALPRO-001,MARGIN,,[],True,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],True,{}
+100000.00,0.00,100000.00,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+99997.94,0.00,99997.94,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+99997.94,2062.66,97935.28,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+99997.94,2062.66,97935.28,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+99997.94,2062.66,97935.28,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100294.88,0.00,100294.88,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100294.88,0.00,100294.88,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100294.88,0.00,100294.88,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100294.88,0.00,100294.88,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100292.82,0.00,100292.82,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100292.82,2063.24,98229.58,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2063.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2063.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100292.82,2063.24,98229.58,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2063.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2063.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100292.82,2063.24,98229.58,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2063.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2063.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100589.75,0.00,100589.75,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100589.75,0.00,100589.75,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100589.75,0.00,100589.75,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100589.75,0.00,100589.75,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100587.68,0.00,100587.68,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100587.68,2069.36,98518.32,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2069.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2069.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100587.68,2069.36,98518.32,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2069.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2069.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100587.68,2069.36,98518.32,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2069.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2069.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100884.62,0.00,100884.62,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100884.62,0.00,100884.62,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100884.62,0.00,100884.62,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100884.62,0.00,100884.62,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100882.57,0.00,100882.57,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+100882.57,2050.70,98831.87,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2050.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2050.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100882.57,2050.70,98831.87,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2050.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2050.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100882.57,2050.70,98831.87,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2050.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2050.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101179.51,0.00,101179.51,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101179.51,0.00,101179.51,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101179.51,0.00,101179.51,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101179.51,0.00,101179.51,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101177.45,0.00,101177.45,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101177.45,2059.12,99118.33,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2059.12', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2059.12', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101177.45,2059.12,99118.33,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2059.12', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2059.12', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101177.45,2059.12,99118.33,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2059.12', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2059.12', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101474.40,0.00,101474.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101474.40,0.00,101474.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101474.40,0.00,101474.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101474.40,0.00,101474.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101472.34,0.00,101472.34,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101472.34,2062.74,99409.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101472.34,2062.74,99409.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101472.34,2062.74,99409.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2062.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101769.27,0.00,101769.27,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101769.27,0.00,101769.27,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101769.27,0.00,101769.27,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101769.27,0.00,101769.27,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101767.19,0.00,101767.19,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101767.19,2080.22,99686.97,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2080.22', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2080.22', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101767.19,2080.22,99686.97,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2080.22', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2080.22', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101767.19,2080.22,99686.97,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2080.22', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2080.22', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101563.11,0.00,101563.11,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101563.11,0.00,101563.11,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101563.11,0.00,101563.11,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101563.11,0.00,101563.11,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101561.02,0.00,101561.02,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101561.02,2087.10,99473.92,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2087.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2087.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101561.02,2087.10,99473.92,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2087.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2087.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101561.02,2087.10,99473.92,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2087.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2087.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101356.94,0.00,101356.94,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101356.94,0.00,101356.94,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101356.94,0.00,101356.94,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101356.94,0.00,101356.94,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101354.85,0.00,101354.85,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101354.85,2086.28,99268.57,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2086.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2086.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101354.85,2086.28,99268.57,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2086.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2086.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101354.85,2086.28,99268.57,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2086.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2086.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101651.77,0.00,101651.77,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101651.77,0.00,101651.77,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101651.77,0.00,101651.77,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101651.77,0.00,101651.77,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101649.69,0.00,101649.69,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101649.69,2075.90,99573.79,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2075.90', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2075.90', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101649.69,2075.90,99573.79,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2075.90', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2075.90', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101649.69,2075.90,99573.79,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2075.90', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2075.90', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101946.61,0.00,101946.61,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101946.61,0.00,101946.61,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101946.61,0.00,101946.61,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101946.61,0.00,101946.61,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101944.54,0.00,101944.54,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101944.54,2073.28,99871.26,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2073.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2073.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101944.54,2073.28,99871.26,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2073.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2073.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101944.54,2073.28,99871.26,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2073.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2073.28', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101740.46,0.00,101740.46,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101740.46,0.00,101740.46,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101740.46,0.00,101740.46,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101740.46,0.00,101740.46,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101738.38,0.00,101738.38,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101738.38,2077.54,99660.84,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2077.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2077.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101738.38,2077.54,99660.84,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2077.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2077.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101738.38,2077.54,99660.84,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2077.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2077.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101738.38,2077.54,99660.84,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2077.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2077.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101644.30,0.00,101644.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101644.30,0.00,101644.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101644.30,0.00,101644.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101644.30,0.00,101644.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101644.30,0.00,101644.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101642.23,0.00,101642.23,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101642.23,2072.38,99569.85,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2072.38', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2072.38', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101642.23,2072.38,99569.85,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2072.38', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2072.38', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101642.23,2072.38,99569.85,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2072.38', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2072.38', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101438.16,0.00,101438.16,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101438.16,0.00,101438.16,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101438.16,0.00,101438.16,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101438.16,0.00,101438.16,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101436.07,0.00,101436.07,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101436.07,2091.36,99344.71,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2091.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2091.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101436.07,2091.36,99344.71,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2091.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2091.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101436.07,2091.36,99344.71,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2091.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2091.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101732.98,0.00,101732.98,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101732.98,0.00,101732.98,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101732.98,0.00,101732.98,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101732.98,0.00,101732.98,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101730.88,0.00,101730.88,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101730.88,2096.86,99634.02,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101730.88,2096.86,99634.02,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101730.88,2096.86,99634.02,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101526.79,0.00,101526.79,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101526.79,0.00,101526.79,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101526.79,0.00,101526.79,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101526.79,0.00,101526.79,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101524.70,0.00,101524.70,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101524.70,2094.92,99429.78,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.92', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.92', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101524.70,2094.92,99429.78,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.92', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.92', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101524.70,2094.92,99429.78,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.92', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.92', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101320.60,0.00,101320.60,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101320.60,0.00,101320.60,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101320.60,0.00,101320.60,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101320.60,0.00,101320.60,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101318.50,0.00,101318.50,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101318.50,2102.64,99215.86,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2102.64', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2102.64', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101318.50,2102.64,99215.86,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2102.64', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2102.64', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101318.50,2102.64,99215.86,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2102.64', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2102.64', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101114.40,0.00,101114.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101114.40,0.00,101114.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101114.40,0.00,101114.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101114.40,0.00,101114.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101112.31,0.00,101112.31,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101112.31,2094.42,99017.89,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101112.31,2094.42,99017.89,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101112.31,2094.42,99017.89,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2094.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101409.22,0.00,101409.22,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101409.22,0.00,101409.22,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101409.22,0.00,101409.22,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101409.22,0.00,101409.22,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101407.12,0.00,101407.12,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101407.12,2096.94,99310.18,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.94', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.94', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101407.12,2096.94,99310.18,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.94', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.94', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101407.12,2096.94,99310.18,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.94', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2096.94', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101704.02,0.00,101704.02,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101704.02,0.00,101704.02,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101704.02,0.00,101704.02,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101704.02,0.00,101704.02,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101701.85,0.00,101701.85,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101701.85,2174.66,99527.19,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2174.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2174.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101701.85,2174.66,99527.19,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2174.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2174.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101701.85,2174.66,99527.19,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2174.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2174.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101998.68,0.00,101998.68,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101998.68,0.00,101998.68,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101998.68,0.00,101998.68,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101998.68,0.00,101998.68,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101996.50,0.00,101996.50,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101996.50,2176.06,99820.44,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2176.06', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2176.06', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101996.50,2176.06,99820.44,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2176.06', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2176.06', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101996.50,2176.06,99820.44,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2176.06', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2176.06', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102293.32,0.00,102293.32,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102293.32,0.00,102293.32,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102293.32,0.00,102293.32,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102293.32,0.00,102293.32,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102291.14,0.00,102291.14,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102291.14,2178.88,100112.26,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2178.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2178.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102291.14,2178.88,100112.26,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2178.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2178.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102291.14,2178.88,100112.26,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2178.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2178.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102587.97,0.00,102587.97,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102587.97,0.00,102587.97,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102587.97,0.00,102587.97,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102587.97,0.00,102587.97,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102585.81,0.00,102585.81,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102585.81,2159.76,100426.05,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2159.76', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2159.76', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102585.81,2159.76,100426.05,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2159.76', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2159.76', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102585.81,2159.76,100426.05,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2159.76', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2159.76', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102381.65,0.00,102381.65,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102381.65,0.00,102381.65,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102381.65,0.00,102381.65,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102381.65,0.00,102381.65,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102379.49,0.00,102379.49,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102379.49,2157.42,100222.07,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2157.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2157.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102379.49,2157.42,100222.07,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2157.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2157.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102379.49,2157.42,100222.07,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2157.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2157.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102175.33,0.00,102175.33,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102175.33,0.00,102175.33,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102175.33,0.00,102175.33,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102175.33,0.00,102175.33,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102173.16,0.00,102173.16,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102173.16,2170.88,100002.28,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2170.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2170.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102173.16,2170.88,100002.28,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2170.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2170.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102173.16,2170.88,100002.28,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2170.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2170.88', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101968.99,0.00,101968.99,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101968.99,0.00,101968.99,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101968.99,0.00,101968.99,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101968.99,0.00,101968.99,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101966.80,0.00,101966.80,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+101966.80,2190.98,99775.82,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2190.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2190.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101966.80,2190.98,99775.82,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2190.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2190.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+101966.80,2190.98,99775.82,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2190.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2190.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102263.62,0.00,102263.62,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102263.62,0.00,102263.62,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102263.62,0.00,102263.62,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102263.62,0.00,102263.62,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102261.42,0.00,102261.42,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102261.42,2204.72,100056.70,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2204.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2204.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102261.42,2204.72,100056.70,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2204.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2204.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102261.42,2204.72,100056.70,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2204.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2204.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102558.21,0.00,102558.21,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102558.21,0.00,102558.21,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102558.21,0.00,102558.21,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102558.21,0.00,102558.21,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102556.02,0.00,102556.02,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102556.02,2192.56,100363.46,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2192.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2192.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102556.02,2192.56,100363.46,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2192.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2192.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102556.02,2192.56,100363.46,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2192.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2192.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102351.82,0.00,102351.82,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102351.82,0.00,102351.82,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102351.82,0.00,102351.82,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102351.82,0.00,102351.82,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102349.61,0.00,102349.61,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102349.61,2205.32,100144.29,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2205.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2205.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102349.61,2205.32,100144.29,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2205.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2205.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102349.61,2205.32,100144.29,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2205.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2205.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102646.40,0.00,102646.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102646.40,0.00,102646.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102646.40,0.00,102646.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102646.40,0.00,102646.40,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102644.14,0.00,102644.14,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102644.14,2263.32,100380.82,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2263.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2263.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102644.14,2263.32,100380.82,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2263.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2263.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102644.14,2263.32,100380.82,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2263.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2263.32', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102940.88,0.00,102940.88,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102940.88,0.00,102940.88,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102940.88,0.00,102940.88,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102940.88,0.00,102940.88,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102938.61,0.00,102938.61,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102938.61,2273.44,100665.17,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2273.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2273.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102938.61,2273.44,100665.17,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2273.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2273.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102938.61,2273.44,100665.17,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2273.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2273.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102734.34,0.00,102734.34,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102734.34,0.00,102734.34,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102734.34,0.00,102734.34,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102734.34,0.00,102734.34,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102732.06,0.00,102732.06,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102732.06,2283.66,100448.40,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2283.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2283.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102732.06,2283.66,100448.40,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2283.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2283.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102732.06,2283.66,100448.40,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2283.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2283.66', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103028.78,0.00,103028.78,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103028.78,0.00,103028.78,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103028.78,0.00,103028.78,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103028.78,0.00,103028.78,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103026.51,0.00,103026.51,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103026.51,2271.54,100754.97,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2271.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2271.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103026.51,2271.54,100754.97,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2271.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2271.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103026.51,2271.54,100754.97,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2271.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2271.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103026.51,2271.54,100754.97,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2271.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2271.54', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103099.24,0.00,103099.24,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103099.24,0.00,103099.24,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103099.24,0.00,103099.24,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103099.24,0.00,103099.24,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103099.24,0.00,103099.24,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103096.96,0.00,103096.96,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103096.96,2282.34,100814.62,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2282.34', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2282.34', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103096.96,2282.34,100814.62,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2282.34', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2282.34', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103096.96,2282.34,100814.62,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2282.34', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2282.34', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102892.68,0.00,102892.68,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102892.68,0.00,102892.68,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102892.68,0.00,102892.68,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102892.68,0.00,102892.68,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102890.41,0.00,102890.41,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102890.41,2272.86,100617.55,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2272.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2272.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102890.41,2272.86,100617.55,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2272.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2272.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102890.41,2272.86,100617.55,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2272.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2272.86', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102686.13,0.00,102686.13,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102686.13,0.00,102686.13,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102686.13,0.00,102686.13,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102686.13,0.00,102686.13,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102683.86,0.00,102683.86,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102683.86,2265.56,100418.30,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102683.86,2265.56,100418.30,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102683.86,2265.56,100418.30,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102980.59,0.00,102980.59,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102980.59,0.00,102980.59,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102980.59,0.00,102980.59,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102980.59,0.00,102980.59,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102978.33,0.00,102978.33,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102978.33,2257.20,100721.13,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2257.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2257.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102978.33,2257.20,100721.13,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2257.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2257.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102978.33,2257.20,100721.13,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2257.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2257.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102774.07,0.00,102774.07,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102774.07,0.00,102774.07,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102774.07,0.00,102774.07,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102774.07,0.00,102774.07,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102771.80,0.00,102771.80,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102771.80,2265.36,100506.44,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102771.80,2265.36,100506.44,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102771.80,2265.36,100506.44,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2265.36', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103068.53,0.00,103068.53,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103068.53,0.00,103068.53,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103068.53,0.00,103068.53,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103068.53,0.00,103068.53,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103066.27,0.00,103066.27,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103066.27,2260.24,100806.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2260.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2260.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103066.27,2260.24,100806.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2260.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2260.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103066.27,2260.24,100806.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2260.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2260.24', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102862.01,0.00,102862.01,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102862.01,0.00,102862.01,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102862.01,0.00,102862.01,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102862.01,0.00,102862.01,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102859.77,0.00,102859.77,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102859.77,2238.74,100621.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2238.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2238.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102859.77,2238.74,100621.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2238.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2238.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102859.77,2238.74,100621.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2238.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2238.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103156.53,0.00,103156.53,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103156.53,0.00,103156.53,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103156.53,0.00,103156.53,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103156.53,0.00,103156.53,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103154.30,0.00,103154.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103154.30,2228.04,100926.26,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2228.04', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2228.04', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103154.30,2228.04,100926.26,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2228.04', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2228.04', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103154.30,2228.04,100926.26,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2228.04', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2228.04', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102950.07,0.00,102950.07,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102950.07,0.00,102950.07,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102950.07,0.00,102950.07,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102950.07,0.00,102950.07,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102947.82,0.00,102947.82,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102947.82,2249.68,100698.14,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2249.68', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2249.68', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102947.82,2249.68,100698.14,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2249.68', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2249.68', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102947.82,2249.68,100698.14,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2249.68', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2249.68', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103244.56,0.00,103244.56,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103244.56,0.00,103244.56,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103244.56,0.00,103244.56,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103244.56,0.00,103244.56,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103242.30,0.00,103242.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103242.30,2256.72,100985.58,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2256.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2256.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103242.30,2256.72,100985.58,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2256.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2256.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103242.30,2256.72,100985.58,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2256.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2256.72', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103038.04,0.00,103038.04,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103038.04,0.00,103038.04,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103038.04,0.00,103038.04,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103038.04,0.00,103038.04,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103035.77,0.00,103035.77,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103035.77,2268.84,100766.93,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.84', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.84', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103035.77,2268.84,100766.93,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.84', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.84', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103035.77,2268.84,100766.93,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.84', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.84', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103332.50,0.00,103332.50,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103332.50,0.00,103332.50,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103332.50,0.00,103332.50,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103332.50,0.00,103332.50,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103330.23,0.00,103330.23,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103330.23,2268.20,101062.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103330.23,2268.20,101062.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103330.23,2268.20,101062.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2268.20', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103626.97,0.00,103626.97,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103626.97,0.00,103626.97,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103626.97,0.00,103626.97,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103626.97,0.00,103626.97,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103624.69,0.00,103624.69,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103624.69,2276.56,101348.13,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2276.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2276.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103624.69,2276.56,101348.13,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2276.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2276.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103624.69,2276.56,101348.13,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2276.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2276.56', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103420.42,0.00,103420.42,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103420.42,0.00,103420.42,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103420.42,0.00,103420.42,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103420.42,0.00,103420.42,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103418.15,0.00,103418.15,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103418.15,2274.44,101143.71,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2274.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2274.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103418.15,2274.44,101143.71,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2274.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2274.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103418.15,2274.44,101143.71,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2274.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2274.44', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103213.87,0.00,103213.87,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103213.87,0.00,103213.87,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103213.87,0.00,103213.87,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103213.87,0.00,103213.87,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103211.58,0.00,103211.58,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103211.58,2285.98,100925.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2285.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2285.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103211.58,2285.98,100925.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2285.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2285.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103211.58,2285.98,100925.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2285.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2285.98', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103007.30,0.00,103007.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103007.30,0.00,103007.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103007.30,0.00,103007.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103007.30,0.00,103007.30,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103005.02,0.00,103005.02,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103005.02,2277.42,100727.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2277.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2277.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103005.02,2277.42,100727.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2277.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2277.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103005.02,2277.42,100727.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2277.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2277.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102800.74,0.00,102800.74,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102800.74,0.00,102800.74,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102800.74,0.00,102800.74,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102800.74,0.00,102800.74,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102798.46,0.00,102798.46,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+102798.46,2284.62,100513.84,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2284.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2284.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102798.46,2284.62,100513.84,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2284.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2284.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+102798.46,2284.62,100513.84,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2284.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2284.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103095.17,0.00,103095.17,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103095.17,0.00,103095.17,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103095.17,0.00,103095.17,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103095.17,0.00,103095.17,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103092.86,0.00,103092.86,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103092.86,2311.58,100781.28,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103092.86,2311.58,100781.28,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103092.86,2311.58,100781.28,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103092.86,2311.58,100781.28,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103103.55,0.00,103103.55,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103103.55,0.00,103103.55,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103103.55,0.00,103103.55,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103103.55,0.00,103103.55,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103103.55,0.00,103103.55,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103101.25,0.00,103101.25,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103101.25,2304.10,100797.15,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103101.25,2304.10,100797.15,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103101.25,2304.10,100797.15,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.10', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103397.95,0.00,103397.95,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103397.95,0.00,103397.95,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103397.95,0.00,103397.95,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103397.95,0.00,103397.95,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103395.65,0.00,103395.65,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103395.65,2304.62,101091.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103395.65,2304.62,101091.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103395.65,2304.62,101091.03,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2304.62', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103191.35,0.00,103191.35,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103191.35,0.00,103191.35,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103191.35,0.00,103191.35,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103191.35,0.00,103191.35,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103189.05,0.00,103189.05,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103189.05,2301.40,100887.65,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2301.40', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2301.40', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103189.05,2301.40,100887.65,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2301.40', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2301.40', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103189.05,2301.40,100887.65,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2301.40', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2301.40', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103485.75,0.00,103485.75,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103485.75,0.00,103485.75,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103485.75,0.00,103485.75,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103485.75,0.00,103485.75,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103483.44,0.00,103483.44,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103483.44,2311.70,101171.74,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103483.44,2311.70,101171.74,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103483.44,2311.70,101171.74,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2311.70', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103780.12,0.00,103780.12,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103780.12,0.00,103780.12,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103780.12,0.00,103780.12,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103780.12,0.00,103780.12,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103777.77,0.00,103777.77,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103777.77,2351.58,101426.19,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2351.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2351.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103777.77,2351.58,101426.19,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2351.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2351.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103777.77,2351.58,101426.19,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2351.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2351.58', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103573.41,0.00,103573.41,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103573.41,0.00,103573.41,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103573.41,0.00,103573.41,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103573.41,0.00,103573.41,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103571.06,0.00,103571.06,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103571.06,2347.42,101223.64,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2347.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2347.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103571.06,2347.42,101223.64,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2347.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2347.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103571.06,2347.42,101223.64,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2347.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2347.42', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103366.72,0.00,103366.72,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103366.72,0.00,103366.72,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103366.72,0.00,103366.72,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103366.72,0.00,103366.72,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103364.38,0.00,103364.38,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103364.38,2336.78,101027.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2336.78', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2336.78', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103364.38,2336.78,101027.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2336.78', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2336.78', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103364.38,2336.78,101027.60,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2336.78', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2336.78', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103160.04,0.00,103160.04,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103160.04,0.00,103160.04,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103160.04,0.00,103160.04,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103160.04,0.00,103160.04,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103157.72,0.00,103157.72,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103157.72,2324.14,100833.58,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2324.14', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2324.14', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103157.72,2324.14,100833.58,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2324.14', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2324.14', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103157.72,2324.14,100833.58,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2324.14', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2324.14', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103454.39,0.00,103454.39,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103454.39,0.00,103454.39,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103454.39,0.00,103454.39,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103454.39,0.00,103454.39,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103452.04,0.00,103452.04,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103452.04,2348.74,101103.30,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2348.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2348.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103452.04,2348.74,101103.30,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2348.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2348.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103452.04,2348.74,101103.30,USD,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2348.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,"[{'type': 'MarginBalance', 'initial': '0.00', 'maintenance': '2348.74', 'currency': 'USD', 'instrument_id': 'EUR/USD.IDEALPRO'}]",False,{}
+103748.70,0.00,103748.70,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}
+103748.70,0.00,103748.70,USD,IDEALPRO-001,MARGIN,,[],False,{}
+100000.00,0.00,100000.00,EUR,IDEALPRO-001,MARGIN,,[],False,{}

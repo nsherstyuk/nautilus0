@@ -43,6 +43,8 @@ class IBKRConfig:
     client_id: int
     account_id: str
     market_data_type: str
+    # IB symbology method for instrument resolution. Accepted values: IB_SIMPLIFIED, IB_RAW
+    symbology_method: str = "IB_SIMPLIFIED"
 
 
 def get_ibkr_config() -> IBKRConfig:
@@ -60,7 +62,7 @@ def get_ibkr_config() -> IBKRConfig:
         IB_PORT: IBKR port number
         IB_CLIENT_ID: Client identifier
         IB_ACCOUNT_ID: IBKR account ID (optional, defaults to empty string)
-        IB_MARKET_DATA_TYPE: Market data type (optional, defaults to "DELAYED_FROZEN")
+        IB_MARKET_DATA_TYPE: Market data type (optional, defaults to "REALTIME")
     """
     load_env()
     
@@ -95,14 +97,25 @@ def get_ibkr_config() -> IBKRConfig:
     
     # Optional variables with defaults
     account_id = os.getenv("IB_ACCOUNT_ID", "")
-    market_data_type = os.getenv("IB_MARKET_DATA_TYPE", "DELAYED_FROZEN")
+    market_data_type = os.getenv("IB_MARKET_DATA_TYPE", "REALTIME")
+    # Symbology method (controls how instruments are resolved with IBKR)
+    raw_sym_method = (os.getenv("IB_SYMBOLOGY_METHOD", "IB_SIMPLIFIED") or "").strip().upper()
+    if raw_sym_method not in {"IB_SIMPLIFIED", "IB_RAW"}:
+        logger.warning(
+            "Invalid IB_SYMBOLOGY_METHOD '%s'. Falling back to 'IB_SIMPLIFIED'. Accepted: IB_SIMPLIFIED, IB_RAW",
+            raw_sym_method,
+        )
+        symbology_method = "IB_SIMPLIFIED"
+    else:
+        symbology_method = raw_sym_method
     
     config = IBKRConfig(
         host=host,
         port=port,
         client_id=client_id,
         account_id=account_id,
-        market_data_type=market_data_type
+        market_data_type=market_data_type,
+        symbology_method=symbology_method,
     )
 
     valid, message = validate_ibkr_config(config)
@@ -110,11 +123,12 @@ def get_ibkr_config() -> IBKRConfig:
         logger.warning("IBKR configuration warning: %s", message)
 
     logger.debug(
-        "Loaded IBKR config: host=%s, port=%s, client_id=%s, market_data_type=%s",
+        "Loaded IBKR config: host=%s, port=%s, client_id=%s, market_data_type=%s, symbology_method=%s",
         config.host,
         config.port,
         config.client_id,
         config.market_data_type,
+        config.symbology_method,
     )
 
     return config

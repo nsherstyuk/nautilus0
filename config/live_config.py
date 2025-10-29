@@ -6,11 +6,13 @@ sourced from environment variables.
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
+import logging
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
+from ._utils import validate_timezone, _parse_excluded_hours
 
 
 @dataclass
@@ -25,6 +27,32 @@ class LiveConfig:
     allow_position_reversal: bool = False
     log_dir: str = "logs/live"
     trader_id: str = "LIVE-TRADER-001"
+    # Risk Management Parameters
+    stop_loss_pips: int = 25
+    take_profit_pips: int = 50
+    trailing_stop_activation_pips: int = 20
+    trailing_stop_distance_pips: int = 15
+    # Signal Filter Parameters
+    crossover_threshold_pips: float = 0.7
+    # DMI Indicator Parameters
+    dmi_enabled: bool = True
+    dmi_period: int = 14
+    dmi_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
+    # Stochastic Indicator Parameters
+    stoch_enabled: bool = True
+    stoch_period_k: int = 14
+    stoch_period_d: int = 3
+    stoch_bullish_threshold: int = 30
+    stoch_bearish_threshold: int = 70
+    stoch_bar_spec: str = "15-MINUTE-MID-EXTERNAL"
+    stoch_max_bars_since_crossing: int = 9
+
+    # Time filter parameters
+    time_filter_enabled: bool = False
+    trading_hours_start: int = 0
+    trading_hours_end: int = 23
+    trading_hours_timezone: str = "UTC"
+    excluded_hours: list[int] = field(default_factory=list)  # List of hours (0-23) to exclude from trading
 
 
 def _require(name: str, value: Optional[str]) -> str:
@@ -42,14 +70,31 @@ def _parse_int(name: str, value: Optional[str], default: int) -> int:
         raise ValueError(f"{name} must be an integer, got: {value}") from exc
 
 
+def _parse_float(name: str, value: Optional[str], default: float) -> float:
+    if value is None or value == "":
+        return default
+    try:
+        return float(value)
+    except ValueError as exc:  # pragma: no cover - validation
+        raise ValueError(f"{name} must be a float, got: {value}") from exc
+
+
 def _parse_bool(value: Optional[str], default: bool) -> bool:
-    if value is None:
+    if value is None or value == "":
         return default
     return value.lower() in ("true", "1", "yes")
 
 
+ 
+
+
 def get_live_config() -> LiveConfig:
-    """Load live trading configuration from environment variables."""
+    """Load live trading configuration from environment variables.
+
+    Optional env vars additionally supported:
+    LIVE_TIME_FILTER_ENABLED, LIVE_TRADING_HOURS_START, LIVE_TRADING_HOURS_END,
+    LIVE_TRADING_HOURS_TIMEZONE, LIVE_EXCLUDED_HOURS
+    """
     load_dotenv()
 
     symbol = _require("LIVE_SYMBOL", os.getenv("LIVE_SYMBOL"))
@@ -68,6 +113,208 @@ def get_live_config() -> LiveConfig:
     log_dir = os.getenv("LIVE_LOG_DIR", "logs/live")
     trader_id = os.getenv("LIVE_TRADER_ID", "LIVE-TRADER-001")
 
+    # Phase 6 Risk Management Parameters
+    stop_loss_pips = _parse_int("LIVE_STOP_LOSS_PIPS", os.getenv("LIVE_STOP_LOSS_PIPS"), 25)
+    take_profit_pips = _parse_int("LIVE_TAKE_PROFIT_PIPS", os.getenv("LIVE_TAKE_PROFIT_PIPS"), 50)
+    trailing_stop_activation_pips = _parse_int(
+        "LIVE_TRAILING_STOP_ACTIVATION_PIPS", os.getenv("LIVE_TRAILING_STOP_ACTIVATION_PIPS"), 20
+    )
+    trailing_stop_distance_pips = _parse_int(
+        "LIVE_TRAILING_STOP_DISTANCE_PIPS", os.getenv("LIVE_TRAILING_STOP_DISTANCE_PIPS"), 15
+    )
+
+    # Phase 6 Signal Filter Parameters
+    crossover_threshold_pips = _parse_float(
+        "LIVE_CROSSOVER_THRESHOLD_PIPS", os.getenv("LIVE_CROSSOVER_THRESHOLD_PIPS"), 0.7
+    )
+
+    # Phase 6 DMI Parameters
+    dmi_enabled = _parse_bool(os.getenv("LIVE_DMI_ENABLED"), True)
+    dmi_period = _parse_int("LIVE_DMI_PERIOD", os.getenv("LIVE_DMI_PERIOD"), 14)
+    dmi_bar_spec = os.getenv("LIVE_DMI_BAR_SPEC", "2-MINUTE-MID-EXTERNAL")
+
+    # Phase 6 Stochastic Parameters
+    stoch_enabled = _parse_bool(os.getenv("LIVE_STOCH_ENABLED"), True)
+    stoch_period_k = _parse_int("LIVE_STOCH_PERIOD_K", os.getenv("LIVE_STOCH_PERIOD_K"), 14)
+    stoch_period_d = _parse_int("LIVE_STOCH_PERIOD_D", os.getenv("LIVE_STOCH_PERIOD_D"), 3)
+    stoch_bullish_threshold = _parse_int(
+        "LIVE_STOCH_BULLISH_THRESHOLD", os.getenv("LIVE_STOCH_BULLISH_THRESHOLD"), 30
+    )
+    stoch_bearish_threshold = _parse_int(
+        "LIVE_STOCH_BEARISH_THRESHOLD", os.getenv("LIVE_STOCH_BEARISH_THRESHOLD"), 70
+    )
+    stoch_bar_spec = os.getenv("LIVE_STOCH_BAR_SPEC", "15-MINUTE-MID-EXTERNAL")
+    stoch_max_bars_since_crossing = _parse_int(
+        "LIVE_STOCH_MAX_BARS_SINCE_CROSSING", os.getenv("LIVE_STOCH_MAX_BARS_SINCE_CROSSING"), 9
+    )
+
+    # Time filter parameters
+    time_filter_enabled = _parse_bool(os.getenv("LIVE_TIME_FILTER_ENABLED"), False)
+    trading_hours_start = _parse_int("LIVE_TRADING_HOURS_START", os.getenv("LIVE_TRADING_HOURS_START"), 0)
+    trading_hours_end = _parse_int("LIVE_TRADING_HOURS_END", os.getenv("LIVE_TRADING_HOURS_END"), 23)
+    trading_hours_timezone = os.getenv("LIVE_TRADING_HOURS_TIMEZONE", "UTC")
+    excluded_hours = _parse_excluded_hours("LIVE_EXCLUDED_HOURS", os.getenv("LIVE_EXCLUDED_HOURS"))
+
+    # Validation (Phase 6)
+    if take_profit_pips <= stop_loss_pips:
+        raise ValueError("LIVE_TAKE_PROFIT_PIPS must be greater than LIVE_STOP_LOSS_PIPS")
+
+    if trailing_stop_activation_pips <= trailing_stop_distance_pips:
+        raise ValueError(
+            "LIVE_TRAILING_STOP_ACTIVATION_PIPS must be greater than LIVE_TRAILING_STOP_DISTANCE_PIPS"
+        )
+
+    if crossover_threshold_pips < 0:
+        raise ValueError("LIVE_CROSSOVER_THRESHOLD_PIPS must be >= 0")
+
+    if dmi_enabled:
+        if dmi_period <= 0:
+            raise ValueError("LIVE_DMI_PERIOD must be > 0")
+
+    if stoch_enabled:
+        if stoch_period_k <= 0:
+            raise ValueError("LIVE_STOCH_PERIOD_K must be > 0")
+
+        if stoch_period_d <= 0:
+            raise ValueError("LIVE_STOCH_PERIOD_D must be > 0")
+
+        if not (0 <= stoch_bullish_threshold <= 100):
+            raise ValueError("LIVE_STOCH_BULLISH_THRESHOLD must be between 0 and 100")
+
+        if not (0 <= stoch_bearish_threshold <= 100):
+            raise ValueError("LIVE_STOCH_BEARISH_THRESHOLD must be between 0 and 100")
+
+        if stoch_bullish_threshold >= stoch_bearish_threshold:
+            raise ValueError(
+                "LIVE_STOCH_BULLISH_THRESHOLD must be less than LIVE_STOCH_BEARISH_THRESHOLD"
+            )
+
+    # Time filter validation
+    if time_filter_enabled:
+        if not (0 <= trading_hours_start <= 23):
+            raise ValueError("LIVE_TRADING_HOURS_START must be between 0 and 23")
+        if not (0 <= trading_hours_end <= 23):
+            raise ValueError("LIVE_TRADING_HOURS_END must be between 0 and 23")
+        if trading_hours_start >= trading_hours_end:
+            raise ValueError(
+                "LIVE_TRADING_HOURS_START must be less than LIVE_TRADING_HOURS_END (overnight windows not supported)"
+            )
+        validate_timezone("LIVE_TRADING_HOURS_TIMEZONE", trading_hours_timezone)
+        if excluded_hours:
+            logger = logging.getLogger(__name__)
+            logger.info("Excluded hours configured: %s", excluded_hours)
+            window_hours = set(range(trading_hours_start, trading_hours_end + 1))
+            if window_hours.issubset(set(excluded_hours)):
+                raise ValueError(
+                    f"LIVE_EXCLUDED_HOURS excludes all hours in the trading window ({trading_hours_start}-{trading_hours_end}), no trades possible"
+                )
+
+    logger = logging.getLogger(__name__)
+    if trailing_stop_activation_pips > take_profit_pips:
+        logger.warning(
+            "Trailing stop activation (%d pips) is greater than take profit (%d pips). Trailing may not activate before TP hit.",
+            trailing_stop_activation_pips,
+            take_profit_pips,
+        )
+
+    if crossover_threshold_pips > stop_loss_pips:
+        logger.warning(
+            "Crossover threshold (%s pips) is greater than stop loss (%s pips). This may result in very few or no signals being generated.",
+            crossover_threshold_pips,
+            stop_loss_pips,
+        )
+
+    if time_filter_enabled:
+        if trading_hours_start == 0 and trading_hours_end == 23:
+            logger.warning(
+                "Time filter is enabled but covers entire day (00-23); filter has no effect."
+            )
+    else:
+        if excluded_hours:
+            logger.warning(
+                "Excluded hours configured but time filter is disabled; excluded_hours will have no effect"
+            )
+
+    # Normalize FX bar specs (convert LAST->MID and ensure aggregation suffix) for forex instruments
+    # Primary bar_spec normalization
+    original_bar_spec = bar_spec
+    if "/" in symbol:
+        if "-LAST-EXTERNAL" in bar_spec:
+            bar_spec = bar_spec.replace("-LAST-EXTERNAL", "-MID-EXTERNAL")
+        elif "-LAST-INTERNAL" in bar_spec:
+            bar_spec = bar_spec.replace("-LAST-INTERNAL", "-MID-INTERNAL")
+        elif bar_spec.endswith("-LAST"):
+            # Legacy format without aggregation source
+            bar_spec = bar_spec[:-4] + "MID-EXTERNAL"
+        elif "-MID" not in bar_spec and "-LAST" not in bar_spec:
+            # Missing price side entirely (e.g., "1-MINUTE"), default to MID for FX
+            if bar_spec.endswith("-EXTERNAL") or bar_spec.endswith("-INTERNAL"):
+                suffix = "-EXTERNAL" if bar_spec.endswith("-EXTERNAL") else "-INTERNAL"
+                bar_spec = bar_spec[: -len(suffix)] + "-MID" + suffix
+            else:
+                bar_spec = f"{bar_spec}-MID"
+
+        # Ensure aggregation suffix present for FX bars (e.g., 1-MINUTE-MID -> 1-MINUTE-MID-EXTERNAL)
+        if not bar_spec.endswith("-EXTERNAL") and not bar_spec.endswith("-INTERNAL"):
+            bar_spec = f"{bar_spec}-EXTERNAL"
+
+    if bar_spec != original_bar_spec:
+        logger.info("Normalized bar_spec for %s: %s -> %s", symbol, original_bar_spec, bar_spec)
+
+    # DMI bar_spec normalization for FX
+    if dmi_enabled and "/" in symbol:
+        original_dmi_bar_spec = dmi_bar_spec
+        if "-LAST-EXTERNAL" in dmi_bar_spec:
+            dmi_bar_spec = dmi_bar_spec.replace("-LAST-EXTERNAL", "-MID-EXTERNAL")
+        elif "-LAST-INTERNAL" in dmi_bar_spec:
+            dmi_bar_spec = dmi_bar_spec.replace("-LAST-INTERNAL", "-MID-INTERNAL")
+        elif dmi_bar_spec.endswith("-LAST"):
+            dmi_bar_spec = dmi_bar_spec[:-4] + "MID-EXTERNAL"
+        elif "-MID" not in dmi_bar_spec and "-LAST" not in dmi_bar_spec:
+            if dmi_bar_spec.endswith("-EXTERNAL") or dmi_bar_spec.endswith("-INTERNAL"):
+                suffix = "-EXTERNAL" if dmi_bar_spec.endswith("-EXTERNAL") else "-INTERNAL"
+                dmi_bar_spec = dmi_bar_spec[: -len(suffix)] + "-MID" + suffix
+            else:
+                dmi_bar_spec = f"{dmi_bar_spec}-MID"
+
+        if not dmi_bar_spec.endswith("-EXTERNAL") and not dmi_bar_spec.endswith("-INTERNAL"):
+            dmi_bar_spec = f"{dmi_bar_spec}-EXTERNAL"
+
+        if dmi_bar_spec != original_dmi_bar_spec:
+            logger.info(
+                "Normalized DMI bar_spec for %s: %s -> %s",
+                symbol,
+                original_dmi_bar_spec,
+                dmi_bar_spec,
+            )
+
+    # Stochastic bar_spec normalization for FX
+    if stoch_enabled and "/" in symbol:
+        original_stoch_bar_spec = stoch_bar_spec
+        if "-LAST-EXTERNAL" in stoch_bar_spec:
+            stoch_bar_spec = stoch_bar_spec.replace("-LAST-EXTERNAL", "-MID-EXTERNAL")
+        elif "-LAST-INTERNAL" in stoch_bar_spec:
+            stoch_bar_spec = stoch_bar_spec.replace("-LAST-INTERNAL", "-MID-INTERNAL")
+        elif stoch_bar_spec.endswith("-LAST"):
+            stoch_bar_spec = stoch_bar_spec[:-4] + "MID-EXTERNAL"
+        elif "-MID" not in stoch_bar_spec and "-LAST" not in stoch_bar_spec:
+            if stoch_bar_spec.endswith("-EXTERNAL") or stoch_bar_spec.endswith("-INTERNAL"):
+                suffix = "-EXTERNAL" if stoch_bar_spec.endswith("-EXTERNAL") else "-INTERNAL"
+                stoch_bar_spec = stoch_bar_spec[: -len(suffix)] + "-MID" + suffix
+            else:
+                stoch_bar_spec = f"{stoch_bar_spec}-MID"
+
+        if not stoch_bar_spec.endswith("-EXTERNAL") and not stoch_bar_spec.endswith("-INTERNAL"):
+            stoch_bar_spec = f"{stoch_bar_spec}-EXTERNAL"
+
+        if stoch_bar_spec != original_stoch_bar_spec:
+            logger.info(
+                "Normalized Stochastic bar_spec for %s: %s -> %s",
+                symbol,
+                original_stoch_bar_spec,
+                stoch_bar_spec,
+            )
+
     return LiveConfig(
         symbol=symbol,
         venue=venue,
@@ -79,6 +326,26 @@ def get_live_config() -> LiveConfig:
         allow_position_reversal=allow_position_reversal,
         log_dir=log_dir,
         trader_id=trader_id,
+        stop_loss_pips=stop_loss_pips,
+        take_profit_pips=take_profit_pips,
+        trailing_stop_activation_pips=trailing_stop_activation_pips,
+        trailing_stop_distance_pips=trailing_stop_distance_pips,
+        crossover_threshold_pips=crossover_threshold_pips,
+        dmi_enabled=dmi_enabled,
+        dmi_period=dmi_period,
+        dmi_bar_spec=dmi_bar_spec,
+        stoch_enabled=stoch_enabled,
+        stoch_period_k=stoch_period_k,
+        stoch_period_d=stoch_period_d,
+        stoch_bullish_threshold=stoch_bullish_threshold,
+        stoch_bearish_threshold=stoch_bearish_threshold,
+        stoch_bar_spec=stoch_bar_spec,
+        stoch_max_bars_since_crossing=stoch_max_bars_since_crossing,
+        time_filter_enabled=time_filter_enabled,
+        trading_hours_start=trading_hours_start,
+        trading_hours_end=trading_hours_end,
+        trading_hours_timezone=trading_hours_timezone,
+        excluded_hours=excluded_hours,
     )
 
 
@@ -90,6 +357,34 @@ def validate_live_config(config: LiveConfig) -> bool:
         ok = False
 
     if config.fast_period >= config.slow_period:
+        ok = False
+
+    # Phase 6 validations
+    if config.stop_loss_pips <= 0:
+        ok = False
+
+    if config.take_profit_pips <= config.stop_loss_pips:
+        ok = False
+
+    if config.trailing_stop_activation_pips <= config.trailing_stop_distance_pips:
+        ok = False
+
+    if config.crossover_threshold_pips < 0:
+        ok = False
+
+    if config.dmi_period <= 0:
+        ok = False
+
+    if config.stoch_period_k <= 0 or config.stoch_period_d <= 0:
+        ok = False
+
+    if not (0 <= config.stoch_bullish_threshold <= 100):
+        ok = False
+
+    if not (0 <= config.stoch_bearish_threshold <= 100):
+        ok = False
+
+    if config.stoch_bullish_threshold >= config.stoch_bearish_threshold:
         ok = False
 
     try:

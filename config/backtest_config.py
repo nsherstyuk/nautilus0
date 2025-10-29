@@ -8,12 +8,13 @@ from __future__ import annotations
 
 import logging
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
+from ._utils import validate_timezone, _parse_excluded_hours
 
 
 @dataclass
@@ -36,6 +37,8 @@ class BacktestConfig:
     trailing_stop_activation_pips: int = 20
     trailing_stop_distance_pips: int = 15
     crossover_threshold_pips: float = 0.7
+    pre_crossover_separation_pips: float = 0.0
+    pre_crossover_lookback_bars: int = 1
     dmi_enabled: bool = True
     dmi_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
     dmi_period: int = 14
@@ -45,11 +48,29 @@ class BacktestConfig:
     stoch_period_d: int = 3
     stoch_bullish_threshold: int = 30
     stoch_bearish_threshold: int = 70
+    stoch_max_bars_since_crossing: int = 9
+    use_limit_orders: bool = False
+    limit_order_timeout_bars: int = 5
+
+    # Time filter parameters
+    time_filter_enabled: bool = False
+    trading_hours_start: int = 0
+    trading_hours_end: int = 23
+    trading_hours_timezone: str = "UTC"
+    excluded_hours: list[int] = field(default_factory=list)  # List of hours (0-23) to exclude from trading
 
 
 def _require(name: str, value: Optional[str]) -> str:
     if not value:
         raise ValueError(f"Environment variable {name} is required for backtesting")
+    return value
+
+
+def _get_env_with_fallback(primary: str, fallback: str) -> Optional[str]:
+    """Get environment variable with fallback to alternative name."""
+    value = os.getenv(primary)
+    if value is None:
+        value = os.getenv(fallback)
     return value
 
 
@@ -78,6 +99,9 @@ def _validate_date(name: str, value: str) -> None:
         raise ValueError(f"{name} must be in YYYY-MM-DD format, got: {value}")
 
 
+ 
+
+
 def get_backtest_config() -> BacktestConfig:
     """Load backtest configuration from environment variables.
 
@@ -86,10 +110,12 @@ def get_backtest_config() -> BacktestConfig:
     BACKTEST_SLOW_PERIOD, BACKTEST_TRADE_SIZE, BACKTEST_STARTING_CAPITAL,
     CATALOG_PATH, OUTPUT_DIR, ENFORCE_POSITION_LIMIT, ALLOW_POSITION_REVERSAL,
     BACKTEST_STOP_LOSS_PIPS, BACKTEST_TAKE_PROFIT_PIPS, BACKTEST_TRAILING_STOP_ACTIVATION_PIPS,
-    BACKTEST_TRAILING_STOP_DISTANCE_PIPS,     STRATEGY_CROSSOVER_THRESHOLD_PIPS,
+    BACKTEST_TRAILING_STOP_DISTANCE_PIPS, STRATEGY_CROSSOVER_THRESHOLD_PIPS,
     STRATEGY_DMI_ENABLED, STRATEGY_DMI_BAR_SPEC, STRATEGY_DMI_PERIOD,
     STRATEGY_STOCH_ENABLED, STRATEGY_STOCH_BAR_SPEC, STRATEGY_STOCH_PERIOD_K,
-    STRATEGY_STOCH_PERIOD_D, STRATEGY_STOCH_BULLISH_THRESHOLD, STRATEGY_STOCH_BEARISH_THRESHOLD
+    STRATEGY_STOCH_PERIOD_D, STRATEGY_STOCH_BULLISH_THRESHOLD, STRATEGY_STOCH_BEARISH_THRESHOLD,
+    BACKTEST_TIME_FILTER_ENABLED, BACKTEST_TRADING_HOURS_START, BACKTEST_TRADING_HOURS_END,
+    BACKTEST_TRADING_HOURS_TIMEZONE, BACKTEST_EXCLUDED_HOURS
     """
     load_dotenv()
 
@@ -124,6 +150,16 @@ def get_backtest_config() -> BacktestConfig:
         os.getenv("STRATEGY_CROSSOVER_THRESHOLD_PIPS"),
         0.7,
     )
+    pre_crossover_separation_pips = _parse_float(
+        "STRATEGY_PRE_CROSSOVER_SEPARATION_PIPS",
+        _get_env_with_fallback("STRATEGY_PRE_CROSSOVER_SEPARATION_PIPS", "BACKTEST_PRE_CROSSOVER_SEPARATION_PIPS"),
+        0.0,
+    )
+    pre_crossover_lookback_bars = _parse_int(
+        "STRATEGY_PRE_CROSSOVER_LOOKBACK_BARS",
+        _get_env_with_fallback("STRATEGY_PRE_CROSSOVER_LOOKBACK_BARS", "BACKTEST_PRE_CROSSOVER_LOOKBACK_BARS"),
+        1,
+    )
 
     dmi_enabled = os.getenv("STRATEGY_DMI_ENABLED", "true").lower() in ("true", "1", "yes")
     dmi_bar_spec = os.getenv("STRATEGY_DMI_BAR_SPEC", "2-MINUTE-MID-EXTERNAL")
@@ -135,6 +171,17 @@ def get_backtest_config() -> BacktestConfig:
     stoch_period_d = _parse_int("STRATEGY_STOCH_PERIOD_D", os.getenv("STRATEGY_STOCH_PERIOD_D"), 3)
     stoch_bullish_threshold = _parse_int("STRATEGY_STOCH_BULLISH_THRESHOLD", os.getenv("STRATEGY_STOCH_BULLISH_THRESHOLD"), 30)
     stoch_bearish_threshold = _parse_int("STRATEGY_STOCH_BEARISH_THRESHOLD", os.getenv("STRATEGY_STOCH_BEARISH_THRESHOLD"), 70)
+    stoch_max_bars_since_crossing = _parse_int("STRATEGY_STOCH_MAX_BARS_SINCE_CROSSING", os.getenv("STRATEGY_STOCH_MAX_BARS_SINCE_CROSSING"), 9)
+    
+    use_limit_orders = os.getenv("USE_LIMIT_ORDERS", "false").lower() in ("true", "1", "yes")
+    limit_order_timeout_bars = _parse_int("LIMIT_ORDER_TIMEOUT_BARS", os.getenv("LIMIT_ORDER_TIMEOUT_BARS"), 5)
+    
+    # Time filter parameters
+    time_filter_enabled = os.getenv("BACKTEST_TIME_FILTER_ENABLED", "false").lower() in ("true", "1", "yes")
+    trading_hours_start = _parse_int("BACKTEST_TRADING_HOURS_START", os.getenv("BACKTEST_TRADING_HOURS_START"), 0)
+    trading_hours_end = _parse_int("BACKTEST_TRADING_HOURS_END", os.getenv("BACKTEST_TRADING_HOURS_END"), 23)
+    trading_hours_timezone = os.getenv("BACKTEST_TRADING_HOURS_TIMEZONE", "UTC")
+    excluded_hours = _parse_excluded_hours("BACKTEST_EXCLUDED_HOURS", os.getenv("BACKTEST_EXCLUDED_HOURS"))
     
     # Normalize DMI bar_spec for FX instruments (similar to primary bar_spec normalization)
     if dmi_enabled and "/" in symbol:
@@ -212,6 +259,19 @@ def get_backtest_config() -> BacktestConfig:
     if crossover_threshold_pips < 0:
         raise ValueError("STRATEGY_CROSSOVER_THRESHOLD_PIPS must be >= 0")
 
+    if pre_crossover_separation_pips < 0:
+        raise ValueError("STRATEGY_PRE_CROSSOVER_SEPARATION_PIPS must be >= 0")
+    
+    if pre_crossover_lookback_bars < 1:
+        raise ValueError("STRATEGY_PRE_CROSSOVER_LOOKBACK_BARS must be >= 1")
+    
+    if pre_crossover_lookback_bars > 50:
+        logger = logging.getLogger(__name__)
+        logger.warning(
+            "STRATEGY_PRE_CROSSOVER_LOOKBACK_BARS (%d) is very large and may impact performance and memory usage",
+            pre_crossover_lookback_bars
+        )
+
     if crossover_threshold_pips > stop_loss_pips:
         logger = logging.getLogger(__name__)
         logger.warning(
@@ -266,8 +326,33 @@ def get_backtest_config() -> BacktestConfig:
                 stoch_bearish_threshold
             )
 
+    # Time filter validation
+    if time_filter_enabled:
+        if not (0 <= trading_hours_start <= 23):
+            raise ValueError("BACKTEST_TRADING_HOURS_START must be between 0 and 23")
+        if not (0 <= trading_hours_end <= 23):
+            raise ValueError("BACKTEST_TRADING_HOURS_END must be between 0 and 23")
+        if trading_hours_start >= trading_hours_end:
+            raise ValueError(
+                "BACKTEST_TRADING_HOURS_START must be less than BACKTEST_TRADING_HOURS_END (overnight windows not supported)"
+            )
+        validate_timezone("BACKTEST_TRADING_HOURS_TIMEZONE", trading_hours_timezone)
+        if trading_hours_start == 0 and trading_hours_end == 23:
+            logger = logging.getLogger(__name__)
+            logger.warning(
+                "Time filter is enabled but covers entire day (00-23); filter has no effect."
+            )
+        if excluded_hours:
+            logger = logging.getLogger(__name__)
+            logger.info("Excluded hours configured: %s", excluded_hours)
+            window_hours = set(range(trading_hours_start, trading_hours_end + 1))
+            if window_hours.issubset(set(excluded_hours)):
+                raise ValueError(
+                    f"BACKTEST_EXCLUDED_HOURS excludes all hours in the trading window ({trading_hours_start}-{trading_hours_end}), no trades possible"
+                )
+
     catalog_path = os.getenv("CATALOG_PATH", "data/historical")
-    output_dir = os.getenv("OUTPUT_DIR", "logs/backtest_results")
+    output_dir = _get_env_with_fallback("OUTPUT_DIR", "BACKTEST_OUTPUT_DIR") or "logs/backtest_results"
     enforce_position_limit = os.getenv("ENFORCE_POSITION_LIMIT", "true").lower() in ("true", "1", "yes")
     allow_position_reversal = os.getenv("ALLOW_POSITION_REVERSAL", "false").lower() in ("true", "1", "yes")
 
@@ -325,6 +410,8 @@ def get_backtest_config() -> BacktestConfig:
         trailing_stop_activation_pips=trailing_stop_activation_pips,
         trailing_stop_distance_pips=trailing_stop_distance_pips,
         crossover_threshold_pips=crossover_threshold_pips,
+        pre_crossover_separation_pips=pre_crossover_separation_pips,
+        pre_crossover_lookback_bars=pre_crossover_lookback_bars,
         dmi_enabled=dmi_enabled,
         dmi_bar_spec=dmi_bar_spec,
         dmi_period=dmi_period,
@@ -334,6 +421,14 @@ def get_backtest_config() -> BacktestConfig:
         stoch_period_d=stoch_period_d,
         stoch_bullish_threshold=stoch_bullish_threshold,
         stoch_bearish_threshold=stoch_bearish_threshold,
+        stoch_max_bars_since_crossing=stoch_max_bars_since_crossing,
+        use_limit_orders=use_limit_orders,
+        limit_order_timeout_bars=limit_order_timeout_bars,
+        time_filter_enabled=time_filter_enabled,
+        trading_hours_start=trading_hours_start,
+        trading_hours_end=trading_hours_end,
+        trading_hours_timezone=trading_hours_timezone,
+        excluded_hours=excluded_hours,
     )
 
 

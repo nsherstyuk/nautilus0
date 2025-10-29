@@ -1,0 +1,82 @@
+{
+  "overall": {
+    "total_runs": 125,
+    "completed": 123,
+    "failed": 2,
+    "timeout": 0,
+    "success_rate": 0.984
+  },
+  "best": {
+    "run_id": 5,
+    "objective_value": 0.043947666168624784,
+    "parameters": {
+      "run_id": 5,
+      "fast_period": 6,
+      "slow_period": 80,
+      "crossover_threshold_pips": 1.3,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "metrics": {
+      "total_pnl": 1390.15,
+      "sharpe_ratio": 0.043947666168624784,
+      "win_rate": 0.3018867924528302,
+      "max_drawdown": 0.0,
+      "trade_count": 159
+    }
+  },
+  "worst": {
+    "run_id": 103,
+    "objective_value": -0.23424842165258988,
+    "parameters": {
+      "run_id": 103,
+      "fast_period": 14,
+      "slow_period": 80,
+      "crossover_threshold_pips": 1.0,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "metrics": {
+      "total_pnl": -10331.27,
+      "sharpe_ratio": -0.23424842165258988,
+      "win_rate": 0.23333333333333334,
+      "max_drawdown": 0.0,
+      "trade_count": 150
+    }
+  },
+  "averages": {
+    "total_pnl": -3456.511869918699,
+    "sharpe_ratio": -0.06969584684617348,
+    "win_rate": 0.26908291386121996,
+    "max_drawdown": 0.0,
+    "trade_count": 137.34146341463415,
+    "profit_factor": 0.0,
+    "expectancy": -25.549365570205953
+  },
+  "sensitivity": {
+    "fast_period": -0.8690002762259669,
+    "slow_period": 0.13647896464516093,
+    "crossover_threshold_pips": -0.05629485721762935,
+    "stop_loss_pips": 0.0,
+    "take_profit_pips": 0.0
+  },
+  "objective": "sharpe_ratio"
+}

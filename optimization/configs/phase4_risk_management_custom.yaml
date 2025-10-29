@@ -1,0 +1,86 @@
+# Phase 4: Custom Risk Management Parameter Optimization
+# ======================================================
+# 
+# Custom parameter grid for risk management optimization
+# This example shows a tighter, more conservative approach
+# 
+# Total combinations: 3 × 3 × 3 × 3 = 81 combinations
+# Expected runtime: 1-2 hours with 8 workers
+# 
+# Usage:
+#   python optimization/grid_search.py \
+#     --config optimization/configs/phase4_risk_management_custom.yaml \
+#     --objective sharpe_ratio \
+#     --workers 8 \
+#     --output optimization/results/phase4_custom_results.csv \
+#     --no-resume \
+#     --verbose
+
+# Optimization Settings
+optimization:
+  objective: sharpe_ratio
+  workers: 8
+  checkpoint_interval: 10
+  timeout_seconds: 300
+  output_file: optimization/results/phase4_custom_results.csv
+  checkpoint_file: optimization/checkpoints/phase4_custom_checkpoint.csv
+
+# Custom Parameters Being Optimized
+parameters:
+  # Conservative Stop Loss Range
+  stop_loss_pips:
+    values:
+      - 15  # Tight stop
+      - 20  # Moderate stop  
+      - 25  # Baseline stop
+
+  # Conservative Take Profit Range
+  take_profit_pips:
+    values:
+      - 30  # Conservative target
+      - 40  # Moderate target
+      - 50  # Aggressive target
+
+  # Early Trailing Activation
+  trailing_stop_activation_pips:
+    values:
+      - 20  # Very early activation
+      - 25  # Early activation
+      - 30  # Moderate activation
+
+  # Tight Trailing Distance
+  trailing_stop_distance_pips:
+    values:
+      - 8   # Very tight trailing
+      - 10  # Tight trailing
+      - 12  # Moderate trailing
+
+# Fixed Parameters (Phase 3 Best Values)
+fixed:
+  # MA Parameters (Fixed at Phase 3 Best)
+  fast_period: 42
+  slow_period: 270
+  crossover_threshold_pips: 0.35
+
+  # Crossover Filter Parameters (Fixed)
+  pre_crossover_separation_pips: 0.0
+  pre_crossover_lookback_bars: 1
+
+  # DMI Filter Parameters (Fixed)
+  dmi_enabled: true
+  dmi_period: 14
+  dmi_bar_spec: "2-MINUTE-MID-EXTERNAL"
+
+  # Stochastic Filter Parameters (Fixed)
+  stoch_enabled: true
+  stoch_period_k: 14
+  stoch_period_d: 3
+  stoch_bullish_threshold: 30
+  stoch_bearish_threshold: 70
+  stoch_max_bars_since_crossing: 9
+  stoch_bar_spec: "15-MINUTE-MID-EXTERNAL"
+
+  # Trade Sizing and Position Management (Fixed)
+  trade_size: 100000
+  enforce_position_limit: true
+  allow_position_reversal: false

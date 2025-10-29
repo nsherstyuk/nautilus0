@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "symbol": "EUR.USD",
+  "order_exec_enabled": 0,
+  "selected_algo": "algo2_name",
+  "algos": {
+    "nick3_v2": {
+      "window_size": 4,
+      "spacing_threshold": 4,
+      "amplitude_filter_12": 8,
+      "amplitude_filter_40": 60,
+      "take_profit_micropips": 120,
+      "stop_loss_micropips": 50,
+      "trailing_stop_pips": 5,
+      "position_size": 100000
+    },
+    "algo2_name": {
+      "param_a": "TODO",
+      "param_b": "TODO",
+      "take_profit_micropips": 100,
+      "stop_loss_micropips": 50,
+      "trailing_stop_pips": 5,
+      "position_size": 100000
+    }
+  }
+}

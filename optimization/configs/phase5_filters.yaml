@@ -1,0 +1,199 @@
+# Phase 5: Filter Parameter Optimization (DMI and Stochastic)
+# ===========================================================
+# 
+# This configuration optimizes DMI and Stochastic filter parameters while keeping 
+# Phase 3 best MA and Phase 4 best risk management parameters fixed.
+# 
+# Total combinations: 2,400 (2×5×5×3×4×4)
+# Parameters being optimized: 6 filter parameters (2 DMI + 4 Stochastic)
+# Fixed parameters: Phase 3 best MA + Phase 4 best risk management parameters
+# Expected runtime: ~40 hours with 8 workers
+# 
+# Prerequisites: Phase 3 and Phase 4 must complete successfully first
+# Phase 3 Best Results (from rank 1):
+#   - fast_period: 42
+#   - slow_period: 270  
+#   - crossover_threshold_pips: 0.35
+#   - sharpe_ratio: 0.272
+#   - total_pnl: $5,644.69
+#   - win_rate: 48.3%
+#   - trade_count: 60
+#   - Source: optimization/results/phase3_fine_grid_results_top_10.json
+#
+# Phase 4 Best Results (from rank 1):
+#   - stop_loss_pips: 35
+#   - take_profit_pips: 50
+#   - trailing_stop_activation_pips: 5
+#   - trailing_stop_distance_pips: 4
+#   - sharpe_ratio: 0.428 (57% improvement over Phase 3)
+#   - Source: optimization/results/phase4_risk_management_results_top_10.json
+#
+# Usage:
+#   python optimization/grid_search.py \
+#     --config optimization/configs/phase5_filters.yaml \
+#     --objective sharpe_ratio \
+#     --workers 8 \
+#     --output optimization/results/phase5_filters_results.csv \
+#     --no-resume \
+#     --verbose
+#
+# Expected runtime: ~40 hours with 8 workers (2,400 backtests × ~60s each ÷ 8 workers)
+# Phase context: Fourth optimization phase, results will be used for Phase 6 parameter refinement
+#
+# Success criteria:
+#   - Best result maintains or improves Phase 4 Sharpe ratio of 0.428
+#   - Analyze filter impact on win rate (target: maintain 40-50% range)
+#   - Analyze filter impact on trade count (understand trade-off between quality and quantity)
+#   - Top 10 results show clear filter parameter patterns
+#   - Identify whether filters improve or degrade performance
+
+# Optimization Settings
+# ====================
+optimization:
+  objective: sharpe_ratio  # Maximize risk-adjusted returns
+  workers: 8               # Parallel execution
+  checkpoint_interval: 10   # Save progress every 10 backtests
+  timeout_seconds: 300     # 5 minutes per backtest
+  output_file: optimization/results/phase5_filters_results.csv
+  checkpoint_file: optimization/checkpoints/phase5_filters_checkpoint.csv
+
+# Parameters Being Optimized
+# ==========================
+# Filter Parameters - 6 parameters, 2,400 total combinations
+parameters:
+  # DMI Filter Parameters
+  
+  # DMI Enabled: Test whether DMI filter improves or degrades performance
+  # If false, dmi_period is ignored. This tests the hypothesis that DMI filtering adds value.
+  dmi_enabled:
+    values:
+      - true   # Keep DMI filter enabled (current baseline)
+      - false  # Disable DMI filter to test if it adds value
+
+  # DMI Period: Test DMI sensitivity from fast (10) to slow (18) periods
+  # Shorter periods (10-12) are more responsive but may generate false signals
+  # Longer periods (16-18) are smoother but may lag
+  dmi_period:
+    values:
+      - 10  # Fast DMI - very responsive to trend changes
+      - 12  # Fast DMI - responsive to trend changes
+      - 14  # Standard DMI period (current baseline)
+      - 16  # Slow DMI - smoother trend detection
+      - 18  # Slow DMI - very smooth trend detection
+
+  # Stochastic Filter Parameters
+  
+  # Stochastic %K Period: Test Stochastic %K sensitivity from fast (10) to slow (18) periods
+  # Shorter periods are more sensitive to price changes; longer periods are smoother
+  stoch_period_k:
+    values:
+      - 10  # Fast Stochastic - very sensitive to price changes
+      - 12  # Fast Stochastic - sensitive to price changes
+      - 14  # Standard Stochastic period (current baseline)
+      - 16  # Slow Stochastic - smoother price sensitivity
+      - 18  # Slow Stochastic - very smooth price sensitivity
+
+  # Stochastic %D Period: Test Stochastic %D smoothing from minimal (3) to moderate (7)
+  # Higher smoothing reduces noise but increases lag
+  stoch_period_d:
+    values:
+      - 3  # Minimal smoothing - very responsive
+      - 5  # Moderate smoothing - balanced responsiveness
+      - 7  # High smoothing - very smooth but may lag
+
+  # Stochastic Bullish Threshold: Test oversold threshold from aggressive (20) to conservative (35)
+  # Lower thresholds (20-25) generate more long signals in deeper oversold conditions
+  # Higher thresholds (30-35) are more selective
+  stoch_bullish_threshold:
+    values:
+      - 20  # Aggressive threshold - more long signals
+      - 25  # Moderate aggressive threshold
+      - 30  # Standard threshold (current baseline)
+      - 35  # Conservative threshold - fewer but higher quality signals
+
+  # Stochastic Bearish Threshold: Test overbought threshold from conservative (65) to aggressive (80)
+  # Lower thresholds (65-70) generate more short signals earlier
+  # Higher thresholds (75-80) wait for stronger overbought conditions
+  stoch_bearish_threshold:
+    values:
+      - 65  # Conservative threshold - more short signals
+      - 70  # Standard threshold (current baseline)
+      - 75  # Moderate aggressive threshold
+      - 80  # Aggressive threshold - fewer but higher quality signals
+
+# Fixed Parameters (Phase 3 and Phase 4 Best Values)
+# ===================================================
+# All parameters below are fixed at Phase 3 and Phase 4 best values and will not be optimized
+fixed:
+  # MA Parameters (Fixed at Phase 3 Best - DO NOT CHANGE)
+  # These are the optimal MA parameters from Phase 3 and must not be changed
+  fast_period: 42                    # Phase 3 rank 1 value
+  slow_period: 270                   # Phase 3 rank 1 value  
+  crossover_threshold_pips: 0.35      # Phase 3 rank 1 value
+
+  # Risk Management Parameters (Fixed at Phase 4 Best - DO NOT CHANGE)
+  # These are the optimal risk management parameters from Phase 4 and must not be changed
+  stop_loss_pips: 35                 # Phase 4 rank 1 value
+  take_profit_pips: 50               # Phase 4 rank 1 value
+  trailing_stop_activation_pips: 22   # Phase 4 rank 1 value
+  trailing_stop_distance_pips: 12      # Phase 4 rank 1 value
+
+  # Crossover Filter Parameters (Fixed)
+  pre_crossover_separation_pips: 0.0    # Disabled
+  pre_crossover_lookback_bars: 1        # Default
+
+  # DMI Bar Specification (Fixed)
+  dmi_bar_spec: "2-MINUTE-MID-EXTERNAL"  # Keep consistent with Phase 3/4
+
+  # Stochastic Additional Parameters (Fixed)
+  stoch_max_bars_since_crossing: 9      # Keep at Phase 3/4 value
+  stoch_bar_spec: "15-MINUTE-MID-EXTERNAL"  # Keep consistent with Phase 3/4
+
+  # Trade Sizing and Position Management (Fixed)
+  trade_size: 100000              # 1 standard lot
+  enforce_position_limit: true
+  allow_position_reversal: false
+
+# Configuration Summary
+# ===================
+# Total combinations: 2 × 5 × 5 × 3 × 4 × 4 = 2,400
+# Parameters being optimized: 6 filter parameters (2 DMI + 4 Stochastic)
+# Fixed parameters: 11 parameters at Phase 3 and Phase 4 best values
+# 
+# Phase 3 and Phase 4 best results reference (for comparison):
+#   - Phase 3: fast=42, slow=270, threshold=0.35, sharpe=0.272
+#   - Phase 4: stop_loss=35, take_profit=50, trailing_activation=5, trailing_distance=4, sharpe=0.428
+#
+# Expected runtime breakdown:
+#   - Per backtest: ~60 seconds (7-month period)
+#   - Total backtest time: 2,400 × 60s = 144,000s = 2,400 minutes = 40 hours
+#   - Parallelized: 2,400 min ÷ 8 workers = 300 minutes = 5 hours pure compute
+#   - With overhead: ~40 hours total (due to I/O, checkpointing, metrics extraction)
+#
+# Output files:
+#   - phase5_filters_results.csv (all 2,400 results)
+#   - phase5_filters_results_top_10.json (best 10 parameter sets)
+#   - phase5_filters_results_summary.json (statistics)
+#   - phase5_filters_checkpoint.csv (progress)
+#
+# Success indicators:
+#   - Best Sharpe ratio maintains or improves on Phase 4 (0.428)
+#   - Clear understanding of filter impact on win rate and trade count
+#   - Identification of optimal filter configurations
+#   - Top 10 results show parameter clustering (stability)
+#
+# Alternative configuration suggestion:
+#   For faster iteration, consider creating phase5_filters_reduced.yaml with:
+#   - dmi_enabled: [true] (1 value - keep enabled)
+#   - dmi_period: [10, 14, 18] (3 values - reduced from 5)
+#   - stoch_period_k: [10, 14, 18] (3 values - reduced from 5)
+#   - stoch_period_d: [3, 5, 7] (3 values - keep all)
+#   - stoch_bullish_threshold: [20, 30] (2 values - reduced from 4)
+#   - stoch_bearish_threshold: [70, 80] (2 values - reduced from 4)
+#   - Total: 1 × 3 × 3 × 3 × 2 × 2 = 108 combinations (~2 hours runtime)
+#
+# Next steps:
+#   - Review top 10 results for best filter parameters
+#   - Analyze filter impact on win rate and trade count
+#   - Compare performance with filters enabled vs disabled (dmi_enabled=false results)
+#   - Create Phase 6 parameter refinement config with Phase 3 MA + Phase 4 risk + Phase 5 filter parameters

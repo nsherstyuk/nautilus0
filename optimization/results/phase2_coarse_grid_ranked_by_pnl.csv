@@ -1,0 +1,271 @@
+run_id,fast_period,slow_period,crossover_threshold_pips,stop_loss_pips,take_profit_pips,trailing_stop_activation_pips,trailing_stop_distance_pips,dmi_enabled,dmi_period,stoch_enabled,stoch_period_k,stoch_period_d,stoch_bullish_threshold,stoch_bearish_threshold,total_pnl,sharpe_ratio,win_rate,max_drawdown,trade_count,avg_winner,avg_loser,profit_factor,expectancy,rejected_signals_count,status,error_message,backtest_duration_seconds,output_directory,consecutive_losses,objective_value,rank,pnl_rank
+97,40,250,0.5,25,50,20,15,True,14,True,14,3,30,70,6279.84,0.0,0.4489795918367347,0.0,49,1189.64,-255.54,0.0,128.16000000000005,543,completed,,17.42538022994995,logs\backtest_results\EUR-USD_20251021_205541,4,0.0,94.0,1
+96,40,250,0.0,25,50,20,15,True,14,True,14,3,30,70,6279.84,0.0,0.4489795918367347,0.0,49,1189.64,-255.54,0.0,128.16000000000005,543,completed,,17.37885308265686,logs\backtest_results\EUR-USD_20251021_205541,4,0.0,92.0,2
+98,40,250,1.0,25,50,20,15,True,14,True,14,3,30,70,6279.84,0.0,0.4489795918367347,0.0,49,1189.64,-255.54,0.0,128.16000000000005,543,completed,,17.18263053894043,logs\backtest_results\EUR-USD_20251021_205541,4,0.0,93.0,3
+99,40,250,1.5,25,50,20,15,True,14,True,14,3,30,70,5356.13,0.0,0.42,0.0,50,1189.64,-255.55,0.0,107.12259999999992,646,completed,,18.056556224823,logs\backtest_results\EUR-USD_20251021_205542,4,0.0,95.0,4
+121,50,250,0.0,25,50,20,15,True,14,True,14,3,30,70,5053.2,0.0,0.4186046511627907,0.0,43,1189.64,-255.54,0.0,117.5162790697675,452,completed,,16.86699628829956,logs\backtest_results\EUR-USD_20251021_205619,5,0.0,112.0,5
+123,50,250,1.0,25,50,20,15,True,14,True,14,3,30,70,5035.94,0.0,0.4186046511627907,0.0,43,1189.64,-255.55,0.0,117.11488372093028,566,completed,,13.036218404769896,logs\backtest_results\EUR-USD_20251021_205628,4,0.0,114.0,6
+100,40,250,2.0,25,50,20,15,True,14,True,14,3,30,70,4969.21,0.0,0.4166666666666667,0.0,48,1189.64,-255.55,0.0,103.52520833333334,711,completed,,17.177640676498413,logs\backtest_results\EUR-USD_20251021_205544,6,0.0,96.0,7
+124,50,250,1.5,25,50,20,15,True,14,True,14,3,30,70,4840.14,0.0,0.425,0.0,40,1189.64,-255.55,0.0,121.0035,638,completed,,12.808584451675417,logs\backtest_results\EUR-USD_20251021_205628,3,0.0,115.0,8
+125,50,250,2.0,25,50,20,15,True,14,True,14,3,30,70,4840.14,0.0,0.425,0.0,40,1189.64,-255.55,0.0,121.0035,638,completed,,12.291856050491331,logs\backtest_results\EUR-USD_20251021_205628,3,0.0,116.0,9
+122,50,250,0.5,25,50,20,15,True,14,True,14,3,30,70,4195.11,0.0,0.4,0.0,40,1189.64,-255.55,0.0,104.87775000000008,476,completed,,13.261671543121338,logs\backtest_results\EUR-USD_20251021_205627,5,0.0,113.0,10
+120,50,200,2.0,25,50,20,15,True,14,True,14,3,30,70,3231.11,0.0,0.375,0.0,48,799.64,-255.68,0.0,67.31479166666662,872,completed,,17.016616106033325,logs\backtest_results\EUR-USD_20251021_205617,5,0.0,111.0,11
+119,50,200,1.5,25,50,20,15,True,14,True,14,3,30,70,2447.36,0.0,0.3396226415094339,0.0,53,799.64,-255.71,0.0,46.1766037735849,645,completed,,16.86605930328369,logs\backtest_results\EUR-USD_20251021_205616,5,0.0,108.0,12
+117,50,200,0.5,25,50,20,15,True,14,True,14,3,30,70,2447.36,0.0,0.3396226415094339,0.0,53,799.64,-255.71,0.0,46.1766037735849,645,completed,,17.53816246986389,logs\backtest_results\EUR-USD_20251021_205616,5,0.0,110.0,13
+118,50,200,1.0,25,50,20,15,True,14,True,14,3,30,70,2447.36,0.0,0.3396226415094339,0.0,53,799.64,-255.71,0.0,46.1766037735849,645,completed,,17.21874976158142,logs\backtest_results\EUR-USD_20251021_205616,5,0.0,109.0,14
+73,30,250,1.0,25,50,20,15,True,14,True,14,3,30,70,2369.66,0.0,0.3461538461538461,0.0,52,535.8,-255.7,0.0,45.5703846153846,576,completed,,16.25969123840332,logs\backtest_results\EUR-USD_20251021_205448,9,0.0,68.0,15
+72,30,250,0.5,25,50,20,15,True,14,True,14,3,30,70,2369.66,0.0,0.3461538461538461,0.0,52,535.8,-255.7,0.0,45.5703846153846,576,completed,,16.771117448806763,logs\backtest_results\EUR-USD_20251021_205448,9,0.0,69.0,16
+23,10,250,1.0,25,50,20,15,True,14,True,14,3,30,70,2138.34,0.0,0.3243243243243243,0.0,74,666.43,-255.71,0.0,28.89648648648651,425,completed,,14.997772216796877,logs\backtest_results\EUR-USD_20251021_205305,10,0.0,20.0,17
+19,10,200,1.5,25,50,20,15,True,14,True,14,3,30,70,2138.34,0.0,0.3243243243243243,0.0,0,666.43,-255.71,0.0,28.89648648648651,425,completed,,15.68734359741211,logs\backtest_results\EUR-USD_20251021_205305,0,0.0,19.0,18
+116,50,200,0.0,25,50,20,15,True,14,True,14,3,30,70,1848.01,0.0,0.3214285714285714,0.0,56,894.64,-255.71,0.0,33.00017857142856,550,completed,,17.38413166999817,logs\backtest_results\EUR-USD_20251021_205615,6,0.0,107.0,19
+50,20,250,2.0,25,50,20,15,True,14,True,14,3,30,70,1342.94,0.0,0.3333333333333333,0.0,54,666.43,-255.71,0.0,24.869259259259223,652,completed,,16.193673849105835,logs\backtest_results\EUR-USD_20251021_205357,8,0.0,47.0,20
+49,20,250,1.5,25,50,20,15,True,14,True,14,3,30,70,1342.94,0.0,0.3333333333333333,0.0,54,666.43,-255.71,0.0,24.869259259259223,652,completed,,16.002301692962646,logs\backtest_results\EUR-USD_20251021_205357,8,0.0,46.0,21
+48,20,250,1.0,25,50,20,15,True,14,True,14,3,30,70,1277.67,0.0,0.3333333333333333,0.0,54,666.43,-255.71,0.0,23.660555555555533,622,completed,,16.45563292503357,logs\backtest_results\EUR-USD_20251021_205357,8,0.0,45.0,22
+78,40,50,1.0,25,50,20,15,True,14,True,14,3,30,70,980.08,0.0,0.3282442748091603,0.0,131,670.38,-255.7,0.0,7.481526717557216,2684,completed,,17.9061439037323,logs\backtest_results\EUR-USD_20251021_205504,9,0.0,75.0,23
+79,40,50,1.5,25,50,20,15,True,14,True,14,3,30,70,980.08,0.0,0.3282442748091603,0.0,131,670.38,-255.7,0.0,7.481526717557216,2684,completed,,17.3168625831604,logs\backtest_results\EUR-USD_20251021_205504,9,0.0,74.0,24
+21,10,250,0.0,25,50,20,15,True,14,True,14,3,30,70,963.14,0.0,0.3108108108108108,0.0,74,666.43,-255.71,0.0,13.015405405405431,464,completed,,16.146331548690796,logs\backtest_results\EUR-USD_20251021_205305,10,0.0,22.0,25
+22,10,250,0.5,25,50,20,15,True,14,True,14,3,30,70,963.14,0.0,0.3108108108108108,0.0,74,666.43,-255.71,0.0,13.015405405405431,464,completed,,15.917287111282349,logs\backtest_results\EUR-USD_20251021_205305,10,0.0,23.0,26
+18,10,200,1.0,25,50,20,15,True,14,True,14,3,30,70,963.14,0.0,0.3108108108108108,0.0,74,666.43,-255.71,0.0,13.015405405405431,464,completed,,16.015930891036987,logs\backtest_results\EUR-USD_20251021_205305,10,0.0,21.0,27
+75,30,250,2.0,25,50,20,15,True,14,True,14,3,30,70,958.74,0.0,0.3191489361702128,0.0,47,571.83,-255.7,0.0,20.39872340425532,659,completed,,16.322817087173462,logs\backtest_results\EUR-USD_20251021_205449,8,0.0,71.0,28
+74,30,250,1.5,25,50,20,15,True,14,True,14,3,30,70,958.74,0.0,0.3191489361702128,0.0,47,571.83,-255.7,0.0,20.39872340425532,659,completed,,16.44407343864441,logs\backtest_results\EUR-USD_20251021_205449,8,0.0,70.0,29
+95,40,200,2.0,25,50,20,15,True,14,True,14,3,30,70,331.75,0.0,0.3050847457627119,0.0,59,666.43,-255.71,0.0,5.622881355932236,694,completed,,18.123231649398804,logs\backtest_results\EUR-USD_20251021_205540,6,0.0,91.0,30
+51,30,50,0.0,25,50,20,15,True,14,True,14,3,30,70,222.05,0.0,0.296551724137931,0.0,145,670.38,-255.69,0.0,1.5313793103447892,1686,completed,,16.8079993724823,logs\backtest_results\EUR-USD_20251021_205359,12,0.0,48.0,31
+55,30,50,2.0,25,50,20,15,True,14,True,14,3,30,70,199.16,0.0,0.3181818181818182,0.0,132,670.38,-255.7,0.0,1.5087878787878708,2394,completed,,17.429181337356567,logs\backtest_results\EUR-USD_20251021_205413,10,0.0,50.0,32
+54,30,50,1.5,25,50,20,15,True,14,True,14,3,30,70,199.16,0.0,0.3181818181818182,0.0,132,670.38,-255.7,0.0,1.5087878787878708,2394,completed,,17.823702812194824,logs\backtest_results\EUR-USD_20251021_205413,10,0.0,51.0,33
+89,40,150,1.5,25,50,20,15,True,14,True,14,3,30,70,183.59,0.0,0.2950819672131147,0.0,61,666.43,-255.71,0.0,3.009672131147539,435,completed,,17.55099868774414,logs\backtest_results\EUR-USD_20251021_205524,10,0.0,84.0,34
+91,40,200,0.0,25,50,20,15,True,14,True,14,3,30,70,183.59,0.0,0.2950819672131147,0.0,61,666.43,-255.71,0.0,3.009672131147539,435,completed,,18.035747051239014,logs\backtest_results\EUR-USD_20251021_205524,10,0.0,87.0,35
+90,40,150,2.0,25,50,20,15,True,14,True,14,3,30,70,183.59,0.0,0.2950819672131147,0.0,61,666.43,-255.71,0.0,3.009672131147539,435,completed,,17.876367568969727,logs\backtest_results\EUR-USD_20251021_205524,10,0.0,86.0,36
+88,40,150,1.0,25,50,20,15,True,14,True,14,3,30,70,183.59,0.0,0.2950819672131147,0.0,61,666.43,-255.71,0.0,3.009672131147539,435,completed,,17.804232120513916,logs\backtest_results\EUR-USD_20251021_205524,10,0.0,85.0,37
+65,30,150,2.0,25,50,20,15,True,14,True,14,3,30,70,64.49,0.0,0.2950819672131147,0.0,61,615.4,-255.71,0.0,1.05721311475412,544,completed,,17.28608775138855,logs\backtest_results\EUR-USD_20251021_205432,11,0.0,62.0,38
+66,30,200,0.0,25,50,20,15,True,14,True,14,3,30,70,64.49,0.0,0.2950819672131147,0.0,61,615.4,-255.71,0.0,1.05721311475412,544,completed,,17.42457389831543,logs\backtest_results\EUR-USD_20251021_205432,11,0.0,63.0,39
+64,30,150,1.5,25,50,20,15,True,14,True,14,3,30,70,64.49,0.0,0.2950819672131147,0.0,61,615.4,-255.71,0.0,1.05721311475412,544,completed,,17.070384740829468,logs\backtest_results\EUR-USD_20251021_205432,11,0.0,61.0,40
+24,10,250,1.5,25,50,20,15,True,14,True,14,3,30,70,2.07,0.0,0.2898550724637681,0.0,69,666.43,-255.71,0.0,0.0300000000000295,503,completed,,15.911794424057009,logs\backtest_results\EUR-USD_20251021_205306,10,0.0,24.0,41
+47,20,250,0.5,25,50,20,15,True,14,True,14,3,30,70,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0,failed,,2.9447834491729736,,0,,,42
+28,20,50,1.0,25,50,20,15,True,14,True,14,3,30,70,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0,failed,,2.9270689487457275,,0,,,43
+71,30,250,0.0,25,50,20,15,True,14,True,14,3,30,70,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0,failed,"Traceback (most recent call last):
+  File ""C:\nautilus0\backtest\run_backtest.py"", line 733, in <module>
+    sys.exit(asyncio.run(main()))
+             ~~~~~~~~~~~^^^^^^^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py"", line 194, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py"", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py"", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File ""C:\nautilus0\backtest\run_backtest.py"", line 695, in main
+    node.run()
+    ~~~~~~~~^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\backtest\node.py"", line 473, in run
+    raise e
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\backtest\node.py"", line 462, in run
+    result = self._run(
+        run_config_id=config.id,
+    ...<4 lines>...
+        end=config.end,
+    )
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\backtest\node.py"", line 501, in _run
+    self._run_oneshot(
+    ~~~~~~~~~~~~~~~~~^
+        run_config_id=run_config_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        end=end,
+        ^^^^^^^^
+    )
+    ^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\backtest\node.py"", line 601, in _run_oneshot
+    result: CatalogDataResult = self.load_data_config(config, start, end)
+                                ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\backtest\node.py"", line 635, in load_data_config
+    catalog.instruments(instrument_ids=used_instrument_ids)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\persistence\catalog\base.py"", line 74, in instruments
+    return self._query_subclasses(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        base_cls=base_cls,
+        ^^^^^^^^^^^^^^^^^^
+        identifiers=instrument_ids,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\persistence\catalog\parquet.py"", line 1451, in _query_subclasses
+    raise e
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\persistence\catalog\parquet.py"", line 1431, in _query_subclasses
+    data_list = self.query(
+        data_cls=cls,
+    ...<3 lines>...
+        **kwargs,
+    )
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\persistence\catalog\parquet.py"", line 1531, in query
+    data = self._query_pyarrow(
+        data_cls=data_cls,
+    ...<5 lines>...
+        **kwargs,
+    )
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\persistence\catalog\parquet.py"", line 1809, in _query_pyarrow
+    dataset = pds.dataset(file_list, filesystem=self.fs)
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\pyarrow\dataset.py"", line 793, in dataset
+    return _filesystem_dataset(source, **kwargs)
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\pyarrow\dataset.py"", line 482, in _filesystem_dataset
+    return factory.finish(schema)
+           ~~~~~~~~~~~~~~^^^^^^^^
+  File ""pyarrow\\_dataset.pyx"", line 3196, in pyarrow._dataset.DatasetFactory.finish
+  File ""pyarrow\\error.pxi"", line 155, in pyarrow.lib.pyarrow_internal_check_status
+  File ""pyarrow\\error.pxi"", line 92, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: Error creating dataset. Could not read schema from 'C:/nautilus0/data/historical/data/currency_pair/EURUSD.IDEALPRO/1970-01-01T00-00-00-000000000Z_1970-01-01T00-00-00-000000000Z.parquet'. Is this a 'parquet' file?: Could not open Parquet input source 'C:/nautilus0/data/historical/data/currency_pair/EURUSD.IDEALPRO/1970-01-01T00-00-00-000000000Z_1970-01-01T00-00-00-000000000Z.parquet': Parquet file size is 0 bytes",3.01880145072937,,0,,,44
+36,20,150,0.0,25,50,20,15,True,14,True,14,3,30,70,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0,failed,"Traceback (most recent call last):
+  File ""C:\nautilus0\backtest\run_backtest.py"", line 733, in <module>
+    sys.exit(asyncio.run(main()))
+             ~~~~~~~~~~~^^^^^^^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py"", line 194, in run
+    return runner.run(main)
+           ~~~~~~~~~~^^^^^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\asyncio\runners.py"", line 118, in run
+    return self._loop.run_until_complete(task)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\asyncio\base_events.py"", line 720, in run_until_complete
+    return future.result()
+           ~~~~~~~~~~~~~^^
+  File ""C:\nautilus0\backtest\run_backtest.py"", line 695, in main
+    node.run()
+    ~~~~~~~~^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\backtest\node.py"", line 473, in run
+    raise e
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\backtest\node.py"", line 462, in run
+    result = self._run(
+        run_config_id=config.id,
+    ...<4 lines>...
+        end=config.end,
+    )
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\backtest\node.py"", line 501, in _run
+    self._run_oneshot(
+    ~~~~~~~~~~~~~~~~~^
+        run_config_id=run_config_id,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        end=end,
+        ^^^^^^^^
+    )
+    ^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\backtest\node.py"", line 601, in _run_oneshot
+    result: CatalogDataResult = self.load_data_config(config, start, end)
+                                ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\backtest\node.py"", line 635, in load_data_config
+    catalog.instruments(instrument_ids=used_instrument_ids)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\persistence\catalog\base.py"", line 74, in instruments
+    return self._query_subclasses(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        base_cls=base_cls,
+        ^^^^^^^^^^^^^^^^^^
+        identifiers=instrument_ids,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\persistence\catalog\parquet.py"", line 1451, in _query_subclasses
+    raise e
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\persistence\catalog\parquet.py"", line 1431, in _query_subclasses
+    data_list = self.query(
+        data_cls=cls,
+    ...<3 lines>...
+        **kwargs,
+    )
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\persistence\catalog\parquet.py"", line 1531, in query
+    data = self._query_pyarrow(
+        data_cls=data_cls,
+    ...<5 lines>...
+        **kwargs,
+    )
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\nautilus_trader\persistence\catalog\parquet.py"", line 1809, in _query_pyarrow
+    dataset = pds.dataset(file_list, filesystem=self.fs)
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\pyarrow\dataset.py"", line 793, in dataset
+    return _filesystem_dataset(source, **kwargs)
+  File ""C:\Users\nsher\AppData\Local\Programs\Python\Python313\Lib\site-packages\pyarrow\dataset.py"", line 482, in _filesystem_dataset
+    return factory.finish(schema)
+           ~~~~~~~~~~~~~~^^^^^^^^
+  File ""pyarrow\\_dataset.pyx"", line 3196, in pyarrow._dataset.DatasetFactory.finish
+  File ""pyarrow\\error.pxi"", line 155, in pyarrow.lib.pyarrow_internal_check_status
+  File ""pyarrow\\error.pxi"", line 92, in pyarrow.lib.check_status
+pyarrow.lib.ArrowInvalid: Error creating dataset. Could not read schema from 'C:/nautilus0/data/historical/data/currency_pair/EURUSD.IDEALPRO/1970-01-01T00-00-00-000000000Z_1970-01-01T00-00-00-000000000Z.parquet'. Is this a 'parquet' file?: Could not open Parquet input source 'C:/nautilus0/data/historical/data/currency_pair/EURUSD.IDEALPRO/1970-01-01T00-00-00-000000000Z_1970-01-01T00-00-00-000000000Z.parquet': Parquet file size is 0 bytes",3.0045621395111084,,0,,,45
+93,40,200,1.0,25,50,20,15,True,14,True,14,3,30,70,-3.57,0.0,0.3,0.0,60,666.43,-255.71,0.0,-0.0595000000000141,533,completed,,17.56973695755005,logs\backtest_results\EUR-USD_20251021_205539,8,0.0,90.0,46
+94,40,200,1.5,25,50,20,15,True,14,True,14,3,30,70,-3.57,0.0,0.3,0.0,60,666.43,-255.71,0.0,-0.0595000000000141,533,completed,,16.981090784072876,logs\backtest_results\EUR-USD_20251021_205539,8,0.0,89.0,47
+67,30,200,0.5,25,50,20,15,True,14,True,14,3,30,70,-90.51,0.0,0.296875,0.0,64,615.4,-255.71,0.0,-1.414218749999975,570,completed,,17.346256732940674,logs\backtest_results\EUR-USD_20251021_205433,11,0.0,64.0,48
+25,10,250,2.0,25,50,20,15,True,14,True,14,3,30,70,-227.53,0.0,0.2835820895522388,0.0,67,666.43,-255.71,0.0,-3.395970149253742,543,completed,,16.107235193252563,logs\backtest_results\EUR-USD_20251021_205320,12,0.0,25.0,49
+77,40,50,0.5,25,50,20,15,True,14,True,14,3,30,70,-259.54,0.0,0.3243243243243243,0.0,148,670.38,-255.7,0.0,-1.7536486486486351,2212,completed,,17.764569759368896,logs\backtest_results\EUR-USD_20251021_205503,7,0.0,73.0,50
+60,30,100,2.0,25,50,20,15,True,14,True,14,3,30,70,-558.11,0.0,0.2826086956521739,0.0,92,615.47,-255.71,0.0,-6.06641304347832,1301,completed,,17.030832767486572,logs\backtest_results\EUR-USD_20251021_205429,7,0.0,57.0,51
+92,40,200,0.5,25,50,20,15,True,14,True,14,3,30,70,-643.47,0.0,0.2786885245901639,0.0,61,666.43,-255.71,0.0,-10.548688524590204,482,completed,,18.370070695877075,logs\backtest_results\EUR-USD_20251021_205527,10,0.0,88.0,52
+56,30,100,0.0,25,50,20,15,True,14,True,14,3,30,70,-720.57,0.0,0.2992700729927007,0.0,137,670.38,-255.7,0.0,-5.259635036496334,2193,completed,,17.438417673110962,logs\backtest_results\EUR-USD_20251021_205414,9,0.0,52.0,53
+53,30,50,1.0,25,50,20,15,True,14,True,14,3,30,70,-720.57,0.0,0.2992700729927007,0.0,137,670.38,-255.7,0.0,-5.259635036496334,2193,completed,,19.38503384590149,logs\backtest_results\EUR-USD_20251021_205414,9,0.0,53.0,54
+43,20,200,1.0,25,50,20,15,True,14,True,14,3,30,70,-804.91,0.0,0.28125,0.0,64,615.4,-255.71,0.0,-12.576718749999998,670,completed,,16.541202545166016,logs\backtest_results\EUR-USD_20251021_205354,9,0.0,41.0,55
+40,20,150,2.0,25,50,20,15,True,14,True,14,3,30,70,-889.07,0.0,0.2702702702702703,0.0,74,615.4,-255.69,0.0,-12.01445945945946,1042,completed,,16.70602798461914,logs\backtest_results\EUR-USD_20251021_205340,9,0.0,38.0,56
+52,30,50,0.5,25,50,20,15,True,14,True,14,3,30,70,-903.29,0.0,0.2978723404255319,0.0,141,670.38,-255.69,0.0,-6.406312056737619,1889,completed,,17.7786386013031,logs\backtest_results\EUR-USD_20251021_205411,10,0.0,49.0,57
+69,30,200,1.5,25,50,20,15,True,14,True,14,3,30,70,-986.89,0.0,0.2833333333333333,0.0,60,615.4,-255.71,0.0,-16.44816666666665,705,completed,,16.612703561782837,logs\backtest_results\EUR-USD_20251021_205446,11,0.0,67.0,58
+68,30,200,1.0,25,50,20,15,True,14,True,14,3,30,70,-986.89,0.0,0.2833333333333333,0.0,60,615.4,-255.71,0.0,-16.44816666666665,705,completed,,16.951343297958374,logs\backtest_results\EUR-USD_20251021_205446,11,0.0,65.0,59
+70,30,200,2.0,25,50,20,15,True,14,True,14,3,30,70,-986.89,0.0,0.2833333333333333,0.0,60,615.4,-255.71,0.0,-16.44816666666665,705,completed,,16.429582834243774,logs\backtest_results\EUR-USD_20251021_205446,11,0.0,66.0,60
+15,10,150,2.0,25,50,20,15,True,14,True,14,3,30,70,-1391.08,0.0,0.2631578947368421,0.0,95,615.4,-255.7,0.0,-14.64294736842109,757,completed,,14.800312757492064,logs\backtest_results\EUR-USD_20251021_205249,11,0.0,9.0,61
+29,20,50,1.5,25,50,20,15,True,14,True,14,3,30,70,-1404.09,0.0,0.2993197278911564,0.0,147,584.87,-255.72,0.0,-9.551632653061247,1913,completed,,16.742250680923462,logs\backtest_results\EUR-USD_20251021_205321,7,0.0,26.0,62
+42,20,200,0.5,25,50,20,15,True,14,True,14,3,30,70,-1465.88,0.0,0.265625,0.0,64,615.4,-255.71,0.0,-22.904374999999987,621,completed,,16.189879417419434,logs\backtest_results\EUR-USD_20251021_205341,9,0.0,40.0,63
+41,20,200,0.0,25,50,20,15,True,14,True,14,3,30,70,-1465.88,0.0,0.265625,0.0,64,615.4,-255.71,0.0,-22.904374999999987,621,completed,,16.685373783111572,logs\backtest_results\EUR-USD_20251021_205341,9,0.0,39.0,64
+61,30,150,0.0,25,50,20,15,True,14,True,14,3,30,70,-1536.11,0.0,0.2647058823529412,0.0,68,547.52,-255.71,0.0,-22.58985294117646,684,completed,,16.854442596435547,logs\backtest_results\EUR-USD_20251021_205430,11,0.0,58.0,65
+62,30,150,0.5,25,50,20,15,True,14,True,14,3,30,70,-1536.11,0.0,0.2647058823529412,0.0,68,547.52,-255.71,0.0,-22.58985294117646,684,completed,,16.756144762039185,logs\backtest_results\EUR-USD_20251021_205430,11,0.0,59.0,66
+86,40,150,0.0,25,50,20,15,True,14,True,14,3,30,70,-1767.17,0.0,0.2571428571428571,0.0,70,544.51,-255.7,0.0,-25.245285714285718,761,completed,,18.06918430328369,logs\backtest_results\EUR-USD_20251021_205522,9,0.0,83.0,67
+87,40,150,0.5,25,50,20,15,True,14,True,14,3,30,70,-1767.17,0.0,0.2571428571428571,0.0,70,544.51,-255.7,0.0,-25.245285714285718,761,completed,,17.48444890975952,logs\backtest_results\EUR-USD_20251021_205522,9,0.0,81.0,68
+85,40,100,2.0,25,50,20,15,True,14,True,14,3,30,70,-1767.17,0.0,0.2571428571428571,0.0,70,544.51,-255.7,0.0,-25.245285714285718,761,completed,,18.30205106735229,logs\backtest_results\EUR-USD_20251021_205522,9,0.0,82.0,69
+46,20,250,0.0,25,50,20,15,True,14,True,14,3,30,70,-1789.51,0.0,0.2539682539682539,0.0,63,666.43,-255.71,0.0,-28.40492063492067,403,completed,,16.365667819976807,logs\backtest_results\EUR-USD_20251021_205355,10,0.0,44.0,70
+44,20,200,1.5,25,50,20,15,True,14,True,14,3,30,70,-1789.51,0.0,0.2539682539682539,0.0,63,666.43,-255.71,0.0,-28.40492063492067,403,completed,,16.529330015182495,logs\backtest_results\EUR-USD_20251021_205355,10,0.0,43.0,71
+45,20,200,2.0,25,50,20,15,True,14,True,14,3,30,70,-1789.51,0.0,0.2539682539682539,0.0,63,666.43,-255.71,0.0,-28.40492063492067,403,completed,,16.348173141479492,logs\backtest_results\EUR-USD_20251021_205355,10,0.0,42.0,72
+59,30,100,1.5,25,50,20,15,True,14,True,14,3,30,70,-1891.94,0.0,0.2826086956521739,0.0,92,615.47,-255.71,0.0,-20.56456521739136,1200,completed,,16.274107933044434,logs\backtest_results\EUR-USD_20251021_205415,7,0.0,56.0,73
+58,30,100,1.0,25,50,20,15,True,14,True,14,3,30,70,-1891.94,0.0,0.2826086956521739,0.0,92,615.47,-255.71,0.0,-20.56456521739136,1200,completed,,17.310288429260254,logs\backtest_results\EUR-USD_20251021_205415,7,0.0,55.0,74
+3,10,50,1.0,25,50,20,15,True,14,True,14,3,30,70,-1977.35,0.0,0.2965116279069767,0.0,172,606.86,-255.72,0.0,-11.49622093023254,1434,completed,,29.877806186676025,logs\backtest_results\EUR-USD_20251021_205233,10,0.0,4.0,75
+2,10,50,0.5,25,50,20,15,True,14,True,14,3,30,70,-1977.35,0.0,0.2965116279069767,0.0,172,606.86,-255.72,0.0,-11.49622093023254,1434,completed,,29.900729417800903,logs\backtest_results\EUR-USD_20251021_205233,10,0.0,6.0,76
+8,10,100,1.0,25,50,20,15,True,14,True,14,3,30,70,-1977.35,0.0,0.2965116279069767,0.0,172,606.86,-255.72,0.0,-11.49622093023254,1434,completed,,29.740564107894897,logs\backtest_results\EUR-USD_20251021_205233,10,0.0,1.0,77
+6,10,100,0.0,25,50,20,15,True,14,True,14,3,30,70,-1977.35,0.0,0.2965116279069767,0.0,172,606.86,-255.72,0.0,-11.49622093023254,1434,completed,,29.774747133255005,logs\backtest_results\EUR-USD_20251021_205233,10,0.0,3.0,78
+1,10,50,0.0,25,50,20,15,True,14,True,14,3,30,70,-1977.35,0.0,0.2965116279069767,0.0,172,606.86,-255.72,0.0,-11.49622093023254,1434,completed,,29.915480852127075,logs\backtest_results\EUR-USD_20251021_205233,10,0.0,7.0,79
+7,10,100,0.5,25,50,20,15,True,14,True,14,3,30,70,-1977.35,0.0,0.2965116279069767,0.0,172,606.86,-255.72,0.0,-11.49622093023254,1434,completed,,29.75040364265442,logs\backtest_results\EUR-USD_20251021_205233,10,0.0,2.0,80
+39,20,150,1.5,25,50,20,15,True,14,True,14,3,30,70,-2035.27,0.0,0.25,0.0,84,560.83,-255.69,0.0,-24.22940476190476,804,completed,,16.221911907196045,logs\backtest_results\EUR-USD_20251021_205339,10,0.0,36.0,81
+35,20,100,2.0,25,50,20,15,True,14,True,14,3,30,70,-2035.27,0.0,0.25,0.0,84,560.83,-255.69,0.0,-24.22940476190476,804,completed,,17.00254797935486,logs\backtest_results\EUR-USD_20251021_205339,10,0.0,34.0,82
+37,20,150,0.5,25,50,20,15,True,14,True,14,3,30,70,-2035.27,0.0,0.25,0.0,84,560.83,-255.69,0.0,-24.22940476190476,804,completed,,16.76623821258545,logs\backtest_results\EUR-USD_20251021_205339,10,0.0,35.0,83
+38,20,150,1.0,25,50,20,15,True,14,True,14,3,30,70,-2035.27,0.0,0.25,0.0,84,560.83,-255.69,0.0,-24.22940476190476,804,completed,,17.00420379638672,logs\backtest_results\EUR-USD_20251021_205339,10,0.0,37.0,84
+57,30,100,0.5,25,50,20,15,True,14,True,14,3,30,70,-2192.8,0.0,0.2736842105263158,0.0,92,615.47,-255.71,0.0,-23.0821052631579,1126,completed,,17.5282986164093,logs\backtest_results\EUR-USD_20251021_205415,7,0.0,54.0,85
+13,10,150,1.0,25,50,20,15,True,14,True,14,3,30,70,-2257.47,0.0,0.2962962962962963,0.0,134,607.49,-255.72,0.0,-16.72200000000001,965,completed,,15.064243793487549,logs\backtest_results\EUR-USD_20251021_205249,8,0.0,10.0,86
+27,20,50,0.5,25,50,20,15,True,14,True,14,3,30,70,-2346.23,0.0,0.3051948051948052,0.0,154,606.86,-255.71,0.0,-15.235259740259792,1670,completed,,17.777870416641235,logs\backtest_results\EUR-USD_20251021_205322,7,0.0,29.0,87
+26,20,50,0.0,25,50,20,15,True,14,True,14,3,30,70,-2346.23,0.0,0.3051948051948052,0.0,154,606.86,-255.71,0.0,-15.235259740259792,1670,completed,,17.72220802307129,logs\backtest_results\EUR-USD_20251021_205322,7,0.0,27.0,88
+30,20,50,2.0,25,50,20,15,True,14,True,14,3,30,70,-2346.23,0.0,0.3051948051948052,0.0,154,606.86,-255.71,0.0,-15.235259740259792,1670,completed,,16.98361563682556,logs\backtest_results\EUR-USD_20251021_205322,7,0.0,28.0,89
+106,50,100,0.0,25,50,20,15,True,14,True,14,3,30,70,-2409.52,0.0,0.253012048192771,0.0,83,607.49,-255.7,0.0,-29.03036144578316,1337,completed,,17.276413917541504,logs\backtest_results\EUR-USD_20251021_205556,12,0.0,97.0,90
+108,50,100,1.0,25,50,20,15,True,14,True,14,3,30,70,-2483.03,0.0,0.2564102564102564,0.0,78,607.49,-255.7,0.0,-31.833717948717947,1480,completed,,17.274702787399292,logs\backtest_results\EUR-USD_20251021_205557,6,0.0,99.0,91
+107,50,100,0.5,25,50,20,15,True,14,True,14,3,30,70,-2483.03,0.0,0.2564102564102564,0.0,78,607.49,-255.7,0.0,-31.833717948717947,1480,completed,,17.6400465965271,logs\backtest_results\EUR-USD_20251021_205557,6,0.0,98.0,92
+76,40,50,0.0,25,50,20,15,True,14,True,14,3,30,70,-2561.04,0.0,0.2857142857142857,0.0,161,670.38,-255.7,0.0,-15.90708074534163,1917,completed,,17.53859257698059,logs\backtest_results\EUR-USD_20251021_205451,10,0.0,72.0,93
+111,50,150,0.0,25,50,20,15,True,14,True,14,3,30,70,-3026.62,0.0,0.2337662337662337,0.0,66,607.49,-255.7,0.0,-39.30675324675329,1771,completed,,17.52141785621643,logs\backtest_results\EUR-USD_20251021_205559,13,0.0,100.0,94
+63,30,150,1.0,25,50,20,15,True,14,True,14,3,30,70,-3110.91,0.0,0.2272727272727272,0.0,66,547.52,-255.71,0.0,-47.13499999999999,857,completed,,16.9858341217041,logs\backtest_results\EUR-USD_20251021_205431,11,0.0,60.0,95
+20,10,200,2.0,25,50,20,15,True,14,True,14,3,30,70,-3129.65,0.0,0.2361111111111111,0.0,72,615.4,-255.71,0.0,-43.46736111111103,618,completed,,15.395011186599731,logs\backtest_results\EUR-USD_20251021_205304,13,0.0,18.0,96
+17,10,200,0.5,25,50,20,15,True,14,True,14,3,30,70,-3129.65,0.0,0.2361111111111111,0.0,72,615.4,-255.71,0.0,-43.46736111111103,618,completed,,15.615991353988647,logs\backtest_results\EUR-USD_20251021_205304,13,0.0,17.0,97
+84,40,100,1.5,25,50,20,15,True,14,True,14,3,30,70,-3131.63,0.0,0.2386363636363636,0.0,88,545.51,-255.7,0.0,-35.58670454545454,1406,completed,,17.10745859146118,logs\backtest_results\EUR-USD_20251021_205509,18,0.0,80.0,98
+110,50,100,2.0,25,50,20,15,True,14,True,14,3,30,70,-3491.02,0.0,0.2272727272727272,0.0,66,544.51,-255.72,0.0,-52.89424242424241,646,completed,,17.639565229415894,logs\backtest_results\EUR-USD_20251021_205559,13,0.0,102.0,99
+109,50,100,1.5,25,50,20,15,True,14,True,14,3,30,70,-3491.02,0.0,0.2272727272727272,0.0,66,544.51,-255.72,0.0,-52.89424242424241,646,completed,,17.770291566848755,logs\backtest_results\EUR-USD_20251021_205559,13,0.0,101.0,100
+112,50,150,0.5,25,50,20,15,True,14,True,14,3,30,70,-3491.02,0.0,0.2272727272727272,0.0,66,544.51,-255.72,0.0,-52.89424242424241,646,completed,,17.313884973526,logs\backtest_results\EUR-USD_20251021_205559,13,0.0,103.0,101
+4,10,50,1.5,25,50,20,15,True,14,True,14,3,30,70,-3563.98,0.0,0.2840236686390532,0.0,169,606.86,-255.72,0.0,-21.08863905325441,1660,completed,,29.82846164703369,logs\backtest_results\EUR-USD_20251021_205234,11,0.0,5.0,102
+34,20,100,1.5,25,50,20,15,True,14,True,14,3,30,70,-3587.76,0.0,0.25,0.0,96,560.44,-255.7,0.0,-37.37249999999999,1164,completed,,16.91852045059204,logs\backtest_results\EUR-USD_20251021_205337,12,0.0,33.0,103
+81,40,100,0.0,25,50,20,15,True,14,True,14,3,30,70,-3710.9,0.0,0.2421052631578947,0.0,95,545.51,-255.7,0.0,-39.06210526315792,1286,completed,,17.46640706062317,logs\backtest_results\EUR-USD_20251021_205506,18,0.0,77.0,104
+80,40,50,2.0,25,50,20,15,True,14,True,14,3,30,70,-3710.9,0.0,0.2421052631578947,0.0,95,545.51,-255.7,0.0,-39.06210526315792,1286,completed,,17.63490128517151,logs\backtest_results\EUR-USD_20251021_205506,18,0.0,76.0,105
+83,40,100,1.0,25,50,20,15,True,14,True,14,3,30,70,-3710.9,0.0,0.2421052631578947,0.0,95,545.51,-255.7,0.0,-39.06210526315792,1286,completed,,16.92938208580017,logs\backtest_results\EUR-USD_20251021_205506,18,0.0,79.0,106
+82,40,100,0.5,25,50,20,15,True,14,True,14,3,30,70,-3710.9,0.0,0.2421052631578947,0.0,95,545.51,-255.7,0.0,-39.06210526315792,1286,completed,,17.33041477203369,logs\backtest_results\EUR-USD_20251021_205506,18,0.0,78.0,107
+5,10,50,2.0,25,50,20,15,True,14,True,14,3,30,70,-3740.79,0.0,0.2955974842767295,0.0,159,606.86,-255.72,0.0,-23.52698113207548,1754,completed,,31.132741689682007,logs\backtest_results\EUR-USD_20251021_205235,11,0.0,8.0,108
+11,10,150,0.0,25,50,20,15,True,14,True,14,3,30,70,-3747.88,0.0,0.2761194029850746,0.0,134,606.86,-255.72,0.0,-27.969253731343255,1059,completed,,15.248980522155762,logs\backtest_results\EUR-USD_20251021_205249,8,0.0,12.0,109
+12,10,150,0.5,25,50,20,15,True,14,True,14,3,30,70,-3747.88,0.0,0.2761194029850746,0.0,134,606.86,-255.72,0.0,-27.969253731343255,1059,completed,,15.164606809616089,logs\backtest_results\EUR-USD_20251021_205249,8,0.0,11.0,110
+14,10,150,1.5,25,50,20,15,True,14,True,14,3,30,70,-3747.88,0.0,0.2761194029850746,0.0,134,606.86,-255.72,0.0,-27.969253731343255,1059,completed,,15.195003271102903,logs\backtest_results\EUR-USD_20251021_205249,8,0.0,13.0,111
+10,10,100,2.0,25,50,20,15,True,14,True,14,3,30,70,-3747.88,0.0,0.2761194029850746,0.0,134,606.86,-255.72,0.0,-27.969253731343255,1059,completed,,15.959258079528809,logs\backtest_results\EUR-USD_20251021_205249,8,0.0,15.0,112
+9,10,100,1.5,25,50,20,15,True,14,True,14,3,30,70,-3747.88,0.0,0.2761194029850746,0.0,134,606.86,-255.72,0.0,-27.969253731343255,1059,completed,,15.831304788589478,logs\backtest_results\EUR-USD_20251021_205249,8,0.0,14.0,113
+113,50,150,1.0,25,50,20,15,True,14,True,14,3,30,70,-4041.48,0.0,0.2063492063492063,0.0,63,544.51,-255.71,0.0,-64.1504761904762,770,completed,,17.09308910369873,logs\backtest_results\EUR-USD_20251021_205602,11,0.0,104.0,114
+16,10,200,0.0,25,50,20,15,True,14,True,14,3,30,70,-4241.7,0.0,0.2151898734177215,0.0,79,615.4,-255.71,0.0,-53.69240506329113,451,completed,,15.31468677520752,logs\backtest_results\EUR-USD_20251021_205250,12,0.0,16.0,115
+33,20,100,1.0,25,50,20,15,True,14,True,14,3,30,70,-4758.0,0.0,0.2424242424242424,0.0,99,560.44,-255.7,0.0,-48.06060606060605,1109,completed,,16.816775798797607,logs\backtest_results\EUR-USD_20251021_205324,14,0.0,32.0,116
+32,20,100,0.5,25,50,20,15,True,14,True,14,3,30,70,-4860.98,0.0,0.25,0.0,108,560.44,-255.7,0.0,-45.00907407407405,965,completed,,17.129173517227173,logs\backtest_results\EUR-USD_20251021_205323,15,0.0,31.0,117
+31,20,100,0.0,25,50,20,15,True,14,True,14,3,30,70,-4860.98,0.0,0.25,0.0,108,560.44,-255.7,0.0,-45.00907407407405,965,completed,,17.46964454650879,logs\backtest_results\EUR-USD_20251021_205323,15,0.0,30.0,118
+115,50,150,2.0,25,50,20,15,True,14,True,14,3,30,70,-6765.7,0.0,0.1272727272727272,0.0,55,498.81,-255.71,0.0,-123.01272727272726,1027,completed,,17.30586004257202,logs\backtest_results\EUR-USD_20251021_205614,15,0.0,106.0,119
+114,50,150,1.5,25,50,20,15,True,14,True,14,3,30,70,-6765.7,0.0,0.1272727272727272,0.0,55,498.81,-255.71,0.0,-123.01272727272726,1027,completed,,17.6027729511261,logs\backtest_results\EUR-USD_20251021_205614,15,0.0,105.0,120

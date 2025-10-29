@@ -1,0 +1,25 @@
+{
+  "window_size": 3,
+  "spacing_threshold": 2,
+  "amplitude_filter_12": 8,
+  "amplitude_filter_40": 50,
+  "take_profit_micropips": 180,
+  "stop_loss_micropips": 20,
+  "trailing_stop_pips": 2.0,
+  "position_size": 100000,
+  "bar_timeframe": "1m",
+  "time_filter_enabled": false,
+  "exclude_hours": [0, 1, 2, 3, 4, 16, 17, 20, 9, 22],
+  "use_htf_bias": false,
+  "htf_timeframe": "",
+  "htf_bias_mode": "direction_only",
+  "htf_buffer_micropips": 0,
+  "parent_limit_offset_price": 0.00004,
+  "replace_on_signal_policy": "immediate_replace",
+  "resilience": {
+    "data_reconnect_timeout_seconds": 60,
+    "parent_fill_timeout_seconds": 60
+  },
+  "description": "Minimal baseline live config: 1m bars, w=3, s=2, TP=180 micro pips, TS=2.0 pips, HTF bias off, time filter off",
+  "saved_at": "${NOW}"
+}

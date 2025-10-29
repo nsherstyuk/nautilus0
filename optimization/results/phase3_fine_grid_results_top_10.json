@@ -1,0 +1,222 @@
+[
+  {
+    "rank": 1,
+    "run_id": 96,
+    "parameters": {
+      "run_id": 96,
+      "fast_period": 42,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.35,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "objective_value": 0.2721831363652005
+  },
+  {
+    "rank": 2,
+    "run_id": 97,
+    "parameters": {
+      "run_id": 97,
+      "fast_period": 42,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.425,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "objective_value": 0.2721831363652005
+  },
+  {
+    "rank": 3,
+    "run_id": 98,
+    "parameters": {
+      "run_id": 98,
+      "fast_period": 42,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.5,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "objective_value": 0.2715490847201179
+  },
+  {
+    "rank": 4,
+    "run_id": 75,
+    "parameters": {
+      "run_id": 75,
+      "fast_period": 40,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.65,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "objective_value": 0.24476101806445325
+  },
+  {
+    "rank": 5,
+    "run_id": 74,
+    "parameters": {
+      "run_id": 74,
+      "fast_period": 40,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.575,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "objective_value": 0.24476101806445325
+  },
+  {
+    "rank": 6,
+    "run_id": 73,
+    "parameters": {
+      "run_id": 73,
+      "fast_period": 40,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.5,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "objective_value": 0.24476101806445325
+  },
+  {
+    "rank": 7,
+    "run_id": 99,
+    "parameters": {
+      "run_id": 99,
+      "fast_period": 42,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.575,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "objective_value": 0.23863106802470724
+  },
+  {
+    "rank": 8,
+    "run_id": 72,
+    "parameters": {
+      "run_id": 72,
+      "fast_period": 40,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.425,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "objective_value": 0.22938135091768153
+  },
+  {
+    "rank": 9,
+    "run_id": 71,
+    "parameters": {
+      "run_id": 71,
+      "fast_period": 40,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.35,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "objective_value": 0.22938135091768153
+  },
+  {
+    "rank": 10,
+    "run_id": 49,
+    "parameters": {
+      "run_id": 49,
+      "fast_period": 38,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.575,
+      "stop_loss_pips": 25,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 20,
+      "trailing_stop_distance_pips": 15,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70
+    },
+    "objective_value": 0.22158009554994657
+  }
+]

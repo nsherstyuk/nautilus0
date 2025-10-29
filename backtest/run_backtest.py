@@ -253,10 +253,31 @@ def create_backtest_run_config(
     starting_capital: float,
     enforce_position_limit: bool,
     allow_position_reversal: bool,
-    stop_loss_pips: int,
-    take_profit_pips: int,
-    trailing_stop_activation_pips: int,
-    trailing_stop_distance_pips: int,
+    *,
+    stop_loss_pips: int = 25,
+    take_profit_pips: int = 50,
+    trailing_stop_activation_pips: int = 20,
+    trailing_stop_distance_pips: int = 15,
+    crossover_threshold_pips: float = 0.7,
+    pre_crossover_separation_pips: float = 0.0,
+    pre_crossover_lookback_bars: int = 1,
+    dmi_enabled: bool = True,
+    dmi_bar_spec: str = "2-MINUTE-MID-EXTERNAL",
+    dmi_period: int = 14,
+    stoch_enabled: bool = True,
+    stoch_bar_spec: str = "15-MINUTE-MID-EXTERNAL",
+    stoch_period_k: int = 14,
+    stoch_period_d: int = 3,
+    stoch_bullish_threshold: int = 30,
+    stoch_bearish_threshold: int = 70,
+    stoch_max_bars_since_crossing: int = 9,
+    use_limit_orders: bool = False,
+    limit_order_timeout_bars: int = 5,
+    time_filter_enabled: bool = False,
+    trading_hours_start: int = 0,
+    trading_hours_end: int = 23,
+    trading_hours_timezone: str = "UTC",
+    excluded_hours: list[int] | None = None,
 ) -> BacktestRunConfig:
     """Create BacktestRunConfig wiring data, venue and strategy."""
     # Time bounds
@@ -318,6 +339,26 @@ def create_backtest_run_config(
             "take_profit_pips": take_profit_pips,
             "trailing_stop_activation_pips": trailing_stop_activation_pips,
             "trailing_stop_distance_pips": trailing_stop_distance_pips,
+            "crossover_threshold_pips": crossover_threshold_pips,
+            "pre_crossover_separation_pips": pre_crossover_separation_pips,
+            "pre_crossover_lookback_bars": pre_crossover_lookback_bars,
+            "dmi_enabled": dmi_enabled,
+            "dmi_bar_spec": dmi_bar_spec,
+            "dmi_period": dmi_period,
+            "stoch_enabled": stoch_enabled,
+            "stoch_bar_spec": stoch_bar_spec,
+            "stoch_period_k": stoch_period_k,
+            "stoch_period_d": stoch_period_d,
+            "stoch_bullish_threshold": stoch_bullish_threshold,
+            "stoch_bearish_threshold": stoch_bearish_threshold,
+            "stoch_max_bars_since_crossing": stoch_max_bars_since_crossing,
+            "use_limit_orders": use_limit_orders,
+            "limit_order_timeout_bars": limit_order_timeout_bars,
+                "time_filter_enabled": time_filter_enabled,
+                "trading_hours_start": trading_hours_start,
+                "trading_hours_end": trading_hours_end,
+                "trading_hours_timezone": trading_hours_timezone,
+                "excluded_hours": excluded_hours if excluded_hours is not None else [],
         },
     )
 
@@ -412,6 +453,103 @@ def generate_reports(
         "general": general_stats,
         "rejected_signals_count": len(rejected_signals),
     }
+    
+    # Calculate missing metrics from positions DataFrame
+    try:
+        # Calculate Total Trades: count closed positions only
+        total_trades = 0
+        if not positions_df.empty and 'ts_closed' in positions_df.columns:
+            total_trades = len(positions_df[positions_df['ts_closed'].notna()])
+        
+        # Calculate Sharpe Ratio from realized_return column
+        sharpe_ratio = 0.0
+        if not positions_df.empty and 'realized_return' in positions_df.columns:
+            closed_positions = positions_df[positions_df['ts_closed'].notna()]
+            if not closed_positions.empty and 'realized_return' in closed_positions.columns:
+                returns = pd.to_numeric(closed_positions['realized_return'], errors='coerce').dropna()
+                if len(returns) >= 2:
+                    mean_return = returns.mean()
+                    std_return = returns.std()
+                    if std_return > 0:
+                        sharpe_ratio = mean_return / std_return
+        
+        # Calculate Profit Factor
+        profit_factor = 0.0
+        if not positions_df.empty:
+            closed_positions = positions_df[positions_df['ts_closed'].notna()]
+            if not closed_positions.empty:
+                # Check multiple candidate column names for realized PnL
+                pnl_candidates = ['realized_pnl', 'realized_pnl_quote', 'realized_pnl_usd', 'realized_pnl_ccy', 'pnl_realized']
+                pnl_column = None
+                for candidate in pnl_candidates:
+                    if candidate in closed_positions.columns:
+                        pnl_column = candidate
+                        break
+                
+                if pnl_column:
+                    pnl_values = closed_positions[pnl_column].dropna()
+                    pnl_values = pd.to_numeric(pnl_values, errors='coerce')
+                    pnl_values = pnl_values.dropna()
+                    if not pnl_values.empty:
+                        gross_profit = pnl_values[pnl_values > 0].sum()
+                        gross_loss = abs(pnl_values[pnl_values < 0].sum())
+                        if gross_loss > 0:
+                            profit_factor = gross_profit / gross_loss
+        
+        # Calculate Max Drawdown from account DataFrame
+        max_drawdown = 0.0
+        if not account_df.empty:
+            # Find timestamp and equity columns
+            timestamp_cols = ["timestamp", "ts_event", "ts"]
+            equity_cols = ["net_liquidation", "equity", "balance", "net_liq", "account_value"]
+            
+            ts_col = next((col for col in timestamp_cols if col in account_df.columns), None)
+            eq_col = next((col for col in equity_cols if col in account_df.columns), None)
+            
+            if ts_col and eq_col:
+                equity_curve = account_df[[ts_col, eq_col]].copy()
+                equity_curve.columns = ["timestamp", "equity"]
+                equity_curve["equity"] = pd.to_numeric(equity_curve["equity"], errors='coerce')
+                equity_curve = equity_curve.dropna(subset=["equity"])
+                equity_curve = equity_curve.sort_values("timestamp")
+                
+                if not equity_curve.empty:
+                    # Calculate running maximum equity
+                    equity_curve["running_max"] = equity_curve["equity"].cummax()
+                    # Calculate drawdown at each point
+                    equity_curve["drawdown"] = equity_curve["equity"] - equity_curve["running_max"]
+                    # Get the minimum (most negative) drawdown
+                    max_drawdown = abs(equity_curve["drawdown"].min())
+        
+        # Update stats dictionary with calculated metrics
+        if "general" not in stats:
+            stats["general"] = {}
+        
+        # Only assign computed values if keys are missing (preserve analyzer-provided values)
+        if "Total trades" not in stats["general"]:
+            stats["general"]["Total trades"] = total_trades
+        if "Sharpe ratio" not in stats["general"]:
+            stats["general"]["Sharpe ratio"] = round(sharpe_ratio, 3)
+        if "Profit factor" not in stats["general"]:
+            stats["general"]["Profit factor"] = round(profit_factor, 2)
+        if "Max drawdown" not in stats["general"]:
+            stats["general"]["Max drawdown"] = round(max_drawdown, 2)
+        
+        logger.info(
+            "Calculated metrics - Total trades: %s, Sharpe ratio: %.3f, Profit factor: %.2f, Max drawdown: %.2f",
+            total_trades, sharpe_ratio, profit_factor, max_drawdown
+        )
+        
+    except Exception as exc:
+        logger.warning("Failed to calculate additional metrics: %s", exc, exc_info=True)
+        # Set default values if calculation fails
+        if "general" not in stats:
+            stats["general"] = {}
+        stats["general"]["Total trades"] = 0
+        stats["general"]["Sharpe ratio"] = 0.0
+        stats["general"]["Profit factor"] = 0.0
+        stats["general"]["Max drawdown"] = 0.0
+    
     with open(output_dir / "performance_stats.json", "w", encoding="utf-8") as f:
         json.dump(stats, f, indent=2)
 
@@ -621,6 +759,26 @@ async def main() -> int:
         take_profit_pips=cfg.take_profit_pips,
         trailing_stop_activation_pips=cfg.trailing_stop_activation_pips,
         trailing_stop_distance_pips=cfg.trailing_stop_distance_pips,
+        crossover_threshold_pips=cfg.crossover_threshold_pips,
+        pre_crossover_separation_pips=cfg.pre_crossover_separation_pips,
+        pre_crossover_lookback_bars=cfg.pre_crossover_lookback_bars,
+        dmi_enabled=cfg.dmi_enabled,
+        dmi_bar_spec=cfg.dmi_bar_spec,
+        dmi_period=cfg.dmi_period,
+        stoch_enabled=cfg.stoch_enabled,
+        stoch_bar_spec=cfg.stoch_bar_spec,
+        stoch_period_k=cfg.stoch_period_k,
+        stoch_period_d=cfg.stoch_period_d,
+        stoch_bullish_threshold=cfg.stoch_bullish_threshold,
+        stoch_bearish_threshold=cfg.stoch_bearish_threshold,
+        stoch_max_bars_since_crossing=cfg.stoch_max_bars_since_crossing,
+        use_limit_orders=cfg.use_limit_orders,
+        limit_order_timeout_bars=cfg.limit_order_timeout_bars,
+        time_filter_enabled=cfg.time_filter_enabled,
+        trading_hours_start=cfg.trading_hours_start,
+        trading_hours_end=cfg.trading_hours_end,
+        trading_hours_timezone=cfg.trading_hours_timezone,
+        excluded_hours=cfg.excluded_hours,
     )
 
     logger.info(
@@ -630,6 +788,19 @@ async def main() -> int:
         start_ts.value,
         end_ts.value,
     )
+    logger.info(
+        "Time filter configuration: enabled=%s, hours=%s-%s %s",
+        getattr(cfg, "time_filter_enabled", None),
+        getattr(cfg, "trading_hours_start", None),
+        getattr(cfg, "trading_hours_end", None),
+        getattr(cfg, "trading_hours_timezone", None),
+    )
+    if getattr(cfg, "excluded_hours", []):
+        logger.info(
+            "Excluded hours: %s %s",
+            getattr(cfg, "excluded_hours", []),
+            getattr(cfg, "trading_hours_timezone", None),
+        )
 
     node = BacktestNode(configs=[run_cfg])
     try:
@@ -665,7 +836,7 @@ async def main() -> int:
     )
 
     # Write reports
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
     safe_symbol = cfg.symbol.replace('/', '-')
     output_dir = Path(cfg.output_dir) / f"{safe_symbol}_{timestamp}"
     strategies = engine.trader.strategies()

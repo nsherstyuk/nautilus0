@@ -1,0 +1,880 @@
+timestamp,bar_close_time,signal_type,action,reason,fast_sma,slow_sma
+2025-01-02 02:30:00+00:00,2025-01-02 02:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.59 pips < 1.0 pips threshold),1.0356089999999998,1.03555
+2025-01-02 08:15:00+00:00,2025-01-02 08:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.11 pips < 1.0 pips threshold),1.036261,1.0362723529411766
+2025-01-02 08:30:00+00:00,2025-01-02 08:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.41 pips < 1.0 pips threshold),1.036218,1.0362591428571428
+2025-01-02 08:45:00+00:00,2025-01-02 09:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.31 pips < 1.0 pips threshold),1.036229,1.03626
+2025-01-02 09:00:00+00:00,2025-01-02 09:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.37 pips < 1.0 pips threshold),1.0362239999999998,1.036260810810811
+2025-01-02 09:15:00+00:00,2025-01-02 09:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.53 pips < 1.0 pips threshold),1.036206,1.0362594736842106
+2025-01-02 09:30:00+00:00,2025-01-02 09:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0360859999999998,1.0362420512820514
+2025-01-02 09:45:00+00:00,2025-01-02 10:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0359149999999997,1.0362149999999999
+2025-01-02 10:00:00+00:00,2025-01-02 10:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.0357699999999999,1.0361946341463415
+2025-01-02 10:15:00+00:00,2025-01-02 10:30:00+00:00,SELL,close_only,Closed existing long position,1.0356489999999998,1.0361678571428572
+2025-01-03 09:45:00+00:00,2025-01-03 10:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.41 pips < 1.0 pips threshold),1.028572,1.0285305999999999
+2025-01-03 10:00:00+00:00,2025-01-03 10:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=17.89 < -DI=33.21, bearish trend)",1.028597,1.0284531000000001
+2025-01-03 10:15:00+00:00,2025-01-03 10:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=17.52 < -DI=30.05, bearish trend)",1.028627,1.0283741
+2025-01-03 10:30:00+00:00,2025-01-03 10:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.33 < -DI=28.05, bearish trend)",1.028621,1.0282959
+2025-01-03 10:45:00+00:00,2025-01-03 11:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.32 < -DI=31.13, bearish trend)",1.028624,1.0282214
+2025-01-07 14:30:00+00:00,2025-01-07 14:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 1.0 pips threshold),1.039581,1.0395817999999997
+2025-01-07 14:45:00+00:00,2025-01-07 15:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.22 < +DI=21.04, bullish trend)",1.039459,1.0395647999999995
+2025-01-09 15:00:00+00:00,2025-01-09 15:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.07 pips < 1.0 pips threshold),1.0308329999999999,1.0308263999999998
+2025-01-09 15:15:00+00:00,2025-01-09 15:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 1.0 pips threshold),1.0308419999999998,1.0308316999999998
+2025-01-10 09:45:00+00:00,2025-01-10 10:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.97 < -DI=22.43, bearish trend)",1.030101,1.0299987
+2025-01-10 13:30:00+00:00,2025-01-10 13:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.33 pips < 1.0 pips threshold),1.029898,1.0299314000000004
+2025-01-10 13:45:00+00:00,2025-01-10 14:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.0294390000000002,1.0298885000000004
+2025-01-10 14:00:00+00:00,2025-01-10 14:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.0289540000000001,1.0298390000000004
+2025-01-10 14:15:00+00:00,2025-01-10 14:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.53 < +DI=20.83, bullish trend)",1.0285440000000001,1.0297934000000004
+2025-01-10 14:30:00+00:00,2025-01-10 14:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.11 < +DI=26.82, bullish trend)",1.028249,1.0297537000000003
+2025-01-13 21:45:00+00:00,2025-01-13 22:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.00 pips < 1.0 pips threshold),1.021871,1.0218706
+2025-01-15 17:00:00+00:00,2025-01-15 17:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.13 pips < 1.0 pips threshold),1.030247,1.0302601000000002
+2025-01-15 17:15:00+00:00,2025-01-15 17:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.029833,1.0302465000000003
+2025-01-15 17:30:00+00:00,2025-01-15 17:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.64 < +DI=22.37, bullish trend)",1.029495,1.0302497000000002
+2025-01-16 16:30:00+00:00,2025-01-16 16:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0292229999999998,1.0289547999999997
+2025-01-16 16:45:00+00:00,2025-01-16 17:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.06 < -DI=18.47, bearish trend)",1.029499,1.0289424999999996
+2025-01-17 06:00:00+00:00,2025-01-17 06:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.05 pips < 1.0 pips threshold),1.029448,1.0294531
+2025-01-17 06:15:00+00:00,2025-01-17 06:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0293100000000002,1.0294551
+2025-01-17 06:30:00+00:00,2025-01-17 06:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.0291860000000004,1.0294574
+2025-01-17 06:45:00+00:00,2025-01-17 07:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.59 < +DI=30.58, bullish trend)",1.02911,1.0294649
+2025-01-17 07:00:00+00:00,2025-01-17 07:15:00+00:00,SELL,close_only,Closed existing long position,1.029016,1.0294663000000002
+2025-01-17 10:15:00+00:00,2025-01-17 10:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0296539999999998,1.0294781
+2025-01-17 10:30:00+00:00,2025-01-17 10:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0297779999999999,1.0294868000000001
+2025-01-17 10:45:00+00:00,2025-01-17 11:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.029881,1.0295077999999998
+2025-01-17 14:00:00+00:00,2025-01-17 14:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0294339999999997,1.0296758000000004
+2025-01-17 14:15:00+00:00,2025-01-17 14:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.029181,1.0296811000000003
+2025-01-17 14:30:00+00:00,2025-01-17 14:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.11 < +DI=35.63, bullish trend)",1.028976,1.0296988000000002
+2025-01-17 14:45:00+00:00,2025-01-17 15:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=11.83 < +DI=38.29, bullish trend)",1.0289420000000002,1.0297186
+2025-01-17 15:00:00+00:00,2025-01-17 15:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=7.76 < +DI=37.25, bullish trend)",1.029224,1.0297609000000003
+2025-01-17 15:15:00+00:00,2025-01-17 15:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.73 < +DI=23.98, bullish trend)",1.029439,1.0298024000000003
+2025-01-17 15:30:00+00:00,2025-01-17 15:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.0295340000000002,1.0298338000000005
+2025-01-17 15:45:00+00:00,2025-01-17 16:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0296600000000002,1.0298553000000001
+2025-01-17 16:00:00+00:00,2025-01-17 16:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.029611,1.0298666000000005
+2025-01-17 16:15:00+00:00,2025-01-17 16:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0296489999999998,1.0298687000000002
+2025-01-17 17:30:00+00:00,2025-01-17 17:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0294329999999998,1.0298156000000005
+2025-01-17 17:45:00+00:00,2025-01-17 18:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0290970000000002,1.0297898000000003
+2025-01-17 18:00:00+00:00,2025-01-17 18:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.67 < +DI=20.36, bullish trend)",1.0288709999999999,1.0297710000000007
+2025-01-17 18:15:00+00:00,2025-01-17 18:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.29 < +DI=28.37, bullish trend)",1.02873,1.0297502000000005
+2025-01-17 18:30:00+00:00,2025-01-17 18:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=21.39 < +DI=24.89, bullish trend)",1.0286620000000002,1.0297210000000008
+2025-01-20 03:30:00+00:00,2025-01-20 03:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.52 pips < 1.0 pips threshold),1.0290529999999998,1.0290012
+2025-01-21 08:15:00+00:00,2025-01-21 08:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.037395,1.0375526000000002
+2025-01-21 08:30:00+00:00,2025-01-21 08:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.0371329999999999,1.0375956999999998
+2025-01-21 08:45:00+00:00,2025-01-21 09:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.036946,1.0376390999999998
+2025-01-21 15:45:00+00:00,2025-01-21 16:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.038967,1.0386348
+2025-01-22 16:00:00+00:00,2025-01-22 16:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.65 pips < 1.0 pips threshold),1.042064,1.0421292000000002
+2025-01-22 16:15:00+00:00,2025-01-22 16:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.041884,1.0421535000000002
+2025-01-22 16:30:00+00:00,2025-01-22 16:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.50 < +DI=22.40, bullish trend)",1.0418910000000001,1.0421782
+2025-01-22 16:45:00+00:00,2025-01-22 17:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.98 < +DI=21.19, bullish trend)",1.041877,1.0421952
+2025-01-23 17:30:00+00:00,2025-01-23 17:45:00+00:00,BUY,close_only,Closed existing short position,1.0410220000000001,1.0409112999999999
+2025-01-27 01:00:00+00:00,2025-01-27 01:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.88 < +DI=27.13, bullish trend)",1.047364,1.0474841
+2025-01-27 10:15:00+00:00,2025-01-27 10:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.048484,1.0482950999999998
+2025-01-27 10:30:00+00:00,2025-01-27 10:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.048815,1.0482932999999997
+2025-01-27 10:45:00+00:00,2025-01-27 11:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.049141,1.0483030999999998
+2025-01-27 11:00:00+00:00,2025-01-27 11:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.0494940000000001,1.0483225999999997
+2025-01-27 11:15:00+00:00,2025-01-27 11:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.0497520000000002,1.0483408
+2025-01-27 11:30:00+00:00,2025-01-27 11:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.049951,1.0483597
+2025-01-27 11:45:00+00:00,2025-01-27 12:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.050254,1.0483830999999997
+2025-01-27 12:00:00+00:00,2025-01-27 12:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.0505200000000001,1.0484044
+2025-01-27 23:15:00+00:00,2025-01-27 23:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.47 pips < 1.0 pips threshold),1.048448,1.0484947000000002
+2025-01-27 23:30:00+00:00,2025-01-27 23:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.047974,1.0484521000000004
+2025-01-29 02:45:00+00:00,2025-01-29 03:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.06 pips < 1.0 pips threshold),1.043124,1.0431181999999997
+2025-01-29 03:00:00+00:00,2025-01-29 03:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.37 pips < 1.0 pips threshold),1.0431519999999999,1.0431153999999998
+2025-01-29 03:15:00+00:00,2025-01-29 03:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.87 pips < 1.0 pips threshold),1.0432089999999998,1.0431217999999998
+2025-01-29 03:30:00+00:00,2025-01-29 03:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=90 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.043262,1.0431222999999998
+2025-01-29 03:45:00+00:00,2025-01-29 04:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.0433099999999997,1.0431266999999997
+2025-01-29 04:00:00+00:00,2025-01-29 04:15:00+00:00,BUY,close_only,Closed existing short position,1.043415,1.0431341
+2025-01-29 08:15:00+00:00,2025-01-29 08:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.75 pips < 1.0 pips threshold),1.043025,1.0430996000000008
+2025-01-29 08:30:00+00:00,2025-01-29 08:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.13 < +DI=24.66, bullish trend)",1.042888,1.0430855000000008
+2025-01-29 23:30:00+00:00,2025-01-29 23:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.61 pips < 1.0 pips threshold),1.0420449999999999,1.041984
+2025-01-29 23:45:00+00:00,2025-01-30 00:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0421239999999998,1.0419791999999999
+2025-01-30 00:00:00+00:00,2025-01-30 00:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0422220000000002,1.0419779
+2025-01-30 00:15:00+00:00,2025-01-30 00:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.0423239999999998,1.0419778
+2025-01-30 00:30:00+00:00,2025-01-30 00:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.0423829999999998,1.0419751
+2025-01-30 00:45:00+00:00,2025-01-30 01:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=21.08 < -DI=26.01, bearish trend)",1.042433,1.0419731999999997
+2025-01-30 01:00:00+00:00,2025-01-30 01:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=13.72 < -DI=34.91, bearish trend)",1.0424529999999999,1.0419690999999998
+2025-01-30 01:15:00+00:00,2025-01-30 01:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.67 < -DI=28.52, bearish trend)",1.0424440000000001,1.0419562999999998
+2025-01-30 01:30:00+00:00,2025-01-30 01:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=19.44 < -DI=29.37, bearish trend)",1.042462,1.0419454999999997
+2025-01-30 01:45:00+00:00,2025-01-30 02:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.03 < -DI=25.98, bearish trend)",1.042441,1.0419333
+2025-01-30 10:15:00+00:00,2025-01-30 10:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.14 < +DI=18.84, bullish trend)",1.0413560000000002,1.0414620000000003
+2025-01-30 10:30:00+00:00,2025-01-30 10:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.13 < +DI=18.08, bullish trend)",1.0412130000000002,1.0414544000000003
+2025-01-30 10:45:00+00:00,2025-01-30 11:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.040982,1.0414412000000004
+2025-01-30 11:00:00+00:00,2025-01-30 11:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0407069999999998,1.0414310000000002
+2025-01-30 11:15:00+00:00,2025-01-30 11:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0404329999999997,1.0414268000000007
+2025-01-30 11:30:00+00:00,2025-01-30 11:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.040322,1.0414208000000003
+2025-01-30 14:15:00+00:00,2025-01-30 14:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.85 pips < 1.0 pips threshold),1.041649,1.0415636000000001
+2025-01-30 14:30:00+00:00,2025-01-30 14:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.041972,1.0416027
+2025-01-30 14:45:00+00:00,2025-01-30 15:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.0422420000000001,1.0416419000000001
+2025-01-30 21:00:00+00:00,2025-01-30 21:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.37 pips < 1.0 pips threshold),1.0418179999999997,1.0418551
+2025-01-30 21:15:00+00:00,2025-01-30 21:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.041496,1.0418283000000002
+2025-01-30 21:30:00+00:00,2025-01-30 21:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.04117,1.0418059
+2025-01-30 21:45:00+00:00,2025-01-30 22:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0408209999999998,1.041787
+2025-01-30 22:15:00+00:00,2025-01-30 22:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=75 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.040444,1.0417668999999998
+2025-01-30 22:30:00+00:00,2025-01-30 22:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=90 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.040052,1.0417389
+2025-01-30 22:45:00+00:00,2025-01-30 23:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=105 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.039658,1.041709
+2025-01-30 23:00:00+00:00,2025-01-30 23:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=120 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.039218,1.041679
+2025-01-30 23:15:00+00:00,2025-01-30 23:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.68 < +DI=25.97, bullish trend)",1.0392420000000002,1.0416491
+2025-01-30 23:30:00+00:00,2025-01-30 23:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.18 < +DI=36.04, bullish trend)",1.0391270000000001,1.041624
+2025-01-30 23:45:00+00:00,2025-01-31 00:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.40 < +DI=41.03, bullish trend)",1.0391480000000002,1.0415996
+2025-01-31 00:00:00+00:00,2025-01-31 00:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.72 < +DI=34.07, bullish trend)",1.039207,1.0415767
+2025-01-31 00:15:00+00:00,2025-01-31 00:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.039247,1.0415538000000002
+2025-01-31 19:45:00+00:00,2025-01-31 20:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.24 < +DI=24.12, bullish trend)",1.0388249999999999,1.0391127000000002
+2025-01-31 20:00:00+00:00,2025-01-31 20:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.28 < +DI=26.02, bullish trend)",1.0383400000000003,1.0390637000000005
+2025-01-31 20:15:00+00:00,2025-01-31 20:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.59 < +DI=26.68, bullish trend)",1.037893,1.0390138000000004
+2025-01-31 20:30:00+00:00,2025-01-31 20:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=12.61 < +DI=29.29, bullish trend)",1.037479,1.0389663000000002
+2025-02-03 16:15:00+00:00,2025-02-03 16:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.49 pips < 1.0 pips threshold),1.028553,1.0285038
+2025-02-03 16:30:00+00:00,2025-02-03 16:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=20.51 < -DI=21.97, bearish trend)",1.0289740000000003,1.0284321
+2025-02-03 16:45:00+00:00,2025-02-03 17:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=13.55 < -DI=34.81, bearish trend)",1.0291309999999998,1.0283294999999997
+2025-02-03 17:00:00+00:00,2025-02-03 17:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.46 < -DI=26.50, bearish trend)",1.0293699999999997,1.0282162
+2025-02-03 17:15:00+00:00,2025-02-03 17:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.53 < -DI=24.64, bearish trend)",1.0297199999999997,1.0281127999999997
+2025-02-03 17:30:00+00:00,2025-02-03 17:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=20.64 < -DI=23.11, bearish trend)",1.030014,1.0280019
+2025-02-03 17:45:00+00:00,2025-02-03 18:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.0297899999999998,1.0278761999999997
+2025-02-06 00:15:00+00:00,2025-02-06 00:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 1.0 pips threshold),1.040127,1.0401368000000002
+2025-02-06 00:30:00+00:00,2025-02-06 00:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.62 pips < 1.0 pips threshold),1.040097,1.0401588000000002
+2025-02-06 00:45:00+00:00,2025-02-06 01:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0400310000000001,1.0401766000000001
+2025-02-06 01:00:00+00:00,2025-02-06 01:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=23.98 < +DI=29.10, bullish trend)",1.040003,1.0402044000000001
+2025-02-06 01:15:00+00:00,2025-02-06 01:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.42 < +DI=25.96, bullish trend)",1.039959,1.0402319000000002
+2025-02-06 01:30:00+00:00,2025-02-06 01:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.92 < +DI=22.30, bullish trend)",1.039998,1.0402580000000001
+2025-02-06 01:45:00+00:00,2025-02-06 02:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=13.53 < +DI=20.69, bullish trend)",1.0399920000000002,1.0402821
+2025-02-06 02:00:00+00:00,2025-02-06 02:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.94 < +DI=22.77, bullish trend)",1.0400170000000002,1.0403042999999998
+2025-02-06 02:15:00+00:00,2025-02-06 02:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.03997,1.0403180999999997
+2025-02-06 02:30:00+00:00,2025-02-06 02:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.039884,1.0403262999999998
+2025-02-06 02:45:00+00:00,2025-02-06 03:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.039838,1.0403437999999996
+2025-02-06 19:45:00+00:00,2025-02-06 20:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.66 pips < 1.0 pips threshold),1.038431,1.0383653
+2025-02-06 20:00:00+00:00,2025-02-06 20:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.03856,1.0383383
+2025-02-06 20:15:00+00:00,2025-02-06 20:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.0386250000000001,1.0383109999999998
+2025-02-06 20:30:00+00:00,2025-02-06 20:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.0386900000000001,1.0382839
+2025-02-06 20:45:00+00:00,2025-02-06 21:00:00+00:00,BUY,close_only,Closed existing short position,1.038725,1.0382648999999997
+2025-02-07 12:45:00+00:00,2025-02-07 13:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.14 < +DI=21.72, bullish trend)",1.0378470000000002,1.0379475999999996
+2025-02-07 13:00:00+00:00,2025-02-07 13:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.51 < +DI=20.68, bullish trend)",1.0377830000000001,1.0379625999999995
+2025-02-07 13:15:00+00:00,2025-02-07 13:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.037726,1.0379779999999998
+2025-02-07 13:30:00+00:00,2025-02-07 13:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.24 < +DI=33.72, bullish trend)",1.0376210000000001,1.0379912999999998
+2025-02-07 13:45:00+00:00,2025-02-07 14:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.75 < +DI=25.59, bullish trend)",1.0374539999999999,1.0379928999999999
+2025-02-07 14:00:00+00:00,2025-02-07 14:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=13.04 < +DI=24.05, bullish trend)",1.0373769999999998,1.0380046999999997
+2025-02-07 14:15:00+00:00,2025-02-07 14:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.24 < +DI=27.21, bullish trend)",1.037369,1.0380251999999996
+2025-02-07 14:30:00+00:00,2025-02-07 14:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.43 < +DI=25.81, bullish trend)",1.037404,1.0380451999999998
+2025-02-07 14:45:00+00:00,2025-02-07 15:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=12.98 < +DI=25.54, bullish trend)",1.0375489999999998,1.0380705999999997
+2025-02-12 14:30:00+00:00,2025-02-12 14:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=23.30 < +DI=24.97, bullish trend)",1.0355710000000002,1.0357877
+2025-02-12 14:45:00+00:00,2025-02-12 15:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.87 < +DI=25.16, bullish trend)",1.035333,1.0358195000000001
+2025-02-12 16:45:00+00:00,2025-02-12 17:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.036266,1.0360988999999998
+2025-02-12 17:00:00+00:00,2025-02-12 17:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.036921,1.0361698999999998
+2025-02-12 17:15:00+00:00,2025-02-12 17:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.037596,1.0362396999999997
+2025-02-12 17:30:00+00:00,2025-02-12 17:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.038247,1.0362965999999998
+2025-02-13 13:45:00+00:00,2025-02-13 14:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.64 < +DI=21.10, bullish trend)",1.039669,1.03994
+2025-02-17 07:45:00+00:00,2025-02-17 08:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.26 pips < 1.0 pips threshold),1.048918,1.0489437000000001
+2025-02-17 08:00:00+00:00,2025-02-17 08:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.048852,1.0489663000000002
+2025-02-19 06:00:00+00:00,2025-02-19 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.17 pips < 1.0 pips threshold),1.045302,1.0452854999999999
+2025-02-19 06:15:00+00:00,2025-02-19 06:30:00+00:00,BUY,close_only,Closed existing short position,1.0453959999999998,1.0452906
+2025-02-19 08:45:00+00:00,2025-02-19 09:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.42 pips < 1.0 pips threshold),1.0451700000000002,1.045212
+2025-02-19 09:00:00+00:00,2025-02-19 09:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.044993,1.0451895
+2025-02-19 09:15:00+00:00,2025-02-19 09:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.0448530000000003,1.0451738
+2025-02-20 06:30:00+00:00,2025-02-20 06:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.14 pips < 1.0 pips threshold),1.042973,1.0429587000000007
+2025-02-20 06:45:00+00:00,2025-02-20 07:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.29 pips < 1.0 pips threshold),1.042959,1.0429297000000006
+2025-02-20 07:00:00+00:00,2025-02-20 07:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.58 pips < 1.0 pips threshold),1.0429589999999997,1.0429006000000005
+2025-02-20 07:15:00+00:00,2025-02-20 07:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.73 pips < 1.0 pips threshold),1.042943,1.0428695000000006
+2025-02-20 07:30:00+00:00,2025-02-20 07:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.67 pips < 1.0 pips threshold),1.042905,1.0428376000000006
+2025-02-20 07:45:00+00:00,2025-02-20 08:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.94 pips < 1.0 pips threshold),1.0429049999999997,1.0428106000000006
+2025-02-20 08:00:00+00:00,2025-02-20 08:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0430259999999998,1.0427957000000008
+2025-02-20 08:15:00+00:00,2025-02-20 08:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=75 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.043143,1.0427814000000006
+2025-02-20 08:30:00+00:00,2025-02-20 08:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=19.87 < -DI=27.15, bearish trend)",1.0431430000000002,1.0427585000000008
+2025-02-20 08:45:00+00:00,2025-02-20 09:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.0431510000000002,1.0427377000000007
+2025-02-21 10:00:00+00:00,2025-02-21 10:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.047736,1.0479361000000003
+2025-02-21 10:15:00+00:00,2025-02-21 10:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.77 < +DI=19.92, bullish trend)",1.0475230000000002,1.0479722
+2025-02-24 00:30:00+00:00,2025-02-24 00:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.048003,1.0477413999999998
+2025-02-24 09:45:00+00:00,2025-02-24 10:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.96 pips < 1.0 pips threshold),1.048041,1.0481368000000006
+2025-02-24 10:00:00+00:00,2025-02-24 10:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.0478859999999999,1.0481342000000007
+2025-02-25 06:15:00+00:00,2025-02-25 06:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.43 pips < 1.0 pips threshold),1.047555,1.0475117999999997
+2025-02-25 06:30:00+00:00,2025-02-25 06:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.97 pips < 1.0 pips threshold),1.0475700000000001,1.0474731999999998
+2025-02-25 06:45:00+00:00,2025-02-25 07:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.047577,1.0474315999999997
+2025-02-25 07:00:00+00:00,2025-02-25 07:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=26.49 < -DI=33.55, bearish trend)",1.04753,1.0473857999999998
+2025-02-25 07:15:00+00:00,2025-02-25 07:30:00+00:00,BUY,close_only,Closed existing short position,1.04753,1.0473459999999997
+2025-02-25 08:45:00+00:00,2025-02-25 09:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.17 pips < 1.0 pips threshold),1.047113,1.0471297999999998
+2025-02-25 09:00:00+00:00,2025-02-25 09:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.58 pips < 1.0 pips threshold),1.0470510000000002,1.0471091
+2025-02-25 09:15:00+00:00,2025-02-25 09:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.80 pips < 1.0 pips threshold),1.04702,1.0471000999999998
+2025-02-25 09:30:00+00:00,2025-02-25 09:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.73 pips < 1.0 pips threshold),1.04702,1.0470926999999997
+2025-02-25 09:45:00+00:00,2025-02-25 10:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.69 pips < 1.0 pips threshold),1.047019,1.0470876999999996
+2025-02-25 10:00:00+00:00,2025-02-25 10:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.84 pips < 1.0 pips threshold),1.0469899999999999,1.0470736999999997
+2025-02-25 10:15:00+00:00,2025-02-25 10:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.23 pips < 1.0 pips threshold),1.047037,1.0470602999999996
+2025-02-25 10:30:00+00:00,2025-02-25 10:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.73 pips < 1.0 pips threshold),1.0469849999999998,1.0470577
+2025-02-25 10:45:00+00:00,2025-02-25 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.18 pips < 1.0 pips threshold),1.0470380000000001,1.0470557999999999
+2025-02-26 06:00:00+00:00,2025-02-26 06:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.44 pips < 1.0 pips threshold),1.049716,1.0497595000000004
+2025-02-26 06:15:00+00:00,2025-02-26 06:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.049556,1.0497748000000007
+2025-02-26 06:30:00+00:00,2025-02-26 06:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.92 < +DI=29.23, bullish trend)",1.04948,1.0497941000000004
+2025-02-26 06:45:00+00:00,2025-02-26 07:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.15 < +DI=28.03, bullish trend)",1.049388,1.0498132000000004
+2025-02-26 07:00:00+00:00,2025-02-26 07:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=9.59 < +DI=35.80, bullish trend)",1.0493640000000002,1.0498350000000005
+2025-02-26 07:15:00+00:00,2025-02-26 07:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.37 < +DI=29.97, bullish trend)",1.0493670000000002,1.0498558000000004
+2025-02-26 07:30:00+00:00,2025-02-26 07:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.17 < +DI=22.87, bullish trend)",1.049393,1.0498744000000004
+2025-02-26 07:45:00+00:00,2025-02-26 08:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0493700000000001,1.0498916000000005
+2025-02-26 08:00:00+00:00,2025-02-26 08:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.73 < +DI=31.04, bullish trend)",1.0494620000000001,1.0499161000000004
+2025-02-26 08:15:00+00:00,2025-02-26 08:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=9.96 < +DI=36.90, bullish trend)",1.049639,1.0499547000000005
+2025-02-26 08:30:00+00:00,2025-02-26 08:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=23.31 < +DI=24.86, bullish trend)",1.049751,1.0499816000000002
+2025-02-26 08:45:00+00:00,2025-02-26 09:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=24.32 < +DI=27.62, bullish trend)",1.049893,1.0500153000000003
+2025-02-26 09:00:00+00:00,2025-02-26 09:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.049934,1.0500489000000004
+2025-02-26 09:15:00+00:00,2025-02-26 09:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.04995,1.0500676000000002
+2025-02-26 09:30:00+00:00,2025-02-26 09:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.83 < +DI=22.17, bullish trend)",1.049951,1.0500989000000003
+2025-02-26 17:00:00+00:00,2025-02-26 17:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.40 pips < 1.0 pips threshold),1.0503390000000001,1.0502989999999996
+2025-02-26 19:00:00+00:00,2025-02-26 19:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.050048,1.0502926999999997
+2025-02-26 19:15:00+00:00,2025-02-26 19:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.0497750000000001,1.0502741999999998
+2025-02-26 19:30:00+00:00,2025-02-26 19:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.23 < +DI=19.57, bullish trend)",1.049541,1.0502615
+2025-02-26 19:45:00+00:00,2025-02-26 20:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.04922,1.0502378999999997
+2025-02-28 13:30:00+00:00,2025-02-28 13:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.18 pips < 1.0 pips threshold),1.0404620000000002,1.0404437999999998
+2025-02-28 13:45:00+00:00,2025-02-28 14:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.0405700000000002,1.0403698999999997
+2025-02-28 18:15:00+00:00,2025-02-28 18:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 1.0 pips threshold),1.03988,1.0398861000000001
+2025-02-28 18:30:00+00:00,2025-02-28 18:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.0395949999999998,1.0398526000000001
+2025-03-06 18:45:00+00:00,2025-03-06 19:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.079884,1.0800497
+2025-03-06 19:00:00+00:00,2025-03-06 19:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.079501,1.0800506
+2025-03-06 19:15:00+00:00,2025-03-06 19:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=24.94 < +DI=27.65, bullish trend)",1.079251,1.0800674
+2025-03-06 19:30:00+00:00,2025-03-06 19:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.40 < +DI=40.17, bullish trend)",1.079205,1.0800963000000001
+2025-03-06 19:45:00+00:00,2025-03-06 20:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=21.69 < +DI=34.71, bullish trend)",1.079123,1.0801310999999998
+2025-03-06 20:00:00+00:00,2025-03-06 20:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=24.11 < +DI=24.85, bullish trend)",1.0791400000000002,1.0801578
+2025-03-06 20:15:00+00:00,2025-03-06 20:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.0791429999999997,1.0801796000000001
+2025-03-07 04:15:00+00:00,2025-03-07 04:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=25.09 < -DI=26.92, bearish trend)",1.080236,1.0800851999999999
+2025-03-10 11:15:00+00:00,2025-03-10 11:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.10 < -DI=27.70, bearish trend)",1.084925,1.0845316
+2025-03-10 11:30:00+00:00,2025-03-10 11:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.51 < -DI=25.50, bearish trend)",1.08526,1.084531
+2025-03-10 11:45:00+00:00,2025-03-10 12:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=19.33 < -DI=22.48, bearish trend)",1.085366,1.0845346
+2025-03-10 12:00:00+00:00,2025-03-10 12:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.12 < -DI=28.71, bearish trend)",1.085434,1.0845343
+2025-03-10 12:15:00+00:00,2025-03-10 12:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.93 < -DI=22.74, bearish trend)",1.085473,1.0845430999999999
+2025-03-10 12:30:00+00:00,2025-03-10 12:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.085414,1.0845538
+2025-03-10 12:45:00+00:00,2025-03-10 13:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.93 < -DI=28.79, bearish trend)",1.0851830000000002,1.0845472
+2025-03-10 13:00:00+00:00,2025-03-10 13:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.085054,1.0845394999999998
+2025-03-10 13:15:00+00:00,2025-03-10 13:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=20.28 < -DI=23.26, bearish trend)",1.0848920000000002,1.0845297999999999
+2025-03-10 13:30:00+00:00,2025-03-10 13:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.20 < -DI=23.36, bearish trend)",1.084886,1.0845117000000002
+2025-03-10 13:45:00+00:00,2025-03-10 14:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=13.73 < -DI=25.52, bearish trend)",1.0847250000000002,1.0844776999999999
+2025-03-10 14:30:00+00:00,2025-03-10 14:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.19 pips < 1.0 pips threshold),1.0844070000000001,1.0844261
+2025-03-10 14:45:00+00:00,2025-03-10 15:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.95 pips < 1.0 pips threshold),1.084307,1.0844022
+2025-03-10 15:00:00+00:00,2025-03-10 15:15:00+00:00,SELL,close_only,Closed existing long position,1.084112,1.0843831000000002
+2025-03-11 00:15:00+00:00,2025-03-11 00:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.75 pips < 1.0 pips threshold),1.084042,1.0839669000000003
+2025-03-11 00:30:00+00:00,2025-03-11 00:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0841290000000001,1.0839506000000003
+2025-03-11 00:45:00+00:00,2025-03-11 01:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.084272,1.0839415000000001
+2025-03-11 01:00:00+00:00,2025-03-11 01:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.084383,1.0839302000000002
+2025-03-11 01:15:00+00:00,2025-03-11 01:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=22.62 < -DI=23.37, bearish trend)",1.0845129999999998,1.0839222000000002
+2025-03-12 04:15:00+00:00,2025-03-12 04:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.51 pips < 1.0 pips threshold),1.090224,1.0902755
+2025-03-12 04:30:00+00:00,2025-03-12 04:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=24.20 < +DI=34.17, bullish trend)",1.090122,1.0903257000000002
+2025-03-12 09:45:00+00:00,2025-03-12 10:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.60 < -DI=21.69, bearish trend)",1.091288,1.0911863
+2025-03-12 11:45:00+00:00,2025-03-12 12:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.091121,1.0912493999999995
+2025-03-12 12:00:00+00:00,2025-03-12 12:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0908689999999999,1.0912533999999996
+2025-03-12 12:15:00+00:00,2025-03-12 12:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.090663,1.0912610999999997
+2025-03-12 12:30:00+00:00,2025-03-12 12:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.090384,1.0912569999999997
+2025-03-12 16:30:00+00:00,2025-03-12 16:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=13.47 < -DI=23.16, bearish trend)",1.091315,1.0910862000000001
+2025-03-12 16:45:00+00:00,2025-03-12 17:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=10.92 < -DI=26.98, bearish trend)",1.09145,1.0910696000000002
+2025-03-12 17:00:00+00:00,2025-03-12 17:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.55 < -DI=22.57, bearish trend)",1.091508,1.0910509000000002
+2025-03-12 18:30:00+00:00,2025-03-12 18:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.090556,1.0909082
+2025-03-12 18:45:00+00:00,2025-03-12 19:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.0902450000000001,1.0908659
+2025-03-12 19:00:00+00:00,2025-03-12 19:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.0900120000000002,1.0908201
+2025-03-12 19:15:00+00:00,2025-03-12 19:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.85 < +DI=34.85, bullish trend)",1.089896,1.0907702000000001
+2025-03-12 19:30:00+00:00,2025-03-12 19:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=24.70 < +DI=30.58, bullish trend)",1.089737,1.0907214
+2025-03-12 19:45:00+00:00,2025-03-12 20:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.0895139999999999,1.0906702
+2025-03-14 10:15:00+00:00,2025-03-14 10:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.085528,1.0852697000000004
+2025-03-14 10:30:00+00:00,2025-03-14 10:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.085952,1.0852756000000006
+2025-03-14 10:45:00+00:00,2025-03-14 11:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.086354,1.0852976000000003
+2025-03-14 11:00:00+00:00,2025-03-14 11:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.086792,1.0853122000000004
+2025-03-17 09:00:00+00:00,2025-03-17 09:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.49 pips < 1.0 pips threshold),1.0879370000000002,1.0879862000000002
+2025-03-17 09:15:00+00:00,2025-03-17 09:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.11 pips < 1.0 pips threshold),1.0880130000000001,1.0880239000000003
+2025-03-18 16:30:00+00:00,2025-03-18 16:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0923060000000002,1.0920941999999998
+2025-03-18 16:45:00+00:00,2025-03-18 17:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.0925130000000003,1.0921075999999996
+2025-03-19 06:00:00+00:00,2025-03-19 06:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.39 pips < 1.0 pips threshold),1.0932469999999999,1.093286
+2025-03-19 06:15:00+00:00,2025-03-19 06:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0931060000000001,1.0932992
+2025-03-19 06:30:00+00:00,2025-03-19 06:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.0930119999999999,1.0933127999999999
+2025-03-19 06:45:00+00:00,2025-03-19 07:00:00+00:00,SELL,close_only,Closed existing long position,1.0928869999999997,1.0933218
+2025-03-20 00:15:00+00:00,2025-03-20 00:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.01 pips < 1.0 pips threshold),1.090941,1.0909396
+2025-03-20 00:30:00+00:00,2025-03-20 00:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.69 pips < 1.0 pips threshold),1.09098,1.0909114000000002
+2025-03-20 00:45:00+00:00,2025-03-20 01:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.090998,1.0908812
+2025-03-20 01:00:00+00:00,2025-03-20 01:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.86 < -DI=27.95, bearish trend)",1.090983,1.0908491
+2025-03-20 01:15:00+00:00,2025-03-20 01:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=14.79 < -DI=24.65, bearish trend)",1.0909689999999999,1.0908219000000001
+2025-03-20 01:30:00+00:00,2025-03-20 01:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.44 < -DI=19.63, bearish trend)",1.0909559999999998,1.0907914000000003
+2025-03-20 01:45:00+00:00,2025-03-20 02:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.60 < -DI=25.68, bearish trend)",1.0909399999999998,1.0907649000000001
+2025-03-20 06:00:00+00:00,2025-03-20 06:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.55 < +DI=28.93, bullish trend)",1.0901450000000001,1.0902503000000003
+2025-03-24 01:00:00+00:00,2025-03-24 01:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.75 pips < 1.0 pips threshold),1.08319,1.0831150999999997
+2025-03-24 01:15:00+00:00,2025-03-24 01:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=8.48 < -DI=34.14, bearish trend)",1.08325,1.0830871999999996
+2025-03-24 01:30:00+00:00,2025-03-24 01:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=9.84 < -DI=31.97, bearish trend)",1.0832570000000001,1.0830588999999997
+2025-03-24 01:45:00+00:00,2025-03-24 02:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=10.97 < -DI=28.77, bearish trend)",1.083275,1.0830300999999998
+2025-03-24 02:00:00+00:00,2025-03-24 02:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0832670000000002,1.0830053999999998
+2025-03-24 02:15:00+00:00,2025-03-24 02:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.083225,1.0829859999999998
+2025-03-24 02:30:00+00:00,2025-03-24 02:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=22.19 < -DI=27.67, bearish trend)",1.08312,1.0829621999999999
+2025-03-24 02:45:00+00:00,2025-03-24 03:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.54 pips < 1.0 pips threshold),1.082986,1.0829324
+2025-03-24 03:00:00+00:00,2025-03-24 03:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.03 pips < 1.0 pips threshold),1.082911,1.0829078
+2025-03-24 06:30:00+00:00,2025-03-24 06:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.73 pips < 1.0 pips threshold),1.082832,1.0827587
+2025-03-24 06:45:00+00:00,2025-03-24 07:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.083035,1.0827781
+2025-03-25 11:00:00+00:00,2025-03-25 11:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=21.28 < -DI=23.85, bearish trend)",1.080632,1.0805296999999996
+2025-03-25 19:15:00+00:00,2025-03-25 19:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.92 pips < 1.0 pips threshold),1.080362,1.0804542000000004
+2025-03-25 19:30:00+00:00,2025-03-25 19:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.0802289999999999,1.0804593000000005
+2025-03-25 19:45:00+00:00,2025-03-25 20:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.0800930000000002,1.0804447000000004
+2025-03-27 04:00:00+00:00,2025-03-27 04:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.07755,1.0774100999999996
+2025-03-27 04:15:00+00:00,2025-03-27 04:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.077755,1.0774027999999998
+2025-03-27 04:30:00+00:00,2025-03-27 04:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=26.08 < -DI=26.46, bearish trend)",1.077834,1.0773951999999996
+2025-03-27 04:45:00+00:00,2025-03-27 05:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.80 < -DI=24.60, bearish trend)",1.0778750000000001,1.0773848
+2025-03-27 05:00:00+00:00,2025-03-27 05:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.29 < -DI=25.75, bearish trend)",1.077886,1.0773768
+2025-03-27 05:15:00+00:00,2025-03-27 05:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=23.43 < -DI=24.62, bearish trend)",1.07792,1.0773717
+2025-03-27 05:30:00+00:00,2025-03-27 05:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.077927,1.0773639000000002
+2025-03-27 05:45:00+00:00,2025-03-27 06:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=19.53 < -DI=46.55, bearish trend)",1.077877,1.0773514000000002
+2025-03-27 06:00:00+00:00,2025-03-27 06:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=22.17 < -DI=26.40, bearish trend)",1.077862,1.0773404000000002
+2025-03-27 06:15:00+00:00,2025-03-27 06:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.01 < -DI=21.70, bearish trend)",1.077823,1.0773329000000003
+2025-03-27 06:30:00+00:00,2025-03-27 06:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.077823,1.0773323000000001
+2025-03-27 06:45:00+00:00,2025-03-27 07:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=19.31 < -DI=28.81, bearish trend)",1.0776970000000001,1.0773208000000003
+2025-03-27 07:00:00+00:00,2025-03-27 07:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.30 < -DI=29.96, bearish trend)",1.077586,1.0773069000000004
+2025-03-27 07:15:00+00:00,2025-03-27 07:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=14.94 < -DI=34.20, bearish trend)",1.0774219999999999,1.0772851000000003
+2025-03-27 07:30:00+00:00,2025-03-27 07:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.17 pips < 1.0 pips threshold),1.077279,1.0772616000000004
+2025-03-27 10:45:00+00:00,2025-03-27 11:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.077211,1.0769763000000003
+2025-03-27 11:00:00+00:00,2025-03-27 11:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.077451,1.0769767000000003
+2025-03-27 11:15:00+00:00,2025-03-27 11:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.077537,1.0769612000000004
+2025-03-27 11:30:00+00:00,2025-03-27 11:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=22.90 < -DI=27.41, bearish trend)",1.077606,1.0769454000000003
+2025-03-28 06:30:00+00:00,2025-03-28 06:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 1.0 pips threshold),1.0788259999999998,1.0788269
+2025-03-28 06:45:00+00:00,2025-03-28 07:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.27 pips < 1.0 pips threshold),1.078808,1.0788346
+2025-03-28 07:00:00+00:00,2025-03-28 07:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.42 pips < 1.0 pips threshold),1.078814,1.0788558000000001
+2025-03-28 08:00:00+00:00,2025-03-28 08:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.15 pips < 1.0 pips threshold),1.0789009999999999,1.0789164
+2025-03-28 08:15:00+00:00,2025-03-28 08:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0787900000000001,1.0789249
+2025-03-28 08:30:00+00:00,2025-03-28 08:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.078693,1.0789382
+2025-03-28 08:45:00+00:00,2025-03-28 09:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.078616,1.0789528
+2025-03-28 09:00:00+00:00,2025-03-28 09:15:00+00:00,SELL,close_only,Closed existing long position,1.078508,1.0789644000000003
+2025-03-28 14:00:00+00:00,2025-03-28 14:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.51 pips < 1.0 pips threshold),1.0791,1.0790489000000003
+2025-03-28 14:15:00+00:00,2025-03-28 14:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0796579999999998,1.0790941000000003
+2025-03-28 14:30:00+00:00,2025-03-28 14:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.080194,1.0791385
+2025-03-28 14:45:00+00:00,2025-03-28 15:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.08072,1.0791655000000002
+2025-03-31 10:30:00+00:00,2025-03-31 10:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.31 pips < 1.0 pips threshold),1.081899,1.0819301000000001
+2025-03-31 10:45:00+00:00,2025-03-31 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 1.0 pips threshold),1.0819629999999998,1.0819698
+2025-03-31 11:00:00+00:00,2025-03-31 11:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.22 pips < 1.0 pips threshold),1.082,1.0820219
+2025-04-01 01:30:00+00:00,2025-04-01 01:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.17 pips < 1.0 pips threshold),1.082131,1.0821143000000004
+2025-04-01 01:45:00+00:00,2025-04-01 02:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.87 pips < 1.0 pips threshold),1.082183,1.0820962000000003
+2025-04-01 02:00:00+00:00,2025-04-01 02:15:00+00:00,BUY,close_only,Closed existing short position,1.082244,1.0820787
+2025-04-02 09:45:00+00:00,2025-04-02 10:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.079715,1.0795692999999995
+2025-04-02 10:00:00+00:00,2025-04-02 10:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.01 < -DI=25.29, bearish trend)",1.0798549999999998,1.0795520999999995
+2025-04-02 10:15:00+00:00,2025-04-02 10:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.61 < -DI=45.09, bearish trend)",1.079867,1.0795209999999993
+2025-04-02 10:30:00+00:00,2025-04-02 10:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=17.40 < -DI=32.30, bearish trend)",1.0798510000000001,1.0794917999999993
+2025-04-02 10:45:00+00:00,2025-04-02 11:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=17.04 < -DI=26.11, bearish trend)",1.0798359999999998,1.0794697999999996
+2025-04-02 11:00:00+00:00,2025-04-02 11:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.0798520000000003,1.0794512999999994
+2025-04-02 11:15:00+00:00,2025-04-02 11:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.079876,1.0794543999999997
+2025-04-02 11:30:00+00:00,2025-04-02 11:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.079939,1.0794536999999997
+2025-04-02 11:45:00+00:00,2025-04-02 12:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.0799889999999999,1.0794538999999999
+2025-04-02 12:00:00+00:00,2025-04-02 12:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.079971,1.0794579999999998
+2025-04-04 08:00:00+00:00,2025-04-04 08:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1048190000000002,1.1053882000000002
+2025-04-04 08:15:00+00:00,2025-04-04 08:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.104039,1.105421
+2025-04-07 06:15:00+00:00,2025-04-07 06:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.65 pips < 1.0 pips threshold),1.098981,1.0989156000000002
+2025-04-07 10:00:00+00:00,2025-04-07 10:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.11 < +DI=18.36, bullish trend)",1.097738,1.0981202
+2025-04-07 10:15:00+00:00,2025-04-07 10:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=12.26 < +DI=23.03, bullish trend)",1.0975840000000001,1.0981268000000002
+2025-04-08 02:30:00+00:00,2025-04-08 02:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.0954760000000001,1.0951283999999994
+2025-04-08 02:45:00+00:00,2025-04-08 03:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.095837,1.0951257999999995
+2025-04-08 03:00:00+00:00,2025-04-08 03:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.24 < -DI=25.31, bearish trend)",1.096082,1.0951244999999996
+2025-04-08 03:15:00+00:00,2025-04-08 03:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.45 < -DI=23.44, bearish trend)",1.096339,1.0951351999999996
+2025-04-08 03:30:00+00:00,2025-04-08 03:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.10 < -DI=25.36, bearish trend)",1.0965070000000001,1.0951615999999995
+2025-04-08 03:45:00+00:00,2025-04-08 04:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.12 < -DI=19.13, bearish trend)",1.096624,1.0952000999999998
+2025-04-08 09:15:00+00:00,2025-04-08 09:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.0942189999999998,1.0945808
+2025-04-08 09:30:00+00:00,2025-04-08 09:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.093703,1.0945357999999998
+2025-04-08 13:00:00+00:00,2025-04-08 13:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.53 pips < 1.0 pips threshold),1.094185,1.0941316
+2025-04-08 13:15:00+00:00,2025-04-08 13:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=11.05 < -DI=15.58, bearish trend)",1.094458,1.0941327
+2025-04-08 13:30:00+00:00,2025-04-08 13:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=7.07 < -DI=31.52, bearish trend)",1.0943720000000001,1.0941193
+2025-04-08 13:45:00+00:00,2025-04-08 14:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.78 < -DI=20.58, bearish trend)",1.0943729999999998,1.0940832
+2025-04-08 14:00:00+00:00,2025-04-08 14:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=8.92 < -DI=30.39, bearish trend)",1.094277,1.0940307999999999
+2025-04-08 14:15:00+00:00,2025-04-08 14:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.25 pips < 1.0 pips threshold),1.09399,1.0939649999999999
+2025-04-08 18:45:00+00:00,2025-04-08 19:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.0941480000000001,1.0938355999999996
+2025-04-09 18:00:00+00:00,2025-04-09 18:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.100711,1.1014543
+2025-04-09 18:15:00+00:00,2025-04-09 18:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.0997679999999999,1.1014548999999998
+2025-04-09 18:30:00+00:00,2025-04-09 18:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.37 < +DI=21.56, bullish trend)",1.0992030000000002,1.1014918
+2025-04-09 18:45:00+00:00,2025-04-09 19:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.0985669999999998,1.1015224
+2025-04-10 08:30:00+00:00,2025-04-10 08:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.10031,1.099986
+2025-04-14 13:30:00+00:00,2025-04-14 13:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1355140000000001,1.1359089999999998
+2025-04-14 13:45:00+00:00,2025-04-14 14:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=21.45 < +DI=22.47, bullish trend)",1.1348880000000001,1.1358800999999998
+2025-04-14 14:00:00+00:00,2025-04-14 14:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.67 < +DI=26.33, bullish trend)",1.1342860000000001,1.1358229999999998
+2025-04-14 14:15:00+00:00,2025-04-14 14:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=10.33 < +DI=30.33, bullish trend)",1.1339360000000003,1.1357703999999997
+2025-04-14 14:30:00+00:00,2025-04-14 14:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.03 < +DI=32.02, bullish trend)",1.133736,1.1357238999999997
+2025-04-14 14:45:00+00:00,2025-04-14 15:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=13.45 < +DI=35.52, bullish trend)",1.133871,1.1357102999999997
+2025-04-14 15:00:00+00:00,2025-04-14 15:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.96 < +DI=25.11, bullish trend)",1.133849,1.1357134999999996
+2025-04-14 15:15:00+00:00,2025-04-14 15:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.05 < +DI=27.14, bullish trend)",1.13418,1.1357072999999998
+2025-04-14 15:30:00+00:00,2025-04-14 15:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.87 < +DI=22.87, bullish trend)",1.1347070000000001,1.1357038
+2025-04-14 15:45:00+00:00,2025-04-14 16:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.135216,1.1357087999999997
+2025-04-14 16:00:00+00:00,2025-04-14 16:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.97 pips < 1.0 pips threshold),1.135639,1.1357355999999996
+2025-04-14 17:15:00+00:00,2025-04-14 17:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1355669999999998,1.1358278
+2025-04-17 02:45:00+00:00,2025-04-17 03:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.14 pips < 1.0 pips threshold),1.136928,1.1369419000000003
+2025-04-17 03:00:00+00:00,2025-04-17 03:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.51 pips < 1.0 pips threshold),1.136942,1.1369926000000001
+2025-04-17 03:15:00+00:00,2025-04-17 03:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.33 pips < 1.0 pips threshold),1.137012,1.1370449000000002
+2025-04-17 03:30:00+00:00,2025-04-17 03:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.43 pips < 1.0 pips threshold),1.13704,1.1370830000000003
+2025-04-17 03:45:00+00:00,2025-04-17 04:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.42 pips < 1.0 pips threshold),1.137075,1.1371172
+2025-04-17 04:00:00+00:00,2025-04-17 04:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 1.0 pips threshold),1.13715,1.1371563000000002
+2025-04-17 04:15:00+00:00,2025-04-17 04:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.03 pips < 1.0 pips threshold),1.137192,1.1371948000000003
+2025-04-17 09:30:00+00:00,2025-04-17 09:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.84 pips < 1.0 pips threshold),1.137409,1.1373252000000003
+2025-04-17 09:45:00+00:00,2025-04-17 10:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.30 < -DI=17.82, bearish trend)",1.137538,1.1373486000000002
+2025-04-17 10:00:00+00:00,2025-04-17 10:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=10.19 < -DI=24.47, bearish trend)",1.1375410000000001,1.1373492
+2025-04-17 10:45:00+00:00,2025-04-17 11:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.137229,1.1373596
+2025-04-17 11:00:00+00:00,2025-04-17 11:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.54 < +DI=21.00, bullish trend)",1.137078,1.1373649
+2025-04-17 11:15:00+00:00,2025-04-17 11:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.61 < +DI=23.98, bullish trend)",1.136958,1.137365
+2025-04-17 11:30:00+00:00,2025-04-17 11:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.73 < +DI=18.07, bullish trend)",1.1368589999999998,1.1373657
+2025-04-17 11:45:00+00:00,2025-04-17 12:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.136709,1.1373568
+2025-04-17 12:00:00+00:00,2025-04-17 12:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.136537,1.1373605
+2025-04-17 12:15:00+00:00,2025-04-17 12:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1362659999999998,1.1373446999999999
+2025-04-17 12:30:00+00:00,2025-04-17 12:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.136118,1.1373308
+2025-04-17 12:45:00+00:00,2025-04-17 13:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.135969,1.1373274
+2025-04-17 20:45:00+00:00,2025-04-17 21:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.14 pips < 1.0 pips threshold),1.137028,1.1370135000000003
+2025-04-22 00:30:00+00:00,2025-04-22 00:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.35 pips < 1.0 pips threshold),1.1512360000000001,1.1512714000000006
+2025-04-22 00:45:00+00:00,2025-04-22 01:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.150906,1.1513674000000007
+2025-04-22 01:00:00+00:00,2025-04-22 01:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.71 < +DI=23.14, bullish trend)",1.150624,1.1514661000000006
+2025-04-24 08:00:00+00:00,2025-04-24 08:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.136109,1.1358731
+2025-04-24 08:15:00+00:00,2025-04-24 08:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1365180000000001,1.1358582
+2025-04-24 08:30:00+00:00,2025-04-24 08:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=21.16 < -DI=30.15, bearish trend)",1.136775,1.1358308000000001
+2025-04-25 01:00:00+00:00,2025-04-25 01:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.44 < +DI=23.27, bullish trend)",1.136628,1.1367528000000005
+2025-04-25 01:15:00+00:00,2025-04-25 01:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.136288,1.1367769000000005
+2025-04-25 15:30:00+00:00,2025-04-25 15:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.08 pips < 1.0 pips threshold),1.1360860000000002,1.1360783000000003
+2025-04-25 15:45:00+00:00,2025-04-25 16:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.136484,1.1360746000000002
+2025-04-25 16:00:00+00:00,2025-04-25 16:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.136898,1.1360838000000004
+2025-04-25 16:15:00+00:00,2025-04-25 16:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.137158,1.1360954000000003
+2025-04-25 16:30:00+00:00,2025-04-25 16:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=20.37 < -DI=23.15, bearish trend)",1.137291,1.1361153000000004
+2025-04-25 16:45:00+00:00,2025-04-25 17:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=11.97 < -DI=33.96, bearish trend)",1.137284,1.1361329
+2025-04-25 17:00:00+00:00,2025-04-25 17:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=12.44 < -DI=24.07, bearish trend)",1.137309,1.1361435
+2025-04-25 17:15:00+00:00,2025-04-25 17:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=10.82 < -DI=25.48, bearish trend)",1.137288,1.1361435
+2025-04-27 22:45:00+00:00,2025-04-27 23:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.43 pips < 1.0 pips threshold),1.1357810000000002,1.1358244
+2025-04-27 23:00:00+00:00,2025-04-27 23:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.90 pips < 1.0 pips threshold),1.135697,1.1357869000000003
+2025-04-27 23:15:00+00:00,2025-04-27 23:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.135585,1.1357505
+2025-04-27 23:30:00+00:00,2025-04-27 23:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1354790000000001,1.1357182000000001
+2025-04-28 01:15:00+00:00,2025-04-28 01:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.31 pips < 1.0 pips threshold),1.135614,1.1355829000000004
+2025-04-28 01:30:00+00:00,2025-04-28 01:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.88 pips < 1.0 pips threshold),1.1356680000000001,1.1355796000000005
+2025-04-28 01:45:00+00:00,2025-04-28 02:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=12.58 < -DI=32.38, bearish trend)",1.1356829999999998,1.1355770000000005
+2025-04-28 02:00:00+00:00,2025-04-28 02:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.07 pips < 1.0 pips threshold),1.135581,1.1355741000000004
+2025-04-28 02:15:00+00:00,2025-04-28 02:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.24 pips < 1.0 pips threshold),1.135594,1.1355701000000005
+2025-04-28 04:45:00+00:00,2025-04-28 05:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.135893,1.1356943000000004
+2025-04-28 05:00:00+00:00,2025-04-28 05:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.136136,1.1357448000000006
+2025-04-28 05:15:00+00:00,2025-04-28 05:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.136376,1.1357957000000005
+2025-04-28 05:30:00+00:00,2025-04-28 05:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1365729999999998,1.1358394000000003
+2025-04-28 05:45:00+00:00,2025-04-28 06:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.87 < -DI=25.51, bearish trend)",1.1367429999999998,1.1358824000000005
+2025-04-28 06:00:00+00:00,2025-04-28 06:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=11.75 < -DI=25.36, bearish trend)",1.1368759999999998,1.1359157000000004
+2025-04-28 06:15:00+00:00,2025-04-28 06:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=11.06 < -DI=26.21, bearish trend)",1.136965,1.1359412000000004
+2025-04-28 06:30:00+00:00,2025-04-28 06:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=4.91 < -DI=43.16, bearish trend)",1.136835,1.1359513000000003
+2025-04-28 06:45:00+00:00,2025-04-28 07:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=2.76 < -DI=48.36, bearish trend)",1.1365310000000002,1.1359466000000003
+2025-04-28 07:00:00+00:00,2025-04-28 07:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=17.69 < -DI=26.38, bearish trend)",1.136307,1.1359579000000004
+2025-04-28 07:15:00+00:00,2025-04-28 07:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=20.23 < -DI=21.68, bearish trend)",1.1360829999999997,1.1359797000000003
+2025-04-28 14:15:00+00:00,2025-04-28 14:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.96 pips < 1.0 pips threshold),1.136057,1.1359613
+2025-04-28 14:30:00+00:00,2025-04-28 14:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.1364360000000002,1.1360199999999998
+2025-04-28 14:45:00+00:00,2025-04-28 15:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1365029999999998,1.1360579999999998
+2025-04-28 15:00:00+00:00,2025-04-28 15:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=23.48 < -DI=27.18, bearish trend)",1.1366509999999999,1.1360777999999998
+2025-04-28 15:15:00+00:00,2025-04-28 15:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=22.05 < -DI=23.97, bearish trend)",1.136955,1.1360947999999997
+2025-04-28 15:30:00+00:00,2025-04-28 15:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.1373719999999998,1.1361134
+2025-04-28 15:45:00+00:00,2025-04-28 16:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.137705,1.1361305
+2025-04-28 16:00:00+00:00,2025-04-28 16:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.1380029999999999,1.1361637000000002
+2025-04-28 16:15:00+00:00,2025-04-28 16:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1382910000000002,1.1361962
+2025-04-29 10:00:00+00:00,2025-04-29 10:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.76 pips < 1.0 pips threshold),1.139012,1.1390880000000005
+2025-04-29 10:15:00+00:00,2025-04-29 10:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.138784,1.1391253000000006
+2025-04-29 15:15:00+00:00,2025-04-29 15:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.00 pips < 1.0 pips threshold),1.13987,1.1398702
+2025-04-29 15:30:00+00:00,2025-04-29 15:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=13.52 < +DI=24.62, bullish trend)",1.139798,1.1399017
+2025-04-29 15:45:00+00:00,2025-04-29 16:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.11 < +DI=19.33, bullish trend)",1.139681,1.1398985000000001
+2025-04-29 16:00:00+00:00,2025-04-29 16:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=13.23 < +DI=27.96, bullish trend)",1.139733,1.1399239
+2025-04-29 16:15:00+00:00,2025-04-29 16:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.79 pips < 1.0 pips threshold),1.139884,1.1399634
+2025-04-29 16:30:00+00:00,2025-04-29 16:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.05 pips < 1.0 pips threshold),1.139983,1.1399882000000001
+2025-04-29 16:45:00+00:00,2025-04-29 17:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.47 pips < 1.0 pips threshold),1.1399560000000002,1.1400034000000003
+2025-04-29 17:00:00+00:00,2025-04-29 17:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.55 pips < 1.0 pips threshold),1.139957,1.1400121000000003
+2025-04-29 18:00:00+00:00,2025-04-29 18:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.139831,1.1399711000000006
+2025-04-29 18:15:00+00:00,2025-04-29 18:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.139655,1.1399364000000005
+2025-04-29 18:30:00+00:00,2025-04-29 18:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.139415,1.1399017000000007
+2025-04-29 18:45:00+00:00,2025-04-29 19:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.80 < +DI=23.17, bullish trend)",1.139113,1.1398753000000008
+2025-05-02 04:00:00+00:00,2025-05-02 04:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=21.63 < -DI=22.65, bearish trend)",1.1301919999999999,1.1300229
+2025-05-02 04:15:00+00:00,2025-05-02 04:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.130316,1.1300246
+2025-05-02 04:30:00+00:00,2025-05-02 04:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.33 < -DI=21.86, bearish trend)",1.1303779999999999,1.1300233
+2025-05-02 04:45:00+00:00,2025-05-02 05:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=13.60 < -DI=22.15, bearish trend)",1.13043,1.130026
+2025-05-02 05:00:00+00:00,2025-05-02 05:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.13051,1.1300198000000001
+2025-05-05 01:15:00+00:00,2025-05-05 01:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.132036,1.1318872999999998
+2025-05-05 01:30:00+00:00,2025-05-05 01:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=21.13 < -DI=26.88, bearish trend)",1.132271,1.1319316999999998
+2025-05-05 07:45:00+00:00,2025-05-05 08:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.53 pips < 1.0 pips threshold),1.1326589999999999,1.1327117999999998
+2025-05-05 08:00:00+00:00,2025-05-05 08:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.05 < +DI=25.14, bullish trend)",1.132539,1.1327113999999998
+2025-05-05 08:15:00+00:00,2025-05-05 08:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.67 < +DI=20.36, bullish trend)",1.132455,1.1327110999999996
+2025-05-05 08:30:00+00:00,2025-05-05 08:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.39 < +DI=20.29, bullish trend)",1.13241,1.1327176999999997
+2025-05-05 08:45:00+00:00,2025-05-05 09:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.132405,1.1327156999999994
+2025-05-05 09:00:00+00:00,2025-05-05 09:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.41 < +DI=33.94, bullish trend)",1.1325220000000003,1.1327238999999998
+2025-05-05 09:15:00+00:00,2025-05-05 09:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.83 pips < 1.0 pips threshold),1.132664,1.1327468999999997
+2025-05-05 16:30:00+00:00,2025-05-05 16:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1323320000000001,1.1326512999999994
+2025-05-06 06:30:00+00:00,2025-05-06 06:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.50 pips < 1.0 pips threshold),1.132232,1.1321824999999999
+2025-05-06 06:45:00+00:00,2025-05-06 07:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1322919999999999,1.1321710999999999
+2025-05-06 07:00:00+00:00,2025-05-06 07:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1323359999999998,1.1321652
+2025-05-06 11:00:00+00:00,2025-05-06 11:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.61 pips < 1.0 pips threshold),1.132096,1.1321568999999998
+2025-05-06 11:15:00+00:00,2025-05-06 11:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.49 pips < 1.0 pips threshold),1.1321020000000002,1.132151
+2025-05-07 16:15:00+00:00,2025-05-07 16:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.30 < +DI=19.42, bullish trend)",1.13546,1.1356102000000001
+2025-05-07 16:30:00+00:00,2025-05-07 16:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.82 < +DI=23.66, bullish trend)",1.135386,1.1356112000000003
+2025-05-07 16:45:00+00:00,2025-05-07 17:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.47 < +DI=22.72, bullish trend)",1.1352570000000002,1.1356184000000002
+2025-05-09 09:00:00+00:00,2025-05-09 09:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.85 < -DI=19.38, bearish trend)",1.1249529999999999,1.1248459999999996
+2025-05-09 09:15:00+00:00,2025-05-09 09:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.42 < -DI=21.88, bearish trend)",1.12506,1.1248048999999998
+2025-05-09 09:30:00+00:00,2025-05-09 09:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.23 < -DI=21.85, bearish trend)",1.1251,1.1247651999999997
+2025-05-09 09:45:00+00:00,2025-05-09 10:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.63 < -DI=25.92, bearish trend)",1.125118,1.1247211999999998
+2025-05-09 10:00:00+00:00,2025-05-09 10:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=12.98 < -DI=18.73, bearish trend)",1.124995,1.1246784999999997
+2025-05-09 10:15:00+00:00,2025-05-09 10:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.124911,1.1246251999999999
+2025-05-13 06:00:00+00:00,2025-05-13 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.06 pips < 1.0 pips threshold),1.1113250000000001,1.1113189999999995
+2025-05-13 06:15:00+00:00,2025-05-13 06:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.19 pips < 1.0 pips threshold),1.111219,1.1112004999999996
+2025-05-14 17:15:00+00:00,2025-05-14 17:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1198679999999999,1.1200537
+2025-05-15 07:00:00+00:00,2025-05-15 07:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1202619999999999,1.1201201
+2025-05-15 07:15:00+00:00,2025-05-15 07:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.61 < -DI=24.36, bearish trend)",1.120448,1.1201457
+2025-05-15 07:30:00+00:00,2025-05-15 07:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.43 < -DI=26.58, bearish trend)",1.120521,1.1201529
+2025-05-15 07:45:00+00:00,2025-05-15 08:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.11 < -DI=26.96, bearish trend)",1.120587,1.1201561
+2025-05-15 08:00:00+00:00,2025-05-15 08:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.59 < -DI=29.60, bearish trend)",1.1206869999999998,1.1201658
+2025-05-15 08:15:00+00:00,2025-05-15 08:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.16 < -DI=24.62, bearish trend)",1.1207220000000002,1.1201799
+2025-05-15 12:00:00+00:00,2025-05-15 12:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.05 pips < 1.0 pips threshold),1.1196689999999998,1.1196739
+2025-05-15 12:15:00+00:00,2025-05-15 12:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.57 pips < 1.0 pips threshold),1.1195840000000001,1.1196411
+2025-05-15 12:30:00+00:00,2025-05-15 12:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.50 pips < 1.0 pips threshold),1.1195720000000002,1.1196224000000001
+2025-05-15 12:45:00+00:00,2025-05-15 13:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.14 pips < 1.0 pips threshold),1.1195940000000002,1.1196077000000002
+2025-05-15 15:30:00+00:00,2025-05-15 15:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.119115,1.1193161999999999
+2025-05-15 15:45:00+00:00,2025-05-15 16:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.07 < +DI=22.85, bullish trend)",1.1189550000000001,1.1192906
+2025-05-16 00:30:00+00:00,2025-05-16 00:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.58 pips < 1.0 pips threshold),1.119346,1.1192880999999995
+2025-05-16 00:45:00+00:00,2025-05-16 01:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.119523,1.1193062999999996
+2025-05-16 01:00:00+00:00,2025-05-16 01:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1196610000000002,1.1193302999999997
+2025-05-16 01:15:00+00:00,2025-05-16 01:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=14.39 < -DI=26.15, bearish trend)",1.119729,1.1193499999999998
+2025-05-16 14:00:00+00:00,2025-05-16 14:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.67 pips < 1.0 pips threshold),1.1194729999999997,1.1195396000000004
+2025-05-16 14:15:00+00:00,2025-05-16 14:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.119344,1.1195001000000004
+2025-05-16 14:30:00+00:00,2025-05-16 14:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1190000000000002,1.1194545000000005
+2025-05-16 14:45:00+00:00,2025-05-16 15:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1185800000000001,1.1194092000000004
+2025-05-16 15:00:00+00:00,2025-05-16 15:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.118195,1.1193645000000005
+2025-05-18 23:45:00+00:00,2025-05-19 00:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.37 pips < 1.0 pips threshold),1.1186200000000002,1.1185830000000008
+2025-05-19 00:00:00+00:00,2025-05-19 00:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=17.60 < -DI=25.28, bearish trend)",1.118725,1.1185773000000008
+2025-05-19 00:15:00+00:00,2025-05-19 00:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.72 < -DI=20.93, bearish trend)",1.1188380000000002,1.1185714000000007
+2025-05-19 00:30:00+00:00,2025-05-19 00:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=10.79 < -DI=23.37, bearish trend)",1.118809,1.1185634000000007
+2025-05-19 02:45:00+00:00,2025-05-19 03:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.19 pips < 1.0 pips threshold),1.118408,1.1184265000000007
+2025-05-19 03:00:00+00:00,2025-05-19 03:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.12 pips < 1.0 pips threshold),1.118393,1.1184052000000007
+2025-05-19 03:15:00+00:00,2025-05-19 03:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.58 < +DI=19.61, bullish trend)",1.118257,1.1183805000000009
+2025-05-19 03:30:00+00:00,2025-05-19 03:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=13.68 < +DI=14.30, bullish trend)",1.118182,1.1183573000000004
+2025-05-19 03:45:00+00:00,2025-05-19 04:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.118173,1.1183348000000006
+2025-05-19 04:00:00+00:00,2025-05-19 04:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.11815,1.1183125000000005
+2025-05-19 04:15:00+00:00,2025-05-19 04:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.54 pips < 1.0 pips threshold),1.118244,1.1182975000000006
+2025-05-19 04:30:00+00:00,2025-05-19 04:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.23 pips < 1.0 pips threshold),1.118254,1.1182766000000006
+2025-05-19 04:45:00+00:00,2025-05-19 05:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.42 pips < 1.0 pips threshold),1.118216,1.1182581000000007
+2025-05-20 12:15:00+00:00,2025-05-20 12:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1244399999999999,1.1246219000000002
+2025-05-20 12:30:00+00:00,2025-05-20 12:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.124273,1.1245848
+2025-05-20 12:45:00+00:00,2025-05-20 13:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.124151,1.1245509
+2025-05-21 23:00:00+00:00,2025-05-21 23:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.68 pips < 1.0 pips threshold),1.132476,1.1325442000000003
+2025-05-21 23:15:00+00:00,2025-05-21 23:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.48 < +DI=27.57, bullish trend)",1.132418,1.1325835000000004
+2025-05-21 23:30:00+00:00,2025-05-21 23:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.39 < +DI=27.76, bullish trend)",1.132364,1.1326288000000004
+2025-05-21 23:45:00+00:00,2025-05-22 00:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=10.48 < +DI=31.42, bullish trend)",1.132393,1.1326789000000004
+2025-05-22 00:00:00+00:00,2025-05-22 00:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=9.04 < +DI=41.97, bullish trend)",1.132509,1.1327385000000005
+2025-05-22 00:15:00+00:00,2025-05-22 00:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=9.96 < +DI=22.93, bullish trend)",1.1325599999999998,1.1327900000000006
+2025-05-22 00:30:00+00:00,2025-05-22 00:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.132663,1.1328347000000005
+2025-05-22 00:45:00+00:00,2025-05-22 01:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1327129999999999,1.1328762000000006
+2025-05-22 01:00:00+00:00,2025-05-22 01:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1328140000000002,1.1329160000000007
+2025-05-22 05:00:00+00:00,2025-05-22 05:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.08 pips < 1.0 pips threshold),1.1333280000000001,1.1333358000000004
+2025-05-22 05:15:00+00:00,2025-05-22 05:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.97 pips < 1.0 pips threshold),1.1332410000000002,1.1333376000000004
+2025-05-22 05:30:00+00:00,2025-05-22 05:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.133165,1.1333390000000003
+2025-05-22 05:45:00+00:00,2025-05-22 06:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.56 < +DI=30.54, bullish trend)",1.13313,1.1333379000000006
+2025-05-22 06:00:00+00:00,2025-05-22 06:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.12 < +DI=23.83, bullish trend)",1.1331630000000001,1.1333465000000005
+2025-05-22 06:15:00+00:00,2025-05-22 06:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1331769999999999,1.1333519000000003
+2025-05-23 02:15:00+00:00,2025-05-23 02:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.130279,1.1301402000000003
+2025-05-23 02:30:00+00:00,2025-05-23 02:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.130533,1.1301144000000003
+2025-05-26 13:30:00+00:00,2025-05-26 13:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.48 pips < 1.0 pips threshold),1.137655,1.1377028999999999
+2025-05-26 13:45:00+00:00,2025-05-26 14:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.60 pips < 1.0 pips threshold),1.1376760000000001,1.137736
+2025-05-26 14:00:00+00:00,2025-05-26 14:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.62 pips < 1.0 pips threshold),1.13772,1.1377819
+2025-05-26 14:15:00+00:00,2025-05-26 14:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.58 pips < 1.0 pips threshold),1.1377840000000001,1.1378422000000004
+2025-05-26 14:30:00+00:00,2025-05-26 14:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.89 pips < 1.0 pips threshold),1.1378110000000001,1.1379001000000004
+2025-05-26 15:00:00+00:00,2025-05-26 15:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 1.0 pips threshold),1.1379920000000001,1.1380202000000004
+2025-05-26 15:15:00+00:00,2025-05-26 15:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.18 pips < 1.0 pips threshold),1.1380469999999998,1.1380654000000003
+2025-05-26 15:30:00+00:00,2025-05-26 15:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.22 pips < 1.0 pips threshold),1.1380899999999998,1.1381117000000005
+2025-05-26 15:45:00+00:00,2025-05-26 16:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.52 pips < 1.0 pips threshold),1.138104,1.1381561000000004
+2025-05-26 16:00:00+00:00,2025-05-26 16:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.73 pips < 1.0 pips threshold),1.138118,1.1381907000000004
+2025-05-26 16:15:00+00:00,2025-05-26 16:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.138114,1.1382317000000004
+2025-05-26 16:30:00+00:00,2025-05-26 16:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.28 < +DI=20.01, bullish trend)",1.138129,1.1382782000000005
+2025-05-26 16:45:00+00:00,2025-05-26 17:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=12.79 < +DI=27.92, bullish trend)",1.1381269999999999,1.1383125000000005
+2025-05-26 17:00:00+00:00,2025-05-26 17:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.20 < +DI=28.25, bullish trend)",1.138148,1.1383463000000005
+2025-05-26 17:15:00+00:00,2025-05-26 17:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.23 < +DI=22.87, bullish trend)",1.1381070000000002,1.1383762000000006
+2025-05-26 17:30:00+00:00,2025-05-26 17:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=27.76 < +DI=28.95, bullish trend)",1.138136,1.1384066000000006
+2025-05-26 17:45:00+00:00,2025-05-26 18:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.138138,1.1384319000000007
+2025-05-26 18:00:00+00:00,2025-05-26 18:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.57 < +DI=34.37, bullish trend)",1.13815,1.1384559000000007
+2025-05-26 18:15:00+00:00,2025-05-26 18:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.68 < +DI=29.28, bullish trend)",1.138165,1.138484300000001
+2025-05-26 23:45:00+00:00,2025-05-27 00:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.02 pips < 1.0 pips threshold),1.138944,1.1389422
+2025-05-27 00:00:00+00:00,2025-05-27 00:15:00+00:00,BUY,close_only,Closed existing short position,1.139072,1.1389669
+2025-05-28 10:30:00+00:00,2025-05-28 10:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.71 pips < 1.0 pips threshold),1.133286,1.1332146999999995
+2025-05-28 10:45:00+00:00,2025-05-28 11:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=17.17 < -DI=32.59, bearish trend)",1.133334,1.1331904999999995
+2025-05-28 11:00:00+00:00,2025-05-28 11:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.64 < -DI=31.24, bearish trend)",1.1333160000000002,1.1331647999999996
+2025-05-28 11:15:00+00:00,2025-05-28 11:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.87 pips < 1.0 pips threshold),1.133228,1.1331411999999998
+2025-05-28 11:30:00+00:00,2025-05-28 11:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.16 pips < 1.0 pips threshold),1.1331339999999999,1.1331179999999998
+2025-05-29 11:00:00+00:00,2025-05-29 11:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.45 pips < 1.0 pips threshold),1.128168,1.1281233000000004
+2025-05-29 11:15:00+00:00,2025-05-29 11:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.128303,1.1280718000000005
+2025-05-29 11:30:00+00:00,2025-05-29 11:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.02 < -DI=38.07, bearish trend)",1.128303,1.1280076000000003
+2025-05-29 11:45:00+00:00,2025-05-29 12:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=17.02 < -DI=37.09, bearish trend)",1.1282400000000001,1.1279466000000005
+2025-05-30 07:45:00+00:00,2025-05-30 08:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.36 pips < 1.0 pips threshold),1.1341629999999998,1.1341994000000002
+2025-05-30 17:45:00+00:00,2025-05-30 18:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.43 pips < 1.0 pips threshold),1.135374,1.1353308999999994
+2025-06-03 04:45:00+00:00,2025-06-03 05:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.68 pips < 1.0 pips threshold),1.1421860000000001,1.1422539000000003
+2025-06-03 05:00:00+00:00,2025-06-03 05:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.57 < +DI=27.66, bullish trend)",1.142179,1.1423145000000003
+2025-06-04 08:30:00+00:00,2025-06-04 08:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.138597,1.1383448
+2025-06-04 08:45:00+00:00,2025-06-04 09:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.138865,1.1383248000000001
+2025-06-04 09:00:00+00:00,2025-06-04 09:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=19.00 < -DI=23.67, bearish trend)",1.13904,1.1383012000000001
+2025-06-04 09:15:00+00:00,2025-06-04 09:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.65 < -DI=23.51, bearish trend)",1.13916,1.1382792000000002
+2025-06-04 09:30:00+00:00,2025-06-04 09:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=11.89 < -DI=31.26, bearish trend)",1.1391620000000002,1.1382522
+2025-06-04 09:45:00+00:00,2025-06-04 10:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.92 < -DI=31.17, bearish trend)",1.139049,1.1382245
+2025-06-04 10:00:00+00:00,2025-06-04 10:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.91 < -DI=24.38, bearish trend)",1.1389520000000002,1.1381948000000002
+2025-06-04 10:15:00+00:00,2025-06-04 10:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=12.23 < -DI=29.55, bearish trend)",1.1388690000000001,1.1381607
+2025-06-04 10:30:00+00:00,2025-06-04 10:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=9.64 < -DI=28.50, bearish trend)",1.138751,1.138122
+2025-06-04 10:45:00+00:00,2025-06-04 11:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1386720000000001,1.1380902
+2025-06-04 11:00:00+00:00,2025-06-04 11:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.138525,1.1380641000000002
+2025-06-04 11:15:00+00:00,2025-06-04 11:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=14.94 < -DI=17.75, bearish trend)",1.13836,1.1380411000000001
+2025-06-04 11:30:00+00:00,2025-06-04 11:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=13.49 < -DI=15.22, bearish trend)",1.138253,1.1380204
+2025-06-04 11:45:00+00:00,2025-06-04 12:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=11.47 < -DI=21.84, bearish trend)",1.138147,1.1379912000000003
+2025-06-04 12:00:00+00:00,2025-06-04 12:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1381219999999999,1.1379744000000003
+2025-06-04 12:15:00+00:00,2025-06-04 12:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.138306,1.1379818
+2025-06-04 12:30:00+00:00,2025-06-04 12:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.138517,1.1379980000000003
+2025-06-04 12:45:00+00:00,2025-06-04 13:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.138828,1.1380160000000004
+2025-06-04 13:00:00+00:00,2025-06-04 13:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1391140000000002,1.1380296000000003
+2025-06-04 13:15:00+00:00,2025-06-04 13:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=20.75 < -DI=22.95, bearish trend)",1.1393050000000002,1.1380490000000003
+2025-06-04 13:30:00+00:00,2025-06-04 13:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.01 < -DI=26.75, bearish trend)",1.139459,1.1380648000000002
+2025-06-04 13:45:00+00:00,2025-06-04 14:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.139621,1.1380829000000003
+2025-06-06 06:00:00+00:00,2025-06-06 06:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.83 pips < 1.0 pips threshold),1.1436810000000002,1.1437637000000003
+2025-06-06 06:15:00+00:00,2025-06-06 06:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.14359,1.1437827000000003
+2025-06-06 06:30:00+00:00,2025-06-06 06:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.143526,1.1438049000000001
+2025-06-06 06:45:00+00:00,2025-06-06 07:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=21.26 < +DI=24.27, bullish trend)",1.1434760000000002,1.1438321000000002
+2025-06-09 03:00:00+00:00,2025-06-09 03:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=21.03 < -DI=23.76, bearish trend)",1.1413499999999999,1.1411852999999998
+2025-06-09 03:15:00+00:00,2025-06-09 03:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=17.00 < -DI=34.45, bearish trend)",1.141553,1.1411613
+2025-06-09 03:30:00+00:00,2025-06-09 03:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.37 < -DI=30.36, bearish trend)",1.141672,1.1411404
+2025-06-09 03:45:00+00:00,2025-06-09 04:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.82 < -DI=32.64, bearish trend)",1.1417199999999998,1.1411163
+2025-06-09 04:00:00+00:00,2025-06-09 04:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=23.38 < -DI=26.50, bearish trend)",1.1417519999999999,1.1410928000000002
+2025-06-09 04:15:00+00:00,2025-06-09 04:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=25.72 < -DI=26.27, bearish trend)",1.14174,1.1410681000000003
+2025-06-09 04:30:00+00:00,2025-06-09 04:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1416819999999999,1.1410438000000003
+2025-06-09 13:30:00+00:00,2025-06-09 13:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1405610000000002,1.1407909000000003
+2025-06-09 13:45:00+00:00,2025-06-09 14:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.10 < +DI=24.15, bullish trend)",1.1404210000000001,1.1407934000000002
+2025-06-09 14:00:00+00:00,2025-06-09 14:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.90 < +DI=25.42, bullish trend)",1.140387,1.1408038000000003
+2025-06-09 14:15:00+00:00,2025-06-09 14:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.45 < +DI=20.85, bullish trend)",1.1402519999999998,1.1408137000000003
+2025-06-09 15:45:00+00:00,2025-06-09 16:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.79 pips < 1.0 pips threshold),1.141011,1.1409315000000002
+2025-06-09 16:00:00+00:00,2025-06-09 16:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=21.26 < -DI=24.52, bearish trend)",1.1412,1.1409579
+2025-06-09 16:15:00+00:00,2025-06-09 16:30:00+00:00,BUY,close_only,Closed existing short position,1.141407,1.1409951
+2025-06-10 02:00:00+00:00,2025-06-10 02:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.141738,1.1419085999999996
+2025-06-10 02:15:00+00:00,2025-06-10 02:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.141412,1.1418999999999995
+2025-06-10 02:30:00+00:00,2025-06-10 02:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1410310000000001,1.1418866999999997
+2025-06-10 02:45:00+00:00,2025-06-10 03:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.65 < +DI=23.09, bullish trend)",1.1406949999999998,1.1418744999999995
+2025-06-10 03:00:00+00:00,2025-06-10 03:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.140475,1.1418603999999997
+2025-06-10 03:15:00+00:00,2025-06-10 03:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.58 < +DI=27.37, bullish trend)",1.1402569999999999,1.1418406999999997
+2025-06-10 03:30:00+00:00,2025-06-10 03:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.93 < +DI=22.15, bullish trend)",1.14007,1.1418185999999997
+2025-06-10 03:45:00+00:00,2025-06-10 04:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.30 < +DI=25.12, bullish trend)",1.139942,1.1418013999999999
+2025-06-10 04:00:00+00:00,2025-06-10 04:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.139866,1.1417854
+2025-06-10 10:45:00+00:00,2025-06-10 11:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1413989999999998,1.1412886999999998
+2025-06-11 03:00:00+00:00,2025-06-11 03:15:00+00:00,SELL,close_only,Closed existing long position,1.1416610000000003,1.1417707000000004
+2025-06-11 09:15:00+00:00,2025-06-11 09:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.142558,1.1422948999999993
+2025-06-11 09:30:00+00:00,2025-06-11 09:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1428699999999998,1.1423322999999992
+2025-06-11 09:45:00+00:00,2025-06-11 10:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.92 < -DI=19.78, bearish trend)",1.143094,1.1423625999999993
+2025-06-11 10:00:00+00:00,2025-06-11 10:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1432879999999999,1.1423897999999992
+2025-06-13 02:00:00+00:00,2025-06-13 02:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.85 pips < 1.0 pips threshold),1.155994,1.1560794000000003
+2025-06-13 18:45:00+00:00,2025-06-13 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.94 pips < 1.0 pips threshold),1.1546280000000002,1.1547223999999996
+2025-06-13 19:00:00+00:00,2025-06-13 19:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.154433,1.1546884999999996
+2025-06-16 00:45:00+00:00,2025-06-16 01:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.61 pips < 1.0 pips threshold),1.153757,1.1536956999999999
+2025-06-16 01:00:00+00:00,2025-06-16 01:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=22.92 < -DI=24.86, bearish trend)",1.153749,1.1536254999999997
+2025-06-16 01:15:00+00:00,2025-06-16 01:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.153715,1.1535986999999996
+2025-06-16 01:30:00+00:00,2025-06-16 01:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=22.51 < -DI=26.76, bearish trend)",1.1537840000000001,1.1535533999999996
+2025-06-16 01:45:00+00:00,2025-06-16 02:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=21.64 < -DI=23.62, bearish trend)",1.1537710000000003,1.1535399999999996
+2025-06-16 02:00:00+00:00,2025-06-16 02:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=20.75 < -DI=25.60, bearish trend)",1.1537030000000001,1.1535132999999995
+2025-06-16 02:15:00+00:00,2025-06-16 02:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=20.39 < -DI=24.64, bearish trend)",1.1536469999999999,1.1534989999999998
+2025-06-16 02:30:00+00:00,2025-06-16 02:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.77 pips < 1.0 pips threshold),1.1535579999999999,1.1534813
+2025-06-16 05:15:00+00:00,2025-06-16 05:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=75 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.153565,1.1534289999999998
+2025-06-16 05:30:00+00:00,2025-06-16 05:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1538360000000003,1.1534640999999999
+2025-06-16 05:45:00+00:00,2025-06-16 06:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1540910000000002,1.1534948
+2025-06-16 06:00:00+00:00,2025-06-16 06:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.93 < -DI=23.30, bearish trend)",1.154326,1.1535219999999997
+2025-06-16 06:15:00+00:00,2025-06-16 06:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.52 < -DI=29.11, bearish trend)",1.15448,1.153533
+2025-06-16 06:30:00+00:00,2025-06-16 06:45:00+00:00,BUY,close_only,Closed existing short position,1.1547550000000002,1.1535790999999997
+2025-06-16 21:30:00+00:00,2025-06-16 21:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 1.0 pips threshold),1.1562200000000002,1.1562266000000005
+2025-06-16 21:45:00+00:00,2025-06-16 22:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=23.74 < +DI=37.36, bullish trend)",1.1561400000000002,1.1562477000000007
+2025-06-19 18:45:00+00:00,2025-06-19 19:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.90 pips < 1.0 pips threshold),1.1473409999999997,1.1472514999999996
+2025-06-19 19:00:00+00:00,2025-06-19 19:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1476309999999998,1.1472428000000001
+2025-06-22 21:15:00+00:00,2025-06-22 21:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.09 pips < 1.0 pips threshold),1.1517849999999998,1.1517938
+2025-06-22 21:30:00+00:00,2025-06-22 21:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.151199,1.1517714000000001
+2025-06-22 21:45:00+00:00,2025-06-22 22:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.150635,1.1517492000000003
+2025-06-22 22:00:00+00:00,2025-06-22 22:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=25.02 < +DI=30.67, bullish trend)",1.15022,1.1517384000000002
+2025-06-22 22:15:00+00:00,2025-06-22 22:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1498570000000001,1.1517312
+2025-06-22 22:30:00+00:00,2025-06-22 22:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=23.28 < +DI=23.90, bullish trend)",1.1496230000000003,1.1517289000000002
+2025-06-22 22:45:00+00:00,2025-06-22 23:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.53 < +DI=26.71, bullish trend)",1.149311,1.1517224
+2025-06-22 23:00:00+00:00,2025-06-22 23:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.01 < +DI=29.04, bullish trend)",1.1490529999999999,1.1517193000000001
+2025-06-22 23:15:00+00:00,2025-06-22 23:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=12.48 < +DI=29.40, bullish trend)",1.1488749999999999,1.1517189
+2025-06-22 23:30:00+00:00,2025-06-22 23:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.06 < +DI=33.47, bullish trend)",1.148673,1.1517267000000002
+2025-06-25 07:45:00+00:00,2025-06-25 08:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.31 pips < 1.0 pips threshold),1.161169,1.1612001000000003
+2025-06-25 08:00:00+00:00,2025-06-25 08:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1609660000000002,1.1611929000000003
+2025-06-25 08:15:00+00:00,2025-06-25 08:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.51 < +DI=24.71, bullish trend)",1.1607800000000001,1.1611852000000003
+2025-06-25 08:30:00+00:00,2025-06-25 08:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.47 < +DI=29.51, bullish trend)",1.160672,1.1611887000000003
+2025-06-25 08:45:00+00:00,2025-06-25 09:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=12.58 < +DI=31.46, bullish trend)",1.160572,1.1612010000000004
+2025-06-25 15:30:00+00:00,2025-06-25 15:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.16146,1.1613378999999995
+2025-06-25 15:45:00+00:00,2025-06-25 16:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=14.97 < -DI=21.79, bearish trend)",1.161642,1.1613285999999996
+2025-06-26 22:15:00+00:00,2025-06-26 22:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=25.63 < +DI=32.19, bullish trend)",1.1698159999999997,1.1699754
+2025-06-26 22:30:00+00:00,2025-06-26 22:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.169584,1.1700015000000001
+2025-06-26 22:45:00+00:00,2025-06-26 23:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.1693989999999999,1.1700297
+2025-06-26 23:00:00+00:00,2025-06-26 23:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.84 < +DI=41.63, bullish trend)",1.169347,1.1700659
+2025-06-26 23:15:00+00:00,2025-06-26 23:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.43 < +DI=32.69, bullish trend)",1.169276,1.1701009999999998
+2025-06-26 23:30:00+00:00,2025-06-26 23:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.39 < +DI=24.16, bullish trend)",1.1692360000000002,1.1701412
+2025-06-27 08:00:00+00:00,2025-06-27 08:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.1709390000000002,1.1707093000000002
+2025-06-27 08:15:00+00:00,2025-06-27 08:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=22.35 < -DI=24.88, bearish trend)",1.171195,1.1707232
+2025-06-27 08:30:00+00:00,2025-06-27 08:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.171444,1.1707347000000001
+2025-06-27 08:45:00+00:00,2025-06-27 09:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=21.21 < -DI=34.79, bearish trend)",1.17153,1.1707419000000001
+2025-06-27 09:00:00+00:00,2025-06-27 09:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.40 < -DI=34.57, bearish trend)",1.1715369999999998,1.1707375
+2025-06-27 09:15:00+00:00,2025-06-27 09:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=24.50 < -DI=25.75, bearish trend)",1.171434,1.1707139
+2025-06-27 09:30:00+00:00,2025-06-27 09:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=21.04 < -DI=27.30, bearish trend)",1.1712399999999998,1.1706912
+2025-06-27 09:45:00+00:00,2025-06-27 10:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.70 < -DI=18.23, bearish trend)",1.1712099999999999,1.1706619999999999
+2025-06-27 10:00:00+00:00,2025-06-27 10:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1711809999999998,1.170647
+2025-06-27 10:15:00+00:00,2025-06-27 10:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=14.75 < -DI=26.72, bearish trend)",1.1710660000000002,1.1706277999999999
+2025-06-27 10:30:00+00:00,2025-06-27 10:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=13.49 < -DI=22.18, bearish trend)",1.170893,1.1706127999999998
+2025-06-27 10:45:00+00:00,2025-06-27 11:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.170887,1.1706005999999995
+2025-06-27 11:00:00+00:00,2025-06-27 11:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.170925,1.1705931999999997
+2025-06-27 11:15:00+00:00,2025-06-27 11:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.171002,1.1705893999999994
+2025-06-27 11:30:00+00:00,2025-06-27 11:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=23.02 < -DI=25.49, bearish trend)",1.171124,1.1705787999999995
+2025-06-27 11:45:00+00:00,2025-06-27 12:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=19.67 < -DI=24.39, bearish trend)",1.17118,1.1705772999999995
+2025-06-27 12:00:00+00:00,2025-06-27 12:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=22.18 < -DI=24.95, bearish trend)",1.1712609999999999,1.1705771999999994
+2025-06-27 12:15:00+00:00,2025-06-27 12:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=90 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.1713650000000002,1.1705904999999994
+2025-06-27 12:30:00+00:00,2025-06-27 12:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1715220000000002,1.1706166999999994
+2025-06-27 18:45:00+00:00,2025-06-27 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.51 pips < 1.0 pips threshold),1.170686,1.1707367999999996
+2025-06-27 19:00:00+00:00,2025-06-27 19:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.51 < +DI=32.66, bullish trend)",1.170509,1.1707176999999998
+2025-06-27 19:15:00+00:00,2025-06-27 19:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.97 < +DI=28.88, bullish trend)",1.1703519999999998,1.1706972999999998
+2025-06-27 19:30:00+00:00,2025-06-27 19:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.50 < +DI=26.75, bullish trend)",1.170202,1.1706822999999997
+2025-06-27 19:45:00+00:00,2025-06-27 20:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.57 < +DI=23.59, bullish trend)",1.170151,1.1706688999999997
+2025-06-27 20:00:00+00:00,2025-06-27 20:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.07 < +DI=29.65, bullish trend)",1.1702099999999998,1.1706598
+2025-06-27 20:15:00+00:00,2025-06-27 20:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=23.10 < +DI=30.97, bullish trend)",1.170325,1.1706647
+2025-06-27 20:30:00+00:00,2025-06-27 20:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.00 < +DI=31.48, bullish trend)",1.170533,1.1706732999999998
+2025-06-30 12:15:00+00:00,2025-06-30 12:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.03 pips < 1.0 pips threshold),1.1721949999999999,1.1721975000000007
+2025-06-30 12:30:00+00:00,2025-06-30 12:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.71 pips < 1.0 pips threshold),1.1721219999999999,1.1721926000000003
+2025-06-30 12:45:00+00:00,2025-06-30 13:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.172024,1.1721878000000003
+2025-06-30 13:00:00+00:00,2025-06-30 13:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.00 < +DI=27.11, bullish trend)",1.1720190000000001,1.1721910000000006
+2025-06-30 13:15:00+00:00,2025-06-30 13:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.33 < +DI=25.93, bullish trend)",1.171951,1.1721940000000002
+2025-06-30 13:30:00+00:00,2025-06-30 13:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.43 < +DI=25.92, bullish trend)",1.171859,1.1721919000000003
+2025-06-30 13:45:00+00:00,2025-06-30 14:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.171781,1.1721848000000001
+2025-06-30 14:00:00+00:00,2025-06-30 14:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.36 < +DI=30.10, bullish trend)",1.171779,1.1721621000000002
+2025-06-30 14:15:00+00:00,2025-06-30 14:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.03 < +DI=33.94, bullish trend)",1.171907,1.1721610000000002
+2025-07-01 15:45:00+00:00,2025-07-01 16:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.178448,1.1786288999999999
+2025-07-01 16:00:00+00:00,2025-07-01 16:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1781450000000002,1.1786606000000002
+2025-07-02 06:15:00+00:00,2025-07-02 06:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.91 pips < 1.0 pips threshold),1.179382,1.1794732000000006
+2025-07-02 06:30:00+00:00,2025-07-02 06:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.179186,1.1794669000000004
+2025-07-02 06:45:00+00:00,2025-07-02 07:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.1790090000000002,1.1794637000000003
+2025-07-02 07:00:00+00:00,2025-07-02 07:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.58 < +DI=22.72, bullish trend)",1.1788660000000002,1.1794600000000006
+2025-07-02 17:15:00+00:00,2025-07-02 17:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.178747,1.1785213
+2025-07-02 17:30:00+00:00,2025-07-02 17:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1789260000000001,1.1785531
+2025-07-02 17:45:00+00:00,2025-07-02 18:00:00+00:00,BUY,close_only,Closed existing short position,1.179084,1.1785856000000001
+2025-07-04 04:45:00+00:00,2025-07-04 05:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.03 pips < 1.0 pips threshold),1.177178,1.1771749999999996
+2025-07-04 05:00:00+00:00,2025-07-04 05:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.177328,1.1771668999999996
+2025-07-04 05:15:00+00:00,2025-07-04 05:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1775069999999999,1.1771588999999996
+2025-07-04 05:30:00+00:00,2025-07-04 05:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.177674,1.1771528999999994
+2025-07-07 02:30:00+00:00,2025-07-07 02:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.67 pips < 1.0 pips threshold),1.1775369999999998,1.1776038999999998
+2025-07-07 02:45:00+00:00,2025-07-07 03:00:00+00:00,SELL,close_only,Closed existing long position,1.1773850000000001,1.1776122999999996
+2025-07-08 01:00:00+00:00,2025-07-08 01:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.33 pips < 1.0 pips threshold),1.1739349999999997,1.1739016
+2025-07-08 01:15:00+00:00,2025-07-08 01:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=23.63 < -DI=24.11, bearish trend)",1.1739609999999998,1.1738516000000003
+2025-07-08 12:00:00+00:00,2025-07-08 12:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1730050000000003,1.1731877
+2025-07-08 12:15:00+00:00,2025-07-08 12:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1727750000000001,1.1731792
+2025-07-09 19:45:00+00:00,2025-07-09 20:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.25 pips < 1.0 pips threshold),1.1715250000000001,1.1714997999999996
+2025-07-09 20:00:00+00:00,2025-07-09 20:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.70 < -DI=27.39, bearish trend)",1.17164,1.1714918999999997
+2025-07-09 20:15:00+00:00,2025-07-09 20:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.10 < -DI=33.87, bearish trend)",1.1716849999999999,1.1714806999999998
+2025-07-09 20:30:00+00:00,2025-07-09 20:45:00+00:00,BUY,close_only,Closed existing short position,1.171684,1.1714742999999996
+2025-07-10 12:00:00+00:00,2025-07-10 12:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 1.0 pips threshold),1.172336,1.1723563000000004
+2025-07-11 11:15:00+00:00,2025-07-11 11:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.39 pips < 1.0 pips threshold),1.169137,1.1690976000000002
+2025-07-11 11:30:00+00:00,2025-07-11 11:45:00+00:00,BUY,close_only,Closed existing short position,1.169191,1.1690567
+2025-07-11 20:15:00+00:00,2025-07-11 20:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.26 pips < 1.0 pips threshold),1.1688490000000002,1.1688751000000004
+2025-07-11 20:30:00+00:00,2025-07-11 20:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.57 pips < 1.0 pips threshold),1.1688120000000002,1.1688693
+2025-07-11 20:45:00+00:00,2025-07-11 21:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.72 pips < 1.0 pips threshold),1.16879,1.1688616000000003
+2025-07-14 01:15:00+00:00,2025-07-14 01:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.80 pips < 1.0 pips threshold),1.1685569999999998,1.1684772000000005
+2025-07-14 01:30:00+00:00,2025-07-14 01:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1688059999999998,1.1684939000000005
+2025-07-14 01:45:00+00:00,2025-07-14 02:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.14 < -DI=37.19, bearish trend)",1.1688839999999998,1.1685076000000005
+2025-07-14 02:00:00+00:00,2025-07-14 02:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=20.95 < -DI=24.53, bearish trend)",1.168982,1.1685215000000007
+2025-07-14 02:15:00+00:00,2025-07-14 02:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.87 < -DI=31.53, bearish trend)",1.168972,1.1685296000000007
+2025-07-14 02:30:00+00:00,2025-07-14 02:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=10.13 < -DI=42.29, bearish trend)",1.168817,1.1685259000000006
+2025-07-14 02:45:00+00:00,2025-07-14 03:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=16.15 < -DI=30.90, bearish trend)",1.168695,1.1685171000000003
+2025-07-14 03:00:00+00:00,2025-07-14 03:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.86 pips < 1.0 pips threshold),1.168606,1.1685202000000003
+2025-07-14 09:45:00+00:00,2025-07-14 10:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.168547,1.1684387000000005
+2025-07-14 10:00:00+00:00,2025-07-14 10:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.1686349999999999,1.1684502000000003
+2025-07-14 10:15:00+00:00,2025-07-14 10:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.168711,1.1684561000000002
+2025-07-14 10:30:00+00:00,2025-07-14 10:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.17 < -DI=33.78, bearish trend)",1.168766,1.1684621000000004
+2025-07-14 14:00:00+00:00,2025-07-14 14:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.46 pips < 1.0 pips threshold),1.1683510000000001,1.1683974000000006
+2025-07-14 14:15:00+00:00,2025-07-14 14:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.49 pips < 1.0 pips threshold),1.1683480000000004,1.1683965000000005
+2025-07-14 14:30:00+00:00,2025-07-14 14:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.38 pips < 1.0 pips threshold),1.1683530000000002,1.1683910000000006
+2025-07-14 14:45:00+00:00,2025-07-14 15:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.41 pips < 1.0 pips threshold),1.1683309999999998,1.1683716000000008
+2025-07-14 15:00:00+00:00,2025-07-14 15:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.27 pips < 1.0 pips threshold),1.1683400000000002,1.168366800000001
+2025-07-14 15:15:00+00:00,2025-07-14 15:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.21 pips < 1.0 pips threshold),1.168348,1.168369200000001
+2025-07-14 16:00:00+00:00,2025-07-14 16:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.67 pips < 1.0 pips threshold),1.1682710000000003,1.1683380000000005
+2025-07-14 16:15:00+00:00,2025-07-14 16:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1680810000000001,1.1683065000000006
+2025-07-14 16:30:00+00:00,2025-07-14 16:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.167886,1.1682764000000005
+2025-07-15 04:45:00+00:00,2025-07-15 05:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.22 pips < 1.0 pips threshold),1.167531,1.1675094999999995
+2025-07-15 05:00:00+00:00,2025-07-15 05:15:00+00:00,BUY,close_only,Closed existing short position,1.167633,1.1675093999999997
+2025-07-15 12:15:00+00:00,2025-07-15 12:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.53 pips < 1.0 pips threshold),1.1674980000000001,1.1675508
+2025-07-15 12:30:00+00:00,2025-07-15 12:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=27.85 < +DI=34.17, bullish trend)",1.1673660000000001,1.1675251999999998
+2025-07-15 12:45:00+00:00,2025-07-15 13:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.05 < +DI=33.72, bullish trend)",1.167349,1.1675114
+2025-07-15 13:00:00+00:00,2025-07-15 13:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=27.98 < +DI=28.76, bullish trend)",1.167244,1.1674934
+2025-07-15 13:15:00+00:00,2025-07-15 13:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1670789999999998,1.1674718
+2025-07-15 13:30:00+00:00,2025-07-15 13:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1667839999999998,1.1674342
+2025-07-15 13:45:00+00:00,2025-07-15 14:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1664929999999998,1.1673942
+2025-07-15 14:00:00+00:00,2025-07-15 14:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.166165,1.1673444
+2025-07-16 16:00:00+00:00,2025-07-16 16:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.161449,1.1609444999999996
+2025-07-16 16:15:00+00:00,2025-07-16 16:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.37 < -DI=21.38, bearish trend)",1.162086,1.1609658999999997
+2025-07-16 16:30:00+00:00,2025-07-16 16:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=14.88 < -DI=20.63, bearish trend)",1.1626889999999999,1.1609858999999996
+2025-07-16 16:45:00+00:00,2025-07-16 17:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.93 < -DI=20.33, bearish trend)",1.1633809999999998,1.1610164999999995
+2025-07-16 17:00:00+00:00,2025-07-16 17:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.1642100000000002,1.1610503999999997
+2025-07-16 17:15:00+00:00,2025-07-16 17:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.164788,1.1610935999999996
+2025-07-16 17:30:00+00:00,2025-07-16 17:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1650759999999998,1.1611392999999997
+2025-07-16 17:45:00+00:00,2025-07-16 18:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=19.04 < -DI=24.03, bearish trend)",1.1646389999999998,1.1611821999999996
+2025-07-16 18:00:00+00:00,2025-07-16 18:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.83 < -DI=25.31, bearish trend)",1.16412,1.1612235999999996
+2025-07-16 18:15:00+00:00,2025-07-16 18:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=14.00 < -DI=22.27, bearish trend)",1.164204,1.1612637999999997
+2025-07-16 18:30:00+00:00,2025-07-16 18:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=11.86 < -DI=23.95, bearish trend)",1.1640780000000002,1.1613044999999997
+2025-07-16 18:45:00+00:00,2025-07-16 19:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=7.60 < -DI=31.27, bearish trend)",1.1639960000000003,1.1613369999999998
+2025-07-16 19:00:00+00:00,2025-07-16 19:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=12.97 < -DI=26.21, bearish trend)",1.163942,1.1613655999999997
+2025-07-16 19:15:00+00:00,2025-07-16 19:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=20.20 < -DI=21.18, bearish trend)",1.1638490000000001,1.1613942999999998
+2025-07-16 19:30:00+00:00,2025-07-16 19:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1636289999999998,1.1614248999999999
+2025-07-16 19:45:00+00:00,2025-07-16 20:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.163482,1.1614588999999997
+2025-07-16 20:00:00+00:00,2025-07-16 20:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.163402,1.1614966
+2025-07-16 20:15:00+00:00,2025-07-16 20:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.163384,1.1615355
+2025-07-16 20:30:00+00:00,2025-07-16 20:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.163401,1.1615753
+2025-07-17 03:00:00+00:00,2025-07-17 03:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 1.0 pips threshold),1.162176,1.1621958
+2025-07-17 03:15:00+00:00,2025-07-17 03:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.77 pips < 1.0 pips threshold),1.162127,1.1622036
+2025-07-17 03:30:00+00:00,2025-07-17 03:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1620789999999999,1.1622124000000003
+2025-07-17 03:45:00+00:00,2025-07-17 04:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.04 < +DI=34.32, bullish trend)",1.162084,1.162222
+2025-07-17 04:00:00+00:00,2025-07-17 04:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=24.33 < +DI=25.06, bullish trend)",1.1620300000000001,1.1622285000000003
+2025-07-17 04:15:00+00:00,2025-07-17 04:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1619389999999998,1.1622346000000001
+2025-07-17 04:30:00+00:00,2025-07-17 04:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.41 < +DI=31.03, bullish trend)",1.161915,1.1622407000000001
+2025-07-17 04:45:00+00:00,2025-07-17 05:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=12.49 < +DI=37.15, bullish trend)",1.161929,1.1622556
+2025-07-17 05:00:00+00:00,2025-07-17 05:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=7.16 < +DI=32.22, bullish trend)",1.161966,1.1622703
+2025-07-17 05:15:00+00:00,2025-07-17 05:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.54 < +DI=26.87, bullish trend)",1.162039,1.1622837000000001
+2025-07-17 05:30:00+00:00,2025-07-17 05:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.162105,1.1622933000000002
+2025-07-17 05:45:00+00:00,2025-07-17 06:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.162084,1.1622963
+2025-07-17 06:00:00+00:00,2025-07-17 06:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.161997,1.1622853
+2025-07-17 06:15:00+00:00,2025-07-17 06:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1616380000000002,1.1622515
+2025-07-17 06:30:00+00:00,2025-07-17 06:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.161252,1.1622123
+2025-07-17 06:45:00+00:00,2025-07-17 07:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.160895,1.1621771
+2025-07-17 07:00:00+00:00,2025-07-17 07:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1605700000000003,1.1621446
+2025-07-17 07:15:00+00:00,2025-07-17 07:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=22.86 < +DI=24.31, bullish trend)",1.160238,1.1621144999999997
+2025-07-17 07:30:00+00:00,2025-07-17 07:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=21.12 < +DI=23.74, bullish trend)",1.159932,1.1620876999999998
+2025-07-17 23:00:00+00:00,2025-07-17 23:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.160391,1.1602883999999996
+2025-07-18 18:45:00+00:00,2025-07-18 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.56 pips < 1.0 pips threshold),1.162498,1.1625542999999994
+2025-07-18 19:00:00+00:00,2025-07-18 19:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.162344,1.1625876999999993
+2025-07-18 19:15:00+00:00,2025-07-18 19:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=75 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1622439999999998,1.1626191999999995
+2025-07-18 19:30:00+00:00,2025-07-18 19:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1621809999999997,1.1626545999999995
+2025-07-18 19:45:00+00:00,2025-07-18 20:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=13.07 < +DI=28.17, bullish trend)",1.1621689999999998,1.1626900999999996
+2025-07-18 20:00:00+00:00,2025-07-18 20:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=8.57 < +DI=33.94, bullish trend)",1.1622139999999999,1.1627317999999998
+2025-07-18 20:15:00+00:00,2025-07-18 20:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.53 < +DI=28.86, bullish trend)",1.162208,1.1627662999999995
+2025-07-18 20:30:00+00:00,2025-07-18 20:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.56 < +DI=26.98, bullish trend)",1.162245,1.1627984999999996
+2025-07-18 20:45:00+00:00,2025-07-18 21:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=20.57 < +DI=29.12, bullish trend)",1.162232,1.1628223999999994
+2025-07-20 21:15:00+00:00,2025-07-20 21:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.37 < +DI=26.73, bullish trend)",1.16233,1.1628555999999994
+2025-07-20 21:30:00+00:00,2025-07-20 21:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.64 < +DI=38.85, bullish trend)",1.1624430000000001,1.1628909999999997
+2025-07-20 21:45:00+00:00,2025-07-20 22:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=11.52 < +DI=35.46, bullish trend)",1.162603,1.1629299999999996
+2025-07-20 22:00:00+00:00,2025-07-20 22:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.162728,1.1629636999999997
+2025-07-20 22:15:00+00:00,2025-07-20 22:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.162823,1.1629955999999997
+2025-07-20 22:30:00+00:00,2025-07-20 22:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1628500000000002,1.1630241
+2025-07-20 22:45:00+00:00,2025-07-20 23:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=45 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1628510000000003,1.1630522999999997
+2025-07-20 23:00:00+00:00,2025-07-20 23:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=21.05 < +DI=26.16, bullish trend)",1.162861,1.1630806999999996
+2025-07-20 23:15:00+00:00,2025-07-20 23:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.54 < +DI=30.77, bullish trend)",1.1628979999999998,1.1631099999999996
+2025-07-20 23:30:00+00:00,2025-07-20 23:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=25.37 < +DI=27.15, bullish trend)",1.16296,1.1631353999999998
+2025-07-20 23:45:00+00:00,2025-07-21 00:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.20 < +DI=31.86, bullish trend)",1.1629489999999998,1.1631512999999998
+2025-07-21 00:00:00+00:00,2025-07-21 00:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.23 < +DI=30.58, bullish trend)",1.16298,1.1631704999999999
+2025-07-21 00:15:00+00:00,2025-07-21 00:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.162929,1.1631837999999999
+2025-07-21 00:30:00+00:00,2025-07-21 00:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.162848,1.1631892000000001
+2025-07-21 00:45:00+00:00,2025-07-21 01:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1627550000000002,1.1631908000000002
+2025-07-21 01:00:00+00:00,2025-07-21 01:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1627490000000003,1.1632002000000001
+2025-07-21 01:15:00+00:00,2025-07-21 01:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.162728,1.1632036000000001
+2025-07-21 06:45:00+00:00,2025-07-21 07:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.72 pips < 1.0 pips threshold),1.163362,1.1632895000000003
+2025-07-21 07:00:00+00:00,2025-07-21 07:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1635050000000002,1.1633144000000002
+2025-07-21 07:15:00+00:00,2025-07-21 07:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.163616,1.1633378000000003
+2025-07-23 10:45:00+00:00,2025-07-23 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 1.0 pips threshold),1.1732980000000002,1.1732985999999996
+2025-07-23 11:00:00+00:00,2025-07-23 11:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.1732069999999997,1.1733179999999994
+2025-07-23 11:15:00+00:00,2025-07-23 11:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1731399999999998,1.1733355999999997
+2025-07-23 11:30:00+00:00,2025-07-23 11:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.52 < +DI=22.41, bullish trend)",1.1731,1.1733615999999996
+2025-07-23 11:45:00+00:00,2025-07-23 12:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.83 < +DI=19.80, bullish trend)",1.173032,1.1733829999999996
+2025-07-23 12:00:00+00:00,2025-07-23 12:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.172944,1.1734089999999997
+2025-07-23 16:45:00+00:00,2025-07-23 17:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=60 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.174092,1.1739679
+2025-07-23 17:00:00+00:00,2025-07-23 17:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=75 > max=9, stoch_crossing_direction=bullish, required_direction=bullish)",1.174323,1.1739767999999997
+2025-07-23 17:15:00+00:00,2025-07-23 17:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.174559,1.1739789999999999
+2025-07-24 10:00:00+00:00,2025-07-24 10:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 1.0 pips threshold),1.175737,1.1757473000000003
+2025-07-24 10:15:00+00:00,2025-07-24 10:30:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.175608,1.1757615000000003
+2025-07-24 10:30:00+00:00,2025-07-24 10:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=30 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.175437,1.1757752000000004
+2025-07-24 10:45:00+00:00,2025-07-24 11:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=17.76 < +DI=21.76, bullish trend)",1.175278,1.1757875000000002
+2025-07-24 11:00:00+00:00,2025-07-24 11:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=10.97 < +DI=20.78, bullish trend)",1.1751200000000002,1.1758020000000002
+2025-07-24 11:15:00+00:00,2025-07-24 11:30:00+00:00,SELL,close_only,Closed existing long position,1.175017,1.1758200000000003
+2025-07-24 14:45:00+00:00,2025-07-24 15:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.87 pips < 1.0 pips threshold),1.1763879999999998,1.1763013
+2025-07-24 15:00:00+00:00,2025-07-24 15:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=14.49 < -DI=33.10, bearish trend)",1.176596,1.1763334999999997
+2025-07-24 17:00:00+00:00,2025-07-24 17:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.65 pips < 1.0 pips threshold),1.1765269999999999,1.1765922000000002
+2025-07-24 17:15:00+00:00,2025-07-24 17:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.62 pips < 1.0 pips threshold),1.176556,1.1766178999999999
+2025-07-24 17:45:00+00:00,2025-07-24 18:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 1.0 pips threshold),1.176659,1.1766601
+2025-07-24 18:00:00+00:00,2025-07-24 18:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.42 pips < 1.0 pips threshold),1.1766299999999998,1.1766724000000002
+2025-07-24 18:15:00+00:00,2025-07-24 18:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.40 pips < 1.0 pips threshold),1.176642,1.1766815000000002
+2025-07-24 18:30:00+00:00,2025-07-24 18:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.42 pips < 1.0 pips threshold),1.176648,1.1766903000000002
+2025-07-24 19:45:00+00:00,2025-07-24 20:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.46 pips < 1.0 pips threshold),1.1766379999999999,1.1766843000000002
+2025-07-24 20:00:00+00:00,2025-07-24 20:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.176479,1.1766715000000003
+2025-07-24 20:15:00+00:00,2025-07-24 20:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1763599999999999,1.1766567
+2025-07-25 19:45:00+00:00,2025-07-25 20:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.60 pips < 1.0 pips threshold),1.1741450000000002,1.1740852999999993
+2025-07-25 20:00:00+00:00,2025-07-25 20:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=12.59 < -DI=31.37, bearish trend)",1.174175,1.1740594999999994
+2025-07-25 20:15:00+00:00,2025-07-25 20:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=17.39 < -DI=25.92, bearish trend)",1.174198,1.1740328999999996
+2025-07-28 06:30:00+00:00,2025-07-28 06:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bars_since_stoch_crossing=15 > max=9, stoch_crossing_direction=bearish, required_direction=bearish)",1.173905,1.1741636000000006
+2025-07-28 06:45:00+00:00,2025-07-28 07:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=25.57 < +DI=26.35, bullish trend)",1.1736010000000001,1.1741399000000006
+2025-07-30 01:30:00+00:00,2025-07-30 01:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.36 pips < 1.0 pips threshold),1.1559540000000001,1.1559177999999999
+2025-07-30 01:45:00+00:00,2025-07-30 02:00:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=22.81 < -DI=26.63, bearish trend)",1.156102,1.1558883999999998
+2025-07-30 06:15:00+00:00,2025-07-30 06:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.38 pips < 1.0 pips threshold),1.155292,1.1553300999999998
+2025-07-30 06:30:00+00:00,2025-07-30 06:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.09 pips < 1.0 pips threshold),1.1552900000000002,1.1552987999999997
+2025-07-30 10:30:00+00:00,2025-07-30 10:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.56 pips < 1.0 pips threshold),1.155092,1.1551484000000003
+2025-07-30 10:45:00+00:00,2025-07-30 11:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.1549369999999999,1.1551042000000002

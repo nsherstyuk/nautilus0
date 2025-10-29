@@ -6,9 +6,15 @@ buy/sell signals on crossovers.
 """
 from __future__ import annotations
 
+from dataclasses import field
 from datetime import datetime, timezone
+try:
+    from zoneinfo import ZoneInfo  # Python 3.9+
+except Exception:  # pragma: no cover - zoneinfo may be unavailable on some runtimes
+    ZoneInfo = None  # type: ignore
 from decimal import Decimal
-from typing import Optional, List, Dict, Any, Tuple, cast
+from typing import Optional, List, Dict, Any, Tuple, Set, cast
+from collections import deque
 
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.trading.strategy import Strategy
@@ -47,6 +53,8 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     trailing_stop_activation_pips: int = 20
     trailing_stop_distance_pips: int = 15
     crossover_threshold_pips: float = 0.7
+    pre_crossover_separation_pips: float = 0.0  # Minimum separation (pips) required BEFORE crossing for valid signal; 0.0 = disabled
+    pre_crossover_lookback_bars: int = 1  # Number of bars to look back for pre-crossover separation check; 1 = immediate previous bar only
     dmi_enabled: bool = True
     dmi_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
     dmi_period: int = 14
@@ -56,6 +64,15 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     stoch_period_d: int = 3
     stoch_bullish_threshold: int = 30
     stoch_bearish_threshold: int = 70
+    stoch_max_bars_since_crossing: int = 5
+    # Time filter configuration
+    time_filter_enabled: bool = False
+    trading_hours_start: int = 0
+    trading_hours_end: int = 23
+    trading_hours_timezone: str = "UTC"
+    excluded_hours: List[int] = field(default_factory=list)  # List of hours (0-23) to exclude from trading, checked before start/end range
+    use_limit_orders: bool = False
+    limit_order_timeout_bars: int = 10
 
 
 class MovingAverageCrossover(Strategy):
@@ -77,6 +94,8 @@ class MovingAverageCrossover(Strategy):
         self.trade_size: Decimal = Decimal(str(config.trade_size))
         self._prev_fast: Optional[Decimal] = None
         self._prev_slow: Optional[Decimal] = None
+        # Initialize MA history buffer for pre-crossover separation check
+        self._ma_history: deque = deque(maxlen=config.pre_crossover_lookback_bars)
         self.instrument = None
         self._rejected_signals: List[Dict[str, Any]] = []
         self._enforce_position_limit = config.enforce_position_limit
@@ -112,6 +131,7 @@ class MovingAverageCrossover(Strategy):
         self._position_entry_price: Optional[Decimal] = None
         self._trailing_active: bool = False
         self._last_stop_price: Optional[Decimal] = None
+        self._excluded_hours_set: Set[int] = set()
 
     @property
     def cfg(self) -> MovingAverageCrossoverConfig:
@@ -158,6 +178,49 @@ class MovingAverageCrossover(Strategy):
             self.log.info(f"Stochastic filter enabled: subscribed to {self.stoch_bar_type} (period_k={self.cfg.stoch_period_k}, period_d={self.cfg.stoch_period_d}, bullish_threshold={self.cfg.stoch_bullish_threshold}, bearish_threshold={self.cfg.stoch_bearish_threshold})")
         else:
             self.log.info("Stochastic filter disabled")
+        
+        # Normalize excluded_hours: cast to int, filter to 0-23, remove duplicates
+        try:
+            raw_excluded = list(self.cfg.excluded_hours or [])
+        except Exception:
+            raw_excluded = []
+        normalized_list: List[int] = []
+        seen: Set[int] = set()
+        discarded: List[Any] = []
+        for item in raw_excluded:
+            try:
+                hour = int(item)
+            except Exception:
+                discarded.append(item)
+                continue
+            if 0 <= hour <= 23:
+                if hour not in seen:
+                    normalized_list.append(hour)
+                    seen.add(hour)
+                else:
+                    discarded.append(item)
+            else:
+                discarded.append(hour)
+        self._excluded_hours_set = set(normalized_list)
+        try:
+            self.cfg.excluded_hours = normalized_list
+        except Exception:
+            # Config may be immutable; proceed with normalized instance state only
+            pass
+        if discarded:
+            self.log.warning(
+                f"Excluded hours normalization discarded {len(discarded)} value(s): {discarded}. Using {normalized_list}"
+            )
+
+        # Time filter configuration logging
+        if self.cfg.time_filter_enabled:
+            self.log.info(
+                f"Time filter enabled: trading hours {self.cfg.trading_hours_start}-{self.cfg.trading_hours_end} {self.cfg.trading_hours_timezone}"
+            )
+            if self._excluded_hours_set:
+                self.log.info(f"Excluded hours: {sorted(self._excluded_hours_set)} {self.cfg.trading_hours_timezone}")
+        else:
+            self.log.info("Time filter disabled")
 
     def _current_position(self) -> Optional[Position]:
         """Get the current open position for this instrument."""
@@ -231,6 +294,127 @@ class MovingAverageCrossover(Strategy):
             )
             return False
         return True
+
+    def _check_pre_crossover_separation(self, direction: str, bar: Bar) -> bool:
+        """Check if moving averages were sufficiently separated before crossing.
+        
+        Args:
+            direction: "BUY" for bullish crossover, "SELL" for bearish crossover
+            bar: Current bar for logging context
+            
+        Returns:
+            True if pre-crossover separation is valid, False otherwise
+        """
+        # Skip check if disabled (threshold is 0)
+        if self.cfg.pre_crossover_separation_pips <= 0:
+            return True
+            
+        pip_value = self._calculate_pip_value()
+        threshold_pips = Decimal(str(self.cfg.pre_crossover_separation_pips))
+        threshold_price = threshold_pips * pip_value
+        
+        # Check if we have enough history
+        if len(self._ma_history) == 0:
+            self._log_rejected_signal(
+                direction,
+                "pre_crossover_separation_insufficient_history (no MA history available)",
+                bar,
+            )
+            return False
+        
+        # Iterate through history buffer in reverse order (most recent first)
+        max_separation = Decimal('0')
+        for fast_ma, slow_ma in reversed(self._ma_history):
+            # Check direction validity
+            if direction == "BUY":
+                # For bullish crossover, fast_ma must be below slow_ma
+                if fast_ma >= slow_ma:
+                    continue
+            elif direction == "SELL":
+                # For bearish crossover, fast_ma must be above slow_ma
+                if fast_ma <= slow_ma:
+                    continue
+            
+            # Calculate separation
+            separation = abs(fast_ma - slow_ma)
+            max_separation = max(max_separation, separation)
+            
+            # Check if separation meets threshold
+            if separation >= threshold_price:
+                self.log.debug(f"Pre-crossover separation found: {separation} >= {threshold_price} for {direction}")
+                return True
+        
+        # No bar in lookback window met the threshold
+        max_separation_pips = max_separation / pip_value
+        self._log_rejected_signal(
+            direction,
+            f"pre_crossover_separation_insufficient (max separation={max_separation_pips:.2f} pips < {threshold_pips} pips threshold in {len(self._ma_history)} bars)",
+            bar,
+        )
+        return False
+
+    def _check_time_filter(self, direction: str, bar: Bar) -> bool:
+        """Validate bar time against configured trading hours.
+        
+        Returns True if filter passes or is disabled; False when outside trading window.
+        """
+        if not self.cfg.time_filter_enabled:
+            return True
+
+        try:
+            ts_dt_utc = datetime.fromtimestamp(bar.ts_event / 1_000_000_000, tz=timezone.utc)
+
+            # Resolve timezone; if ZoneInfo unavailable, fail-open
+            if ZoneInfo is None:
+                self.log.error("ZoneInfo not available; skipping time filter and allowing trade")
+                return True
+
+            local_dt = ts_dt_utc.astimezone(ZoneInfo(self.cfg.trading_hours_timezone))
+            bar_hour = local_dt.hour
+            # First, check excluded hours (more specific)
+            if self._excluded_hours_set and bar_hour in self._excluded_hours_set:
+                self._log_rejected_signal(
+                    direction,
+                    f"time_filter_excluded_hour (bar_hour={bar_hour} in excluded hours {sorted(self._excluded_hours_set)} {self.cfg.trading_hours_timezone})",
+                    bar,
+                )
+                return False
+            # Validate trading hour bounds and types; fail-open with warning on invalid
+            try:
+                start = int(self.cfg.trading_hours_start)
+                end = int(self.cfg.trading_hours_end)
+            except Exception:
+                self.log.warning(
+                    f"Invalid trading hours configuration: start={self.cfg.trading_hours_start}, end={self.cfg.trading_hours_end}; allowing trade by default"
+                )
+                return True
+
+            if not (0 <= start <= 23) or not (0 <= end <= 23):
+                self.log.warning(
+                    f"Trading hours out of range: start={start}, end={end}; expected 0-23. Allowing trade by default"
+                )
+                return True
+
+            # Inclusive window check with overnight support (wrap-around when start > end)
+            if start <= end:
+                in_window = start <= bar_hour <= end
+            else:
+                # Window spans midnight: valid if hour >= start or hour <= end
+                in_window = bar_hour >= start or bar_hour <= end
+
+            if in_window:
+                return True
+
+            self._log_rejected_signal(
+                direction,
+                f"time_filter_outside_hours (bar_hour={bar_hour} outside {start}-{end} {self.cfg.trading_hours_timezone})",
+                bar,
+            )
+            return False
+        except Exception as exc:
+            # Fail-open on any unexpected error
+            self.log.error(f"Time filter error: {exc}; allowing trade by default")
+            return True
 
     def _check_dmi_trend(self, direction: str, bar: Bar) -> bool:
         """Check if DMI trend aligns with crossover direction.
@@ -517,6 +701,9 @@ class MovingAverageCrossover(Strategy):
             # Initialize previous values and wait for full warmup
             self._prev_fast = fast
             self._prev_slow = slow
+            # Append MA values to history if both are not None so next bar has at least one prior MA sample
+            if fast is not None and slow is not None:
+                self._ma_history.append((fast, slow))
             return
 
         # Detect crossovers
@@ -534,6 +721,9 @@ class MovingAverageCrossover(Strategy):
             # Check crossover magnitude against threshold
             if not self._check_crossover_threshold("BUY", fast, slow, bar):
                 # Do NOT update prev_* here; just return
+                return
+            # Check trading hours window
+            if not self._check_time_filter("BUY", bar):
                 return
             # Check DMI trend alignment
             if not self._check_dmi_trend("BUY", bar):
@@ -621,6 +811,9 @@ class MovingAverageCrossover(Strategy):
             if not self._check_crossover_threshold("SELL", fast, slow, bar):
                 # Do NOT update prev_* here; just return
                 return
+            # Check trading hours window
+            if not self._check_time_filter("SELL", bar):
+                return
             # Check DMI trend alignment
             if not self._check_dmi_trend("SELL", bar):
                 return
@@ -704,6 +897,10 @@ class MovingAverageCrossover(Strategy):
         # Update previous values
         self._prev_fast = fast
         self._prev_slow = slow
+        
+        # Append MA values to history buffer for pre-crossover separation check
+        if fast is not None and slow is not None:
+            self._ma_history.append((fast, slow))
 
     def on_stop(self) -> None:
         # Cleanup: cancel orders and close positions
@@ -717,6 +914,10 @@ class MovingAverageCrossover(Strategy):
         self._prev_fast = None
         self._prev_slow = None
         self._rejected_signals.clear()
+        
+        # Clear MA history buffer
+        self._ma_history.clear()
+        self.log.debug("MA history buffer cleared")
         
         # Reset trailing stop state
         self._current_stop_order = None

@@ -1,0 +1,1452 @@
+2025-10-27 19:02:57,815 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:02:57,816 - live - INFO - Starting live trading system...
+2025-10-27 19:02:57,816 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:02:57,820 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:02:57,820 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:02:57,821 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:02:57,822 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-27 19:07:27,749 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:07:27,750 - live - INFO - Starting live trading system...
+2025-10-27 19:07:27,750 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:07:27,754 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:07:27,754 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:07:27,754 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:07:27,754 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-27 19:07:27,755 - live - INFO - Resolved IBKR market data type enum: REALTIME
+2025-10-27 19:07:27,755 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-10-27 19:07:27,755 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-10-27 19:07:46,360 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:07:46,361 - live - INFO - Starting live trading system...
+2025-10-27 19:07:46,361 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:07:46,366 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:07:46,366 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:07:46,366 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:07:46,367 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-27 19:07:46,367 - live - INFO - Resolved IBKR market data type enum: REALTIME
+2025-10-27 19:07:46,367 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-10-27 19:07:46,367 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-10-27 19:08:59,524 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:08:59,525 - live - INFO - Starting live trading system...
+2025-10-27 19:08:59,525 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:08:59,529 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:08:59,529 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:08:59,530 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:08:59,530 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-27 19:08:59,530 - live - INFO - Resolved IBKR market data type enum: REALTIME
+2025-10-27 19:08:59,530 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-10-27 19:08:59,530 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-10-27 19:14:47,751 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:14:47,751 - live - INFO - Starting live trading system...
+2025-10-27 19:14:47,752 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:14:47,757 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:14:47,757 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:14:47,758 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:14:47,758 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-27 19:14:47,758 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-27 19:14:47,758 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-10-27 19:14:47,758 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-10-27 19:27:51,895 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:27:51,895 - live - INFO - Starting live trading system...
+2025-10-27 19:27:51,896 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:27:51,900 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:27:51,900 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:27:51,900 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:27:51,900 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-27 19:27:51,901 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-27 19:27:51,901 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-10-27 19:27:51,901 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-10-27 19:28:44,860 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:28:44,860 - live - INFO - Starting live trading system...
+2025-10-27 19:28:44,861 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:28:44,865 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:28:44,866 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:28:44,866 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:28:44,866 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-27 19:28:44,866 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-27 19:28:44,866 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-10-27 19:28:44,866 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-10-27 19:33:13,604 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:33:13,605 - live - INFO - Starting live trading system...
+2025-10-27 19:33:13,605 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:33:13,609 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:33:13,609 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:33:13,610 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:33:13,610 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-27 19:33:13,610 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-27 19:33:13,610 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-10-27 19:33:13,610 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-10-27 19:35:29,188 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:35:29,188 - live - INFO - Starting live trading system...
+2025-10-27 19:35:29,189 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:35:29,193 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:35:29,193 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:35:29,193 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:35:29,193 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-27 19:35:29,194 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-27 19:35:29,194 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-10-27 19:35:29,194 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-10-27 19:41:29,213 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:41:29,213 - live - INFO - Starting live trading system...
+2025-10-27 19:41:29,214 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:41:29,219 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:41:29,220 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:41:29,220 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:41:29,220 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-27 19:41:29,220 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-27 19:41:29,220 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-10-27 19:41:29,221 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-10-27 19:42:12,053 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 19:42:12,053 - live - INFO - Starting live trading system...
+2025-10-27 19:42:12,054 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 19:42:12,058 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=42 slow=270 trade_size=100000
+2025-10-27 19:42:12,058 - live - INFO - Phase 6 parameters: SL=35 TP=50 TrailAct=22 TrailDist=12 CrossThresh=0.35 DMI=enabled(period=10) Stoch=enabled(K=19,D=3)
+2025-10-27 19:42:12,058 - live - INFO - Time filter: disabled (hours=0-23 UTC)
+2025-10-27 19:42:12,058 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-27 19:42:12,058 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-27 19:42:12,058 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-10-27 19:42:12,058 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-10-27 20:00:24,334 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 20:00:24,334 - live - INFO - Starting live trading system...
+2025-10-27 20:00:24,335 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 20:00:24,339 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-27 20:00:24,339 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-27 20:00:24,340 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-27 20:00:24,340 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=10 account=DU123456 market_data_type=REALTIME
+2025-10-27 20:00:24,340 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-27 20:11:12,286 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 20:11:12,286 - live - INFO - Starting live trading system...
+2025-10-27 20:11:12,287 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 20:11:12,294 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-27 20:11:12,294 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-27 20:11:12,294 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-27 20:11:12,294 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=10 account=DU123456 market_data_type=REALTIME
+2025-10-27 20:11:12,294 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-27 20:35:19,512 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 20:35:19,512 - live - INFO - Starting live trading system...
+2025-10-27 20:35:19,512 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 20:35:19,517 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-27 20:35:19,518 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-27 20:35:19,518 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-27 20:35:19,518 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=10 account=DU123456 market_data_type=REALTIME
+2025-10-27 20:35:19,518 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-27 20:39:57,604 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 20:39:57,605 - live - INFO - Starting live trading system...
+2025-10-27 20:39:57,605 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 20:39:57,611 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-27 20:39:57,612 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-27 20:39:57,612 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-27 20:39:57,612 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-27 20:39:57,613 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-27 20:42:43,756 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 20:42:43,756 - live - INFO - Starting live trading system...
+2025-10-27 20:42:43,756 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 20:42:43,761 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-27 20:42:43,761 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-27 20:42:43,761 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-27 20:42:43,762 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-27 20:42:43,762 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-27 20:46:55,504 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 20:46:55,504 - live - INFO - Starting live trading system...
+2025-10-27 20:46:55,504 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 20:46:55,509 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-27 20:46:55,509 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-27 20:46:55,510 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-27 20:46:55,510 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-27 20:46:55,510 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-27 21:05:45,235 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 21:05:45,236 - live - INFO - Starting live trading system...
+2025-10-27 21:05:45,236 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 21:05:45,241 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-27 21:05:45,241 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-27 21:05:45,241 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-27 21:05:45,241 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-27 21:05:45,242 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-27 21:13:06,095 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-27 21:13:06,095 - live - INFO - Starting live trading system...
+2025-10-27 21:13:06,096 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-27 21:13:06,102 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-27 21:13:06,103 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-27 21:13:06,104 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-27 21:13:06,104 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-27 21:13:06,104 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 08:52:23,443 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 08:52:23,445 - live - INFO - Starting live trading system...
+2025-10-28 08:52:23,446 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 08:52:23,451 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 08:52:23,452 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 08:52:23,452 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 08:52:23,453 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 08:52:23,453 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 08:55:43,861 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 08:55:43,862 - live - INFO - Starting live trading system...
+2025-10-28 08:55:43,862 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 08:55:43,867 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 08:55:43,868 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 08:55:43,868 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 08:55:43,868 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 08:55:43,869 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 19:13:29,878 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 19:13:29,879 - live - INFO - Starting live trading system...
+2025-10-28 19:13:29,880 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 19:13:29,896 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 19:13:29,896 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 19:13:29,897 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 19:13:29,898 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 19:13:29,898 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 20:59:26,492 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 20:59:26,492 - live - INFO - Starting live trading system...
+2025-10-28 20:59:26,493 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 20:59:26,498 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 20:59:26,498 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 20:59:26,498 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 20:59:26,499 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 20:59:26,499 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 21:31:46,227 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 21:31:46,228 - live - INFO - Starting live trading system...
+2025-10-28 21:31:46,228 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 21:31:46,234 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 21:31:46,234 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 21:31:46,234 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 21:31:46,234 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 21:31:46,234 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 21:35:37,853 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 21:35:37,854 - live - INFO - Starting live trading system...
+2025-10-28 21:35:37,854 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 21:35:37,859 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 21:35:37,860 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 21:35:37,860 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 21:35:37,860 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 21:35:37,860 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 21:37:48,396 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 21:37:48,397 - live - INFO - Starting live trading system...
+2025-10-28 21:37:48,397 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 21:37:48,402 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 21:37:48,402 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 21:37:48,402 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 21:37:48,403 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 21:37:48,403 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 21:39:24,187 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 21:39:24,187 - live - INFO - Starting live trading system...
+2025-10-28 21:39:24,188 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 21:39:24,193 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 21:39:24,194 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 21:39:24,194 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 21:39:24,194 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 21:39:24,194 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 21:41:22,121 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 21:41:22,121 - live - INFO - Starting live trading system...
+2025-10-28 21:41:22,122 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 21:41:22,127 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 21:41:22,127 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 21:41:22,127 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 21:41:22,127 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 21:41:22,127 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 21:41:22,472 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-10-28 21:41:22,473 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-10-28 21:41:22,473 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-10-28 21:41:29,619 - live - WARNING - Signal 2 received. Initiating shutdown...
+2025-10-28 21:58:52,546 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 21:58:52,547 - live - INFO - Starting live trading system...
+2025-10-28 21:58:52,547 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 21:58:52,552 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 21:58:52,553 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 21:58:52,553 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 21:58:52,553 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 21:58:52,553 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 21:58:53,926 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-10-28 21:58:53,927 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-10-28 21:58:53,927 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-10-28 21:59:23,934 - live - INFO - Live trading node built successfully. Starting...
+2025-10-28 21:59:23,946 - live - WARNING - Falling back to Phase 6 rank 1 as benchmark (no explicit match found).
+2025-10-28 21:59:23,947 - live - INFO - Performance monitor created. Monitoring interval: 60 seconds
+2025-10-28 21:59:23,947 - live - INFO - Performance monitor initialized. Metrics will be saved to: logs/live/performance_metrics.json
+2025-10-28 21:59:23,947 - live - INFO - Starting performance monitoring loop (interval=60s, metrics=logs/live/performance_metrics.json)...
+2025-10-28 21:59:23,949 - live - INFO - Performance metrics file initialized at logs/live/performance_metrics.json
+2025-10-28 21:59:23,986 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-28 21:59:23,994 - live - INFO - Stopping performance monitor
+2025-10-28 21:59:23,994 - live - INFO - Performance monitoring stopped.
+2025-10-28 21:59:23,994 - live - INFO - Stopping performance monitor
+2025-10-28 21:59:23,995 - live - INFO - Performance monitor stopped.
+2025-10-28 21:59:29,026 - live - INFO - Live trading system stopped.
+2025-10-28 22:05:25,866 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 22:05:25,866 - live - INFO - Starting live trading system...
+2025-10-28 22:05:25,866 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 22:05:25,872 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 22:05:25,872 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 22:05:25,872 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 22:05:25,872 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-10-28 22:05:25,872 - live - INFO - Resolved IBKR market data type: name=4 value=4
+2025-10-28 22:05:26,251 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-10-28 22:05:26,252 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-10-28 22:05:26,252 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-10-28 22:05:56,254 - live - INFO - Live trading node built successfully. Starting...
+2025-10-28 22:05:56,256 - live - WARNING - Falling back to Phase 6 rank 1 as benchmark (no explicit match found).
+2025-10-28 22:05:56,257 - live - INFO - Performance monitor created. Monitoring interval: 60 seconds
+2025-10-28 22:05:56,257 - live - INFO - Performance monitor initialized. Metrics will be saved to: logs/live/performance_metrics.json
+2025-10-28 22:05:56,258 - live - INFO - Starting performance monitoring loop (interval=60s, metrics=logs/live/performance_metrics.json)...
+2025-10-28 22:05:56,262 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-28 22:05:56,265 - live - INFO - Stopping performance monitor
+2025-10-28 22:05:56,266 - live - INFO - Performance monitoring stopped.
+2025-10-28 22:05:56,266 - live - INFO - Stopping performance monitor
+2025-10-28 22:05:56,267 - live - INFO - Performance monitor stopped.
+2025-10-28 22:06:01,296 - live - INFO - Live trading system stopped.
+2025-10-28 22:06:32,131 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 22:06:32,131 - live - INFO - Starting live trading system...
+2025-10-28 22:06:32,131 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 22:06:32,137 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 22:06:32,137 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 22:06:32,138 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 22:06:32,138 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-28 22:06:32,138 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-28 22:06:32,494 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-10-28 22:06:32,495 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-10-28 22:06:32,495 - live - INFO - Auto-stop enabled: stopping node after 60 seconds
+2025-10-28 22:06:32,495 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-10-28 22:07:02,500 - live - INFO - Live trading node built successfully. Starting...
+2025-10-28 22:07:02,501 - live - WARNING - Falling back to Phase 6 rank 1 as benchmark (no explicit match found).
+2025-10-28 22:07:02,501 - live - INFO - Performance monitor created. Monitoring interval: 60 seconds
+2025-10-28 22:07:02,501 - live - INFO - Performance monitor initialized. Metrics will be saved to: logs/live/performance_metrics.json
+2025-10-28 22:07:02,502 - live - INFO - Starting performance monitoring loop (interval=60s, metrics=logs/live/performance_metrics.json)...
+2025-10-28 22:07:02,504 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-28 22:07:02,505 - live - INFO - Stopping performance monitor
+2025-10-28 22:07:02,505 - live - INFO - Performance monitoring stopped.
+2025-10-28 22:07:02,505 - live - INFO - Stopping performance monitor
+2025-10-28 22:07:02,505 - live - INFO - Performance monitor stopped.
+2025-10-28 22:07:07,528 - live - INFO - Live trading system stopped.
+2025-10-28 22:10:15,224 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 22:10:15,224 - live - INFO - Starting live trading system...
+2025-10-28 22:10:15,224 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 22:10:15,230 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 22:10:15,230 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 22:10:15,230 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 22:10:15,230 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-28 22:10:15,230 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-28 22:10:15,651 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-10-28 22:10:15,651 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-10-28 22:10:15,651 - live - INFO - Auto-stop enabled: stopping node after 60 seconds
+2025-10-28 22:10:15,652 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-10-28 22:10:45,654 - live - INFO - Live trading node built successfully. Starting...
+2025-10-28 22:10:45,655 - live - WARNING - Falling back to Phase 6 rank 1 as benchmark (no explicit match found).
+2025-10-28 22:10:45,656 - live - INFO - Performance monitor created. Monitoring interval: 60 seconds
+2025-10-28 22:10:45,656 - live - INFO - Performance monitor initialized. Metrics will be saved to: logs/live/performance_metrics.json
+2025-10-28 22:10:45,656 - live - INFO - Starting performance monitoring loop (interval=60s, metrics=logs/live/performance_metrics.json)...
+2025-10-28 22:10:45,659 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-28 22:10:45,660 - live - INFO - Stopping performance monitor
+2025-10-28 22:10:45,661 - live - INFO - Performance monitoring stopped.
+2025-10-28 22:10:45,661 - live - INFO - Stopping performance monitor
+2025-10-28 22:10:45,661 - live - INFO - Performance monitor stopped.
+2025-10-28 22:10:50,690 - live - INFO - Live trading system stopped.
+2025-10-28 22:15:20,345 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 22:15:20,346 - live - INFO - Starting live trading system...
+2025-10-28 22:15:20,346 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 22:15:20,351 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 22:15:20,352 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 22:15:20,352 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 22:15:20,352 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-28 22:15:20,352 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-28 22:15:20,666 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-10-28 22:15:20,666 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-10-28 22:15:20,666 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-10-28 22:15:50,680 - live - INFO - Live trading node built successfully. Starting...
+2025-10-28 22:15:50,682 - live - WARNING - Falling back to Phase 6 rank 1 as benchmark (no explicit match found).
+2025-10-28 22:15:50,682 - live - INFO - Performance monitor created. Monitoring interval: 60 seconds
+2025-10-28 22:15:50,682 - live - INFO - Performance monitor initialized. Metrics will be saved to: logs/live/performance_metrics.json
+2025-10-28 22:15:50,683 - live - INFO - Starting performance monitoring loop (interval=60s, metrics=logs/live/performance_metrics.json)...
+2025-10-28 22:15:50,685 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-28 22:15:50,686 - live - INFO - Stopping performance monitor
+2025-10-28 22:15:50,687 - live - INFO - Performance monitoring stopped.
+2025-10-28 22:15:50,687 - live - INFO - Stopping performance monitor
+2025-10-28 22:15:50,687 - live - INFO - Performance monitor stopped.
+2025-10-28 22:15:55,715 - live - INFO - Live trading system stopped.
+2025-10-28 22:50:42,068 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-28 22:50:42,069 - live - INFO - Starting live trading system...
+2025-10-28 22:50:42,069 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-28 22:50:42,074 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-28 22:50:42,074 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-28 22:50:42,074 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-28 22:50:42,074 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-28 22:50:42,074 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-28 22:50:42,370 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-10-28 22:50:42,370 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-10-28 22:50:42,370 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-10-28 22:51:12,374 - live - INFO - Live trading node built successfully. Starting...
+2025-10-28 22:51:12,376 - live - WARNING - Falling back to Phase 6 rank 1 as benchmark (no explicit match found).
+2025-10-28 22:51:12,376 - live - INFO - Performance monitor created. Monitoring interval: 60 seconds
+2025-10-28 22:51:12,376 - live - INFO - Performance monitor initialized. Metrics will be saved to: logs/live/performance_metrics.json
+2025-10-28 22:51:12,377 - live - INFO - Starting performance monitoring loop (interval=60s, metrics=logs/live/performance_metrics.json)...
+2025-10-28 22:51:12,380 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-28 22:51:12,381 - live - INFO - Stopping performance monitor
+2025-10-28 22:51:12,381 - live - INFO - Performance monitoring stopped.
+2025-10-28 22:51:12,381 - live - INFO - Stopping performance monitor
+2025-10-28 22:51:12,381 - live - INFO - Performance monitor stopped.
+2025-10-28 22:51:17,408 - live - INFO - Live trading system stopped.
+2025-10-29 07:50:59,631 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-10-29 07:50:59,632 - live - INFO - Starting live trading system...
+2025-10-29 07:50:59,632 - live - INFO - Performance monitoring: enabled (interval=60s)
+2025-10-29 07:50:59,640 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=1-MINUTE-MID-EXTERNAL fast=10 slow=50 trade_size=100000
+2025-10-29 07:50:59,640 - live - INFO - Phase 6 parameters: SL=25 TP=50 TrailAct=20 TrailDist=15 CrossThresh=0.0 DMI=disabled Stoch=disabled
+2025-10-29 07:50:59,640 - live - INFO - Time filter: disabled (hours=8-16 UTC)
+2025-10-29 07:50:59,641 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=REALTIME
+2025-10-29 07:50:59,641 - live - INFO - Resolved IBKR market data type: name=1 value=1
+2025-10-29 07:51:00,410 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-10-29 07:51:00,410 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-10-29 07:51:00,410 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-10-29 07:51:17,537 - live - WARNING - Signal 2 received. Initiating shutdown...
+2025-10-29 07:51:30,421 - live - INFO - Live trading node built successfully. Starting...
+2025-10-29 07:51:30,444 - live - WARNING - Falling back to Phase 6 rank 1 as benchmark (no explicit match found).
+2025-10-29 07:51:30,445 - live - INFO - Performance monitor created. Monitoring interval: 60 seconds
+2025-10-29 07:51:30,446 - live - INFO - Performance monitor initialized. Metrics will be saved to: logs/live/performance_metrics.json
+2025-10-29 07:51:30,447 - live - INFO - Starting performance monitoring loop (interval=60s, metrics=logs/live/performance_metrics.json)...
+2025-10-29 07:51:30,467 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 07:52:30,499 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 07:53:30,520 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 07:54:30,529 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 07:55:30,539 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 07:56:30,546 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 07:57:30,560 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 07:58:30,580 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 07:59:30,589 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:00:30,610 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:01:30,629 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:02:30,651 - live - INFO - Performance snapshot: PnL=$-2.33, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:03:30,670 - live - INFO - Performance snapshot: PnL=$-2.33, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:04:30,684 - live - INFO - Performance snapshot: PnL=$-2.33, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:05:30,694 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:05:30,694 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:05:30,695 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:06:30,705 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:06:30,705 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:06:30,706 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:07:30,725 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:07:30,726 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:07:30,726 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:08:30,738 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:08:30,738 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:08:30,739 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:09:30,749 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:09:30,749 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:09:30,750 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:10:30,765 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:10:30,768 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:10:30,768 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:11:30,783 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:11:30,783 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:11:30,783 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:12:30,799 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:12:30,800 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:12:30,800 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:13:30,813 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:13:30,813 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:13:30,814 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:14:30,838 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:14:30,839 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:14:30,839 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:15:30,847 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:15:30,848 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:15:30,848 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:16:30,870 - live - INFO - Performance snapshot: PnL=$-0.66, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:16:30,871 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-0.66) is 100% below expected-to-date ($187.23)
+2025-10-29 08:16:30,871 - live - WARNING - Total performance alerts: 1
+2025-10-29 08:17:30,882 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:18:30,889 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:19:30,905 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:20:30,922 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:21:30,939 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:22:30,948 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:23:30,952 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:24:30,965 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:25:30,984 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:26:30,998 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:27:31,006 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:28:31,027 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:29:31,048 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:30:31,059 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:31:31,071 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:32:31,080 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:33:31,102 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:34:31,113 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:35:31,127 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:36:31,141 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:37:31,155 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:38:31,164 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:39:31,184 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:40:31,197 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:41:31,220 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:42:31,241 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:43:31,256 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:44:31,267 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:45:31,278 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:46:31,296 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:47:31,311 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:48:31,334 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:49:31,343 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:50:31,354 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:51:31,376 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:52:31,394 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:53:31,410 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:54:31,433 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:55:31,446 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:56:31,456 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:57:31,475 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:58:31,497 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 08:59:31,526 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:00:31,548 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:01:31,571 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:02:31,591 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:03:31,603 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:04:31,628 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:05:31,640 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:06:31,663 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:07:31,689 - live - INFO - Performance snapshot: PnL=$-2.99, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:08:31,712 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:08:31,713 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:08:31,713 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:09:31,726 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:09:31,727 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:09:31,727 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:10:31,773 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:10:31,773 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:10:31,774 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:11:31,791 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:11:31,792 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:11:31,792 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:12:31,816 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:12:31,816 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:12:31,817 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:13:31,839 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:13:31,841 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:13:31,841 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:14:31,852 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:14:31,853 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:14:31,853 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:15:31,871 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:15:31,872 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:15:31,872 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:16:31,891 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:16:31,892 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:16:31,892 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:17:31,906 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:17:31,906 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:17:31,907 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:18:31,920 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:18:31,920 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:18:31,920 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:19:31,942 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:19:31,942 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:19:31,943 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:20:31,964 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:20:31,964 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:20:31,965 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:21:31,987 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:21:31,988 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:21:31,988 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:22:32,006 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:22:32,007 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:22:32,007 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:23:32,024 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:23:32,025 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:23:32,025 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:24:32,045 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:24:32,046 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:24:32,046 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:25:32,074 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:25:32,075 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:25:32,075 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:26:32,084 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:26:32,084 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:26:32,084 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:27:32,104 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:27:32,104 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:27:32,104 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:28:32,121 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:28:32,122 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:28:32,122 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:29:32,136 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:29:32,137 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:29:32,137 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:30:32,145 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:30:32,145 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:30:32,145 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:31:32,160 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:31:32,161 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:31:32,161 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:32:32,174 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:32:32,175 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:32:32,175 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:33:32,195 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:33:32,196 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:33:32,196 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:34:32,214 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:34:32,215 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:34:32,215 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:35:32,228 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:35:32,229 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:35:32,229 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:36:32,245 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:36:32,245 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:36:32,246 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:37:32,258 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:37:32,259 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:37:32,259 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:38:32,284 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:38:32,284 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:38:32,285 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:39:32,307 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:39:32,307 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:39:32,308 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:40:32,317 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:40:32,317 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:40:32,317 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:41:32,338 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:41:32,339 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:41:32,339 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:42:32,361 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:42:32,362 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:42:32,362 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:43:32,385 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:43:32,385 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:43:32,385 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:44:32,410 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:44:32,411 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:44:32,411 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:45:32,426 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:45:32,428 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:45:32,428 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:46:32,453 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:46:32,454 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:46:32,454 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:47:32,474 - live - INFO - Performance snapshot: PnL=$44.68, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:47:32,474 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($44.68) is 76% below expected-to-date ($187.23)
+2025-10-29 09:47:32,474 - live - WARNING - Total performance alerts: 1
+2025-10-29 09:48:32,490 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:49:32,502 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:50:32,521 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:51:32,539 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:52:32,559 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:53:32,578 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:54:32,597 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:55:32,615 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:56:32,654 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:57:32,672 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:58:32,693 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 09:59:32,712 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:00:32,722 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:01:32,746 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:02:32,767 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:03:32,785 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:04:32,812 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:05:32,834 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:06:32,858 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:07:32,875 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:08:32,895 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:09:32,914 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:10:32,929 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:11:32,953 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:12:32,970 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:13:32,994 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:14:33,002 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:15:33,024 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:16:33,039 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:17:33,059 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:18:33,089 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:19:33,110 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:20:33,124 - live - INFO - Performance snapshot: PnL=$42.35, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:21:33,145 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:21:33,146 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:21:33,146 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:22:33,158 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:22:33,159 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:22:33,159 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:23:33,179 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:23:33,179 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:23:33,180 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:24:33,191 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:24:33,192 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:24:33,192 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:25:33,198 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:25:33,198 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:25:33,199 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:26:33,214 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:26:33,216 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:26:33,216 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:27:33,230 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:27:33,230 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:27:33,230 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:28:33,240 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:28:33,240 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:28:33,240 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:29:33,249 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:29:33,249 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:29:33,249 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:30:33,269 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:30:33,269 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:30:33,270 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:31:33,291 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:31:33,291 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:31:33,291 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:32:33,304 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:32:33,304 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:32:33,305 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:33:33,331 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:33:33,331 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:33:33,331 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:34:33,338 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:34:33,338 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:34:33,339 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:35:33,360 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:35:33,360 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:35:33,361 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:36:33,385 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:36:33,385 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:36:33,386 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:37:33,399 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:37:33,399 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:37:33,399 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:38:33,421 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:38:33,422 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:38:33,422 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:39:33,440 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:39:33,441 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:39:33,441 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:40:33,468 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:40:33,468 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:40:33,468 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:41:33,495 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:41:33,496 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:41:33,496 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:42:33,508 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:42:33,508 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:42:33,508 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:43:33,526 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:43:33,527 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:43:33,527 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:44:33,546 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:44:33,546 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:44:33,547 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:45:33,562 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:45:33,562 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:45:33,562 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:46:33,582 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:46:33,583 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:46:33,583 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:47:33,611 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:47:33,611 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:47:33,611 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:48:33,629 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:48:33,629 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:48:33,629 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:49:33,636 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:49:33,636 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:49:33,637 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:50:33,647 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:50:33,647 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:50:33,647 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:51:33,663 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:51:33,663 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:51:33,663 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:52:33,673 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:52:33,673 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:52:33,673 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:53:33,698 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:53:33,698 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:53:33,699 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:54:33,725 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:54:33,725 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:54:33,725 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:55:33,739 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:55:33,739 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:55:33,739 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:56:33,760 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:56:33,760 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:56:33,760 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:57:33,776 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:57:33,776 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:57:33,777 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:58:33,803 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:58:33,804 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:58:33,804 - live - WARNING - Total performance alerts: 1
+2025-10-29 10:59:33,818 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 10:59:33,818 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 10:59:33,818 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:00:33,844 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:00:33,846 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:00:33,846 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:01:33,877 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:01:33,878 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:01:33,878 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:02:33,887 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:02:33,887 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:02:33,888 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:03:33,904 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:03:33,905 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:03:33,905 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:04:33,928 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:04:33,929 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:04:33,929 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:05:33,947 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:05:33,948 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:05:33,948 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:06:33,969 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:06:33,970 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:06:33,970 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:07:33,987 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:07:33,988 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:07:33,988 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:08:34,012 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:08:34,012 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:08:34,013 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:09:34,040 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:09:34,040 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:09:34,040 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:10:34,064 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:10:34,064 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:10:34,064 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:11:34,086 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:11:34,087 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:11:34,087 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:12:34,099 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:12:34,100 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:12:34,100 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:13:34,119 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:13:34,119 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:13:34,120 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:14:34,146 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:14:34,147 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:14:34,147 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:15:34,162 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:15:34,163 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:15:34,163 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:16:34,188 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:16:34,188 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:16:34,188 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:17:34,214 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:17:34,214 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:17:34,214 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:18:34,228 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:18:34,228 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:18:34,228 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:19:34,254 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:19:34,254 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:19:34,255 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:20:34,276 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:20:34,277 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:20:34,277 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:21:34,291 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:21:34,291 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:21:34,291 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:22:34,314 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:22:34,314 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:22:34,314 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:23:34,328 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:23:34,329 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:23:34,329 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:24:34,358 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:24:34,358 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:24:34,358 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:25:34,375 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:25:34,375 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:25:34,375 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:26:34,402 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:26:34,402 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:26:34,402 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:27:34,425 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:27:34,426 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:27:34,426 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:28:34,472 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:28:34,473 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:28:34,473 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:29:34,483 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:29:34,484 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:29:34,484 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:30:34,507 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:30:34,507 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:30:34,507 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:31:34,533 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:31:34,533 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:31:34,533 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:32:34,555 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:32:34,555 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:32:34,555 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:33:34,573 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:33:34,574 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:33:34,574 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:34:34,595 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:34:34,596 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:34:34,596 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:35:34,619 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:35:34,619 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:35:34,619 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:36:34,636 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:36:34,636 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:36:34,636 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:37:34,652 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:37:34,653 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:37:34,653 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:38:34,670 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:38:34,670 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:38:34,670 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:39:34,691 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:39:34,692 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:39:34,692 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:40:34,718 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:40:34,718 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:40:34,719 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:41:34,741 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:41:34,742 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:41:34,742 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:42:34,762 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:42:34,762 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:42:34,762 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:43:34,780 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:43:34,781 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:43:34,782 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:44:34,804 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:44:34,805 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:44:34,805 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:45:34,830 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:45:34,830 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:45:34,830 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:46:34,848 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:46:34,848 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:46:34,849 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:47:34,873 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:47:34,874 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:47:34,874 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:48:34,900 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:48:34,900 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:48:34,901 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:49:34,922 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:49:34,922 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:49:34,923 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:50:34,944 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:50:34,945 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:50:34,945 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:51:34,961 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:51:34,961 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:51:34,961 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:52:34,981 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:52:34,981 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:52:34,981 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:53:35,009 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:53:35,009 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:53:35,009 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:54:35,027 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:54:35,028 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:54:35,028 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:55:35,039 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:55:35,039 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:55:35,039 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:56:35,067 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:56:35,068 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:56:35,068 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:57:35,089 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:57:35,089 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:57:35,089 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:58:35,100 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:58:35,100 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:58:35,101 - live - WARNING - Total performance alerts: 1
+2025-10-29 11:59:35,126 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 11:59:35,127 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 11:59:35,127 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:00:35,144 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:00:35,144 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:00:35,144 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:01:35,163 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:01:35,163 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:01:35,163 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:02:35,176 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:02:35,177 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:02:35,177 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:03:35,196 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:03:35,197 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:03:35,197 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:04:35,215 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:04:35,216 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:04:35,216 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:05:35,234 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:05:35,234 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:05:35,234 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:06:35,257 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:06:35,258 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:06:35,258 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:07:35,266 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:07:35,266 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:07:35,266 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:08:35,293 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:08:35,293 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:08:35,293 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:09:35,319 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:09:35,321 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:09:35,321 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:10:35,340 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:10:35,341 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:10:35,341 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:11:35,357 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:11:35,357 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:11:35,358 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:12:35,378 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:12:35,378 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:12:35,379 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:13:35,396 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:13:35,396 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:13:35,396 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:14:35,417 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:14:35,418 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:14:35,418 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:15:35,447 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:15:35,448 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:15:35,448 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:16:35,461 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:16:35,461 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:16:35,461 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:17:35,478 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:17:35,478 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:17:35,479 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:18:35,503 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:18:35,503 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:18:35,504 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:19:35,526 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:19:35,527 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:19:35,528 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:20:35,551 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:20:35,551 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:20:35,551 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:21:35,580 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:21:35,581 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:21:35,582 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:22:35,609 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:22:35,610 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:22:35,610 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:23:35,631 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:23:35,631 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:23:35,631 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:24:35,661 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:24:35,661 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:24:35,661 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:25:35,690 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:25:35,690 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:25:35,691 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:26:35,712 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:26:35,713 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:26:35,713 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:27:35,737 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:27:35,737 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:27:35,737 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:28:35,766 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:28:35,766 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:28:35,767 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:29:35,790 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:29:35,790 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:29:35,790 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:30:35,820 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:30:35,820 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:30:35,821 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:31:35,834 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:31:35,834 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:31:35,834 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:32:35,848 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:32:35,849 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:32:35,849 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:33:35,871 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:33:35,871 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:33:35,871 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:34:35,893 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:34:35,893 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:34:35,894 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:35:35,924 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:35:35,925 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:35:35,925 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:36:35,950 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:36:35,950 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:36:35,951 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:37:35,979 - live - INFO - Performance snapshot: PnL=$-7.98, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:37:35,979 - live - WARNING - PERFORMANCE ALERT: Cumulative PnL ($-7.98) is 104% below expected-to-date ($187.23)
+2025-10-29 12:37:35,980 - live - WARNING - Total performance alerts: 1
+2025-10-29 12:38:36,002 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:39:36,028 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:40:36,048 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:41:36,069 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:42:36,096 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:43:36,122 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:44:36,154 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:45:36,173 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:46:36,189 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:47:36,205 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:48:36,229 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:49:36,249 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:50:36,280 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:51:36,311 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:52:36,334 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:53:36,354 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:54:36,380 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:55:36,397 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:56:36,414 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:57:36,434 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:58:36,450 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 12:59:36,477 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:00:36,504 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:01:36,527 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:02:36,544 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:03:36,561 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:04:36,588 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:05:36,613 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:06:36,625 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:07:36,657 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:08:36,679 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:09:36,695 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:10:36,724 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:11:36,747 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:12:36,769 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:13:36,795 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:14:36,824 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:15:36,854 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:16:36,872 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:17:36,897 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:18:36,920 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:19:36,946 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:20:36,960 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:21:36,981 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:22:36,997 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:23:37,027 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:24:37,037 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:25:37,060 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:26:37,079 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:27:37,088 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:28:37,115 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:29:37,143 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:30:37,157 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:31:37,175 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:32:37,187 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:33:37,211 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:34:37,218 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:35:37,242 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:36:37,262 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:37:37,281 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:38:37,304 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:39:37,326 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:40:37,348 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:41:37,357 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:42:37,374 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:43:37,384 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:44:37,405 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:45:37,427 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:46:37,452 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:47:37,475 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:48:37,493 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:49:37,510 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:50:37,533 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:51:37,547 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:52:37,564 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:53:37,581 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:54:37,603 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:55:37,632 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:56:37,656 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:57:37,672 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:58:37,691 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 13:59:37,710 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:00:37,744 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:01:37,759 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:02:37,771 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:03:37,795 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:04:37,814 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:05:37,833 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:06:37,849 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:07:37,875 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:08:37,901 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:09:37,925 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:10:37,951 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:11:37,978 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:12:37,992 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:13:38,012 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:14:38,030 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:15:38,058 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:16:38,089 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:17:38,117 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:18:38,150 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:19:38,167 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:20:38,203 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:21:38,230 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:22:38,262 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:23:38,293 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:24:38,302 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:25:38,322 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:26:38,346 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:27:38,365 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:28:38,390 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:29:38,409 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:30:38,428 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:31:38,439 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:32:38,458 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:33:38,475 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:34:38,502 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:35:38,513 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:36:38,529 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:37:38,540 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:38:38,557 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:39:38,579 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:40:38,590 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:41:38,607 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:42:38,628 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:43:38,651 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:44:38,673 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:45:38,697 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:46:38,720 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:47:38,748 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:48:38,769 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:49:38,788 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:50:38,819 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:51:38,844 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:52:38,857 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:53:38,878 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:54:38,905 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:55:38,935 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:56:38,951 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:57:38,967 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:58:38,985 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 14:59:39,011 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:00:39,032 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:01:39,042 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:02:39,052 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:03:39,073 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:04:39,099 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:05:39,126 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:06:39,147 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:07:39,166 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:08:39,190 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:09:39,228 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:10:39,252 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:11:39,281 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:12:39,299 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:13:39,322 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:14:39,345 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:15:39,372 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:16:39,391 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:17:39,411 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:18:39,433 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:19:39,457 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:20:39,481 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:21:39,512 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:22:39,538 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:23:39,561 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:24:39,587 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:25:39,612 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:26:39,645 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:27:39,668 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:28:39,688 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:29:39,701 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:30:39,731 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:31:39,748 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:32:39,775 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:33:39,794 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:34:39,824 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:35:39,844 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:36:39,880 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:37:39,893 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:38:39,909 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:39:39,922 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:40:39,956 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:41:39,985 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:42:40,009 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:43:40,031 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:44:40,048 - live - INFO - Performance snapshot: PnL=$-10.31, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:45:40,069 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:46:40,086 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:47:40,109 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:48:40,137 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:49:40,161 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:50:40,182 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:51:40,215 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:52:40,237 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:53:40,258 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:54:40,273 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:55:40,307 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:56:40,341 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:57:40,373 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:58:40,404 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 15:59:40,427 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:00:40,447 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:01:40,478 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:02:40,508 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:03:40,537 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:04:40,567 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:05:40,591 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:06:40,622 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:07:40,648 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:08:40,672 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:09:40,690 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:10:40,712 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:11:40,737 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:12:40,763 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:13:40,796 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:14:40,825 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:15:40,858 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:16:40,883 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:17:40,903 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:18:40,937 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:19:40,955 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:20:40,979 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:21:41,005 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:22:41,030 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:23:41,058 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:24:41,078 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:25:41,104 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:26:41,118 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:27:41,135 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:28:41,156 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:29:41,180 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:30:41,199 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:31:41,226 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:32:41,253 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:33:41,282 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:34:41,306 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:35:41,317 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:36:41,345 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:37:41,366 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:38:41,391 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:39:41,419 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:40:41,446 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:41:41,466 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:42:41,496 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:43:41,512 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:44:41,538 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:45:41,553 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:46:41,573 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:47:41,606 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:48:41,629 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:49:41,674 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:50:41,693 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:51:41,719 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:52:41,737 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:53:41,753 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:54:41,769 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:55:41,787 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:56:41,804 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:57:41,823 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:58:41,846 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 16:59:41,868 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:00:41,893 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:01:41,911 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:02:41,928 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:03:41,947 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:04:41,970 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:05:41,985 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:06:41,995 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:07:42,018 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:08:42,031 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:09:42,045 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:10:42,072 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:11:42,098 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:12:42,114 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:13:42,139 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:14:42,153 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:15:42,174 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:16:42,195 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:17:42,220 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:18:42,233 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:19:42,253 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:20:42,272 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:21:42,294 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:22:42,316 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:23:42,334 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:24:42,367 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:25:42,401 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:26:42,427 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:27:42,451 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:28:42,470 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:29:42,501 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:30:42,526 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:31:42,553 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:32:42,581 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:33:42,617 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:34:42,640 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:35:42,666 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:36:42,689 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:37:42,715 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:38:42,732 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:39:42,747 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:40:42,760 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:41:42,774 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:42:42,797 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:43:42,811 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:44:42,833 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:45:42,863 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:46:42,884 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:47:42,916 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:48:42,932 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:49:42,953 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:50:42,970 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:51:42,999 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:52:43,024 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:53:43,040 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:54:43,064 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:55:43,091 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:56:43,106 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:57:43,121 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:58:43,136 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 17:59:43,167 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:00:43,215 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:01:43,244 - live - INFO - Performance snapshot: PnL=$687.37, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:02:43,257 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:03:43,280 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:04:43,299 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:05:43,326 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:06:43,343 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:07:43,369 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:08:43,393 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:09:43,421 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:10:43,438 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:11:43,462 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:12:43,490 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:13:43,507 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:14:43,534 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:15:43,560 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:16:43,580 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:17:43,605 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:18:43,626 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:19:43,653 - live - INFO - Performance snapshot: PnL=$685.05, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:20:43,681 - live - INFO - Performance snapshot: PnL=$674.73, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:21:43,710 - live - INFO - Performance snapshot: PnL=$674.73, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:22:43,740 - live - INFO - Performance snapshot: PnL=$674.73, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:23:43,769 - live - INFO - Performance snapshot: PnL=$674.73, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:24:43,789 - live - INFO - Performance snapshot: PnL=$674.73, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:25:43,821 - live - INFO - Performance snapshot: PnL=$674.73, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:26:43,844 - live - INFO - Performance snapshot: PnL=$674.73, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:27:43,877 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:28:43,913 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:29:43,940 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:30:43,972 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:31:44,002 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:32:44,027 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:33:44,063 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:34:44,086 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:35:44,111 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:36:44,138 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:37:44,169 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:38:44,192 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:39:44,216 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:40:44,242 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:41:44,264 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:42:44,295 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:43:44,333 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:44:44,360 - live - INFO - Performance snapshot: PnL=$672.41, Trades=0, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:45:44,378 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:46:44,392 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:47:44,408 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:48:44,426 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:49:44,442 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:50:44,464 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:51:44,477 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:52:44,508 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:53:44,522 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:54:44,540 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:55:44,575 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:56:44,603 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:57:44,623 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:58:44,641 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 18:59:44,662 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 19:00:44,688 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 19:01:44,715 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 19:02:44,739 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 19:03:44,762 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 19:04:44,788 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000
+2025-10-29 19:05:45,000 - live - INFO - Performance snapshot: PnL=$639.09, Trades=1, Win Rate=0.0%, Sharpe=0.000

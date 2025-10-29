@@ -1,0 +1,466 @@
+#!/bin/bash
+
+# Phase 6 Configuration Update Script for Linux/Mac
+# Orchestrates the Phase 6 configuration update process with proper prerequisite validation and error handling.
+# Reads Phase 5 sensitivity analysis results and automatically updates Phase 6 YAML configuration to refine
+# only the 4 most sensitive parameters while fixing the remaining 7 parameters.
+
+# Error handling setup
+set -e  # Exit on error
+set -u  # Exit on undefined variable
+set -o pipefail  # Exit on pipe failure
+
+# Script metadata
+SCRIPT_NAME="Phase 6 Configuration Update Script"
+SCRIPT_VERSION="1.0"
+SCRIPT_DESCRIPTION="Update Phase 6 configuration based on Phase 5 sensitivity analysis"
+
+# Default parameters
+SENSITIVITY_JSON="optimization/results/phase5_sensitivity_analysis.json"
+PHASE6_YAML="optimization/configs/phase6_refinement.yaml"
+OUTPUT_YAML=""
+DRY_RUN=false
+VERBOSE=false
+
+# Color definitions
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+WHITE='\033[1;37m'
+NC='\033[0m' # No Color
+
+# Helper function for colored output
+print_color() {
+    local color=$1
+    local message=$2
+    echo -e "${color}${message}${NC}"
+}
+
+# Parse command-line arguments
+parse_arguments() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --sensitivity-json)
+                SENSITIVITY_JSON="$2"
+                shift 2
+                ;;
+            --phase6-yaml)
+                PHASE6_YAML="$2"
+                shift 2
+                ;;
+            --output-yaml)
+                OUTPUT_YAML="$2"
+                shift 2
+                ;;
+            --dry-run)
+                DRY_RUN=true
+                shift
+                ;;
+            --verbose)
+                VERBOSE=true
+                shift
+                ;;
+            -h|--help)
+                show_help
+                exit 0
+                ;;
+            *)
+                print_color $RED "Unknown option: $1"
+                show_help
+                exit 1
+                ;;
+        esac
+    done
+}
+
+# Show help information
+show_help() {
+    cat << EOF
+$SCRIPT_NAME
+$SCRIPT_DESCRIPTION
+
+Usage: $0 [OPTIONS]
+
+Options:
+    --sensitivity-json PATH    Path to Phase 5 sensitivity analysis JSON file
+                               (default: optimization/results/phase5_sensitivity_analysis.json)
+    --phase6-yaml PATH        Path to Phase 6 YAML configuration file
+                               (default: optimization/configs/phase6_refinement.yaml)
+    --output-yaml PATH        Path to output YAML file (default: same as phase6-yaml)
+    --dry-run                 Show what would be changed without writing files
+    --verbose                 Enable verbose logging
+    -h, --help                Show this help message
+
+Examples:
+    $0
+    $0 --dry-run --verbose
+    $0 --sensitivity-json "custom_sensitivity.json" --phase6-yaml "custom_config.yaml"
+
+Prerequisites:
+    - Phase 5 must complete successfully
+    - Phase 5 sensitivity analysis must be run
+    - sensitivity_analysis.json must contain real data (not placeholders)
+
+Expected outputs:
+    - Updated phase6_refinement.yaml with 4 parameters for refinement
+    - Console summary showing before/after comparison
+    - Validation confirmation that config is compatible with grid_search.py
+
+Estimated runtime: < 1 minute
+
+Exit codes:
+    0: Success
+    1: Prerequisites not met
+    2: Sensitivity analysis not run
+    3: Python script failed
+    4: Validation failed
+EOF
+}
+
+# Test prerequisites
+test_prerequisites() {
+    print_color $YELLOW "Testing prerequisites..."
+    
+    # Check that Phase 5 results CSV exists
+    local phase5_results_path="optimization/results/phase5_filters_results.csv"
+    if [[ ! -f "$phase5_results_path" ]]; then
+        print_color $RED "ERROR: Phase 5 results not found at $phase5_results_path"
+        print_color $RED "Please complete Phase 5 optimization first."
+        exit 1
+    fi
+    print_color $GREEN "✓ Phase 5 results found"
+    
+    # Check that sensitivity analysis JSON exists
+    if [[ ! -f "$SENSITIVITY_JSON" ]]; then
+        print_color $RED "ERROR: Sensitivity analysis JSON not found at $SENSITIVITY_JSON"
+        print_color $RED "Please run Phase 5 sensitivity analysis first:"
+        print_color $RED "  bash optimization/scripts/run_phase5_sensitivity_analysis.sh"
+        exit 2
+    fi
+    print_color $GREEN "✓ Sensitivity analysis JSON found"
+    
+    # Read JSON and verify it contains real data (not placeholder values)
+    if ! command -v jq &> /dev/null; then
+        print_color $YELLOW "WARNING: jq not found, using python for JSON validation"
+        validate_json_with_python
+    else
+        validate_json_with_jq
+    fi
+}
+
+# Validate JSON using jq
+validate_json_with_jq() {
+    # Check for placeholder values
+    if jq -e '.phase6_configuration_suggestion.parameters_to_refine | length == 4' "$SENSITIVITY_JSON" > /dev/null; then
+        # Check for placeholder values
+        if jq -e '.phase6_configuration_suggestion.parameters_to_refine[] | select(. == "[Generated by script]")' "$SENSITIVITY_JSON" > /dev/null; then
+            print_color $RED "ERROR: Sensitivity analysis contains placeholder data"
+            print_color $RED "Please run Phase 5 sensitivity analysis first:"
+            print_color $RED "  bash optimization/scripts/run_phase5_sensitivity_analysis.sh"
+            exit 2
+        fi
+        
+        print_color $GREEN "✓ Sensitivity analysis contains real data with 4 parameters to refine"
+    else
+        print_color $RED "ERROR: Sensitivity analysis missing or invalid parameters_to_refine"
+        print_color $RED "Please run Phase 5 sensitivity analysis first:"
+        print_color $RED "  bash optimization/scripts/run_phase5_sensitivity_analysis.sh"
+        exit 2
+    fi
+}
+
+# Validate JSON using python
+validate_json_with_python() {
+    python3 -c "
+import json
+import sys
+
+try:
+    with open('$SENSITIVITY_JSON', 'r') as f:
+        data = json.load(f)
+    
+    # Check for placeholder values
+    if 'phase6_configuration_suggestion' not in data:
+        print('ERROR: Missing phase6_configuration_suggestion section')
+        sys.exit(1)
+    
+    params_to_refine = data['phase6_configuration_suggestion'].get('parameters_to_refine', [])
+    if len(params_to_refine) != 4:
+        print(f'ERROR: Expected 4 parameters to refine, found {len(params_to_refine)}')
+        sys.exit(1)
+    
+    # Check for placeholder values
+    for param in params_to_refine:
+        if param == '[Generated by script]':
+            print('ERROR: Sensitivity analysis contains placeholder data')
+            sys.exit(1)
+    
+    print('SUCCESS: Sensitivity analysis contains real data with 4 parameters to refine')
+    
+except Exception as e:
+    print(f'ERROR: Failed to parse sensitivity analysis JSON: {e}')
+    sys.exit(1)
+" || {
+        print_color $RED "Please run Phase 5 sensitivity analysis first:"
+        print_color $RED "  bash optimization/scripts/run_phase5_sensitivity_analysis.sh"
+        exit 2
+    }
+    
+    print_color $GREEN "✓ Sensitivity analysis contains real data with 4 parameters to refine"
+}
+
+# Create backup of existing configuration
+backup_existing_config() {
+    if [[ "$DRY_RUN" == "true" ]]; then
+        print_color $YELLOW "DRY RUN: Would create backup of existing configuration"
+        return
+    fi
+    
+    print_color $YELLOW "Creating backup of existing configuration..."
+    
+    local timestamp=$(date +%Y%m%d_%H%M%S)
+    local backup_path="${PHASE6_YAML}.backup.${timestamp}"
+    
+    if cp "$PHASE6_YAML" "$backup_path" 2>/dev/null; then
+        print_color $GREEN "✓ Backup created: $backup_path"
+    else
+        print_color $YELLOW "WARNING: Failed to create backup"
+        print_color $YELLOW "Continuing without backup..."
+    fi
+}
+
+# Execute Python configuration update script
+invoke_config_update() {
+    print_color $YELLOW "Executing Phase 6 configuration update..."
+    
+    # Build command
+    local python_script="optimization/tools/update_phase6_config.py"
+    local command="python3 \"$python_script\" --sensitivity-json \"$SENSITIVITY_JSON\" --phase6-yaml \"$PHASE6_YAML\""
+    
+    if [[ -n "$OUTPUT_YAML" ]]; then
+        command+=" --output-yaml \"$OUTPUT_YAML\""
+    fi
+    
+    if [[ "$DRY_RUN" == "true" ]]; then
+        command+=" --dry-run"
+    fi
+    
+    if [[ "$VERBOSE" == "true" ]]; then
+        command+=" --verbose"
+    fi
+    
+    print_color $WHITE "Command: $command"
+    
+    # Execute command
+    if eval "$command"; then
+        print_color $GREEN "✓ Configuration update completed successfully"
+    else
+        local exit_code=$?
+        print_color $RED "ERROR: Python script failed with exit code $exit_code"
+        print_color $RED "Check the output above for error details."
+        exit 3
+    fi
+}
+
+# Validate updated configuration
+validate_updated_config() {
+    if [[ "$DRY_RUN" == "true" ]]; then
+        print_color $YELLOW "DRY RUN: Would validate updated configuration"
+        return
+    fi
+    
+    print_color $YELLOW "Validating updated configuration..."
+    
+    # Check that YAML file was modified
+    local target_file="$PHASE6_YAML"
+    if [[ -n "$OUTPUT_YAML" ]]; then
+        target_file="$OUTPUT_YAML"
+    fi
+    
+    if [[ ! -f "$target_file" ]]; then
+        print_color $RED "ERROR: Updated configuration file not found: $target_file"
+        exit 4
+    fi
+    
+    # Validate YAML syntax using Python
+    if python3 -c "import yaml; yaml.safe_load(open('$target_file', 'r'))" 2>/dev/null; then
+        print_color $GREEN "✓ YAML syntax is valid"
+    else
+        print_color $RED "ERROR: YAML syntax validation failed"
+        exit 4
+    fi
+    
+    # Read YAML and verify structure
+    local param_count=$(python3 -c "
+import yaml
+with open('$target_file', 'r') as f:
+    data = yaml.safe_load(f)
+print(len(data.get('parameters', {})))
+" 2>/dev/null || echo "0")
+    
+    if [[ "$param_count" != "4" ]]; then
+        print_color $RED "ERROR: Expected 4 parameters in refinement, found $param_count"
+        exit 4
+    fi
+    print_color $GREEN "✓ Parameters section has 4 entries"
+    
+    # Verify fixed section has 7+ entries
+    local fixed_count=$(python3 -c "
+import yaml
+with open('$target_file', 'r') as f:
+    data = yaml.safe_load(f)
+print(len(data.get('fixed', {})))
+" 2>/dev/null || echo "0")
+    
+    if [[ "$fixed_count" -lt 7 ]]; then
+        print_color $RED "ERROR: Expected 7+ parameters in fixed section, found $fixed_count"
+        exit 4
+    fi
+    print_color $GREEN "✓ Fixed section has $fixed_count entries"
+    
+    # Calculate and display total combinations
+    local total_combinations=$(python3 -c "
+import yaml
+with open('$target_file', 'r') as f:
+    data = yaml.safe_load(f)
+total = 1
+for param in data.get('parameters', {}).values():
+    if 'values' in param:
+        total *= len(param['values'])
+print(total)
+" 2>/dev/null || echo "0")
+    
+    print_color $GREEN "✓ Total combinations: $total_combinations"
+    
+    # Verify combinations are in range 150-600
+    if [[ "$total_combinations" -lt 150 ]]; then
+        print_color $YELLOW "WARNING: Combination count ($total_combinations) is below recommended minimum (150)"
+    elif [[ "$total_combinations" -gt 600 ]]; then
+        print_color $YELLOW "WARNING: Combination count ($total_combinations) is above recommended maximum (600)"
+    else
+        print_color $GREEN "✓ Combination count ($total_combinations) is within recommended range (150-600)"
+    fi
+}
+
+# Show update summary
+show_update_summary() {
+    print_color $GREEN ""
+    print_color $GREEN "Phase 6 Configuration Update Summary"
+    print_color $GREEN "===================================="
+    
+    # Read updated YAML and sensitivity JSON
+    local target_file="$PHASE6_YAML"
+    if [[ -n "$OUTPUT_YAML" ]]; then
+        target_file="$OUTPUT_YAML"
+    fi
+    
+    python3 -c "
+import yaml
+import json
+
+try:
+    # Read YAML data
+    with open('$target_file', 'r') as f:
+        yaml_data = yaml.safe_load(f)
+    
+    # Read sensitivity data
+    with open('$SENSITIVITY_JSON', 'r') as f:
+        sensitivity_data = json.load(f)
+    
+    # Show parameters moved to fixed section
+    fixed_params = yaml_data.get('fixed', {})
+    print(f'\nParameters moved to fixed section ({len(fixed_params)} parameters):')
+    for param, value in fixed_params.items():
+        print(f'  - {param}: {value}')
+    
+    # Show parameters kept for refinement
+    refine_params = yaml_data.get('parameters', {})
+    print(f'\nParameters kept for refinement ({len(refine_params)} parameters):')
+    for param in refine_params.keys():
+        # Find sensitivity score
+        sensitivity_score = 'N/A'
+        for param_info in sensitivity_data.get('top_4_sensitive_parameters', []):
+            if param_info.get('parameter_name') == param:
+                sensitivity_score = param_info.get('sensitivity_score', 'N/A')
+                break
+        print(f'  - {param}: sensitivity score {sensitivity_score}')
+    
+    # Show combination count reduction
+    total_combinations = 1
+    for param in refine_params.values():
+        if 'values' in param:
+            total_combinations *= len(param['values'])
+    
+    original_combinations = 5906250
+    reduction_percent = round(((original_combinations - total_combinations) / original_combinations) * 100, 1)
+    
+    print(f'\nCombination count reduction:')
+    print(f'  - Before: {original_combinations:,} combinations (11 parameters)')
+    print(f'  - After: {total_combinations:,} combinations (4 parameters)')
+    print(f'  - Reduction: {reduction_percent}%')
+    
+    # Show runtime reduction
+    print(f'\nEstimated runtime reduction:')
+    print(f'  - Before: 20-40 hours (5.9M combinations)')
+    print(f'  - After: 4-6 hours ({total_combinations:,} combinations)')
+    print(f'  - Reduction: ~75-85% faster')
+    
+except Exception as e:
+    print(f'WARNING: Could not generate detailed summary: {e}')
+"
+}
+
+# Show next steps
+show_next_steps() {
+    print_color $GREEN ""
+    print_color $GREEN "Next Steps:"
+    print_color $GREEN "==========="
+    
+    print_color $WHITE "1. Review updated configuration:"
+    print_color $YELLOW "   cat optimization/configs/phase6_refinement.yaml"
+    print_color $YELLOW "   # or"
+    print_color $YELLOW "   less optimization/configs/phase6_refinement.yaml"
+    
+    print_color $WHITE ""
+    print_color $WHITE "2. Run Phase 6 optimization:"
+    print_color $YELLOW "   bash optimization/scripts/run_phase6.sh"
+    
+    print_color $WHITE ""
+    print_color $WHITE "3. Expected runtime: 4-6 hours with 8 workers"
+    print_color $WHITE "   (down from 20-40 hours with original configuration)"
+    
+    print_color $WHITE ""
+    print_color $WHITE "4. Monitor progress and results:"
+    print_color $WHITE "   - Check optimization/results/phase6_refinement_results.csv"
+    print_color $WHITE "   - Review optimization/results/phase6_refinement_results_top_10.json"
+    print_color $WHITE "   - Analyze optimization/results/phase6_refinement_results_pareto_frontier.json"
+}
+
+# Main execution
+main() {
+    print_color $GREEN "$SCRIPT_NAME"
+    print_color $GREEN "===================================="
+    print_color ""
+    print_color $WHITE "Parameters:"
+    print_color $WHITE "  Sensitivity JSON: $SENSITIVITY_JSON"
+    print_color $WHITE "  Phase 6 YAML: $PHASE6_YAML"
+    print_color $WHITE "  Output YAML: $(if [[ -n "$OUTPUT_YAML" ]]; then echo "$OUTPUT_YAML"; else echo "Same as Phase 6 YAML"; fi)"
+    print_color $WHITE "  Dry Run: $DRY_RUN"
+    print_color $WHITE "  Verbose: $VERBOSE"
+    print_color ""
+    
+    # Execute workflow
+    test_prerequisites
+    backup_existing_config
+    invoke_config_update
+    validate_updated_config
+    show_update_summary
+    show_next_steps
+    
+    print_color $GREEN ""
+    print_color $GREEN "✓ Phase 6 configuration update completed successfully!"
+}
+
+# Parse arguments and run main function
+parse_arguments "$@"
+main
