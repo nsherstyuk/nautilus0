@@ -81156,6 +81156,22 @@
       "rejected_signals_count": 0,
       "expected_pnl_so_far": 0.0,
       "alerts": []
+    },
+    {
+      "timestamp": "2025-11-06T23:46:38.557551+00:00",
+      "elapsed_seconds": 39334.311142,
+      "cumulative_pnl": 0.0,
+      "unrealized_pnl": 0.0,
+      "total_trades": 0,
+      "winning_trades": 0,
+      "losing_trades": 0,
+      "win_rate": 0.0,
+      "rolling_sharpe_ratio": 0.0,
+      "current_drawdown": 0.0,
+      "max_drawdown": 0.0,
+      "rejected_signals_count": 0,
+      "expected_pnl_so_far": 0.0,
+      "alerts": []
     }
   ]
 }
