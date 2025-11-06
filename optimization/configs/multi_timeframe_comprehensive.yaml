@@ -1,0 +1,146 @@
+# Multi-Timeframe Comprehensive Optimization
+# ==========================================
+# 
+# Tests multiple primary bar timeframes (1-min to 1-hour) with optimized parameters
+# for each timeframe. Different timeframes may require different MA periods and
+# risk management settings.
+# 
+# Strategy: For each timeframe, test:
+#   - Different MA periods (scaled to timeframe)
+#   - Different risk management parameters
+#   - Keep filters fixed at Phase 6 best values
+#
+# Total combinations: 7 timeframes × 3 MA configs × 2 risk configs = 42 combinations
+# Expected runtime: ~1-2 hours with 15 workers
+#
+# Usage:
+#   python optimization/grid_search.py \
+#     --config optimization/configs/multi_timeframe_comprehensive.yaml \
+#     --objective sharpe_ratio \
+#     --workers 15 \
+#     --output optimization/results/multi_timeframe_comprehensive_results.csv \
+#     --no-resume \
+#     --verbose
+
+optimization:
+  objective: sharpe_ratio  # Maximize risk-adjusted returns
+  workers: 15              # Use all available cores
+  checkpoint_interval: 5   # Save progress every 5 backtests
+  timeout_seconds: 300     # 5 minutes per backtest
+  output_file: optimization/results/multi_timeframe_comprehensive_results.csv
+  checkpoint_file: optimization/checkpoints/multi_timeframe_comprehensive_checkpoint.csv
+
+# Parameters Being Optimized
+# ==========================
+# Primary bar specification (timeframe for signal generation)
+parameters:
+  bar_spec:
+    values:
+      - "1-MINUTE-MID-EXTERNAL"    # Very short-term, high frequency
+      - "2-MINUTE-MID-EXTERNAL"    # Short-term
+      - "3-MINUTE-MID-EXTERNAL"    # Short-term
+      - "5-MINUTE-MID-EXTERNAL"    # Short-medium term
+      - "15-MINUTE-MID-EXTERNAL"   # Medium-term (current baseline)
+      - "30-MINUTE-MID-EXTERNAL"   # Medium-long term
+      - "1-HOUR-MID-EXTERNAL"      # Long-term, lower frequency
+
+  # MA periods (scaled appropriately for each timeframe)
+  # For shorter timeframes: faster periods, for longer: slower periods
+  fast_period:
+    values:
+      - 10   # Fast for short timeframes (1-2 min)
+      - 20   # Medium-fast for medium timeframes (3-5 min)
+      - 42   # Baseline for 15-min (current best)
+
+  slow_period:
+    values:
+      - 50   # Fast slow MA for short timeframes
+      - 100  # Medium slow MA for medium timeframes
+      - 270  # Baseline for 15-min (current best)
+
+  # Risk management - test tighter stops for shorter timeframes
+  stop_loss_pips:
+    values:
+      - 20   # Tighter stops for shorter timeframes
+      - 35   # Baseline (current best)
+
+  take_profit_pips:
+    values:
+      - 40   # Smaller targets for shorter timeframes
+      - 50   # Baseline (current best)
+      - 75   # Larger targets for longer timeframes
+
+# Fixed Parameters
+# ================
+# Keep filters and other parameters at Phase 6 best values
+fixed:
+  # Crossover threshold (fixed at best)
+  crossover_threshold_pips: 0.35
+
+  # Trailing stops (fixed at Phase 6 best)
+  trailing_stop_activation_pips: 22
+  trailing_stop_distance_pips: 12
+
+  # DMI Filter (fixed at Phase 6 best)
+  dmi_enabled: true
+  dmi_period: 10
+  dmi_minimum_difference: 0.0
+  dmi_bar_spec: "2-MINUTE-MID-EXTERNAL"
+
+  # Stochastic Filter (fixed at Phase 6 best)
+  stoch_enabled: true
+  stoch_period_k: 18
+  stoch_period_d: 3
+  stoch_bullish_threshold: 30
+  stoch_bearish_threshold: 65
+  stoch_max_bars_since_crossing: 9
+  stoch_bar_spec: "15-MINUTE-MID-EXTERNAL"
+
+  # Multi-timeframe filters (disabled for this test)
+  trend_filter_enabled: false
+  trend_bar_spec: "1-HOUR-MID-EXTERNAL"
+  trend_fast_period: 20
+  trend_slow_period: 50
+  entry_timing_enabled: false
+  entry_timing_bar_spec: "5-MINUTE-MID-EXTERNAL"
+  entry_timing_method: "pullback"
+  entry_timing_timeout_bars: 10
+
+  # Trade Sizing and Position Management
+  trade_size: 100000
+  enforce_position_limit: true
+  allow_position_reversal: false
+  starting_capital: 100000.0
+
+  # Crossover filter parameters
+  pre_crossover_separation_pips: 0.0
+  pre_crossover_lookback_bars: 1
+
+# Configuration Summary
+# ===================
+# Total combinations: 7 × 3 × 3 × 2 × 3 = 378 combinations
+# 
+# This explores:
+#   - 7 different primary timeframes
+#   - 3 MA period configurations (fast/medium/slow)
+#   - 2 stop loss configurations
+#   - 3 take profit configurations
+#
+# Expected runtime breakdown:
+#   - Per backtest: ~60 seconds (7-month period)
+#   - Total backtest time: 378 × 60s = 22,680s = 378 minutes = 6.3 hours
+#   - Parallelized with 15 workers: 378 min ÷ 15 = ~25 minutes pure compute
+#   - With overhead: 1-2 hours total
+#
+# Success criteria:
+#   - Identify best timeframe for this strategy
+#   - Find optimal MA periods for each timeframe
+#   - Determine if risk management should vary by timeframe
+#   - Compare results to 15-minute baseline (Sharpe 0.481)
+#
+# Expected findings:
+#   - Shorter timeframes may need faster MA periods
+#   - Longer timeframes may need slower MA periods
+#   - Risk/reward ratios may need adjustment per timeframe
+#   - Trade frequency will vary significantly by timeframe
+

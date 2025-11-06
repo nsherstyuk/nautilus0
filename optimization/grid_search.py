@@ -127,6 +127,15 @@ FIXED_TO_ENV = {
     "take_profit_pips": "BACKTEST_TAKE_PROFIT_PIPS",
     "trailing_stop_activation_pips": "BACKTEST_TRAILING_STOP_ACTIVATION_PIPS",
     "trailing_stop_distance_pips": "BACKTEST_TRAILING_STOP_DISTANCE_PIPS",
+    # Multi-timeframe parameters
+    "trend_filter_enabled": "BACKTEST_TREND_FILTER_ENABLED",
+    "trend_bar_spec": "BACKTEST_TREND_BAR_SPEC",
+    "trend_fast_period": "BACKTEST_TREND_FAST_PERIOD",
+    "trend_slow_period": "BACKTEST_TREND_SLOW_PERIOD",
+    "entry_timing_enabled": "BACKTEST_ENTRY_TIMING_ENABLED",
+    "entry_timing_bar_spec": "BACKTEST_ENTRY_TIMING_BAR_SPEC",
+    "entry_timing_method": "BACKTEST_ENTRY_TIMING_METHOD",
+    "entry_timing_timeout_bars": "BACKTEST_ENTRY_TIMING_TIMEOUT_BARS",
     
     # Crossover Filter Parameters
     "pre_crossover_separation_pips": "STRATEGY_PRE_CROSSOVER_SEPARATION_PIPS",
@@ -136,6 +145,7 @@ FIXED_TO_ENV = {
     "dmi_enabled": "STRATEGY_DMI_ENABLED",
     "dmi_period": "STRATEGY_DMI_PERIOD",
     "dmi_bar_spec": "STRATEGY_DMI_BAR_SPEC",
+    "dmi_minimum_difference": "STRATEGY_DMI_MINIMUM_DIFFERENCE",
     
     # Stochastic Filter Parameters
     "stoch_enabled": "STRATEGY_STOCH_ENABLED",
@@ -180,13 +190,25 @@ class ParameterSet:
     take_profit_pips: int
     trailing_stop_activation_pips: int
     trailing_stop_distance_pips: int
-    dmi_enabled: bool
-    dmi_period: int
-    stoch_enabled: bool
-    stoch_period_k: int
-    stoch_period_d: int
-    stoch_bullish_threshold: int
-    stoch_bearish_threshold: int
+    dmi_enabled: bool = True
+    dmi_period: int = 14
+    dmi_minimum_difference: float = 0.0
+    stoch_enabled: bool = True
+    stoch_period_k: int = 14
+    stoch_period_d: int = 3
+    stoch_bullish_threshold: int = 30
+    stoch_bearish_threshold: int = 70
+    # Multi-timeframe parameters (all default to disabled/False for zero impact)
+    trend_filter_enabled: bool = False
+    trend_bar_spec: str = "1-HOUR-MID-EXTERNAL"
+    trend_fast_period: int = 20
+    trend_slow_period: int = 50
+    entry_timing_enabled: bool = False
+    entry_timing_bar_spec: str = "5-MINUTE-MID-EXTERNAL"
+    entry_timing_method: str = "pullback"
+    entry_timing_timeout_bars: int = 10
+    # Primary bar specification (for signal generation)
+    bar_spec: str = "15-MINUTE-MID-EXTERNAL"
 
     def to_env_dict(self) -> Dict[str, str]:
         """Convert parameters to environment variable dictionary."""
@@ -200,11 +222,23 @@ class ParameterSet:
             "STRATEGY_CROSSOVER_THRESHOLD_PIPS": str(self.crossover_threshold_pips),
             "STRATEGY_DMI_ENABLED": str(self.dmi_enabled).lower(),
             "STRATEGY_DMI_PERIOD": str(self.dmi_period),
+            "STRATEGY_DMI_MINIMUM_DIFFERENCE": str(self.dmi_minimum_difference),
             "STRATEGY_STOCH_ENABLED": str(self.stoch_enabled).lower(),
             "STRATEGY_STOCH_PERIOD_K": str(self.stoch_period_k),
             "STRATEGY_STOCH_PERIOD_D": str(self.stoch_period_d),
             "STRATEGY_STOCH_BULLISH_THRESHOLD": str(self.stoch_bullish_threshold),
             "STRATEGY_STOCH_BEARISH_THRESHOLD": str(self.stoch_bearish_threshold),
+            # Multi-timeframe parameters
+            "BACKTEST_TREND_FILTER_ENABLED": str(self.trend_filter_enabled).lower(),
+            "BACKTEST_TREND_BAR_SPEC": str(self.trend_bar_spec),
+            "BACKTEST_TREND_FAST_PERIOD": str(self.trend_fast_period),
+            "BACKTEST_TREND_SLOW_PERIOD": str(self.trend_slow_period),
+            "BACKTEST_ENTRY_TIMING_ENABLED": str(self.entry_timing_enabled).lower(),
+            "BACKTEST_ENTRY_TIMING_BAR_SPEC": str(self.entry_timing_bar_spec),
+            "BACKTEST_ENTRY_TIMING_METHOD": str(self.entry_timing_method),
+            "BACKTEST_ENTRY_TIMING_TIMEOUT_BARS": str(self.entry_timing_timeout_bars),
+            # Primary bar specification
+            "BACKTEST_BAR_SPEC": str(self.bar_spec),
         }
 
 
@@ -316,8 +350,13 @@ def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, L
     valid_params = {
         "fast_period", "slow_period", "crossover_threshold_pips", "stop_loss_pips",
         "take_profit_pips", "trailing_stop_activation_pips", "trailing_stop_distance_pips",
-        "dmi_enabled", "dmi_period", "stoch_enabled", "stoch_period_k", "stoch_period_d",
-        "stoch_bullish_threshold", "stoch_bearish_threshold"
+        "dmi_enabled", "dmi_period", "dmi_minimum_difference", "stoch_enabled", "stoch_period_k", "stoch_period_d",
+        "stoch_bullish_threshold", "stoch_bearish_threshold",
+        # Multi-timeframe parameters
+        "trend_filter_enabled", "trend_bar_spec", "trend_fast_period", "trend_slow_period",
+        "entry_timing_enabled", "entry_timing_bar_spec", "entry_timing_method", "entry_timing_timeout_bars",
+        # Primary bar specification (for signal generation)
+        "bar_spec"
     }
 
     for param_name, param_config in param_ranges.items():
@@ -330,12 +369,15 @@ def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, L
         
         # Validate value types
         for value in values:
-            if param_name in ["dmi_enabled", "stoch_enabled"]:
+            if param_name in ["dmi_enabled", "stoch_enabled", "trend_filter_enabled", "entry_timing_enabled"]:
                 if not isinstance(value, bool):
                     raise ValueError(f"Parameter {param_name} values must be boolean")
-            elif param_name in ["crossover_threshold_pips"]:
+            elif param_name in ["crossover_threshold_pips", "dmi_minimum_difference"]:
                 if not isinstance(value, (int, float)):
                     raise ValueError(f"Parameter {param_name} values must be numeric")
+            elif param_name in ["trend_bar_spec", "entry_timing_bar_spec", "entry_timing_method", "bar_spec"]:
+                if not isinstance(value, str):
+                    raise ValueError(f"Parameter {param_name} values must be strings")
             else:
                 if not isinstance(value, int):
                     raise ValueError(f"Parameter {param_name} values must be integers")
@@ -375,11 +417,23 @@ def generate_parameter_combinations(param_ranges: Dict[str, List[Any]], fixed_pa
                 trailing_stop_distance_pips=params_dict.get("trailing_stop_distance_pips", 15),
                 dmi_enabled=params_dict.get("dmi_enabled", True),
                 dmi_period=params_dict.get("dmi_period", 14),
+                dmi_minimum_difference=params_dict.get("dmi_minimum_difference", 0.0),
                 stoch_enabled=params_dict.get("stoch_enabled", True),
                 stoch_period_k=params_dict.get("stoch_period_k", 14),
                 stoch_period_d=params_dict.get("stoch_period_d", 3),
                 stoch_bullish_threshold=params_dict.get("stoch_bullish_threshold", 30),
                 stoch_bearish_threshold=params_dict.get("stoch_bearish_threshold", 70),
+                # Multi-timeframe parameters (default to disabled)
+                trend_filter_enabled=params_dict.get("trend_filter_enabled", False),
+                trend_bar_spec=params_dict.get("trend_bar_spec", "1-HOUR-MID-EXTERNAL"),
+                trend_fast_period=params_dict.get("trend_fast_period", 20),
+                trend_slow_period=params_dict.get("trend_slow_period", 50),
+                entry_timing_enabled=params_dict.get("entry_timing_enabled", False),
+                entry_timing_bar_spec=params_dict.get("entry_timing_bar_spec", "5-MINUTE-MID-EXTERNAL"),
+                entry_timing_method=params_dict.get("entry_timing_method", "pullback"),
+                entry_timing_timeout_bars=params_dict.get("entry_timing_timeout_bars", 10),
+                # Primary bar specification
+                bar_spec=params_dict.get("bar_spec", "15-MINUTE-MID-EXTERNAL"),
             )
             
             # Validate combination
@@ -412,6 +466,17 @@ def validate_parameter_combination(params: ParameterSet) -> Tuple[bool, Optional
     
     if params.stoch_bullish_threshold >= params.stoch_bearish_threshold:
         return False, "stoch_bullish_threshold must be less than stoch_bearish_threshold"
+    
+    # Multi-timeframe validations
+    if params.trend_filter_enabled:
+        if params.trend_fast_period >= params.trend_slow_period:
+            return False, "trend_fast_period must be less than trend_slow_period"
+    
+    if params.entry_timing_enabled:
+        if params.entry_timing_timeout_bars <= 0:
+            return False, "entry_timing_timeout_bars must be greater than 0"
+        if params.entry_timing_method not in ["pullback", "rsi", "stochastic", "breakout"]:
+            return False, f"entry_timing_method must be one of: pullback, rsi, stochastic, breakout"
     
     return True, None
 
@@ -775,6 +840,7 @@ def load_checkpoint(checkpoint_file: str) -> List[BacktestResult]:
                 trailing_stop_distance_pips=int(row["trailing_stop_distance_pips"]),
                 dmi_enabled=parse_bool(row["dmi_enabled"]),
                 dmi_period=int(row["dmi_period"]),
+                dmi_minimum_difference=float(row.get("dmi_minimum_difference", 0.0)),
                 stoch_enabled=parse_bool(row["stoch_enabled"]),
                 stoch_period_k=int(row["stoch_period_k"]),
                 stoch_period_d=int(row["stoch_period_d"]),

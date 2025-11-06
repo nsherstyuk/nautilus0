@@ -1,0 +1,56 @@
+# Multi-Timeframe Optimization: Combined Features
+# Tests both trend filter and entry timing together
+# 
+# This configuration tests the combined multi-timeframe features
+# All other parameters fixed at Phase 6 best values
+#
+# Total combinations: 12 (2 trend filter settings × 2 entry timing settings × 3 timeout values)
+#
+# Usage:
+#   python optimization/grid_search.py \
+#     --config optimization/configs/multi_tf_combined.yaml \
+#     --objective sharpe_ratio \
+#     --workers 8 \
+#     --output optimization/results/multi_tf_combined_results.csv \
+#     --no-resume
+
+optimization:
+  objective: sharpe_ratio
+  workers: 8
+  checkpoint_interval: 5
+  checkpoint_file: optimization/checkpoints/multi_tf_combined_checkpoint.csv
+  output_file: optimization/results/multi_tf_combined_results.csv
+
+parameters:
+  trend_filter_enabled:
+    values: [true, false]
+  trend_fast_period:
+    values: [20, 30]
+  trend_slow_period:
+    values: [50, 100]
+  entry_timing_enabled:
+    values: [true, false]
+  entry_timing_timeout_bars:
+    values: [5, 10, 15]
+
+fixed:
+  # Phase 6 best parameters (fixed)
+  fast_period: 42
+  slow_period: 270
+  crossover_threshold_pips: 0.35
+  stop_loss_pips: 35
+  take_profit_pips: 50
+  trailing_stop_activation_pips: 22
+  trailing_stop_distance_pips: 12
+  dmi_enabled: true
+  dmi_period: 10
+  stoch_enabled: true
+  stoch_period_k: 18
+  stoch_period_d: 3
+  stoch_bullish_threshold: 30
+  stoch_bearish_threshold: 65
+  # Use available bar types
+  trend_bar_spec: "1-DAY-MID-EXTERNAL"
+  entry_timing_bar_spec: "2-MINUTE-MID-EXTERNAL"
+  entry_timing_method: "pullback"
+

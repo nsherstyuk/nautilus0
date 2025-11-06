@@ -1,0 +1,34 @@
+# ============================================================================
+# STRATEGY FILTER CONFIGURATION - DMI (Directional Movement Index)
+# ============================================================================
+# DMI filter provides trend confirmation for MA crossover signals using multi-timeframe bars.
+# The filter checks if DMI +DI and -DI lines align with the crossover direction:
+#   - Bullish crossover requires: +DI > -DI (bullish trend)
+#   - Bearish crossover requires: -DI > +DI (bearish trend)
+#
+# Additionally, if dmi_minimum_difference > 0, the filter enforces that:
+#   - The difference between +DI and -DI must be at least the threshold value
+#   - This filters out weak/noisy trends where DI values are too close together
+#   - Example: With threshold=5.0, +DI=30 vs -DI=28 (difference=2) would be rejected
+#   - Example: With threshold=5.0, +DI=35 vs -DI=25 (difference=10) would pass
+#
+# Bar counting is measured in DMI bars (not primary bars), so if you use 2-minute bars
+# for DMI, the indicator operates on 2-minute bars regardless of your primary timeframe.
+#
+STRATEGY_DMI_ENABLED=true                          # Enable/disable DMI filter (default: true)
+STRATEGY_DMI_BAR_SPEC=2-MINUTE-MID-EXTERNAL       # Bar timeframe for DMI (default: 2-minute)
+STRATEGY_DMI_PERIOD=14                             # DMI smoothing period (default: 14)
+STRATEGY_DMI_MINIMUM_DIFFERENCE=0.0                # Minimum DI difference for valid trend (default: 0.0 = disabled, backward compatible)
+#
+# Notes:
+# - DMI needs period bars to initialize; signals before init skip the DMI check
+# - For FX, prefer MID price side to match catalog data
+# - Use -EXTERNAL for historical catalog bars
+# - minimum_difference: 0.0 = disabled (current behavior), > 0.0 = filter weak trends
+#   Recommended values:
+#     - 0.0: Disabled (allows any +DI > -DI, even tiny differences)
+#     - 2.0: Light filtering (removes very weak trends)
+#     - 5.0: Moderate filtering (filters noise, good balance) [RECOMMENDED]
+#     - 10.0: Aggressive filtering (only strong trends)
+# - The difference is calculated as: |+DI - -DI| for the favorable direction
+

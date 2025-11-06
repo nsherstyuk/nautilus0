@@ -2,6 +2,8 @@ version: 1
 formatters:
   standard:
     format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  detailed:
+    format: "%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s"
 handlers:
   console:
     class: logging.StreamHandler
@@ -22,6 +24,34 @@ handlers:
     filename: logs/live/live_trading.log
     maxBytes: 10485760  # 10MB
     backupCount: 5
+  strategy_file:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: logs/live/strategy.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+  orders_file:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: logs/live/orders.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+  trades_file:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: detailed
+    filename: logs/live/trades.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 5
+  errors_file:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: detailed
+    filename: logs/live/errors.log
+    maxBytes: 10485760  # 10MB
+    backupCount: 10
 loggers:
   nautilus_trader:  # Captures all NautilusTrader events (backtest, ingestion, live trading)
     level: DEBUG
@@ -35,6 +65,18 @@ loggers:
     level: DEBUG
     handlers: [console, live_file]
     propagate: false
+  strategies.moving_average_crossover:  # Strategy-specific logger
+    level: DEBUG
+    handlers: [console, live_file, strategy_file]
+    propagate: false
+  orders:  # Order lifecycle events logger
+    level: DEBUG
+    handlers: [console, orders_file, live_file]
+    propagate: false
+  trades:  # Trade execution events logger
+    level: DEBUG
+    handlers: [console, trades_file, live_file]
+    propagate: false
 root:
   level: INFO
-  handlers: [console, file]
+  handlers: [console, file, errors_file]

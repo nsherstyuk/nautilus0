@@ -1,0 +1,197 @@
+timestamp,bar_close_time,signal_type,action,reason,fast_sma,slow_sma
+2025-01-08 03:00:00+00:00,2025-01-08 03:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.15 pips < 0.35 pips threshold),1.035175238095238,1.035190148148148
+2025-01-14 12:30:00+00:00,2025-01-14 12:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.19 pips < 0.35 pips threshold),1.025367380952381,1.0253868518518514
+2025-01-17 12:00:00+00:00,2025-01-17 12:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.0297059523809522,1.0297082592592601
+2025-01-17 12:15:00+00:00,2025-01-17 12:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.0296990476190475,1.029709296296297
+2025-01-17 12:30:00+00:00,2025-01-17 12:45:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=12 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0296721428571427,1.0297128148148156
+2025-01-17 12:45:00+00:00,2025-01-17 13:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=12 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0296388095238096,1.029715222222223
+2025-01-17 13:00:00+00:00,2025-01-17 13:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.0296161904761907,1.0297171481481486
+2025-01-20 08:15:00+00:00,2025-01-20 08:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.35 pips threshold),1.0294473809523808,1.029423
+2025-01-22 23:45:00+00:00,2025-01-23 00:00:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0416692857142857,1.0391709629629629
+2025-01-23 00:00:00+00:00,2025-01-23 00:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.0416092857142856,1.0392095555555554
+2025-01-23 00:15:00+00:00,2025-01-23 00:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.0415623809523809,1.0392480740740737
+2025-01-23 00:30:00+00:00,2025-01-23 00:45:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=18.81 < -DI=21.06, bearish trend)",1.04151,1.0392873333333332
+2025-01-23 00:45:00+00:00,2025-01-23 01:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.0414902380952382,1.039327074074074
+2025-01-23 01:00:00+00:00,2025-01-23 01:15:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0414757142857145,1.0393679629629629
+2025-01-23 01:15:00+00:00,2025-01-23 01:30:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0414511904761905,1.0394068888888888
+2025-01-23 01:30:00+00:00,2025-01-23 01:45:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0414157142857143,1.0394464444444445
+2025-01-23 01:45:00+00:00,2025-01-23 02:00:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0413766666666668,1.0394826666666663
+2025-01-23 02:00:00+00:00,2025-01-23 02:15:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0413428571428571,1.0395195555555554
+2025-01-23 02:15:00+00:00,2025-01-23 02:30:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.041314761904762,1.0395580740740737
+2025-01-23 02:30:00+00:00,2025-01-23 02:45:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0412764285714287,1.039594259259259
+2025-01-23 02:45:00+00:00,2025-01-23 03:00:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0412430952380956,1.0396316666666665
+2025-01-23 13:15:00+00:00,2025-01-23 13:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.35 pips threshold),1.0405661904761907,1.0405668888888895
+2025-01-23 13:30:00+00:00,2025-01-23 13:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.35 pips threshold),1.0405752380952382,1.0405811851851854
+2025-01-23 13:45:00+00:00,2025-01-23 14:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.040584761904762,1.0405889629629634
+2025-01-23 14:00:00+00:00,2025-01-23 14:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.0405969047619048,1.0405991111111115
+2025-01-23 14:15:00+00:00,2025-01-23 14:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.05 pips < 0.35 pips threshold),1.0406035714285715,1.0406082222222224
+2025-01-23 14:30:00+00:00,2025-01-23 14:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.35 pips threshold),1.0406004761904764,1.0406165185185188
+2025-01-23 14:45:00+00:00,2025-01-23 15:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.35 pips threshold),1.0405938095238096,1.0406240370370374
+2025-02-04 15:15:00+00:00,2025-02-04 15:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.35 pips threshold),1.032628095238095,1.0326529259259263
+2025-02-06 15:15:00+00:00,2025-02-06 15:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.05 pips < 0.35 pips threshold),1.0370095238095238,1.0370149629629626
+2025-02-06 23:15:00+00:00,2025-02-06 23:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.29 pips < 0.35 pips threshold),1.0377161904761905,1.0377456666666671
+2025-02-07 05:00:00+00:00,2025-02-07 05:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.00 pips < 0.35 pips threshold),1.0383685714285713,1.0383688148148145
+2025-02-10 23:45:00+00:00,2025-02-11 00:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0310052380952381,1.0349184074074078
+2025-02-11 00:00:00+00:00,2025-02-11 00:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.0309540476190475,1.0348845925925931
+2025-02-11 00:15:00+00:00,2025-02-11 00:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=14.11 < +DI=40.36, bullish trend)",1.0309076190476192,1.0348520370370378
+2025-02-11 00:30:00+00:00,2025-02-11 00:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.26 < +DI=41.46, bullish trend)",1.0308692857142858,1.0348199629629635
+2025-02-11 19:30:00+00:00,2025-02-11 19:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.0332604761904758,1.0332502962962973
+2025-02-18 07:00:00+00:00,2025-02-18 07:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.35 pips threshold),1.0470247619047617,1.0469950370370373
+2025-02-24 19:15:00+00:00,2025-02-24 19:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.35 pips threshold),1.0472000000000001,1.0472078148148143
+2025-03-13 07:45:00+00:00,2025-03-13 08:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.18 pips < 0.35 pips threshold),1.0885516666666668,1.08857
+2025-03-27 18:45:00+00:00,2025-03-27 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.35 pips threshold),1.0787197619047622,1.0787310740740748
+2025-04-01 12:30:00+00:00,2025-04-01 12:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.35 pips threshold),1.0809807142857142,1.0810073333333332
+2025-04-01 12:45:00+00:00,2025-04-01 13:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=12 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0808892857142856,1.0810048518518516
+2025-04-09 02:00:00+00:00,2025-04-09 02:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.35 pips threshold),1.0963628571428576,1.0963390740740742
+2025-04-09 02:15:00+00:00,2025-04-09 02:30:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.0966371428571435,1.0963201481481482
+2025-04-09 02:30:00+00:00,2025-04-09 02:45:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.09687880952381,1.0963008888888888
+2025-04-09 02:45:00+00:00,2025-04-09 03:00:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.097147142857143,1.0962846666666668
+2025-04-10 07:30:00+00:00,2025-04-10 07:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.35 pips threshold),1.0972392857142856,1.0972506296296294
+2025-04-28 02:45:00+00:00,2025-04-28 03:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.05 pips < 0.35 pips threshold),1.1362121428571423,1.136217037037038
+2025-04-28 16:15:00+00:00,2025-04-28 16:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.35 pips threshold),1.1359419047619046,1.135957925925926
+2025-05-02 20:45:00+00:00,2025-05-02 21:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.35 pips threshold),1.132714761904762,1.1327318148148156
+2025-05-05 05:30:00+00:00,2025-05-05 05:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.35 pips threshold),1.1320785714285717,1.1320986666666677
+2025-05-08 23:45:00+00:00,2025-05-09 00:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1241719047619048,1.1319858518518524
+2025-05-19 07:45:00+00:00,2025-05-19 08:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.22 pips < 0.35 pips threshold),1.119046904761905,1.1190251111111107
+2025-05-22 17:15:00+00:00,2025-05-22 17:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.35 pips threshold),1.1296142857142857,1.1295820740740743
+2025-05-26 23:45:00+00:00,2025-05-27 00:00:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1383935714285716,1.1344372962962963
+2025-06-10 00:45:00+00:00,2025-06-10 01:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.19 pips < 0.35 pips threshold),1.1422235714285713,1.1422425555555562
+2025-06-10 15:45:00+00:00,2025-06-10 16:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.35 pips threshold),1.1417559523809526,1.141787592592593
+2025-06-17 05:30:00+00:00,2025-06-17 05:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.29 pips < 0.35 pips threshold),1.1558130952380954,1.1558419259259256
+2025-06-17 06:30:00+00:00,2025-06-17 06:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.35 pips threshold),1.1558064285714287,1.155826481481481
+2025-06-17 06:45:00+00:00,2025-06-17 07:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.35 pips threshold),1.1558161904761908,1.1558194074074066
+2025-06-17 07:00:00+00:00,2025-06-17 07:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.35 pips threshold),1.1558000000000004,1.155805629629629
+2025-06-17 07:15:00+00:00,2025-06-17 07:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.35 pips threshold),1.1557833333333334,1.1557913333333327
+2025-06-17 07:30:00+00:00,2025-06-17 07:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.35 pips threshold),1.1557692857142858,1.1557770740740736
+2025-06-17 07:45:00+00:00,2025-06-17 08:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.1557645238095238,1.1557666666666662
+2025-06-17 08:00:00+00:00,2025-06-17 08:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.35 pips threshold),1.1557514285714285,1.1557539999999993
+2025-06-17 08:15:00+00:00,2025-06-17 08:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.35 pips threshold),1.1557388095238097,1.1557399259259251
+2025-06-17 16:15:00+00:00,2025-06-17 16:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.13 pips < 0.35 pips threshold),1.155369523809524,1.1553825555555552
+2025-06-23 06:15:00+00:00,2025-06-23 06:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.35 pips threshold),1.1495980952380953,1.1496211481481475
+2025-06-23 16:45:00+00:00,2025-06-23 17:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.35 pips threshold),1.1495359523809523,1.1495425925925924
+2025-07-06 23:45:00+00:00,2025-07-07 00:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.35 pips threshold),1.1778400000000002,1.1778637407407406
+2025-07-07 02:15:00+00:00,2025-07-07 02:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.35 pips threshold),1.1777933333333332,1.177796777777778
+2025-07-07 02:30:00+00:00,2025-07-07 02:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.35 pips threshold),1.1777738095238093,1.177790888888889
+2025-07-10 02:30:00+00:00,2025-07-10 02:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.35 pips threshold),1.1723752380952384,1.1723759259259254
+2025-07-17 23:45:00+00:00,2025-07-18 00:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1595747619047623,1.1620023333333334
+2025-07-18 00:00:00+00:00,2025-07-18 00:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.48 < +DI=35.38, bullish trend)",1.1596507142857146,1.161981962962963
+2025-07-18 00:15:00+00:00,2025-07-18 00:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=15.06 < +DI=31.93, bullish trend)",1.1597214285714288,1.161960925925926
+2025-07-18 00:30:00+00:00,2025-07-18 00:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=12.98 < +DI=39.72, bullish trend)",1.1598102380952382,1.1619415185185187
+2025-07-18 00:45:00+00:00,2025-07-18 01:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=18.99 < +DI=27.07, bullish trend)",1.1599128571428574,1.1619225555555555
+2025-07-18 01:00:00+00:00,2025-07-18 01:15:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.159989285714286,1.1619030370370371
+2025-07-18 01:15:00+00:00,2025-07-18 01:30:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1600650000000001,1.1618810370370372
+2025-07-18 01:30:00+00:00,2025-07-18 01:45:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.160150238095238,1.1618595925925925
+2025-07-18 01:45:00+00:00,2025-07-18 02:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1602464285714287,1.1618394074074074
+2025-07-18 02:00:00+00:00,2025-07-18 02:15:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1603264285714285,1.1618179259259254
+2025-07-18 02:15:00+00:00,2025-07-18 02:30:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1603990476190478,1.1617959999999996
+2025-07-18 02:30:00+00:00,2025-07-18 02:45:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1604728571428573,1.161776037037037
+2025-07-18 02:45:00+00:00,2025-07-18 03:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1605464285714284,1.161756222222222
+2025-07-18 03:00:00+00:00,2025-07-18 03:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.160615952380952,1.1617384074074073
+2025-07-18 03:15:00+00:00,2025-07-18 03:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.16071,1.1617207407407408
+2025-07-18 03:30:00+00:00,2025-07-18 03:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1608066666666665,1.1616995185185184
+2025-07-18 05:45:00+00:00,2025-07-18 06:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.35 pips threshold),1.161499761904762,1.1614727037037036
+2025-07-28 04:00:00+00:00,2025-07-28 04:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.35 pips threshold),1.1751509523809527,1.1751171111111105
+2025-07-28 06:15:00+00:00,2025-07-28 06:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.18 pips < 0.35 pips threshold),1.1751547619047618,1.175136851851851
+2025-08-07 18:00:00+00:00,2025-08-07 18:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.35 pips threshold),1.163672857142857,1.1636381111111112
+2025-08-07 21:30:00+00:00,2025-08-07 21:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.35 pips threshold),1.1643238095238095,1.1643181111111114
+2025-08-07 21:30:00+00:00,2025-08-07 21:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.35 pips threshold),1.1643880952380954,1.1643543703703705
+2025-08-08 17:00:00+00:00,2025-08-08 17:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.35 pips threshold),1.1653857142857145,1.165356
+2025-08-10 22:15:00+00:00,2025-08-10 22:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.35 pips threshold),1.1650761904761908,1.1650650740740724
+2025-08-11 03:00:00+00:00,2025-08-11 03:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.35 pips threshold),1.1652714285714283,1.1652685925925925
+2025-08-11 10:45:00+00:00,2025-08-11 11:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.35 pips threshold),1.165346666666667,1.165339037037036
+2025-08-12 23:45:00+00:00,2025-08-13 00:00:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1673852380952385,1.1631267037037027
+2025-08-12 23:45:00+00:00,2025-08-13 00:00:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1674100000000005,1.1631462222222213
+2025-08-13 00:00:00+00:00,2025-08-13 00:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.52 < -DI=30.66, bearish trend)",1.1674250000000004,1.1631658888888876
+2025-08-13 00:00:00+00:00,2025-08-13 00:15:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=15.52 < -DI=30.66, bearish trend)",1.1674400000000003,1.1631855555555544
+2025-08-13 00:15:00+00:00,2025-08-13 00:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=12.06 < -DI=25.55, bearish trend)",1.1674480952380955,1.1632097777777766
+2025-08-13 00:15:00+00:00,2025-08-13 00:30:00+00:00,BUY,rejected,"dmi_trend_mismatch (+DI=12.06 < -DI=25.55, bearish trend)",1.1674561904761906,1.1632339999999988
+2025-08-13 00:30:00+00:00,2025-08-13 00:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1674754761904764,1.163261074074073
+2025-08-14 05:45:00+00:00,2025-08-14 06:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.35 pips threshold),1.1703245238095232,1.170330703703702
+2025-08-14 05:45:00+00:00,2025-08-14 06:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.35 pips threshold),1.17031619047619,1.170341407407406
+2025-08-15 05:30:00+00:00,2025-08-15 05:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.1659490476190475,1.165959074074075
+2025-08-18 09:00:00+00:00,2025-08-18 09:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.35 pips threshold),1.1696852380952383,1.1697190740740728
+2025-08-19 10:45:00+00:00,2025-08-19 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.1675480952380954,1.1675505185185187
+2025-08-19 16:45:00+00:00,2025-08-19 17:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.1670238095238095,1.1670257037037033
+2025-08-20 14:30:00+00:00,2025-08-20 14:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.35 pips threshold),1.1653819047619047,1.1654149629629627
+2025-08-21 03:00:00+00:00,2025-08-21 03:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.35 pips threshold),1.1647071428571427,1.1647078518518525
+2025-08-21 03:15:00+00:00,2025-08-21 03:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.18 pips < 0.35 pips threshold),1.1646883333333333,1.1647067037037047
+2025-08-21 09:45:00+00:00,2025-08-21 10:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.35 pips threshold),1.16497619047619,1.164996
+2025-08-21 12:15:00+00:00,2025-08-21 12:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.35 pips threshold),1.1650607142857143,1.1650884444444447
+2025-08-22 13:15:00+00:00,2025-08-22 13:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.35 pips threshold),1.1604049999999997,1.1604246666666684
+2025-08-25 15:45:00+00:00,2025-08-25 16:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.35 pips threshold),1.1694328571428572,1.1694674074074083
+2025-08-25 23:45:00+00:00,2025-08-26 00:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1617426190476192,1.1690377407407408
+2025-08-25 23:45:00+00:00,2025-08-26 00:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.161691904761905,1.1689982962962961
+2025-08-26 00:00:00+00:00,2025-08-26 00:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=9.53 < +DI=41.13, bullish trend)",1.1617533333333336,1.1689717407407407
+2025-08-26 00:00:00+00:00,2025-08-26 00:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=9.53 < +DI=41.13, bullish trend)",1.161814761904762,1.168945814814815
+2025-08-26 00:15:00+00:00,2025-08-26 00:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=7.29 < +DI=35.94, bullish trend)",1.1618864285714285,1.168920407407408
+2025-08-26 00:15:00+00:00,2025-08-26 00:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=7.29 < +DI=35.94, bullish trend)",1.161958095238095,1.1688950000000005
+2025-08-26 00:30:00+00:00,2025-08-26 00:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=12.23 < +DI=27.64, bullish trend)",1.1620640476190476,1.1688699259259268
+2025-08-26 00:30:00+00:00,2025-08-26 00:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=12.23 < +DI=27.64, bullish trend)",1.16217,1.1688448518518528
+2025-08-26 00:45:00+00:00,2025-08-26 01:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.90 < +DI=25.60, bullish trend)",1.1622666666666666,1.1688179629629638
+2025-08-26 00:45:00+00:00,2025-08-26 01:00:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=19.90 < +DI=25.60, bullish trend)",1.1623633333333334,1.1687905555555562
+2025-08-26 01:00:00+00:00,2025-08-26 01:15:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.162438095238095,1.1687600000000007
+2025-08-26 01:00:00+00:00,2025-08-26 01:15:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1625128571428571,1.168729444444445
+2025-08-26 01:15:00+00:00,2025-08-26 01:30:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1625866666666667,1.1686954444444448
+2025-08-26 01:15:00+00:00,2025-08-26 01:30:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.162660476190476,1.168661444444445
+2025-08-26 01:30:00+00:00,2025-08-26 01:45:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1627152380952377,1.168627333333334
+2025-08-26 01:30:00+00:00,2025-08-26 01:45:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1627699999999994,1.1685915185185192
+2025-08-26 01:45:00+00:00,2025-08-26 02:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1628233333333327,1.1685562962962974
+2025-08-26 01:45:00+00:00,2025-08-26 02:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=1 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1628766666666661,1.1685210740740752
+2025-08-26 02:00:00+00:00,2025-08-26 02:15:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1629169047619041,1.168484666666668
+2025-08-26 02:00:00+00:00,2025-08-26 02:15:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1629571428571421,1.1684482592592607
+2025-08-26 02:15:00+00:00,2025-08-26 02:30:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1630192857142851,1.1684128518518528
+2025-08-26 02:15:00+00:00,2025-08-26 02:30:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1630814285714282,1.1683787037037048
+2025-08-26 02:30:00+00:00,2025-08-26 02:45:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.163118571428571,1.1683406666666676
+2025-08-26 02:30:00+00:00,2025-08-26 02:45:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1631557142857138,1.1683026296296306
+2025-08-26 02:45:00+00:00,2025-08-26 03:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1631992857142852,1.168265925925927
+2025-08-26 02:45:00+00:00,2025-08-26 03:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=2 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1632428571428568,1.1682292222222233
+2025-08-26 16:30:00+00:00,2025-08-26 16:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.35 pips threshold),1.165341904761905,1.1653173333333335
+2025-08-26 23:15:00+00:00,2025-08-26 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.164239523809524,1.1642372222222208
+2025-08-26 23:15:00+00:00,2025-08-26 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.35 pips threshold),1.1642485714285715,1.1642160740740726
+2025-08-27 03:15:00+00:00,2025-08-27 03:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.31 pips < 0.35 pips threshold),1.1636911904761906,1.1636598518518524
+2025-08-27 20:00:00+00:00,2025-08-27 20:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.35 pips threshold),1.1626569047619046,1.162654296296297
+2025-08-28 23:45:00+00:00,2025-08-29 00:00:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1678959523809527,1.1663824814814803
+2025-08-28 23:45:00+00:00,2025-08-29 00:00:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1678904761904765,1.166393185185184
+2025-08-28 23:45:00+00:00,2025-08-29 00:00:00+00:00,BUY,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.167885,1.1664038888888877
+2025-08-29 03:15:00+00:00,2025-08-29 03:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.35 pips threshold),1.166694285714286,1.166718666666667
+2025-08-29 10:45:00+00:00,2025-08-29 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.35 pips threshold),1.1673595238095236,1.1673915925925935
+2025-08-29 10:45:00+00:00,2025-08-29 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.21 pips < 0.35 pips threshold),1.167368333333333,1.167389074074075
+2025-08-29 10:45:00+00:00,2025-08-29 11:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.09 pips < 0.35 pips threshold),1.1673771428571424,1.1673865555555563
+2025-08-29 11:00:00+00:00,2025-08-29 11:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.167374047619047,1.1673837777777787
+2025-08-29 11:00:00+00:00,2025-08-29 11:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.167370952380952,1.167381000000001
+2025-08-29 11:00:00+00:00,2025-08-29 11:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.1673678571428567,1.167378222222223
+2025-08-29 11:15:00+00:00,2025-08-29 11:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.35 pips threshold),1.1673371428571424,1.1673709259259268
+2025-08-29 15:15:00+00:00,2025-08-29 15:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.35 pips threshold),1.1673226190476194,1.1673559259259267
+2025-09-02 02:45:00+00:00,2025-09-02 03:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.35 pips threshold),1.1706623809523808,1.1706637037037033
+2025-09-02 03:00:00+00:00,2025-09-02 03:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.35 pips threshold),1.1706307142857142,1.170664074074074
+2025-09-03 12:30:00+00:00,2025-09-03 12:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.35 pips threshold),1.1647623809523806,1.1647924074074076
+2025-09-04 07:45:00+00:00,2025-09-04 08:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.1653569047619048,1.1653610740740759
+2025-09-04 07:45:00+00:00,2025-09-04 08:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.14 pips < 0.35 pips threshold),1.165355238095238,1.1653691851851868
+2025-09-04 07:45:00+00:00,2025-09-04 08:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.25 pips < 0.35 pips threshold),1.1653535714285712,1.165378333333335
+2025-09-04 22:00:00+00:00,2025-09-04 22:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.35 pips threshold),1.1649140476190476,1.164941222222222
+2025-09-04 22:00:00+00:00,2025-09-04 22:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.35 pips threshold),1.1649249999999998,1.1649373333333333
+2025-09-09 14:15:00+00:00,2025-09-09 14:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.35 pips threshold),1.174944523809524,1.1749727037037039
+2025-09-12 10:15:00+00:00,2025-09-12 10:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.1729161904761907,1.172920185185184
+2025-09-12 18:30:00+00:00,2025-09-12 18:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.21 pips < 0.35 pips threshold),1.1727414285714282,1.1727626296296294
+2025-09-18 10:00:00+00:00,2025-09-18 10:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.22 pips < 0.35 pips threshold),1.1828052380952383,1.182827703703705
+2025-09-18 13:00:00+00:00,2025-09-18 13:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.35 pips threshold),1.1825309523809524,1.1825539629629627
+2025-09-24 04:45:00+00:00,2025-09-24 05:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.35 pips threshold),1.1802292857142862,1.1802548148148149
+2025-09-24 23:45:00+00:00,2025-09-25 00:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1741197619047623,1.1774903703703696
+2025-09-24 23:45:00+00:00,2025-09-25 00:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.1741309523809529,1.1774706666666663
+2025-09-24 23:45:00+00:00,2025-09-25 00:00:00+00:00,SELL,rejected,"time_filter_excluded_hour (bar_hour=23 in excluded hours [1, 2, 12, 18, 21, 23] UTC)",1.174141190476191,1.1774518888888885
+2025-09-25 00:00:00+00:00,2025-09-25 00:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1741511904761908,1.1774330740740737
+2025-09-25 00:00:00+00:00,2025-09-25 00:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1741614285714288,1.1774151111111109
+2025-09-25 00:00:00+00:00,2025-09-25 00:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1741716666666668,1.1773971481481478
+2025-09-25 00:15:00+00:00,2025-09-25 00:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.07 < +DI=20.35, bullish trend)",1.1741835714285718,1.177379111111111
+2025-09-25 00:15:00+00:00,2025-09-25 00:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.07 < +DI=20.35, bullish trend)",1.1741954761904765,1.1773610740740739
+2025-09-25 00:15:00+00:00,2025-09-25 00:30:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.07 < +DI=20.35, bullish trend)",1.1742102380952386,1.1773405925925924
+2025-09-25 12:00:00+00:00,2025-09-25 12:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.35 pips threshold),1.174379761904762,1.174377185185183
+2025-09-25 12:00:00+00:00,2025-09-25 12:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.35 pips threshold),1.1743735714285717,1.1743654814814795
+2025-09-25 12:15:00+00:00,2025-09-25 12:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.35 pips threshold),1.1743571428571429,1.174353666666664
+2025-09-26 09:15:00+00:00,2025-09-26 09:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.35 pips threshold),1.1678328571428571,1.1678029999999997
+2025-10-02 08:00:00+00:00,2025-10-02 08:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.35 pips threshold),1.1738842857142857,1.1738784814814807
+2025-10-02 08:00:00+00:00,2025-10-02 08:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.35 pips threshold),1.1739180952380954,1.173883703703703
+2025-10-02 14:45:00+00:00,2025-10-02 15:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.35 pips threshold),1.174012380952381,1.1739886296296307
+2025-10-03 10:15:00+00:00,2025-10-03 10:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.22 pips < 0.35 pips threshold),1.1729571428571424,1.1729356296296298
+2025-10-09 05:15:00+00:00,2025-10-09 05:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.29 pips < 0.35 pips threshold),1.1642752380952377,1.1642461111111109
+2025-10-09 06:15:00+00:00,2025-10-09 06:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.29 pips < 0.35 pips threshold),1.1641819047619049,1.1641532222222224

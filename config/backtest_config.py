@@ -42,6 +42,7 @@ class BacktestConfig:
     dmi_enabled: bool = True
     dmi_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
     dmi_period: int = 14
+    dmi_minimum_difference: float = 0.0  # Minimum DI difference for valid trend (0.0 = disabled, backward compatible)
     stoch_enabled: bool = True
     stoch_bar_spec: str = "15-MINUTE-MID-EXTERNAL"
     stoch_period_k: int = 14
@@ -58,6 +59,28 @@ class BacktestConfig:
     trading_hours_end: int = 23
     trading_hours_timezone: str = "UTC"
     excluded_hours: list[int] = field(default_factory=list)  # List of hours (0-23) to exclude from trading
+    # Multi-timeframe trend filter (disabled by default for zero impact)
+    trend_filter_enabled: bool = False
+    trend_bar_spec: str = "1-HOUR-MID-EXTERNAL"
+    trend_fast_period: int = 20
+    trend_slow_period: int = 50
+    # Entry timing refinement (disabled by default for zero impact)
+    entry_timing_enabled: bool = False
+    entry_timing_bar_spec: str = "5-MINUTE-MID-EXTERNAL"
+    entry_timing_method: str = "pullback"  # Options: "pullback", "rsi", "stochastic", "breakout"
+    entry_timing_timeout_bars: int = 10
+    # Dormant mode (disabled by default for zero impact)
+    dormant_mode_enabled: bool = False  # Activate lower timeframe trading when crossings are rare
+    dormant_threshold_hours: float = 14.0  # Hours without crossover before activating dormant mode
+    dormant_bar_spec: str = "1-MINUTE-MID-EXTERNAL"  # Lower timeframe for signal detection
+    dormant_fast_period: int = 5  # Fast MA period for dormant mode
+    dormant_slow_period: int = 10  # Slow MA period for dormant mode
+    dormant_stop_loss_pips: int = 20  # Tighter SL for dormant mode trades
+    dormant_take_profit_pips: int = 30  # Smaller TP for dormant mode trades
+    dormant_trailing_activation_pips: int = 15  # Lower activation threshold for trailing
+    dormant_trailing_distance_pips: int = 8  # Tighter trailing distance
+    dormant_dmi_enabled: bool = False  # Use DMI filter in dormant mode
+    dormant_stoch_enabled: bool = False  # Use Stochastic filter in dormant mode
 
 
 def _require(name: str, value: Optional[str]) -> str:
@@ -164,6 +187,7 @@ def get_backtest_config() -> BacktestConfig:
     dmi_enabled = os.getenv("STRATEGY_DMI_ENABLED", "true").lower() in ("true", "1", "yes")
     dmi_bar_spec = os.getenv("STRATEGY_DMI_BAR_SPEC", "2-MINUTE-MID-EXTERNAL")
     dmi_period = _parse_int("STRATEGY_DMI_PERIOD", os.getenv("STRATEGY_DMI_PERIOD"), 14)
+    dmi_minimum_difference = _parse_float("STRATEGY_DMI_MINIMUM_DIFFERENCE", os.getenv("STRATEGY_DMI_MINIMUM_DIFFERENCE"), 0.0)
     
     stoch_enabled = os.getenv("STRATEGY_STOCH_ENABLED", "true").lower() in ("true", "1", "yes")
     stoch_bar_spec = os.getenv("STRATEGY_STOCH_BAR_SPEC", "15-MINUTE-MID-EXTERNAL")
@@ -182,6 +206,31 @@ def get_backtest_config() -> BacktestConfig:
     trading_hours_end = _parse_int("BACKTEST_TRADING_HOURS_END", os.getenv("BACKTEST_TRADING_HOURS_END"), 23)
     trading_hours_timezone = os.getenv("BACKTEST_TRADING_HOURS_TIMEZONE", "UTC")
     excluded_hours = _parse_excluded_hours("BACKTEST_EXCLUDED_HOURS", os.getenv("BACKTEST_EXCLUDED_HOURS"))
+    
+    # Multi-timeframe trend filter parameters (disabled by default)
+    trend_filter_enabled = os.getenv("BACKTEST_TREND_FILTER_ENABLED", "false").lower() in ("true", "1", "yes")
+    trend_bar_spec = os.getenv("BACKTEST_TREND_BAR_SPEC", "1-HOUR-MID-EXTERNAL")
+    trend_fast_period = _parse_int("BACKTEST_TREND_FAST_PERIOD", os.getenv("BACKTEST_TREND_FAST_PERIOD"), 20)
+    trend_slow_period = _parse_int("BACKTEST_TREND_SLOW_PERIOD", os.getenv("BACKTEST_TREND_SLOW_PERIOD"), 50)
+    
+    # Entry timing refinement parameters (disabled by default)
+    entry_timing_enabled = os.getenv("BACKTEST_ENTRY_TIMING_ENABLED", "false").lower() in ("true", "1", "yes")
+    entry_timing_bar_spec = os.getenv("BACKTEST_ENTRY_TIMING_BAR_SPEC", "5-MINUTE-MID-EXTERNAL")
+    entry_timing_method = os.getenv("BACKTEST_ENTRY_TIMING_METHOD", "pullback")
+    entry_timing_timeout_bars = _parse_int("BACKTEST_ENTRY_TIMING_TIMEOUT_BARS", os.getenv("BACKTEST_ENTRY_TIMING_TIMEOUT_BARS"), 10)
+    
+    # Dormant mode parameters (disabled by default)
+    dormant_mode_enabled = os.getenv("BACKTEST_DORMANT_MODE_ENABLED", "false").lower() in ("true", "1", "yes")
+    dormant_threshold_hours = _parse_float("BACKTEST_DORMANT_THRESHOLD_HOURS", os.getenv("BACKTEST_DORMANT_THRESHOLD_HOURS"), 14.0)
+    dormant_bar_spec = os.getenv("BACKTEST_DORMANT_BAR_SPEC", "1-MINUTE-MID-EXTERNAL")
+    dormant_fast_period = _parse_int("BACKTEST_DORMANT_FAST_PERIOD", os.getenv("BACKTEST_DORMANT_FAST_PERIOD"), 5)
+    dormant_slow_period = _parse_int("BACKTEST_DORMANT_SLOW_PERIOD", os.getenv("BACKTEST_DORMANT_SLOW_PERIOD"), 10)
+    dormant_stop_loss_pips = _parse_int("BACKTEST_DORMANT_STOP_LOSS_PIPS", os.getenv("BACKTEST_DORMANT_STOP_LOSS_PIPS"), 20)
+    dormant_take_profit_pips = _parse_int("BACKTEST_DORMANT_TAKE_PROFIT_PIPS", os.getenv("BACKTEST_DORMANT_TAKE_PROFIT_PIPS"), 30)
+    dormant_trailing_activation_pips = _parse_int("BACKTEST_DORMANT_TRAILING_ACTIVATION_PIPS", os.getenv("BACKTEST_DORMANT_TRAILING_ACTIVATION_PIPS"), 15)
+    dormant_trailing_distance_pips = _parse_int("BACKTEST_DORMANT_TRAILING_DISTANCE_PIPS", os.getenv("BACKTEST_DORMANT_TRAILING_DISTANCE_PIPS"), 8)
+    dormant_dmi_enabled = os.getenv("BACKTEST_DORMANT_DMI_ENABLED", "false").lower() in ("true", "1", "yes")
+    dormant_stoch_enabled = os.getenv("BACKTEST_DORMANT_STOCH_ENABLED", "false").lower() in ("true", "1", "yes")
     
     # Normalize DMI bar_spec for FX instruments (similar to primary bar_spec normalization)
     if dmi_enabled and "/" in symbol:
@@ -283,6 +332,9 @@ def get_backtest_config() -> BacktestConfig:
 
     if dmi_period <= 0:
         raise ValueError("STRATEGY_DMI_PERIOD must be > 0")
+
+    if dmi_minimum_difference < 0:
+        raise ValueError("STRATEGY_DMI_MINIMUM_DIFFERENCE must be >= 0")
 
     if dmi_enabled:
         # Validate bar spec format
@@ -415,6 +467,7 @@ def get_backtest_config() -> BacktestConfig:
         dmi_enabled=dmi_enabled,
         dmi_bar_spec=dmi_bar_spec,
         dmi_period=dmi_period,
+        dmi_minimum_difference=dmi_minimum_difference,
         stoch_enabled=stoch_enabled,
         stoch_bar_spec=stoch_bar_spec,
         stoch_period_k=stoch_period_k,
@@ -429,6 +482,25 @@ def get_backtest_config() -> BacktestConfig:
         trading_hours_end=trading_hours_end,
         trading_hours_timezone=trading_hours_timezone,
         excluded_hours=excluded_hours,
+        trend_filter_enabled=trend_filter_enabled,
+        trend_bar_spec=trend_bar_spec,
+        trend_fast_period=trend_fast_period,
+        trend_slow_period=trend_slow_period,
+        entry_timing_enabled=entry_timing_enabled,
+        entry_timing_bar_spec=entry_timing_bar_spec,
+        entry_timing_method=entry_timing_method,
+        entry_timing_timeout_bars=entry_timing_timeout_bars,
+        dormant_mode_enabled=dormant_mode_enabled,
+        dormant_threshold_hours=dormant_threshold_hours,
+        dormant_bar_spec=dormant_bar_spec,
+        dormant_fast_period=dormant_fast_period,
+        dormant_slow_period=dormant_slow_period,
+        dormant_stop_loss_pips=dormant_stop_loss_pips,
+        dormant_take_profit_pips=dormant_take_profit_pips,
+        dormant_trailing_activation_pips=dormant_trailing_activation_pips,
+        dormant_trailing_distance_pips=dormant_trailing_distance_pips,
+        dormant_dmi_enabled=dormant_dmi_enabled,
+        dormant_stoch_enabled=dormant_stoch_enabled,
     )
 
 

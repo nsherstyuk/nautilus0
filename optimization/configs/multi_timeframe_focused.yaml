@@ -1,0 +1,86 @@
+# Multi-Timeframe Optimization: Focused Search
+# =============================================
+# 
+# Tests multiple timeframes with optimized parameters for each, but with fewer
+# combinations for faster iteration. Tests most promising timeframes only.
+#
+# Total combinations: 5 timeframes × 2 MA configs × 1 risk config = 10 combinations
+# Expected runtime: ~15-20 minutes with 15 workers
+#
+# Usage:
+#   python optimization/grid_search.py \
+#     --config optimization/configs/multi_timeframe_focused.yaml \
+#     --objective sharpe_ratio \
+#     --workers 15 \
+#     --output optimization/results/multi_timeframe_focused_results.csv \
+#     --no-resume
+
+optimization:
+  objective: sharpe_ratio
+  workers: 15
+  checkpoint_interval: 5
+  timeout_seconds: 300
+  output_file: optimization/results/multi_timeframe_focused_results.csv
+  checkpoint_file: optimization/checkpoints/multi_timeframe_focused_checkpoint.csv
+
+parameters:
+  # Test most promising timeframes
+  bar_spec:
+    values:
+      - "1-MINUTE-MID-EXTERNAL"    # Very short-term
+      - "5-MINUTE-MID-EXTERNAL"    # Short-medium term
+      - "15-MINUTE-MID-EXTERNAL"   # Baseline
+      - "30-MINUTE-MID-EXTERNAL"   # Medium-long term
+      - "1-HOUR-MID-EXTERNAL"      # Long-term
+
+  # Test MA periods optimized for each timeframe
+  # Fast for short timeframes, slow for long timeframes
+  fast_period:
+    values:
+      - 20   # Faster periods for shorter timeframes
+      - 42   # Baseline (best for 15-min)
+
+  slow_period:
+    values:
+      - 100  # Faster slow MA for shorter timeframes
+      - 270  # Baseline (best for 15-min)
+
+fixed:
+  # All other parameters fixed at Phase 6 best values
+  crossover_threshold_pips: 0.35
+  stop_loss_pips: 35
+  take_profit_pips: 50
+  trailing_stop_activation_pips: 22
+  trailing_stop_distance_pips: 12
+  
+  dmi_enabled: true
+  dmi_period: 10
+  dmi_minimum_difference: 0.0
+  dmi_bar_spec: "2-MINUTE-MID-EXTERNAL"
+  
+  stoch_enabled: true
+  stoch_period_k: 18
+  stoch_period_d: 3
+  stoch_bullish_threshold: 30
+  stoch_bearish_threshold: 65
+  stoch_max_bars_since_crossing: 9
+  stoch_bar_spec: "15-MINUTE-MID-EXTERNAL"
+  
+  trend_filter_enabled: false
+  entry_timing_enabled: false
+  
+  trade_size: 100000
+  enforce_position_limit: true
+  allow_position_reversal: false
+  starting_capital: 100000.0
+
+# Configuration Summary
+# ===================
+# Total combinations: 5 × 2 × 2 = 20 combinations
+# Expected runtime: ~20 minutes with 15 workers
+#
+# This quick test will identify:
+#   - Which timeframes show promise
+#   - Rough MA period scaling needed
+#   - Can then do focused optimization on best timeframe(s)
+

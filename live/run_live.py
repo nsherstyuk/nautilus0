@@ -35,6 +35,7 @@ from nautilus_trader.adapters.interactive_brokers.factories import (
     InteractiveBrokersLiveDataClientFactory,
     InteractiveBrokersLiveExecClientFactory,
 )
+from nautilus_trader.adapters.interactive_brokers.data import InteractiveBrokersDataClient
 from nautilus_trader.config import (
     ImportableStrategyConfig,
     LiveDataEngineConfig,
@@ -47,6 +48,13 @@ from nautilus_trader.live.node import TradingNode
 from config.ibkr_config import get_ibkr_config
 from config.live_config import LiveConfig, get_live_config, validate_live_config
 from live.performance_monitor import create_performance_monitor, PerformanceMonitor
+from live.historical_backfill import (
+    backfill_historical_data,
+    feed_historical_bars_to_strategy,
+    calculate_required_duration_days,
+)
+from nautilus_trader.model.identifiers import InstrumentId, ClientId
+from nautilus_trader.model.data import BarType
 
 
 def setup_logging(log_dir: Path) -> logging.Logger:
@@ -57,17 +65,24 @@ def setup_logging(log_dir: Path) -> logging.Logger:
 
     log_dir.mkdir(parents=True, exist_ok=True)
 
-    # Redirect general file handler to live log directory
-    if "file" in logging_config.get("handlers", {}):
-        logging_config["handlers"]["file"]["filename"] = str(log_dir / "application.log")
-
-    # Ensure live-specific handler writes inside provided directory
-    if "live_file" in logging_config.get("handlers", {}):
-        logging_config["handlers"]["live_file"]["filename"] = str(log_dir / "live_trading.log")
+    # Redirect all file handlers to live log directory
+    handler_mappings = {
+        "file": "application.log",
+        "live_file": "live_trading.log",
+        "strategy_file": "strategy.log",
+        "orders_file": "orders.log",
+        "trades_file": "trades.log",
+        "errors_file": "errors.log",
+    }
+    
+    for handler_name, filename in handler_mappings.items():
+        if handler_name in logging_config.get("handlers", {}):
+            logging_config["handlers"][handler_name]["filename"] = str(log_dir / filename)
 
     logging.config.dictConfig(logging_config)
     logger = logging.getLogger("live")
     logger.info("Live logging configured. Logs directory: %s", log_dir)
+    logger.info("Log files initialized: %s", ", ".join(handler_mappings.values()))
     return logger
 
 
@@ -146,6 +161,7 @@ def create_trading_node_config(
             "dmi_enabled": live_config.dmi_enabled,
             "dmi_period": live_config.dmi_period,
             "dmi_bar_spec": live_config.dmi_bar_spec,
+            "dmi_minimum_difference": live_config.dmi_minimum_difference,
             "stoch_enabled": live_config.stoch_enabled,
             "stoch_period_k": live_config.stoch_period_k,
             "stoch_period_d": live_config.stoch_period_d,
@@ -158,6 +174,25 @@ def create_trading_node_config(
             "trading_hours_end": live_config.trading_hours_end,
             "trading_hours_timezone": live_config.trading_hours_timezone,
                 "excluded_hours": live_config.excluded_hours,
+            "trend_filter_enabled": live_config.trend_filter_enabled,
+            "trend_bar_spec": live_config.trend_bar_spec,
+            "trend_fast_period": live_config.trend_fast_period,
+            "trend_slow_period": live_config.trend_slow_period,
+            "entry_timing_enabled": live_config.entry_timing_enabled,
+            "entry_timing_bar_spec": live_config.entry_timing_bar_spec,
+            "entry_timing_method": live_config.entry_timing_method,
+            "entry_timing_timeout_bars": live_config.entry_timing_timeout_bars,
+            "dormant_mode_enabled": live_config.dormant_mode_enabled,
+            "dormant_threshold_hours": live_config.dormant_threshold_hours,
+            "dormant_bar_spec": live_config.dormant_bar_spec,
+            "dormant_fast_period": live_config.dormant_fast_period,
+            "dormant_slow_period": live_config.dormant_slow_period,
+            "dormant_stop_loss_pips": live_config.dormant_stop_loss_pips,
+            "dormant_take_profit_pips": live_config.dormant_take_profit_pips,
+            "dormant_trailing_activation_pips": live_config.dormant_trailing_activation_pips,
+            "dormant_trailing_distance_pips": live_config.dormant_trailing_distance_pips,
+            "dormant_dmi_enabled": live_config.dormant_dmi_enabled,
+            "dormant_stoch_enabled": live_config.dormant_stoch_enabled,
         },
     )
 
@@ -319,6 +354,74 @@ async def main() -> int:
     logger.info("Waiting for IBKR clients to connect (up to 30 seconds)...")
     # Give clients time to establish connection before starting main loop
     await asyncio.sleep(30)
+    
+    # Check if data client is connected and get it
+    try:
+        # Access clients from data engine's internal dictionary
+        # Find the InteractiveBrokersDataClient by type
+        data_engine = node.kernel.data_engine
+        data_client = None
+        
+        if hasattr(data_engine, '_clients'):
+            # Search for InteractiveBrokersDataClient in registered clients
+            for client_id, client in data_engine._clients.items():
+                if isinstance(client, InteractiveBrokersDataClient):
+                    data_client = client
+                    logger.info(f"Found IB data client: {client_id}")
+                    break
+        
+        if not data_client:
+            logger.warning("InteractiveBrokers data client not found. Cannot perform historical backfill.")
+            logger.debug(f"Available clients: {list(data_engine._clients.keys()) if hasattr(data_engine, '_clients') else 'N/A'}")
+    except Exception as e:
+        logger.warning(f"Could not access data client: {e}. Skipping historical backfill.", exc_info=True)
+        data_client = None
+    
+    if data_client:
+        # Perform historical data backfill if needed
+        logger.info("Analyzing historical data requirements...")
+        
+        instrument_id = InstrumentId.from_str(f"{live_config.symbol}.{live_config.venue}")
+        bar_spec = live_config.bar_spec
+        if not bar_spec.upper().endswith("-EXTERNAL") and not bar_spec.upper().endswith("-INTERNAL"):
+            bar_spec = f"{bar_spec}-EXTERNAL"
+        bar_type = BarType.from_str(f"{instrument_id}-{bar_spec}")
+        
+        is_forex = "/" in live_config.symbol
+        
+        # Calculate required duration for logging
+        duration_days = calculate_required_duration_days(live_config.slow_period, bar_spec)
+        logger.info(
+            f"Strategy warmup requires {live_config.slow_period} bars of {bar_spec} "
+            f"(approximately {duration_days:.2f} days)"
+        )
+        
+        # Perform backfill
+        backfill_success, bars_loaded, historical_bars = await backfill_historical_data(
+            data_client=data_client,
+            instrument_id=instrument_id,
+            bar_type=bar_type,
+            slow_period=live_config.slow_period,
+            bar_spec=bar_spec,
+            is_forex=is_forex,
+        )
+        
+        if backfill_success and bars_loaded > 0 and historical_bars:
+            # Feed historical bars to strategy
+            logger.info("Feeding historical bars to strategy for warmup...")
+            await feed_historical_bars_to_strategy(
+                strategy_instance=strategy_instance,
+                bars=historical_bars,
+                bar_type=bar_type,
+            )
+            logger.info("Historical data backfill completed successfully")
+        elif backfill_success:
+            logger.info("No historical data backfill needed - sufficient data already available")
+        else:
+            logger.warning(
+                "Historical data backfill failed or incomplete. "
+                "Strategy will warm up using live data only (may take significant time)."
+            )
 
     logger.info("Live trading node built successfully. Starting...")
 

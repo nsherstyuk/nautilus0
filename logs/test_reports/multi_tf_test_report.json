@@ -1,0 +1,151 @@
+{
+  "baseline": {
+    "output_dir": "logs\\backtest_results\\EUR-USD_20251103_195802_941597",
+    "metrics": {
+      "total_pnl": 14203.91,
+      "pnl_percentage": 14.203910000000002,
+      "sharpe_ratio": 0.453,
+      "win_rate": 0.6,
+      "trade_count": 85,
+      "max_drawdown": 0.0,
+      "profit_factor": 0.0,
+      "avg_winner": 462.2701960784316,
+      "avg_loser": -275.64323529411763,
+      "rejected_signals": 678
+    },
+    "stats": {
+      "pnls": {
+        "PnL (total)": 14203.91,
+        "PnL% (total)": 14.203910000000002,
+        "Max Winner": 499.35,
+        "Avg Winner": 462.2701960784316,
+        "Min Winner": 8.38,
+        "Min Loser": -30.54,
+        "Avg Loser": -275.64323529411763,
+        "Max Loser": -356.73,
+        "Expectancy": 167.10482352941187,
+        "Win Rate": 0.6
+      },
+      "general": {
+        "Long Ratio": 0.53,
+        "Total trades": 85,
+        "Sharpe ratio": 0.453,
+        "Profit factor": 0.0,
+        "Max drawdown": 0.0
+      },
+      "rejected_signals_count": 678
+    }
+  },
+  "trend_filter": {
+    "output_dir": "logs\\backtest_results\\EUR-USD_20251103_195816_732770",
+    "metrics": {
+      "total_pnl": -378.76,
+      "pnl_percentage": -0.37875999999999477,
+      "sharpe_ratio": -0.072,
+      "win_rate": 0.38461538461538464,
+      "trade_count": 13,
+      "max_drawdown": 0.0,
+      "profit_factor": 0.0,
+      "avg_winner": 494.46999999999997,
+      "avg_loser": -356.38875,
+      "rejected_signals": 196
+    },
+    "stats": {
+      "pnls": {
+        "PnL (total)": -378.76,
+        "PnL% (total)": -0.37875999999999477,
+        "Max Winner": 494.83,
+        "Avg Winner": 494.46999999999997,
+        "Min Winner": 494.31,
+        "Min Loser": -356.12,
+        "Avg Loser": -356.38875,
+        "Max Loser": -356.66,
+        "Expectancy": -29.135384615384638,
+        "Win Rate": 0.38461538461538464
+      },
+      "general": {
+        "Long Ratio": 0.46,
+        "Total trades": 13,
+        "Sharpe ratio": -0.072,
+        "Profit factor": 0.0,
+        "Max drawdown": 0.0
+      },
+      "rejected_signals_count": 196
+    }
+  },
+  "entry_timing": {
+    "output_dir": "logs\\backtest_results\\EUR-USD_20251103_195832_819305",
+    "metrics": {
+      "total_pnl": 2580.73,
+      "pnl_percentage": 2.580729999999996,
+      "sharpe_ratio": 0.103,
+      "win_rate": 0.4444444444444444,
+      "trade_count": 72,
+      "max_drawdown": 0.0,
+      "profit_factor": 0.0,
+      "avg_winner": 481.8096875,
+      "avg_loser": -320.9295,
+      "rejected_signals": 3623
+    },
+    "stats": {
+      "pnls": {
+        "PnL (total)": 2580.73,
+        "PnL% (total)": 2.580729999999996,
+        "Max Winner": 534.35,
+        "Avg Winner": 481.8096875,
+        "Min Winner": 27.84,
+        "Min Loser": -66.66,
+        "Avg Loser": -320.9295,
+        "Max Loser": -356.71,
+        "Expectancy": 35.84347222222219,
+        "Win Rate": 0.4444444444444444
+      },
+      "general": {
+        "Long Ratio": 0.46,
+        "Total trades": 72,
+        "Sharpe ratio": 0.103,
+        "Profit factor": 0.0,
+        "Max drawdown": 0.0
+      },
+      "rejected_signals_count": 3623
+    }
+  },
+  "combined": {
+    "output_dir": "logs\\backtest_results\\EUR-USD_20251103_195904_234303",
+    "metrics": {
+      "total_pnl": -378.76,
+      "pnl_percentage": -0.37875999999999477,
+      "sharpe_ratio": -0.072,
+      "win_rate": 0.38461538461538464,
+      "trade_count": 13,
+      "max_drawdown": 0.0,
+      "profit_factor": 0.0,
+      "avg_winner": 494.474,
+      "avg_loser": -356.39125,
+      "rejected_signals": 401
+    },
+    "stats": {
+      "pnls": {
+        "PnL (total)": -378.76,
+        "PnL% (total)": -0.37875999999999477,
+        "Max Winner": 494.83,
+        "Avg Winner": 494.474,
+        "Min Winner": 494.31,
+        "Min Loser": -356.13,
+        "Avg Loser": -356.39125,
+        "Max Loser": -356.67,
+        "Expectancy": -29.13538461538464,
+        "Win Rate": 0.38461538461538464
+      },
+      "general": {
+        "Long Ratio": 0.46,
+        "Total trades": 13,
+        "Sharpe ratio": -0.072,
+        "Profit factor": 0.0,
+        "Max drawdown": 0.0
+      },
+      "rejected_signals_count": 401
+    }
+  },
+  "errors": []
+}

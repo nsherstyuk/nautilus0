@@ -1,0 +1,196 @@
+# Comprehensive Optimization Configuration
+# =========================================
+# 
+# This configuration optimizes ALL available parameters simultaneously.
+# WARNING: This creates a VERY LARGE search space. Use with caution!
+# 
+# Total combinations: Varies based on parameter ranges (can be millions)
+# Expected runtime: Days to weeks with 8 workers
+# 
+# RECOMMENDATION: Use this only after:
+#   1. Fixing excluded hours based on hourly profitability analysis
+#   2. Running smaller, focused optimizations first (Phase 4, Phase 5)
+#   3. Understanding which parameters are most impactful
+#
+# Usage:
+#   python optimization/grid_search.py \
+#     --config optimization/configs/comprehensive_optimization.yaml \
+#     --objective sharpe_ratio \
+#     --workers 8 \
+#     --output optimization/results/comprehensive_results.csv \
+#     --no-resume \
+#     --verbose
+
+# Optimization Settings
+optimization:
+  objective: sharpe_ratio  # Options: total_pnl, sharpe_ratio, win_rate, profit_factor
+  workers: 15              # Parallel execution (use CPU cores - 1, override with --workers)
+  checkpoint_interval: 10   # Save progress every 10 backtests
+  timeout_seconds: 300     # 5 minutes per backtest
+  output_file: optimization/results/comprehensive_results.csv
+  checkpoint_file: optimization/checkpoints/comprehensive_checkpoint.csv
+
+# Parameters Being Optimized
+# ==========================
+# NOTE: This is a FULL optimization - all parameters vary simultaneously
+# This creates exponential combinations. Consider reducing ranges or fixing less important parameters.
+
+parameters:
+  # MA Parameters (Core Strategy)
+  fast_period:
+    values:
+      - 10
+      - 20
+      - 30
+      - 40
+      - 50
+
+  slow_period:
+    values:
+      - 100
+      - 150
+      - 200
+      - 250
+      - 300
+
+  crossover_threshold_pips:
+    values:
+      - 0.0
+      - 0.2
+      - 0.35
+      - 0.5
+      - 0.7
+
+  # Risk Management Parameters
+  stop_loss_pips:
+    values:
+      - 15
+      - 20
+      - 25
+      - 30
+      - 35
+
+  take_profit_pips:
+    values:
+      - 30
+      - 40
+      - 50
+      - 60
+      - 75
+
+  trailing_stop_activation_pips:
+    values:
+      - 10
+      - 15
+      - 20
+      - 25
+      - 30
+
+  trailing_stop_distance_pips:
+    values:
+      - 8
+      - 10
+      - 12
+      - 15
+      - 18
+
+  # DMI Filter
+  dmi_enabled:
+    values:
+      - true
+      - false
+
+  dmi_period:
+    values:
+      - 10
+      - 12
+      - 14
+      - 16
+
+  # Stochastic Filter
+  stoch_enabled:
+    values:
+      - true
+      - false
+
+  stoch_period_k:
+    values:
+      - 10
+      - 14
+      - 18
+
+  stoch_period_d:
+    values:
+      - 3
+      - 5
+
+  stoch_bullish_threshold:
+    values:
+      - 25
+      - 30
+      - 35
+
+  stoch_bearish_threshold:
+    values:
+      - 65
+      - 70
+      - 75
+
+# Fixed Parameters
+# ================
+# IMPORTANT: Set excluded hours based on hourly profitability analysis
+# Run: python scripts/verify_excluded_hours.py to get correct hours
+fixed:
+  # Time Filter (FIXED based on hourly analysis)
+  # Set these based on verify_excluded_hours.py output
+  # Example: excluded_hours = "0,4,5,6,8,12,15,18,19,20,22"
+  # NOTE: excluded_hours cannot be optimized directly, but can be set as fixed
+  
+  # Primary bar specification
+  bar_spec: "1-MINUTE-MID-EXTERNAL"
+  
+  # Trade Sizing and Position Management
+  trade_size: 100000
+  enforce_position_limit: true
+  allow_position_reversal: false
+  starting_capital: 100000.0
+  
+  # Multi-timeframe parameters (disabled for now)
+  trend_filter_enabled: false
+  entry_timing_enabled: false
+  
+  # DMI and Stochastic bar specs (when enabled)
+  dmi_bar_spec: "2-MINUTE-MID-EXTERNAL"
+  stoch_bar_spec: "15-MINUTE-MID-EXTERNAL"
+  
+  # Crossover filter parameters
+  pre_crossover_separation_pips: 0.0
+  pre_crossover_lookback_bars: 1
+  
+  # DMI minimum difference (when enabled)
+  dmi_minimum_difference: 0.0
+  
+  # Stochastic max bars since crossing (when enabled)
+  stoch_max_bars_since_crossing: 9
+
+# Configuration Summary
+# ===================
+# Total combinations: 5 × 5 × 5 × 5 × 5 × 5 × 5 × 2 × 4 × 2 × 3 × 2 × 3 × 3 = 2,531,250
+# 
+# This is EXTREMELY LARGE! Consider:
+# 1. Reducing parameter ranges
+# 2. Fixing less important parameters
+# 3. Running phased optimization instead (Phase 2 → Phase 3 → Phase 4 → Phase 5)
+# 4. Using random search or Bayesian optimization instead
+#
+# Expected runtime: ~2,531,250 × 60s ÷ 8 workers = ~5,265 hours = ~219 days!
+#
+# RECOMMENDATION: Use phased approach instead:
+#   Phase 2: MA parameters (125 combinations)
+#   Phase 3: MA refinement (125 combinations)  
+#   Phase 4: Risk management (500 combinations)
+#   Phase 5: Filters (2,400 combinations)
+#   Phase 6: Refinement (~200-300 combinations)
+#
+# Total phased: ~3,650 combinations vs 2.5M combinations
+

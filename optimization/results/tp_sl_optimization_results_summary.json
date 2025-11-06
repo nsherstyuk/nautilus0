@@ -1,0 +1,102 @@
+{
+  "overall": {
+    "total_runs": 437,
+    "completed": 436,
+    "failed": 1,
+    "timeout": 0,
+    "success_rate": 0.9977116704805492
+  },
+  "best": {
+    "run_id": 551,
+    "objective_value": 0.113,
+    "parameters": {
+      "run_id": 551,
+      "fast_period": 42,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.35,
+      "stop_loss_pips": 35,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 10,
+      "trailing_stop_distance_pips": 8,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "dmi_minimum_difference": 0.0,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70,
+      "trend_filter_enabled": false,
+      "trend_bar_spec": "1-HOUR-MID-EXTERNAL",
+      "trend_fast_period": 20,
+      "trend_slow_period": 50,
+      "entry_timing_enabled": false,
+      "entry_timing_bar_spec": "5-MINUTE-MID-EXTERNAL",
+      "entry_timing_method": "pullback",
+      "entry_timing_timeout_bars": 10,
+      "bar_spec": "1-MINUTE-MID-EXTERNAL"
+    },
+    "metrics": {
+      "total_pnl": 9835.93,
+      "sharpe_ratio": 0.113,
+      "win_rate": 0.4678111587982833,
+      "max_drawdown": 0.0,
+      "trade_count": 233
+    }
+  },
+  "worst": {
+    "run_id": 176,
+    "objective_value": -0.102,
+    "parameters": {
+      "run_id": 176,
+      "fast_period": 42,
+      "slow_period": 270,
+      "crossover_threshold_pips": 0.35,
+      "stop_loss_pips": 20,
+      "take_profit_pips": 50,
+      "trailing_stop_activation_pips": 10,
+      "trailing_stop_distance_pips": 8,
+      "dmi_enabled": true,
+      "dmi_period": 14,
+      "dmi_minimum_difference": 0.0,
+      "stoch_enabled": true,
+      "stoch_period_k": 14,
+      "stoch_period_d": 3,
+      "stoch_bullish_threshold": 30,
+      "stoch_bearish_threshold": 70,
+      "trend_filter_enabled": false,
+      "trend_bar_spec": "1-HOUR-MID-EXTERNAL",
+      "trend_fast_period": 20,
+      "trend_slow_period": 50,
+      "entry_timing_enabled": false,
+      "entry_timing_bar_spec": "5-MINUTE-MID-EXTERNAL",
+      "entry_timing_method": "pullback",
+      "entry_timing_timeout_bars": 10,
+      "bar_spec": "1-MINUTE-MID-EXTERNAL"
+    },
+    "metrics": {
+      "total_pnl": -13504.09,
+      "sharpe_ratio": -0.102,
+      "win_rate": 0.24611398963730569,
+      "max_drawdown": 0.0,
+      "trade_count": 386
+    }
+  },
+  "averages": {
+    "total_pnl": -3757.5365596330275,
+    "sharpe_ratio": -0.01771788990825688,
+    "win_rate": 0.3159507510741235,
+    "max_drawdown": 0.0,
+    "trade_count": 348.38990825688074,
+    "profit_factor": 0.0,
+    "expectancy": -10.184063852315093
+  },
+  "sensitivity": {
+    "fast_period": 0.0,
+    "slow_period": 0.0,
+    "crossover_threshold_pips": 0.0,
+    "stop_loss_pips": 0.2211434325493406,
+    "take_profit_pips": -0.043895865376040774
+  },
+  "objective": "sharpe_ratio"
+}

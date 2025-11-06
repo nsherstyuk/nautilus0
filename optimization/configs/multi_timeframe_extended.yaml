@@ -1,0 +1,93 @@
+# Multi-Timeframe Extended Optimization
+# =====================================
+# 
+# Extended search with more MA period combinations to find optimal parameters
+# for each timeframe. Tests wider ranges than focused test.
+#
+# Total combinations: 6 timeframes × 4 MA configs × 2 risk configs = 48 combinations
+# Expected runtime: ~45-60 minutes with 15 workers
+#
+# Usage:
+#   python optimization/grid_search.py \
+#     --config optimization/configs/multi_timeframe_extended.yaml \
+#     --objective sharpe_ratio \
+#     --workers 15 \
+#     --output optimization/results/multi_timeframe_extended_results.csv \
+#     --no-resume
+
+optimization:
+  objective: sharpe_ratio
+  workers: 15
+  checkpoint_interval: 10
+  timeout_seconds: 300
+  output_file: optimization/results/multi_timeframe_extended_results.csv
+  checkpoint_file: optimization/checkpoints/multi_timeframe_extended_checkpoint.csv
+
+parameters:
+  # Test timeframes that showed some promise
+  bar_spec:
+    values:
+      - "1-MINUTE-MID-EXTERNAL"
+      - "2-MINUTE-MID-EXTERNAL"
+      - "5-MINUTE-MID-EXTERNAL"
+      - "15-MINUTE-MID-EXTERNAL"
+      - "30-MINUTE-MID-EXTERNAL"
+      - "1-HOUR-MID-EXTERNAL"
+
+  # Wider MA period ranges for each timeframe
+  fast_period:
+    values:
+      - 10   # Very fast (for 1-2 min)
+      - 20   # Fast (for 3-5 min)
+      - 30   # Medium-fast
+      - 42   # Baseline (for 15-min)
+
+  slow_period:
+    values:
+      - 50   # Fast slow MA
+      - 100  # Medium slow MA
+      - 200  # Medium-slow
+      - 270  # Baseline (for 15-min)
+
+  # Test different risk settings
+  stop_loss_pips:
+    values:
+      - 25   # Tighter stops
+      - 35   # Baseline
+
+  take_profit_pips:
+    values:
+      - 50   # Baseline
+      - 75   # Larger targets
+
+fixed:
+  crossover_threshold_pips: 0.35
+  trailing_stop_activation_pips: 22
+  trailing_stop_distance_pips: 12
+  
+  dmi_enabled: true
+  dmi_period: 10
+  dmi_minimum_difference: 0.0
+  dmi_bar_spec: "2-MINUTE-MID-EXTERNAL"
+  
+  stoch_enabled: true
+  stoch_period_k: 18
+  stoch_period_d: 3
+  stoch_bullish_threshold: 30
+  stoch_bearish_threshold: 65
+  stoch_max_bars_since_crossing: 9
+  stoch_bar_spec: "15-MINUTE-MID-EXTERNAL"
+  
+  trend_filter_enabled: false
+  entry_timing_enabled: false
+  
+  trade_size: 100000
+  enforce_position_limit: true
+  allow_position_reversal: false
+  starting_capital: 100000.0
+
+# Configuration Summary
+# ===================
+# Total combinations: 6 × 4 × 4 × 2 × 2 = 384 combinations
+# Expected runtime: ~45-60 minutes with 15 workers
+

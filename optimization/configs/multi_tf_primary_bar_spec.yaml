@@ -1,0 +1,61 @@
+# Multi-Timeframe Optimization: Primary Bar Spec + Trend Filter
+# Tests different primary bar specs (3-MINUTE, 5-MINUTE) with higher timeframe trend filters
+# 
+# This configuration explores:
+# - Primary bar specs: 3-MINUTE, 5-MINUTE (for signal generation)
+# - Trend filter: 15-MINUTE, 1-HOUR, 1-DAY (for trend alignment)
+# - All other parameters fixed at Phase 6 best values
+#
+# Total combinations: 6 (2 primary bar specs × 3 trend filter timeframes)
+#
+# Usage:
+#   python optimization/grid_search.py \
+#     --config optimization/configs/multi_tf_primary_bar_spec.yaml \
+#     --objective sharpe_ratio \
+#     --workers 8 \
+#     --output optimization/results/multi_tf_primary_bar_spec_results.csv \
+#     --no-resume
+
+optimization:
+  objective: sharpe_ratio
+  workers: 8
+  checkpoint_interval: 5
+  checkpoint_file: optimization/checkpoints/multi_tf_primary_bar_spec_checkpoint.csv
+  output_file: optimization/results/multi_tf_primary_bar_spec_results.csv
+
+parameters:
+  # Primary bar specification (for signal generation)
+  bar_spec:
+    values: ["3-MINUTE-MID-EXTERNAL", "5-MINUTE-MID-EXTERNAL"]
+  # Trend filter configuration
+  trend_filter_enabled:
+    values: [true, false]
+  trend_bar_spec:
+    values: ["15-MINUTE-MID-EXTERNAL", "1-HOUR-MID-EXTERNAL", "1-DAY-MID-EXTERNAL"]
+  trend_fast_period:
+    values: [20, 30]
+  trend_slow_period:
+    values: [50, 100]
+
+fixed:
+  # Phase 6 best parameters (fixed)
+  fast_period: 42
+  slow_period: 270
+  crossover_threshold_pips: 0.35
+  stop_loss_pips: 35
+  take_profit_pips: 50
+  trailing_stop_activation_pips: 22
+  trailing_stop_distance_pips: 12
+  dmi_enabled: true
+  dmi_period: 10
+  stoch_enabled: true
+  stoch_period_k: 18
+  stoch_period_d: 3
+  stoch_bullish_threshold: 30
+  stoch_bearish_threshold: 65
+  # Entry timing disabled for this test (focus on primary bar spec + trend filter)
+  entry_timing_enabled: false
+  entry_timing_bar_spec: "2-MINUTE-MID-EXTERNAL"
+  entry_timing_method: "pullback"
+  entry_timing_timeout_bars: 10
+
