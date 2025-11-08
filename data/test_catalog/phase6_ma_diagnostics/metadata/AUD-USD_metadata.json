@@ -1,0 +1,30 @@
+{
+  "scenario_name": "AUD/USD_edge_case",
+  "fast_period": 10,
+  "slow_period": 20,
+  "total_bars": 200,
+  "start_date": "2024-01-01",
+  "expected_crossovers": [
+    {
+      "bar_index": 37,
+      "timestamp": "2024-01-01T00:37:00+00:00",
+      "type": "bullish",
+      "fast_ma": 1.0716666666666668,
+      "slow_ma": 1.0715555555555556
+    },
+    {
+      "bar_index": 119,
+      "timestamp": "2024-01-01T01:59:00+00:00",
+      "type": "bearish",
+      "fast_ma": 1.100145,
+      "slow_ma": 1.1010950000000002
+    },
+    {
+      "bar_index": 120,
+      "timestamp": "2024-01-01T02:00:00+00:00",
+      "type": "bullish",
+      "fast_ma": 1.1001550000000002,
+      "slow_ma": 1.100105
+    }
+  ]
+}

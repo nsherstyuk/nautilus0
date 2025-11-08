@@ -1,0 +1,18 @@
+{
+  "symbol": "EUR/USD",
+  "venue": "IDEALPRO",
+  "bar_spec": "1-MINUTE-MID-EXTERNAL",
+  "start_date": "2024-01-01T00:00:00Z",
+  "expected_trades": 1,
+  "expected_rejection_reason": null,
+  "test_purpose": "Crossover with sufficient separation (1.5 pips) should pass threshold filter",
+  "filter_config": {
+    "filter_type": "crossover_threshold",
+    "scenario": "crossover_threshold_pass",
+    "parameters": {
+      "separation_after": 0.00015,
+      "separation_before": 0.0002,
+      "crossover_type": "bullish"
+    }
+  }
+}

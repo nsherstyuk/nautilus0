@@ -1,0 +1,342 @@
+{
+  "scenarios_tested": 4,
+  "scenarios_passed": 0,
+  "scenarios_failed": 4,
+  "timestamp": "2025-10-19T18:30:37.830872",
+  "detected_issues": {},
+  "performance_summary": {
+    "total_trades": 0,
+    "total_pnl": 0.0,
+    "avg_win_rate": NaN,
+    "most_common_rejections": {},
+    "avg_timing_lag_bars": 0,
+    "scenarios_with_trades": 0,
+    "scenarios_with_rejections": 0
+  },
+  "suggestions": [
+    {
+      "category": "Algorithm Issues",
+      "suggestion": "Review MA history buffer implementation - ensure values are stored correctly",
+      "rationale": "Systematic misses or false positives suggest buffer or comparison logic errors",
+      "priority": "high"
+    }
+  ],
+  "scenario_results": [
+    {
+      "scenario_name": "single_crossover",
+      "symbol": "EUR/USD",
+      "expected_trades": 1,
+      "actual_trades": 0,
+      "actual_rejections": 0,
+      "pnl": 0.0,
+      "win_rate": 0.0,
+      "crossover_detected": false,
+      "crossover_timing_bars": null,
+      "passed": false,
+      "issues_detected": [
+        "Missed crossovers: 3 expected crossovers not detected"
+      ],
+      "rejection_reasons": [],
+      "expected_crossovers_count": 3,
+      "detected_crossovers_count": 0,
+      "missed_crossovers_count": 3,
+      "false_positive_count": 0,
+      "crossover_verifications": [
+        {
+          "expected_bar_index": 37,
+          "expected_timestamp": "2024-01-01T00:37:00+00:00",
+          "expected_type": "bullish",
+          "expected_fast_ma": 1.0716666666666668,
+          "expected_slow_ma": 1.0715555555555556,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 119,
+          "expected_timestamp": "2024-01-01T01:59:00+00:00",
+          "expected_type": "bearish",
+          "expected_fast_ma": 1.100145,
+          "expected_slow_ma": 1.1010950000000002,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 120,
+          "expected_timestamp": "2024-01-01T02:00:00+00:00",
+          "expected_type": "bullish",
+          "expected_fast_ma": 1.1001550000000002,
+          "expected_slow_ma": 1.100105,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        }
+      ]
+    },
+    {
+      "scenario_name": "multiple_crossovers",
+      "symbol": "GBP/USD",
+      "expected_trades": 5,
+      "actual_trades": 0,
+      "actual_rejections": 0,
+      "pnl": 0.0,
+      "win_rate": 0.0,
+      "crossover_detected": false,
+      "crossover_timing_bars": null,
+      "passed": false,
+      "issues_detected": [
+        "Missed crossovers: 8 expected crossovers not detected"
+      ],
+      "rejection_reasons": [],
+      "expected_crossovers_count": 8,
+      "detected_crossovers_count": 0,
+      "missed_crossovers_count": 8,
+      "false_positive_count": 0,
+      "crossover_verifications": [
+        {
+          "expected_bar_index": 30,
+          "expected_timestamp": "2024-01-01T00:30:00+00:00",
+          "expected_type": "bearish",
+          "expected_fast_ma": 1.0802204127710353,
+          "expected_slow_ma": 1.0803973766165609,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 60,
+          "expected_timestamp": "2024-01-01T01:00:00+00:00",
+          "expected_type": "bullish",
+          "expected_fast_ma": 1.0771535059105222,
+          "expected_slow_ma": 1.0771023258368537,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 92,
+          "expected_timestamp": "2024-01-01T01:32:00+00:00",
+          "expected_type": "bearish",
+          "expected_fast_ma": 1.079577201634965,
+          "expected_slow_ma": 1.0796580580004385,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 108,
+          "expected_timestamp": "2024-01-01T01:48:00+00:00",
+          "expected_type": "bullish",
+          "expected_fast_ma": 1.0782750473655924,
+          "expected_slow_ma": 1.0782311096365214,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 112,
+          "expected_timestamp": "2024-01-01T01:52:00+00:00",
+          "expected_type": "bearish",
+          "expected_fast_ma": 1.0781049982422488,
+          "expected_slow_ma": 1.0781194211354648,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 124,
+          "expected_timestamp": "2024-01-01T02:04:00+00:00",
+          "expected_type": "bullish",
+          "expected_fast_ma": 1.078255250770465,
+          "expected_slow_ma": 1.0781271800892742,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 150,
+          "expected_timestamp": "2024-01-01T02:30:00+00:00",
+          "expected_type": "bearish",
+          "expected_fast_ma": 1.08005918531292,
+          "expected_slow_ma": 1.0801742583916911,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 168,
+          "expected_timestamp": "2024-01-01T02:48:00+00:00",
+          "expected_type": "bullish",
+          "expected_fast_ma": 1.0788994953991398,
+          "expected_slow_ma": 1.078815971866612,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        }
+      ]
+    },
+    {
+      "scenario_name": "edge_case",
+      "symbol": "AUD/USD",
+      "expected_trades": 1,
+      "actual_trades": 0,
+      "actual_rejections": 0,
+      "pnl": 0.0,
+      "win_rate": 0.0,
+      "crossover_detected": false,
+      "crossover_timing_bars": null,
+      "passed": false,
+      "issues_detected": [
+        "Missed crossovers: 3 expected crossovers not detected"
+      ],
+      "rejection_reasons": [],
+      "expected_crossovers_count": 3,
+      "detected_crossovers_count": 0,
+      "missed_crossovers_count": 3,
+      "false_positive_count": 0,
+      "crossover_verifications": [
+        {
+          "expected_bar_index": 37,
+          "expected_timestamp": "2024-01-01T00:37:00+00:00",
+          "expected_type": "bullish",
+          "expected_fast_ma": 1.0716666666666668,
+          "expected_slow_ma": 1.0715555555555556,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 119,
+          "expected_timestamp": "2024-01-01T01:59:00+00:00",
+          "expected_type": "bearish",
+          "expected_fast_ma": 1.100145,
+          "expected_slow_ma": 1.1010950000000002,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 120,
+          "expected_timestamp": "2024-01-01T02:00:00+00:00",
+          "expected_type": "bullish",
+          "expected_fast_ma": 1.1001550000000002,
+          "expected_slow_ma": 1.100105,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        }
+      ]
+    },
+    {
+      "scenario_name": "delayed_crossover",
+      "symbol": "USD/JPY",
+      "expected_trades": 1,
+      "actual_trades": 0,
+      "actual_rejections": 0,
+      "pnl": 0.0,
+      "win_rate": 0.0,
+      "crossover_detected": false,
+      "crossover_timing_bars": null,
+      "passed": false,
+      "issues_detected": [
+        "Missed crossovers: 5 expected crossovers not detected"
+      ],
+      "rejection_reasons": [],
+      "expected_crossovers_count": 5,
+      "detected_crossovers_count": 0,
+      "missed_crossovers_count": 5,
+      "false_positive_count": 0,
+      "crossover_verifications": [
+        {
+          "expected_bar_index": 110,
+          "expected_timestamp": "2024-01-01T01:50:00+00:00",
+          "expected_type": "bearish",
+          "expected_fast_ma": 1.0889747834916093,
+          "expected_slow_ma": 1.0889896444798048,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 122,
+          "expected_timestamp": "2024-01-01T02:02:00+00:00",
+          "expected_type": "bullish",
+          "expected_fast_ma": 1.0889303189891228,
+          "expected_slow_ma": 1.0889298053331975,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 131,
+          "expected_timestamp": "2024-01-01T02:11:00+00:00",
+          "expected_type": "bearish",
+          "expected_fast_ma": 1.0889240136070621,
+          "expected_slow_ma": 1.0889251215588387,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 173,
+          "expected_timestamp": "2024-01-01T02:53:00+00:00",
+          "expected_type": "bullish",
+          "expected_fast_ma": 1.0884838452125576,
+          "expected_slow_ma": 1.0884801327803497,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        },
+        {
+          "expected_bar_index": 181,
+          "expected_timestamp": "2024-01-01T03:01:00+00:00",
+          "expected_type": "bearish",
+          "expected_fast_ma": 1.0883928675822756,
+          "expected_slow_ma": 1.0884219724112758,
+          "detected": false,
+          "actual_bar_index": null,
+          "actual_timestamp": null,
+          "timing_error_bars": null,
+          "issue": "Crossover not detected"
+        }
+      ]
+    }
+  ]
+}

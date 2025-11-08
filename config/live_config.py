@@ -6,13 +6,11 @@ sourced from environment variables.
 from __future__ import annotations
 
 import os
-import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
 
 from dotenv import load_dotenv
-from ._utils import validate_timezone, _parse_excluded_hours
 
 
 @dataclass
@@ -27,6 +25,7 @@ class LiveConfig:
     allow_position_reversal: bool = False
     log_dir: str = "logs/live"
     trader_id: str = "LIVE-TRADER-001"
+<<<<<<< HEAD
     # Risk Management Parameters
     stop_loss_pips: int = 25
     take_profit_pips: int = 50
@@ -76,6 +75,8 @@ class LiveConfig:
     dormant_trailing_distance_pips: int = 8  # Tighter trailing distance
     dormant_dmi_enabled: bool = False  # Use DMI filter in dormant mode
     dormant_stoch_enabled: bool = False  # Use Stochastic filter in dormant mode
+=======
+>>>>>>> parent of b3beacaa4 (final, live mode works)
 
 
 def _require(name: str, value: Optional[str]) -> str:
@@ -93,31 +94,14 @@ def _parse_int(name: str, value: Optional[str], default: int) -> int:
         raise ValueError(f"{name} must be an integer, got: {value}") from exc
 
 
-def _parse_float(name: str, value: Optional[str], default: float) -> float:
-    if value is None or value == "":
-        return default
-    try:
-        return float(value)
-    except ValueError as exc:  # pragma: no cover - validation
-        raise ValueError(f"{name} must be a float, got: {value}") from exc
-
-
 def _parse_bool(value: Optional[str], default: bool) -> bool:
-    if value is None or value == "":
+    if value is None:
         return default
     return value.lower() in ("true", "1", "yes")
 
 
- 
-
-
 def get_live_config() -> LiveConfig:
-    """Load live trading configuration from environment variables.
-
-    Optional env vars additionally supported:
-    LIVE_TIME_FILTER_ENABLED, LIVE_TRADING_HOURS_START, LIVE_TRADING_HOURS_END,
-    LIVE_TRADING_HOURS_TIMEZONE, LIVE_EXCLUDED_HOURS
-    """
+    """Load live trading configuration from environment variables."""
     load_dotenv()
 
     symbol = _require("LIVE_SYMBOL", os.getenv("LIVE_SYMBOL"))
@@ -136,6 +120,7 @@ def get_live_config() -> LiveConfig:
     log_dir = os.getenv("LIVE_LOG_DIR", "logs/live")
     trader_id = os.getenv("LIVE_TRADER_ID", "LIVE-TRADER-001")
 
+<<<<<<< HEAD
     # Phase 6 Risk Management Parameters
     stop_loss_pips = _parse_int("LIVE_STOP_LOSS_PIPS", os.getenv("LIVE_STOP_LOSS_PIPS"), 25)
     take_profit_pips = _parse_int("LIVE_TAKE_PROFIT_PIPS", os.getenv("LIVE_TAKE_PROFIT_PIPS"), 50)
@@ -367,6 +352,8 @@ def get_live_config() -> LiveConfig:
                 stoch_bar_spec,
             )
 
+=======
+>>>>>>> parent of b3beacaa4 (final, live mode works)
     return LiveConfig(
         symbol=symbol,
         venue=venue,
@@ -378,6 +365,7 @@ def get_live_config() -> LiveConfig:
         allow_position_reversal=allow_position_reversal,
         log_dir=log_dir,
         trader_id=trader_id,
+<<<<<<< HEAD
         stop_loss_pips=stop_loss_pips,
         take_profit_pips=take_profit_pips,
         trailing_stop_activation_pips=trailing_stop_activation_pips,
@@ -418,6 +406,8 @@ def get_live_config() -> LiveConfig:
         dormant_trailing_distance_pips=dormant_trailing_distance_pips,
         dormant_dmi_enabled=dormant_dmi_enabled,
         dormant_stoch_enabled=dormant_stoch_enabled,
+=======
+>>>>>>> parent of b3beacaa4 (final, live mode works)
     )
 
 
@@ -429,34 +419,6 @@ def validate_live_config(config: LiveConfig) -> bool:
         ok = False
 
     if config.fast_period >= config.slow_period:
-        ok = False
-
-    # Phase 6 validations
-    if config.stop_loss_pips <= 0:
-        ok = False
-
-    if config.take_profit_pips <= config.stop_loss_pips:
-        ok = False
-
-    if config.trailing_stop_activation_pips <= config.trailing_stop_distance_pips:
-        ok = False
-
-    if config.crossover_threshold_pips < 0:
-        ok = False
-
-    if config.dmi_period <= 0:
-        ok = False
-
-    if config.stoch_period_k <= 0 or config.stoch_period_d <= 0:
-        ok = False
-
-    if not (0 <= config.stoch_bullish_threshold <= 100):
-        ok = False
-
-    if not (0 <= config.stoch_bearish_threshold <= 100):
-        ok = False
-
-    if config.stoch_bullish_threshold >= config.stoch_bearish_threshold:
         ok = False
 
     try:

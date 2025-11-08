@@ -1,0 +1,65 @@
+{
+  "scenario_name": "GBP/USD_multiple_crossovers",
+  "fast_period": 10,
+  "slow_period": 20,
+  "total_bars": 170,
+  "start_date": "2024-01-01",
+  "expected_crossovers": [
+    {
+      "bar_index": 30,
+      "timestamp": "2024-01-01T00:30:00+00:00",
+      "type": "bearish",
+      "fast_ma": 1.0802204127710353,
+      "slow_ma": 1.0803973766165609
+    },
+    {
+      "bar_index": 60,
+      "timestamp": "2024-01-01T01:00:00+00:00",
+      "type": "bullish",
+      "fast_ma": 1.0771535059105222,
+      "slow_ma": 1.0771023258368537
+    },
+    {
+      "bar_index": 92,
+      "timestamp": "2024-01-01T01:32:00+00:00",
+      "type": "bearish",
+      "fast_ma": 1.079577201634965,
+      "slow_ma": 1.0796580580004385
+    },
+    {
+      "bar_index": 108,
+      "timestamp": "2024-01-01T01:48:00+00:00",
+      "type": "bullish",
+      "fast_ma": 1.0782750473655924,
+      "slow_ma": 1.0782311096365214
+    },
+    {
+      "bar_index": 112,
+      "timestamp": "2024-01-01T01:52:00+00:00",
+      "type": "bearish",
+      "fast_ma": 1.0781049982422488,
+      "slow_ma": 1.0781194211354648
+    },
+    {
+      "bar_index": 124,
+      "timestamp": "2024-01-01T02:04:00+00:00",
+      "type": "bullish",
+      "fast_ma": 1.078255250770465,
+      "slow_ma": 1.0781271800892742
+    },
+    {
+      "bar_index": 150,
+      "timestamp": "2024-01-01T02:30:00+00:00",
+      "type": "bearish",
+      "fast_ma": 1.08005918531292,
+      "slow_ma": 1.0801742583916911
+    },
+    {
+      "bar_index": 168,
+      "timestamp": "2024-01-01T02:48:00+00:00",
+      "type": "bullish",
+      "fast_ma": 1.0788994953991398,
+      "slow_ma": 1.078815971866612
+    }
+  ]
+}

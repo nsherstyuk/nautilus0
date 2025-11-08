@@ -1,4 +1,0 @@
-timestamp,bar_close_time,signal_type,action,reason,fast_sma,slow_sma
-2025-01-02 12:00:00+00:00,2025-01-02 12:15:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=26.72 < +DI=30.53, bullish trend)",1.035650277777778,1.0356879591836734
-2025-01-06 01:45:00+00:00,2025-01-06 02:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.0303119444444446,1.0303097979797975
-2025-01-07 23:30:00+00:00,2025-01-07 23:45:00+00:00,SELL,rejected,"dmi_trend_mismatch (-DI=16.85 < +DI=31.93, bullish trend)",1.0357677777777778,1.0359138260869571

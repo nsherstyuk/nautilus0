@@ -1,0 +1,720 @@
+timestamp,bar_close_time,signal_type,action,reason,fast_sma,slow_sma
+2025-10-28 00:15:00+00:00,2025-10-28 00:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.35 pips threshold),1.1653769999999999,1.1653527272727275
+2025-10-28 01:45:00+00:00,2025-10-28 02:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.1657800000000003,1.1657899999999999
+2025-10-28 01:45:00+00:00,2025-10-28 02:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1657400000000002,1.1657899999999997
+2025-10-28 01:45:00+00:00,2025-10-28 02:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.35 pips threshold),1.1657550000000003,1.1657899999999997
+2025-10-28 01:45:00+00:00,2025-10-28 02:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.35 pips threshold),1.1657700000000002,1.1657899999999999
+2025-10-28 02:30:00+00:00,2025-10-28 02:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.1658699999999997,1.1658740000000003
+2025-10-28 02:45:00+00:00,2025-10-28 03:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1657999999999997,1.1658535000000003
+2025-10-28 02:45:00+00:00,2025-10-28 03:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1657299999999997,1.1658330000000001
+2025-10-28 02:45:00+00:00,2025-10-28 03:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656749999999998,1.1658125000000001
+2025-10-28 02:45:00+00:00,2025-10-28 03:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656199999999999,1.1657920000000002
+2025-10-28 03:00:00+00:00,2025-10-28 03:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165577,1.1657825000000002
+2025-10-28 03:00:00+00:00,2025-10-28 03:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165534,1.165773
+2025-10-28 03:00:00+00:00,2025-10-28 03:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165531,1.1657634999999997
+2025-10-28 03:00:00+00:00,2025-10-28 03:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1655280000000001,1.1657539999999997
+2025-10-28 03:15:00+00:00,2025-10-28 03:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1655430000000002,1.1657339999999998
+2025-10-28 03:15:00+00:00,2025-10-28 03:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165558,1.1657139999999997
+2025-10-28 03:15:00+00:00,2025-10-28 03:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165588,1.1656939999999996
+2025-10-28 03:15:00+00:00,2025-10-28 03:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656179999999998,1.1656739999999997
+2025-10-28 03:30:00+00:00,2025-10-28 03:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.35 pips threshold),1.1656499999999999,1.1656624999999996
+2025-10-28 05:30:00+00:00,2025-10-28 05:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.35 pips threshold),1.166532,1.1665439999999996
+2025-10-28 05:45:00+00:00,2025-10-28 06:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.35 pips threshold),1.1665100000000002,1.16654
+2025-10-28 05:45:00+00:00,2025-10-28 06:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1664880000000002,1.166536
+2025-10-28 05:45:00+00:00,2025-10-28 06:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1664660000000002,1.166532
+2025-10-28 05:45:00+00:00,2025-10-28 06:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166444,1.1665280000000002
+2025-10-28 06:00:00+00:00,2025-10-28 06:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166407,1.1665079999999999
+2025-10-28 06:00:00+00:00,2025-10-28 06:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1663700000000001,1.166488
+2025-10-28 06:00:00+00:00,2025-10-28 06:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1663500000000002,1.1664679999999998
+2025-10-28 06:00:00+00:00,2025-10-28 06:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1663300000000003,1.1664479999999997
+2025-10-28 06:15:00+00:00,2025-10-28 06:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1663170000000003,1.1664329999999998
+2025-10-28 06:15:00+00:00,2025-10-28 06:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166304,1.1664179999999997
+2025-10-28 06:15:00+00:00,2025-10-28 06:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166296,1.1664029999999999
+2025-10-28 06:15:00+00:00,2025-10-28 06:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166288,1.166388
+2025-10-28 06:30:00+00:00,2025-10-28 06:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166249,1.1663575
+2025-10-28 06:30:00+00:00,2025-10-28 06:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.16621,1.1663270000000001
+2025-10-28 06:30:00+00:00,2025-10-28 06:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1661860000000002,1.1662965
+2025-10-28 06:30:00+00:00,2025-10-28 06:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1661620000000001,1.1662660000000002
+2025-10-28 06:45:00+00:00,2025-10-28 07:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166098,1.1662240000000004
+2025-10-28 06:45:00+00:00,2025-10-28 07:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166034,1.1661820000000003
+2025-10-28 06:45:00+00:00,2025-10-28 07:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165963,1.1661400000000004
+2025-10-28 06:45:00+00:00,2025-10-28 07:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165892,1.1660980000000003
+2025-10-28 07:00:00+00:00,2025-10-28 07:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1658179999999998,1.1660570000000003
+2025-10-28 07:00:00+00:00,2025-10-28 07:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165744,1.1660160000000002
+2025-10-28 07:00:00+00:00,2025-10-28 07:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1657009999999999,1.1659750000000002
+2025-10-28 07:00:00+00:00,2025-10-28 07:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656579999999996,1.165934
+2025-10-28 07:15:00+00:00,2025-10-28 07:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656179999999998,1.1659020000000002
+2025-10-28 07:15:00+00:00,2025-10-28 07:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1655779999999998,1.16587
+2025-10-28 07:15:00+00:00,2025-10-28 07:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165578,1.1658380000000002
+2025-10-28 07:15:00+00:00,2025-10-28 07:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165578,1.1658060000000003
+2025-10-28 07:30:00+00:00,2025-10-28 07:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165621,1.1657920000000002
+2025-10-28 07:30:00+00:00,2025-10-28 07:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656639999999998,1.1657780000000002
+2025-10-28 07:30:00+00:00,2025-10-28 07:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1657099999999998,1.1657639999999998
+2025-10-28 08:00:00+00:00,2025-10-28 08:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1655640000000003,1.1656139999999997
+2025-10-28 08:15:00+00:00,2025-10-28 08:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1655430000000002,1.1656264999999997
+2025-10-28 08:15:00+00:00,2025-10-28 08:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1655220000000002,1.1656389999999999
+2025-10-28 08:15:00+00:00,2025-10-28 08:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1655510000000002,1.1656514999999998
+2025-10-28 08:15:00+00:00,2025-10-28 08:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.16558,1.165664
+2025-10-28 08:30:00+00:00,2025-10-28 08:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165615,1.1656780000000002
+2025-10-28 08:30:00+00:00,2025-10-28 08:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.16565,1.1656920000000004
+2025-10-28 08:30:00+00:00,2025-10-28 08:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.35 pips threshold),1.1656990000000003,1.1657060000000001
+2025-10-28 09:00:00+00:00,2025-10-28 09:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.35 pips threshold),1.165512,1.1655315000000004
+2025-10-28 09:00:00+00:00,2025-10-28 09:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.16543,1.1655050000000002
+2025-10-28 09:00:00+00:00,2025-10-28 09:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1653419999999999,1.1654785000000003
+2025-10-28 09:00:00+00:00,2025-10-28 09:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1652539999999998,1.1654520000000002
+2025-10-28 09:15:00+00:00,2025-10-28 09:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1651709999999997,1.1654350000000002
+2025-10-28 09:15:00+00:00,2025-10-28 09:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1650879999999997,1.165418
+2025-10-28 09:15:00+00:00,2025-10-28 09:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1650709999999997,1.1654010000000001
+2025-10-28 09:15:00+00:00,2025-10-28 09:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1650539999999998,1.1653840000000002
+2025-10-28 09:30:00+00:00,2025-10-28 09:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1651159999999998,1.1653850000000001
+2025-10-28 09:30:00+00:00,2025-10-28 09:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1651779999999998,1.1653860000000003
+2025-10-28 09:30:00+00:00,2025-10-28 09:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1652619999999998,1.1653870000000002
+2025-10-28 09:30:00+00:00,2025-10-28 09:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165346,1.1653879999999999
+2025-10-28 11:15:00+00:00,2025-10-28 11:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165898,1.1659609999999994
+2025-10-28 11:15:00+00:00,2025-10-28 11:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1658140000000001,1.1659479999999995
+2025-10-28 11:30:00+00:00,2025-10-28 11:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1657389999999999,1.1659344999999994
+2025-10-28 11:30:00+00:00,2025-10-28 11:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165664,1.1659209999999995
+2025-10-28 11:30:00+00:00,2025-10-28 11:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656539999999995,1.1659074999999997
+2025-10-28 11:30:00+00:00,2025-10-28 11:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656439999999997,1.1658939999999998
+2025-10-28 11:45:00+00:00,2025-10-28 12:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656609999999996,1.165887
+2025-10-28 11:45:00+00:00,2025-10-28 12:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656779999999998,1.16588
+2025-10-28 11:45:00+00:00,2025-10-28 12:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165714,1.165873
+2025-10-28 11:45:00+00:00,2025-10-28 12:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1657499999999996,1.1658659999999998
+2025-10-28 12:00:00+00:00,2025-10-28 12:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165708,1.165803
+2025-10-28 12:00:00+00:00,2025-10-28 12:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656659999999999,1.16574
+2025-10-28 12:00:00+00:00,2025-10-28 12:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165615,1.1656769999999999
+2025-10-28 12:00:00+00:00,2025-10-28 12:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1655640000000003,1.165614
+2025-10-28 12:15:00+00:00,2025-10-28 12:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165517,1.1655854999999997
+2025-10-28 12:15:00+00:00,2025-10-28 12:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654699999999998,1.1655569999999997
+2025-10-28 12:15:00+00:00,2025-10-28 12:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1653959999999999,1.1655284999999997
+2025-10-28 12:15:00+00:00,2025-10-28 12:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1653219999999997,1.1654999999999998
+2025-10-28 12:30:00+00:00,2025-10-28 12:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165169,1.1654414999999998
+2025-10-28 12:30:00+00:00,2025-10-28 12:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165016,1.1653829999999998
+2025-10-28 12:30:00+00:00,2025-10-28 12:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1649410000000002,1.1653245
+2025-10-28 12:30:00+00:00,2025-10-28 12:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1648660000000002,1.165266
+2025-10-28 13:45:00+00:00,2025-10-28 14:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.35 pips threshold),1.1634790000000002,1.1634495
+2025-10-28 13:45:00+00:00,2025-10-28 14:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1635720000000003,1.163426
+2025-10-28 14:00:00+00:00,2025-10-28 14:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1637460000000002,1.1634620000000002
+2025-10-28 14:00:00+00:00,2025-10-28 14:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.16392,1.1634980000000001
+2025-10-28 14:00:00+00:00,2025-10-28 14:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164044,1.1635340000000003
+2025-10-28 14:00:00+00:00,2025-10-28 14:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1641679999999999,1.1635700000000004
+2025-10-28 15:30:00+00:00,2025-10-28 15:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.15 pips < 0.35 pips threshold),1.165865,1.16588
+2025-10-28 15:30:00+00:00,2025-10-28 15:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165858,1.1659020000000002
+2025-10-28 15:30:00+00:00,2025-10-28 15:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1658750000000002,1.165924
+2025-10-28 15:30:00+00:00,2025-10-28 15:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1658920000000002,1.1659460000000001
+2025-10-28 15:45:00+00:00,2025-10-28 16:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1658979999999999,1.1659385000000002
+2025-10-28 15:45:00+00:00,2025-10-28 16:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.35 pips threshold),1.1659039999999998,1.1659310000000003
+2025-10-28 15:45:00+00:00,2025-10-28 16:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.15 pips < 0.35 pips threshold),1.1659089999999999,1.1659235000000003
+2025-10-28 15:45:00+00:00,2025-10-28 16:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.165914,1.1659160000000004
+2025-10-28 16:30:00+00:00,2025-10-28 16:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.35 pips threshold),1.165899,1.1659109999999997
+2025-10-28 16:30:00+00:00,2025-10-28 16:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1658560000000002,1.1658939999999995
+2025-10-28 17:45:00+00:00,2025-10-28 18:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.13 pips < 0.35 pips threshold),1.1663579999999998,1.1663709999999998
+2025-10-28 17:45:00+00:00,2025-10-28 18:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1663499999999998,1.1664119999999998
+2025-10-28 18:00:00+00:00,2025-10-28 18:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1663189999999997,1.1663765
+2025-10-28 18:00:00+00:00,2025-10-28 18:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1662880000000002,1.1663409999999999
+2025-10-28 18:00:00+00:00,2025-10-28 18:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1662590000000002,1.1663055000000002
+2025-10-28 18:00:00+00:00,2025-10-28 18:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.16623,1.1662700000000001
+2025-10-28 18:15:00+00:00,2025-10-28 18:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166171,1.166249
+2025-10-28 18:15:00+00:00,2025-10-28 18:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166112,1.1662280000000003
+2025-10-28 18:15:00+00:00,2025-10-28 18:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166059,1.1662070000000002
+2025-10-28 18:15:00+00:00,2025-10-28 18:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1660059999999999,1.1661860000000002
+2025-10-28 18:30:00+00:00,2025-10-28 18:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165977,1.1661675000000002
+2025-10-28 18:30:00+00:00,2025-10-28 18:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1659479999999998,1.1661490000000003
+2025-10-28 18:30:00+00:00,2025-10-28 18:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1659419999999998,1.1661305000000002
+2025-10-28 18:30:00+00:00,2025-10-28 18:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1659359999999999,1.1661120000000003
+2025-10-28 18:45:00+00:00,2025-10-28 19:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1659499999999998,1.1661045
+2025-10-28 18:45:00+00:00,2025-10-28 19:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165964,1.166097
+2025-10-28 18:45:00+00:00,2025-10-28 19:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1660079999999997,1.1660894999999998
+2025-10-28 18:45:00+00:00,2025-10-28 19:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.35 pips threshold),1.1660519999999999,1.1660819999999998
+2025-10-28 19:45:00+00:00,2025-10-28 20:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1661430000000002,1.1661785000000002
+2025-10-28 19:45:00+00:00,2025-10-28 20:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.166026,1.1661390000000003
+2025-10-28 19:45:00+00:00,2025-10-28 20:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165913,1.1660995000000003
+2025-10-28 19:45:00+00:00,2025-10-28 20:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1657999999999997,1.1660600000000003
+2025-10-28 20:00:00+00:00,2025-10-28 20:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165723,1.1660285000000006
+2025-10-28 20:00:00+00:00,2025-10-28 20:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165646,1.1659970000000004
+2025-10-28 20:00:00+00:00,2025-10-28 20:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165596,1.1659655000000009
+2025-10-28 20:00:00+00:00,2025-10-28 20:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165546,1.1659340000000005
+2025-10-28 20:15:00+00:00,2025-10-28 20:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165479,1.1658850000000003
+2025-10-28 20:15:00+00:00,2025-10-28 20:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654119999999997,1.1658360000000005
+2025-10-28 20:15:00+00:00,2025-10-28 20:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654309999999997,1.1657870000000004
+2025-10-28 20:15:00+00:00,2025-10-28 20:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654499999999997,1.1657380000000004
+2025-10-28 20:30:00+00:00,2025-10-28 20:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654689999999996,1.1656910000000003
+2025-10-28 20:30:00+00:00,2025-10-28 20:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654879999999996,1.1656440000000001
+2025-10-28 20:30:00+00:00,2025-10-28 20:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654709999999997,1.1655970000000004
+2025-10-28 20:30:00+00:00,2025-10-28 20:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654539999999998,1.16555
+2025-10-28 20:45:00+00:00,2025-10-28 21:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654039999999999,1.1655000000000002
+2025-10-28 20:45:00+00:00,2025-10-28 21:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1653539999999998,1.16545
+2025-10-28 20:45:00+00:00,2025-10-28 21:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1653209999999998,1.1654
+2025-10-28 20:45:00+00:00,2025-10-28 21:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1652879999999999,1.1653499999999997
+2025-10-28 21:15:00+00:00,2025-10-28 21:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1652719999999999,1.1653514999999997
+2025-10-28 21:15:00+00:00,2025-10-28 21:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1652559999999998,1.1653529999999996
+2025-10-28 21:15:00+00:00,2025-10-28 21:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.16524,1.1653544999999996
+2025-10-28 21:15:00+00:00,2025-10-28 21:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1652239999999998,1.1653559999999996
+2025-10-28 21:30:00+00:00,2025-10-28 21:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.16521,1.1653404999999997
+2025-10-28 21:30:00+00:00,2025-10-28 21:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165196,1.1653249999999997
+2025-10-28 21:30:00+00:00,2025-10-28 21:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165215,1.1653094999999998
+2025-10-28 21:30:00+00:00,2025-10-28 21:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1652339999999999,1.1652939999999998
+2025-10-28 21:45:00+00:00,2025-10-28 22:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.35 pips < 0.35 pips threshold),1.165251,1.1652859999999996
+2025-10-28 21:45:00+00:00,2025-10-28 22:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.165268,1.1652779999999996
+2025-10-28 21:45:00+00:00,2025-10-28 22:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.165268,1.1652699999999998
+2025-10-28 22:30:00+00:00,2025-10-28 22:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.1652689999999999,1.1652725
+2025-10-28 22:30:00+00:00,2025-10-28 22:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.35 pips threshold),1.165244,1.165264
+2025-10-28 22:45:00+00:00,2025-10-28 23:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165216,1.165253
+2025-10-28 22:45:00+00:00,2025-10-28 23:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1651880000000001,1.1652419999999999
+2025-10-28 22:45:00+00:00,2025-10-28 23:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1651590000000003,1.165231
+2025-10-28 22:45:00+00:00,2025-10-28 23:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1651300000000002,1.1652200000000001
+2025-10-28 23:00:00+00:00,2025-10-28 23:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1651030000000002,1.165211
+2025-10-28 23:00:00+00:00,2025-10-28 23:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165076,1.165202
+2025-10-28 23:00:00+00:00,2025-10-28 23:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165075,1.165193
+2025-10-28 23:00:00+00:00,2025-10-28 23:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165074,1.1651839999999998
+2025-10-28 23:15:00+00:00,2025-10-28 23:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1650679999999998,1.1651684999999998
+2025-10-28 23:15:00+00:00,2025-10-28 23:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1650619999999998,1.165153
+2025-10-28 23:15:00+00:00,2025-10-28 23:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1650589999999998,1.1651375000000004
+2025-10-28 23:15:00+00:00,2025-10-28 23:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1650559999999999,1.1651220000000004
+2025-10-28 23:30:00+00:00,2025-10-28 23:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.16506,1.1651095000000002
+2025-10-28 23:30:00+00:00,2025-10-28 23:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.35 pips threshold),1.165064,1.1650970000000003
+2025-10-28 23:30:00+00:00,2025-10-28 23:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.19 pips < 0.35 pips threshold),1.1650660000000002,1.1650845000000003
+2025-10-28 23:30:00+00:00,2025-10-28 23:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.1650680000000002,1.1650719999999999
+2025-10-29 00:45:00+00:00,2025-10-29 01:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.31 pips < 0.35 pips threshold),1.1655840000000002,1.1656155000000001
+2025-10-29 00:45:00+00:00,2025-10-29 01:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1655540000000002,1.165632
+2025-10-29 01:00:00+00:00,2025-10-29 01:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165513,1.165612
+2025-10-29 01:00:00+00:00,2025-10-29 01:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654719999999998,1.1655920000000002
+2025-10-29 01:00:00+00:00,2025-10-29 01:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654449999999996,1.1655720000000003
+2025-10-29 01:00:00+00:00,2025-10-29 01:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1654179999999996,1.1655520000000004
+2025-10-29 01:15:00+00:00,2025-10-29 01:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1653609999999996,1.1655185000000003
+2025-10-29 01:15:00+00:00,2025-10-29 01:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165304,1.165485
+2025-10-29 01:15:00+00:00,2025-10-29 01:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165263,1.1654515
+2025-10-29 01:15:00+00:00,2025-10-29 01:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165222,1.1654179999999998
+2025-10-29 01:30:00+00:00,2025-10-29 01:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165153,1.1653685
+2025-10-29 01:30:00+00:00,2025-10-29 01:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165084,1.1653189999999998
+2025-10-29 01:30:00+00:00,2025-10-29 01:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165026,1.1652694999999997
+2025-10-29 01:30:00+00:00,2025-10-29 01:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1649680000000002,1.1652200000000001
+2025-10-29 01:45:00+00:00,2025-10-29 02:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1649100000000001,1.1651775
+2025-10-29 01:45:00+00:00,2025-10-29 02:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.164852,1.1651350000000005
+2025-10-29 01:45:00+00:00,2025-10-29 02:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1648239999999999,1.1650925000000005
+2025-10-29 01:45:00+00:00,2025-10-29 02:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1647960000000002,1.1650500000000004
+2025-10-29 02:00:00+00:00,2025-10-29 02:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1647580000000002,1.1650105000000004
+2025-10-29 02:00:00+00:00,2025-10-29 02:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1647200000000002,1.1649710000000002
+2025-10-29 02:00:00+00:00,2025-10-29 02:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1647100000000001,1.1649315000000002
+2025-10-29 02:00:00+00:00,2025-10-29 02:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1647000000000003,1.164892
+2025-10-29 02:15:00+00:00,2025-10-29 02:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1646570000000003,1.1648414999999996
+2025-10-29 02:15:00+00:00,2025-10-29 02:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1646140000000003,1.164791
+2025-10-29 02:15:00+00:00,2025-10-29 02:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1645710000000002,1.1647405
+2025-10-29 02:15:00+00:00,2025-10-29 02:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1645280000000002,1.1646899999999998
+2025-10-29 02:30:00+00:00,2025-10-29 02:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.164487,1.1646554999999998
+2025-10-29 02:30:00+00:00,2025-10-29 02:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.164446,1.1646210000000001
+2025-10-29 02:30:00+00:00,2025-10-29 02:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.164415,1.1645865
+2025-10-29 02:30:00+00:00,2025-10-29 02:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1643839999999999,1.164552
+2025-10-29 02:45:00+00:00,2025-10-29 03:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.164386,1.1645480000000001
+2025-10-29 02:45:00+00:00,2025-10-29 03:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1643879999999998,1.1645440000000002
+2025-10-29 02:45:00+00:00,2025-10-29 03:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1644229999999998,1.1645400000000004
+2025-10-29 02:45:00+00:00,2025-10-29 03:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1644579999999998,1.1645360000000005
+2025-10-29 03:00:00+00:00,2025-10-29 03:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.164467,1.1645190000000005
+2025-10-29 03:00:00+00:00,2025-10-29 03:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.35 pips threshold),1.164476,1.1645020000000004
+2025-10-29 03:00:00+00:00,2025-10-29 03:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.1644830000000002,1.1644850000000004
+2025-10-29 06:00:00+00:00,2025-10-29 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.16307,1.1630599999999995
+2025-10-29 06:00:00+00:00,2025-10-29 06:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.35 pips threshold),1.1630740000000002,1.1630419999999995
+2025-10-29 06:00:00+00:00,2025-10-29 06:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163078,1.1630239999999994
+2025-10-29 06:15:00+00:00,2025-10-29 06:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1630770000000001,1.1630219999999996
+2025-10-29 06:15:00+00:00,2025-10-29 06:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163076,1.1630199999999997
+2025-10-29 06:15:00+00:00,2025-10-29 06:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163062,1.1630179999999997
+2025-10-29 06:15:00+00:00,2025-10-29 06:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.35 pips threshold),1.163048,1.1630159999999998
+2025-10-29 06:30:00+00:00,2025-10-29 06:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.163029,1.1630194999999999
+2025-10-29 07:00:00+00:00,2025-10-29 07:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.35 pips threshold),1.1630699999999998,1.163059
+2025-10-29 07:00:00+00:00,2025-10-29 07:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1631239999999998,1.1630765000000003
+2025-10-29 07:00:00+00:00,2025-10-29 07:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1631779999999998,1.163094
+2025-10-29 07:15:00+00:00,2025-10-29 07:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1632409999999997,1.1631205
+2025-10-29 07:15:00+00:00,2025-10-29 07:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1633039999999997,1.163147
+2025-10-29 07:15:00+00:00,2025-10-29 07:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1633639999999996,1.1631734999999996
+2025-10-29 07:15:00+00:00,2025-10-29 07:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1634239999999996,1.1631999999999998
+2025-10-29 07:30:00+00:00,2025-10-29 07:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1634829999999998,1.1632284999999998
+2025-10-29 07:30:00+00:00,2025-10-29 07:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1635419999999999,1.1632569999999998
+2025-10-29 07:30:00+00:00,2025-10-29 07:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1635499999999999,1.1632854999999998
+2025-10-29 07:30:00+00:00,2025-10-29 07:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1635579999999999,1.1633139999999997
+2025-10-29 07:45:00+00:00,2025-10-29 08:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163535,1.1633295
+2025-10-29 07:45:00+00:00,2025-10-29 08:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1635119999999999,1.163345
+2025-10-29 07:45:00+00:00,2025-10-29 08:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1634799999999998,1.1633605
+2025-10-29 07:45:00+00:00,2025-10-29 08:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1634479999999998,1.163376
+2025-10-29 09:30:00+00:00,2025-10-29 09:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.35 pips threshold),1.1628239999999999,1.1628069999999997
+2025-10-29 09:30:00+00:00,2025-10-29 09:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1629660000000002,1.1628304999999999
+2025-10-29 09:30:00+00:00,2025-10-29 09:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163108,1.1628539999999998
+2025-10-29 09:45:00+00:00,2025-10-29 10:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163287,1.1629099999999999
+2025-10-29 09:45:00+00:00,2025-10-29 10:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1634660000000001,1.162966
+2025-10-29 09:45:00+00:00,2025-10-29 10:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1635950000000002,1.163022
+2025-10-29 09:45:00+00:00,2025-10-29 10:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163724,1.163078
+2025-10-29 10:00:00+00:00,2025-10-29 10:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163856,1.1631699999999998
+2025-10-29 10:00:00+00:00,2025-10-29 10:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1639880000000002,1.1632619999999998
+2025-10-29 10:00:00+00:00,2025-10-29 10:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1640280000000003,1.1633539999999998
+2025-10-29 10:00:00+00:00,2025-10-29 10:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1640680000000003,1.1634459999999998
+2025-10-29 10:15:00+00:00,2025-10-29 10:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1641470000000003,1.1635564999999999
+2025-10-29 10:15:00+00:00,2025-10-29 10:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1642260000000002,1.1636669999999998
+2025-10-29 10:15:00+00:00,2025-10-29 10:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164268,1.1637774999999997
+2025-10-29 10:15:00+00:00,2025-10-29 10:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.16431,1.1638879999999996
+2025-10-29 10:30:00+00:00,2025-10-29 10:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164354,1.1639744999999997
+2025-10-29 10:30:00+00:00,2025-10-29 10:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1643979999999998,1.1640609999999998
+2025-10-29 10:30:00+00:00,2025-10-29 10:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164439,1.1641475
+2025-10-29 10:30:00+00:00,2025-10-29 10:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1644799999999997,1.1642340000000002
+2025-10-29 10:45:00+00:00,2025-10-29 11:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1645379999999999,1.1642830000000004
+2025-10-29 10:45:00+00:00,2025-10-29 11:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164596,1.1643320000000006
+2025-10-29 10:45:00+00:00,2025-10-29 11:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164615,1.1643810000000006
+2025-10-29 10:45:00+00:00,2025-10-29 11:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164634,1.1644300000000005
+2025-10-29 11:00:00+00:00,2025-10-29 11:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164606,1.1644370000000004
+2025-10-29 11:00:00+00:00,2025-10-29 11:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1645780000000001,1.164444
+2025-10-29 11:00:00+00:00,2025-10-29 11:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1645480000000001,1.164451
+2025-10-29 11:00:00+00:00,2025-10-29 11:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1645180000000002,1.1644579999999998
+2025-10-29 12:00:00+00:00,2025-10-29 12:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.21 pips < 0.35 pips threshold),1.163988,1.163967
+2025-10-29 12:00:00+00:00,2025-10-29 12:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1639879999999998,1.1639300000000001
+2025-10-29 12:15:00+00:00,2025-10-29 12:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1639629999999999,1.163904
+2025-10-29 12:15:00+00:00,2025-10-29 12:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163938,1.163878
+2025-10-29 12:15:00+00:00,2025-10-29 12:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163916,1.163852
+2025-10-29 12:15:00+00:00,2025-10-29 12:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163894,1.163826
+2025-10-29 12:30:00+00:00,2025-10-29 12:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.1638179999999998,1.163816
+2025-10-29 13:15:00+00:00,2025-10-29 13:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1637380000000002,1.1636609999999996
+2025-10-29 13:15:00+00:00,2025-10-29 13:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1638290000000002,1.1636764999999998
+2025-10-29 13:15:00+00:00,2025-10-29 13:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1639200000000003,1.1636919999999997
+2025-10-29 13:30:00+00:00,2025-10-29 13:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1639640000000002,1.1636965
+2025-10-29 13:30:00+00:00,2025-10-29 13:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1640080000000004,1.163701
+2025-10-29 13:30:00+00:00,2025-10-29 13:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1640130000000002,1.1637055000000003
+2025-10-29 13:30:00+00:00,2025-10-29 13:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1640180000000002,1.1637100000000002
+2025-10-29 13:45:00+00:00,2025-10-29 14:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1640050000000002,1.1637325000000003
+2025-10-29 13:45:00+00:00,2025-10-29 14:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1639920000000001,1.1637550000000003
+2025-10-29 13:45:00+00:00,2025-10-29 14:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1639270000000002,1.1637775000000004
+2025-10-29 13:45:00+00:00,2025-10-29 14:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1638620000000002,1.1638000000000002
+2025-10-29 14:15:00+00:00,2025-10-29 14:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.35 pips threshold),1.164008,1.1640000000000001
+2025-10-29 14:30:00+00:00,2025-10-29 14:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164076,1.1640014999999997
+2025-10-29 14:30:00+00:00,2025-10-29 14:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1641439999999998,1.1640029999999997
+2025-10-29 14:30:00+00:00,2025-10-29 14:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1641959999999998,1.1640044999999994
+2025-10-29 14:30:00+00:00,2025-10-29 14:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1642479999999997,1.1640059999999994
+2025-10-29 14:45:00+00:00,2025-10-29 15:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1643709999999998,1.1640665
+2025-10-29 14:45:00+00:00,2025-10-29 15:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164494,1.164127
+2025-10-29 14:45:00+00:00,2025-10-29 15:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164562,1.1641875
+2025-10-29 14:45:00+00:00,2025-10-29 15:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1646300000000003,1.1642480000000002
+2025-10-29 15:00:00+00:00,2025-10-29 15:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1646470000000002,1.164292
+2025-10-29 15:00:00+00:00,2025-10-29 15:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1646640000000001,1.164336
+2025-10-29 15:00:00+00:00,2025-10-29 15:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164684,1.16438
+2025-10-29 15:00:00+00:00,2025-10-29 15:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1647040000000002,1.1644239999999997
+2025-10-29 15:15:00+00:00,2025-10-29 15:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1647560000000001,1.1644759999999998
+2025-10-29 15:15:00+00:00,2025-10-29 15:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164808,1.1645279999999998
+2025-10-29 15:15:00+00:00,2025-10-29 15:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164789,1.16458
+2025-10-29 15:15:00+00:00,2025-10-29 15:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.16477,1.1646320000000001
+2025-10-29 16:45:00+00:00,2025-10-29 17:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.35 pips threshold),1.1660780000000002,1.1660949999999999
+2025-10-29 16:45:00+00:00,2025-10-29 17:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1660280000000003,1.1660979999999999
+2025-10-29 16:45:00+00:00,2025-10-29 17:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165979,1.1661009999999998
+2025-10-29 16:45:00+00:00,2025-10-29 17:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1659300000000001,1.166104
+2025-10-29 17:00:00+00:00,2025-10-29 17:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1658840000000001,1.166073
+2025-10-29 17:00:00+00:00,2025-10-29 17:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1658380000000002,1.1660419999999998
+2025-10-29 17:00:00+00:00,2025-10-29 17:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165813,1.166011
+2025-10-29 17:00:00+00:00,2025-10-29 17:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1657879999999998,1.1659799999999998
+2025-10-29 17:15:00+00:00,2025-10-29 17:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656919999999997,1.165921
+2025-10-29 17:15:00+00:00,2025-10-29 17:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165596,1.1658620000000002
+2025-10-29 17:15:00+00:00,2025-10-29 17:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165528,1.1658030000000001
+2025-10-29 17:15:00+00:00,2025-10-29 17:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.16546,1.1657440000000003
+2025-10-29 17:30:00+00:00,2025-10-29 17:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165361,1.16567
+2025-10-29 17:30:00+00:00,2025-10-29 17:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165262,1.165596
+2025-10-29 17:30:00+00:00,2025-10-29 17:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1651600000000002,1.165522
+2025-10-29 17:30:00+00:00,2025-10-29 17:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1650580000000004,1.1654479999999998
+2025-10-29 17:45:00+00:00,2025-10-29 18:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1649600000000002,1.1653864999999999
+2025-10-29 17:45:00+00:00,2025-10-29 18:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1648620000000003,1.1653249999999997
+2025-10-29 17:45:00+00:00,2025-10-29 18:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1648350000000005,1.1652634999999996
+2025-10-29 17:45:00+00:00,2025-10-29 18:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1648080000000003,1.165202
+2025-10-29 19:45:00+00:00,2025-10-29 20:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1591699999999996,1.15899
+2025-10-29 20:00:00+00:00,2025-10-29 20:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1593429999999998,1.1589990000000001
+2025-10-29 20:00:00+00:00,2025-10-29 20:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.159516,1.159008
+2025-10-29 20:00:00+00:00,2025-10-29 20:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1595730000000002,1.159017
+2025-10-29 20:00:00+00:00,2025-10-29 20:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1596300000000002,1.1590260000000001
+2025-10-29 20:15:00+00:00,2025-10-29 20:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.159712,1.1590875
+2025-10-29 20:15:00+00:00,2025-10-29 20:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.159794,1.1591490000000002
+2025-10-29 20:15:00+00:00,2025-10-29 20:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.159788,1.1592105000000001
+2025-10-29 20:15:00+00:00,2025-10-29 20:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.159782,1.159272
+2025-10-29 20:30:00+00:00,2025-10-29 20:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.159805,1.1593855000000002
+2025-10-29 20:30:00+00:00,2025-10-29 20:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1598279999999999,1.1594990000000003
+2025-10-29 20:30:00+00:00,2025-10-29 20:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1598819999999999,1.1596125000000004
+2025-10-29 20:30:00+00:00,2025-10-29 20:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1599359999999996,1.1597260000000005
+2025-10-29 20:45:00+00:00,2025-10-29 21:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.159984,1.1597785000000003
+2025-10-29 20:45:00+00:00,2025-10-29 21:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160032,1.1598310000000003
+2025-10-29 20:45:00+00:00,2025-10-29 21:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160055,1.1598835
+2025-10-29 20:45:00+00:00,2025-10-29 21:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160078,1.159936
+2025-10-29 21:15:00+00:00,2025-10-29 21:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1601310000000002,1.1599594999999998
+2025-10-29 21:15:00+00:00,2025-10-29 21:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1601839999999999,1.159983
+2025-10-29 21:15:00+00:00,2025-10-29 21:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1602079999999997,1.1600064999999997
+2025-10-29 21:15:00+00:00,2025-10-29 21:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160232,1.1600299999999997
+2025-10-29 21:30:00+00:00,2025-10-29 21:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1602539999999997,1.1600679999999997
+2025-10-29 21:30:00+00:00,2025-10-29 21:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160276,1.1601059999999996
+2025-10-29 21:30:00+00:00,2025-10-29 21:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160304,1.1601439999999998
+2025-10-29 21:30:00+00:00,2025-10-29 21:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160332,1.1601819999999998
+2025-10-29 21:45:00+00:00,2025-10-29 22:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160352,1.1602035
+2025-10-29 21:45:00+00:00,2025-10-29 22:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160372,1.1602249999999998
+2025-10-29 21:45:00+00:00,2025-10-29 22:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160362,1.1602465
+2025-10-29 21:45:00+00:00,2025-10-29 22:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1603519999999998,1.1602679999999999
+2025-10-29 22:00:00+00:00,2025-10-29 22:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160359,1.1602834999999998
+2025-10-29 22:00:00+00:00,2025-10-29 22:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160366,1.1602989999999997
+2025-10-29 22:00:00+00:00,2025-10-29 22:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1603750000000002,1.1603144999999997
+2025-10-29 22:00:00+00:00,2025-10-29 22:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160384,1.1603299999999999
+2025-10-29 22:15:00+00:00,2025-10-29 22:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.31 pips < 0.35 pips threshold),1.160365,1.1603344999999998
+2025-10-29 22:15:00+00:00,2025-10-29 22:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.35 pips threshold),1.160346,1.160339
+2025-10-29 22:30:00+00:00,2025-10-29 22:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.05 pips < 0.35 pips threshold),1.160362,1.1603569999999999
+2025-10-29 22:30:00+00:00,2025-10-29 22:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.160364,1.1603615
+2025-10-29 22:45:00+00:00,2025-10-29 23:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.35 pips threshold),1.1603590000000001,1.160367
+2025-10-29 22:45:00+00:00,2025-10-29 23:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.35 pips threshold),1.160352,1.1603679999999998
+2025-10-29 22:45:00+00:00,2025-10-29 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.1603729999999999,1.1603689999999998
+2025-10-29 22:45:00+00:00,2025-10-29 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.35 pips threshold),1.1603939999999997,1.16037
+2025-10-29 23:00:00+00:00,2025-10-29 23:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160409,1.160372
+2025-10-29 23:00:00+00:00,2025-10-29 23:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1604240000000001,1.1603739999999998
+2025-10-29 23:00:00+00:00,2025-10-29 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.35 pips threshold),1.160409,1.1603759999999999
+2025-10-29 23:00:00+00:00,2025-10-29 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.35 pips threshold),1.160394,1.1603780000000001
+2025-10-29 23:15:00+00:00,2025-10-29 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.35 pips threshold),1.160389,1.1603765000000001
+2025-10-29 23:15:00+00:00,2025-10-29 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.09 pips < 0.35 pips threshold),1.1603839999999999,1.1603750000000002
+2025-10-29 23:15:00+00:00,2025-10-29 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.14 pips < 0.35 pips threshold),1.1603879999999998,1.1603735000000004
+2025-10-29 23:15:00+00:00,2025-10-29 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.35 pips threshold),1.1603919999999996,1.1603720000000002
+2025-10-29 23:30:00+00:00,2025-10-29 23:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.1603929999999998,1.1603830000000002
+2025-10-29 23:30:00+00:00,2025-10-29 23:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.160401,1.1604050000000001
+2025-10-29 23:30:00+00:00,2025-10-29 23:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.08 pips < 0.35 pips threshold),1.160408,1.160416
+2025-10-29 23:45:00+00:00,2025-10-30 00:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.160404,1.1604064999999997
+2025-10-29 23:45:00+00:00,2025-10-30 00:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.35 pips threshold),1.1603999999999999,1.1603969999999997
+2025-10-29 23:45:00+00:00,2025-10-30 00:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.35 pips threshold),1.1603859999999997,1.1603874999999997
+2025-10-29 23:45:00+00:00,2025-10-30 00:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.35 pips threshold),1.1603719999999997,1.1603779999999997
+2025-10-30 00:00:00+00:00,2025-10-30 00:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.35 pips threshold),1.1603749999999997,1.1603814999999997
+2025-10-30 00:00:00+00:00,2025-10-30 00:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.35 pips threshold),1.1603780000000001,1.1603849999999998
+2025-10-30 00:00:00+00:00,2025-10-30 00:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.160384,1.1603885
+2025-10-30 00:00:00+00:00,2025-10-30 00:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.16039,1.160392
+2025-10-30 00:15:00+00:00,2025-10-30 00:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160484,1.1604424999999998
+2025-10-30 00:15:00+00:00,2025-10-30 00:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160578,1.160493
+2025-10-30 00:15:00+00:00,2025-10-30 00:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1606830000000001,1.1605434999999997
+2025-10-30 00:15:00+00:00,2025-10-30 00:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1607880000000002,1.1605939999999997
+2025-10-30 00:30:00+00:00,2025-10-30 00:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1608870000000002,1.1606364999999996
+2025-10-30 00:30:00+00:00,2025-10-30 00:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1609859999999999,1.1606789999999996
+2025-10-30 00:30:00+00:00,2025-10-30 00:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1610679999999998,1.1607214999999997
+2025-10-30 00:30:00+00:00,2025-10-30 00:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1611499999999997,1.1607640000000001
+2025-10-30 00:45:00+00:00,2025-10-30 01:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161224,1.1608040000000002
+2025-10-30 00:45:00+00:00,2025-10-30 01:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161298,1.1608440000000004
+2025-10-30 00:45:00+00:00,2025-10-30 01:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1612840000000002,1.1608840000000005
+2025-10-30 00:45:00+00:00,2025-10-30 01:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1612700000000002,1.1609240000000003
+2025-10-30 01:00:00+00:00,2025-10-30 01:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161269,1.1609760000000002
+2025-10-30 01:00:00+00:00,2025-10-30 01:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1612680000000002,1.161028
+2025-10-30 01:00:00+00:00,2025-10-30 01:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161273,1.16108
+2025-10-30 01:00:00+00:00,2025-10-30 01:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1612779999999998,1.1611319999999998
+2025-10-30 01:15:00+00:00,2025-10-30 01:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161241,1.1611544999999999
+2025-10-30 01:15:00+00:00,2025-10-30 01:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.35 pips threshold),1.1612040000000001,1.161177
+2025-10-30 01:15:00+00:00,2025-10-30 01:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.24 pips < 0.35 pips threshold),1.1611750000000005,1.1611995
+2025-10-30 01:15:00+00:00,2025-10-30 01:30:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161146,1.161222
+2025-10-30 01:30:00+00:00,2025-10-30 01:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161164,1.1612240000000003
+2025-10-30 01:30:00+00:00,2025-10-30 01:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1611820000000002,1.1612260000000003
+2025-10-30 01:30:00+00:00,2025-10-30 01:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1611870000000004,1.1612280000000001
+2025-10-30 01:30:00+00:00,2025-10-30 01:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1611920000000002,1.1612300000000002
+2025-10-30 01:45:00+00:00,2025-10-30 02:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1611960000000001,1.1612345000000004
+2025-10-30 01:45:00+00:00,2025-10-30 02:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1611999999999998,1.1612390000000004
+2025-10-30 01:45:00+00:00,2025-10-30 02:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.1612459999999998,1.1612435000000005
+2025-10-30 01:45:00+00:00,2025-10-30 02:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1612919999999998,1.1612480000000005
+2025-10-30 02:00:00+00:00,2025-10-30 02:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161395,1.1612850000000008
+2025-10-30 02:00:00+00:00,2025-10-30 02:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161498,1.1613220000000006
+2025-10-30 02:00:00+00:00,2025-10-30 02:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1615540000000002,1.1613590000000005
+2025-10-30 02:00:00+00:00,2025-10-30 02:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1616100000000003,1.1613960000000003
+2025-10-30 02:15:00+00:00,2025-10-30 02:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1616270000000002,1.1614070000000005
+2025-10-30 02:15:00+00:00,2025-10-30 02:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1616440000000001,1.1614180000000003
+2025-10-30 02:15:00+00:00,2025-10-30 02:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161662,1.1614290000000005
+2025-10-30 02:15:00+00:00,2025-10-30 02:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.16168,1.1614400000000002
+2025-10-30 02:30:00+00:00,2025-10-30 02:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161707,1.1614765000000005
+2025-10-30 02:30:00+00:00,2025-10-30 02:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1617339999999998,1.1615130000000005
+2025-10-30 02:30:00+00:00,2025-10-30 02:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1617039999999998,1.1615495000000007
+2025-10-30 02:30:00+00:00,2025-10-30 02:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1616739999999999,1.1615860000000005
+2025-10-30 02:45:00+00:00,2025-10-30 03:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161652,1.1616030000000006
+2025-10-30 02:45:00+00:00,2025-10-30 03:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.1616300000000002,1.1616200000000003
+2025-10-30 02:45:00+00:00,2025-10-30 03:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.161647,1.1616370000000003
+2025-10-30 02:45:00+00:00,2025-10-30 03:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.161664,1.161654
+2025-10-30 03:00:00+00:00,2025-10-30 03:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.22 pips < 0.35 pips threshold),1.161705,1.1616834999999999
+2025-10-30 03:00:00+00:00,2025-10-30 03:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.35 pips threshold),1.1617460000000002,1.1617129999999998
+2025-10-30 03:00:00+00:00,2025-10-30 03:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1617780000000002,1.1617424999999997
+2025-10-30 03:00:00+00:00,2025-10-30 03:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1618100000000002,1.1617719999999998
+2025-10-30 03:15:00+00:00,2025-10-30 03:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.35 pips threshold),1.161768,1.1617359999999999
+2025-10-30 03:15:00+00:00,2025-10-30 03:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.35 pips threshold),1.161726,1.1617
+2025-10-30 03:15:00+00:00,2025-10-30 03:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.35 pips threshold),1.161676,1.161664
+2025-10-30 03:15:00+00:00,2025-10-30 03:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.161626,1.1616279999999999
+2025-10-30 03:30:00+00:00,2025-10-30 03:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1615600000000001,1.1616035
+2025-10-30 03:30:00+00:00,2025-10-30 03:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161494,1.161579
+2025-10-30 03:30:00+00:00,2025-10-30 03:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161404,1.1615544999999998
+2025-10-30 03:30:00+00:00,2025-10-30 03:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1613140000000002,1.1615299999999997
+2025-10-30 03:45:00+00:00,2025-10-30 04:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161272,1.161525
+2025-10-30 03:45:00+00:00,2025-10-30 04:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1612300000000002,1.1615199999999999
+2025-10-30 03:45:00+00:00,2025-10-30 04:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1612620000000002,1.1615149999999996
+2025-10-30 03:45:00+00:00,2025-10-30 04:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1612940000000003,1.1615099999999994
+2025-10-30 04:00:00+00:00,2025-10-30 04:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.16137,1.1615229999999994
+2025-10-30 04:00:00+00:00,2025-10-30 04:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161446,1.161536
+2025-10-30 04:15:00+00:00,2025-10-30 04:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1616699999999998,1.1616149999999998
+2025-10-30 04:15:00+00:00,2025-10-30 04:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1618939999999998,1.161694
+2025-10-30 04:30:00+00:00,2025-10-30 04:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162084,1.1617439999999999
+2025-10-30 04:30:00+00:00,2025-10-30 04:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162274,1.161794
+2025-10-30 04:45:00+00:00,2025-10-30 05:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162441,1.1618565
+2025-10-30 04:45:00+00:00,2025-10-30 05:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1626079999999999,1.161919
+2025-10-30 05:00:00+00:00,2025-10-30 05:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1627589999999999,1.1620105
+2025-10-30 05:00:00+00:00,2025-10-30 05:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1629099999999997,1.1621020000000002
+2025-10-30 05:15:00+00:00,2025-10-30 05:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162965,1.1621675000000002
+2025-10-30 05:15:00+00:00,2025-10-30 05:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.16302,1.162233
+2025-10-30 05:30:00+00:00,2025-10-30 05:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1629919999999998,1.1623309999999998
+2025-10-30 05:30:00+00:00,2025-10-30 05:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1629639999999999,1.162429
+2025-10-30 05:45:00+00:00,2025-10-30 06:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1629079999999996,1.162496
+2025-10-30 05:45:00+00:00,2025-10-30 06:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1628519999999998,1.162563
+2025-10-30 06:00:00+00:00,2025-10-30 06:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162826,1.1626335
+2025-10-30 06:00:00+00:00,2025-10-30 06:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1627999999999998,1.1627039999999997
+2025-10-30 06:15:00+00:00,2025-10-30 06:30:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.35 pips threshold),1.162747,1.162753
+2025-10-30 06:15:00+00:00,2025-10-30 06:30:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162694,1.162802
+2025-10-30 06:30:00+00:00,2025-10-30 06:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162649,1.1628070000000001
+2025-10-30 06:30:00+00:00,2025-10-30 06:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162604,1.162812
+2025-10-30 06:45:00+00:00,2025-10-30 07:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162498,1.1627449999999997
+2025-10-30 06:45:00+00:00,2025-10-30 07:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162392,1.1626779999999999
+2025-10-30 07:00:00+00:00,2025-10-30 07:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.162314,1.1626109999999996
+2025-10-30 07:00:00+00:00,2025-10-30 07:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1622360000000003,1.1625439999999998
+2025-10-30 07:15:00+00:00,2025-10-30 07:30:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1621040000000002,1.1624649999999996
+2025-10-30 07:15:00+00:00,2025-10-30 07:30:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1619720000000002,1.1623859999999997
+2025-10-30 07:30:00+00:00,2025-10-30 07:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161838,1.1622924999999997
+2025-10-30 07:30:00+00:00,2025-10-30 07:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1617039999999998,1.1621989999999998
+2025-10-30 07:45:00+00:00,2025-10-30 08:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1616809999999997,1.162165
+2025-10-30 07:45:00+00:00,2025-10-30 08:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1616579999999999,1.162131
+2025-10-30 08:00:00+00:00,2025-10-30 08:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161562,1.1620300000000001
+2025-10-30 08:00:00+00:00,2025-10-30 08:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161466,1.1619290000000004
+2025-10-30 08:15:00+00:00,2025-10-30 08:30:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1614410000000002,1.1618775000000006
+2025-10-30 08:15:00+00:00,2025-10-30 08:30:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1614159999999998,1.1618260000000005
+2025-10-30 08:30:00+00:00,2025-10-30 08:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1614,1.1617520000000003
+2025-10-30 08:30:00+00:00,2025-10-30 08:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161384,1.1616780000000004
+2025-10-30 08:45:00+00:00,2025-10-30 09:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161439,1.1616385000000005
+2025-10-30 08:45:00+00:00,2025-10-30 09:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161494,1.1615990000000003
+2025-10-30 09:00:00+00:00,2025-10-30 09:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1615,1.1615905000000004
+2025-10-30 09:00:00+00:00,2025-10-30 09:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1615060000000001,1.161582
+2025-10-30 09:15:00+00:00,2025-10-30 09:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1616620000000002,1.161612
+2025-10-30 09:15:00+00:00,2025-10-30 09:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1618180000000002,1.1616419999999998
+2025-10-30 09:30:00+00:00,2025-10-30 09:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1618760000000001,1.1616585000000001
+2025-10-30 09:30:00+00:00,2025-10-30 09:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1619340000000002,1.1616749999999998
+2025-10-30 09:45:00+00:00,2025-10-30 10:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161952,1.161676
+2025-10-30 09:45:00+00:00,2025-10-30 10:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1619700000000002,1.161677
+2025-10-30 10:00:00+00:00,2025-10-30 10:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1619760000000001,1.1617075000000001
+2025-10-30 10:00:00+00:00,2025-10-30 10:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1619819999999998,1.1617380000000002
+2025-10-30 10:15:00+00:00,2025-10-30 10:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161921,1.1617105000000003
+2025-10-30 10:15:00+00:00,2025-10-30 10:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.16186,1.1616830000000002
+2025-10-30 10:30:00+00:00,2025-10-30 10:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.35 pips threshold),1.161715,1.1616885000000003
+2025-10-30 10:30:00+00:00,2025-10-30 10:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.16157,1.1616940000000002
+2025-10-30 10:45:00+00:00,2025-10-30 11:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161442,1.161659
+2025-10-30 10:45:00+00:00,2025-10-30 11:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.161314,1.1616240000000002
+2025-10-30 11:00:00+00:00,2025-10-30 11:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1612399999999998,1.1615959999999999
+2025-10-30 11:00:00+00:00,2025-10-30 11:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1611660000000001,1.1615680000000002
+2025-10-30 11:15:00+00:00,2025-10-30 11:30:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1610590000000003,1.1615175
+2025-10-30 11:15:00+00:00,2025-10-30 11:30:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1609520000000004,1.161467
+2025-10-30 11:30:00+00:00,2025-10-30 11:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160845,1.161383
+2025-10-30 11:30:00+00:00,2025-10-30 11:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1607379999999998,1.1612990000000003
+2025-10-30 11:45:00+00:00,2025-10-30 12:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1606049999999999,1.1611600000000002
+2025-10-30 11:45:00+00:00,2025-10-30 12:00:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160472,1.1610210000000003
+2025-10-30 12:00:00+00:00,2025-10-30 12:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160358,1.1609000000000003
+2025-10-30 12:00:00+00:00,2025-10-30 12:15:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.160244,1.1607790000000002
+2025-10-30 12:15:00+00:00,2025-10-30 12:30:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.159947,1.1605935000000003
+2025-10-30 12:15:00+00:00,2025-10-30 12:30:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1596499999999998,1.160408
+2025-10-30 12:30:00+00:00,2025-10-30 12:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15927,1.1601645
+2025-10-30 12:30:00+00:00,2025-10-30 12:45:00+00:00,SELL,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15889,1.1599210000000002
+2025-10-30 18:30:00+00:00,2025-10-30 18:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.06 pips < 0.35 pips threshold),1.1566290000000001,1.1566234999999998
+2025-10-30 18:30:00+00:00,2025-10-30 18:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.35 pips threshold),1.156676,1.156653
+2025-10-30 18:45:00+00:00,2025-10-30 19:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15671,1.1566709999999998
+2025-10-30 18:45:00+00:00,2025-10-30 19:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156744,1.1566889999999999
+2025-10-30 19:00:00+00:00,2025-10-30 19:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156749,1.1566699999999999
+2025-10-30 19:00:00+00:00,2025-10-30 19:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1567539999999998,1.156651
+2025-10-30 19:15:00+00:00,2025-10-30 19:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15673,1.1566205000000003
+2025-10-30 19:15:00+00:00,2025-10-30 19:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156706,1.1565900000000002
+2025-10-30 19:30:00+00:00,2025-10-30 19:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156685,1.1566065000000003
+2025-10-30 19:30:00+00:00,2025-10-30 19:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156664,1.1566230000000002
+2025-10-30 21:15:00+00:00,2025-10-30 21:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15669,1.1566485
+2025-10-30 21:15:00+00:00,2025-10-30 21:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1567219999999998,1.1566360000000002
+2025-10-30 21:30:00+00:00,2025-10-30 21:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1567379999999998,1.1566395000000003
+2025-10-30 21:30:00+00:00,2025-10-30 21:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1567539999999998,1.156643
+2025-10-30 21:45:00+00:00,2025-10-30 22:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1567709999999998,1.156654
+2025-10-30 21:45:00+00:00,2025-10-30 22:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156788,1.1566649999999998
+2025-10-30 22:00:00+00:00,2025-10-30 22:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156763,1.1566854999999998
+2025-10-30 22:00:00+00:00,2025-10-30 22:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.35 pips threshold),1.156738,1.156706
+2025-10-30 22:15:00+00:00,2025-10-30 22:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156778,1.1567219999999998
+2025-10-30 22:15:00+00:00,2025-10-30 22:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156818,1.156738
+2025-10-30 22:30:00+00:00,2025-10-30 22:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1568140000000002,1.1567520000000002
+2025-10-30 22:30:00+00:00,2025-10-30 22:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1568100000000001,1.156766
+2025-10-30 22:45:00+00:00,2025-10-30 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.35 pips threshold),1.156805,1.1567715
+2025-10-30 22:45:00+00:00,2025-10-30 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.35 pips threshold),1.1568,1.156777
+2025-10-30 23:00:00+00:00,2025-10-30 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.12 pips < 0.35 pips threshold),1.156796,1.1567835
+2025-10-30 23:00:00+00:00,2025-10-30 23:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.02 pips < 0.35 pips threshold),1.1567919999999998,1.1567900000000002
+2025-10-30 23:15:00+00:00,2025-10-30 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.09 pips < 0.35 pips threshold),1.156782,1.1567725000000002
+2025-10-30 23:15:00+00:00,2025-10-30 23:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.35 pips threshold),1.156772,1.1567550000000002
+2025-10-30 23:30:00+00:00,2025-10-30 23:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.01 pips < 0.35 pips threshold),1.156781,1.1567795000000003
+2025-10-30 23:45:00+00:00,2025-10-31 00:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.11 pips < 0.35 pips threshold),1.156837,1.1568255
+2025-10-30 23:45:00+00:00,2025-10-31 00:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1568840000000002,1.156847
+2025-10-31 00:00:00+00:00,2025-10-31 00:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1569340000000001,1.1568694999999998
+2025-10-31 00:00:00+00:00,2025-10-31 00:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156984,1.1568919999999998
+2025-10-31 00:15:00+00:00,2025-10-31 00:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1570230000000001,1.1569094999999998
+2025-10-31 00:15:00+00:00,2025-10-31 00:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1570620000000003,1.156927
+2025-10-31 00:30:00+00:00,2025-10-31 00:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1571440000000002,1.156963
+2025-10-31 00:30:00+00:00,2025-10-31 00:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157226,1.156999
+2025-10-31 00:45:00+00:00,2025-10-31 01:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15727,1.1570255
+2025-10-31 00:45:00+00:00,2025-10-31 01:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157314,1.1570520000000004
+2025-10-31 01:00:00+00:00,2025-10-31 01:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157344,1.1570905000000002
+2025-10-31 01:00:00+00:00,2025-10-31 01:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157374,1.1571290000000003
+2025-10-31 01:15:00+00:00,2025-10-31 01:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157409,1.1571715000000002
+2025-10-31 01:15:00+00:00,2025-10-31 01:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1574439999999997,1.157214
+2025-10-31 01:30:00+00:00,2025-10-31 01:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157454,1.1572385
+2025-10-31 01:30:00+00:00,2025-10-31 01:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157464,1.157263
+2025-10-31 01:45:00+00:00,2025-10-31 02:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1573980000000001,1.1572710000000002
+2025-10-31 01:45:00+00:00,2025-10-31 02:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157332,1.1572790000000002
+2025-10-31 02:00:00+00:00,2025-10-31 02:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.20 pips < 0.35 pips threshold),1.157311,1.1572905000000002
+2025-10-31 04:30:00+00:00,2025-10-31 04:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.35 pips threshold),1.1570380000000002,1.1570049999999998
+2025-10-31 04:45:00+00:00,2025-10-31 05:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157068,1.1569969999999998
+2025-10-31 04:45:00+00:00,2025-10-31 05:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157098,1.1569889999999998
+2025-10-31 05:00:00+00:00,2025-10-31 05:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1571269999999998,1.1569909999999999
+2025-10-31 05:00:00+00:00,2025-10-31 05:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1571559999999999,1.1569929999999995
+2025-10-31 05:15:00+00:00,2025-10-31 05:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157127,1.1569924999999999
+2025-10-31 05:15:00+00:00,2025-10-31 05:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157098,1.1569919999999998
+2025-10-31 05:30:00+00:00,2025-10-31 05:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157078,1.1569975
+2025-10-31 05:30:00+00:00,2025-10-31 05:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1570580000000001,1.157003
+2025-10-31 05:45:00+00:00,2025-10-31 06:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.35 pips threshold),1.1570070000000001,1.1569999999999998
+2025-10-31 08:30:00+00:00,2025-10-31 08:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.05 pips < 0.35 pips threshold),1.1564259999999997,1.1564210000000001
+2025-10-31 08:45:00+00:00,2025-10-31 09:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1565379999999998,1.1564185
+2025-10-31 08:45:00+00:00,2025-10-31 09:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15665,1.1564159999999999
+2025-10-31 09:00:00+00:00,2025-10-31 09:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1567440000000002,1.1564415000000001
+2025-10-31 09:00:00+00:00,2025-10-31 09:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156838,1.1564670000000001
+2025-10-31 09:15:00+00:00,2025-10-31 09:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.156914,1.1565085000000002
+2025-10-31 09:15:00+00:00,2025-10-31 09:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15699,1.1565500000000002
+2025-10-31 09:30:00+00:00,2025-10-31 09:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1570079999999998,1.156605
+2025-10-31 09:30:00+00:00,2025-10-31 09:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1570259999999997,1.15666
+2025-10-31 09:45:00+00:00,2025-10-31 10:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157104,1.1567320000000003
+2025-10-31 09:45:00+00:00,2025-10-31 10:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1571820000000002,1.156804
+2025-10-31 10:00:00+00:00,2025-10-31 10:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157204,1.156871
+2025-10-31 10:00:00+00:00,2025-10-31 10:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1572259999999999,1.1569379999999998
+2025-10-31 10:15:00+00:00,2025-10-31 10:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1571799999999999,1.156962
+2025-10-31 10:15:00+00:00,2025-10-31 10:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1571339999999997,1.1569859999999998
+2025-10-31 10:30:00+00:00,2025-10-31 10:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1571349999999998,1.1570245
+2025-10-31 10:30:00+00:00,2025-10-31 10:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.157136,1.1570630000000002
+2025-10-31 10:45:00+00:00,2025-10-31 11:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1571630000000002,1.1570855000000002
+2025-10-31 10:45:00+00:00,2025-10-31 11:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1571900000000004,1.157108
+2025-10-31 11:00:00+00:00,2025-10-31 11:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.18 pips < 0.35 pips threshold),1.15714,1.157122
+2025-10-31 16:15:00+00:00,2025-10-31 16:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.35 pips threshold),1.1532159999999998,1.1531875
+2025-10-31 16:15:00+00:00,2025-10-31 16:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1532719999999999,1.153163
+2025-10-31 16:30:00+00:00,2025-10-31 16:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1533159999999998,1.153161
+2025-10-31 16:30:00+00:00,2025-10-31 16:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1533599999999997,1.153159
+2025-10-31 16:45:00+00:00,2025-10-31 17:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1534019999999998,1.1531895000000003
+2025-10-31 16:45:00+00:00,2025-10-31 17:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153444,1.1532200000000004
+2025-10-31 17:00:00+00:00,2025-10-31 17:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153306,1.153195
+2025-10-31 19:15:00+00:00,2025-10-31 19:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1526260000000002,1.1525599999999998
+2025-10-31 19:30:00+00:00,2025-10-31 19:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1526789999999998,1.1525759999999996
+2025-10-31 19:30:00+00:00,2025-10-31 19:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1527319999999999,1.1525919999999998
+2025-10-31 19:45:00+00:00,2025-10-31 20:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152757,1.152594
+2025-10-31 19:45:00+00:00,2025-10-31 20:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152782,1.1525960000000002
+2025-10-31 20:00:00+00:00,2025-10-31 20:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152822,1.1526155
+2025-10-31 20:00:00+00:00,2025-10-31 20:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152862,1.1526349999999999
+2025-10-31 20:15:00+00:00,2025-10-31 20:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152911,1.1526755
+2025-10-31 20:15:00+00:00,2025-10-31 20:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15296,1.1527160000000003
+2025-10-31 20:30:00+00:00,2025-10-31 20:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152965,1.1527570000000003
+2025-10-31 20:30:00+00:00,2025-10-31 20:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1529699999999998,1.1527980000000002
+2025-10-31 20:45:00+00:00,2025-10-31 21:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1530310000000001,1.152855
+2025-10-31 20:45:00+00:00,2025-10-31 21:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1530920000000002,1.1529120000000002
+2025-11-02 22:15:00+00:00,2025-11-02 22:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1531470000000001,1.1529520000000002
+2025-11-02 22:15:00+00:00,2025-11-02 22:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153202,1.1529920000000002
+2025-11-02 22:30:00+00:00,2025-11-02 22:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153224,1.1530230000000001
+2025-11-02 22:30:00+00:00,2025-11-02 22:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1532459999999998,1.1530540000000002
+2025-11-02 22:45:00+00:00,2025-11-02 23:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153266,1.1530885000000004
+2025-11-02 22:45:00+00:00,2025-11-02 23:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153286,1.1531230000000003
+2025-11-02 23:00:00+00:00,2025-11-02 23:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153335,1.1531500000000006
+2025-11-02 23:00:00+00:00,2025-11-02 23:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1533840000000002,1.1531770000000001
+2025-11-02 23:15:00+00:00,2025-11-02 23:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153363,1.1531970000000002
+2025-11-02 23:15:00+00:00,2025-11-02 23:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1533419999999999,1.1532170000000002
+2025-11-02 23:30:00+00:00,2025-11-02 23:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153327,1.153237
+2025-11-02 23:30:00+00:00,2025-11-02 23:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1533120000000001,1.153257
+2025-11-02 23:45:00+00:00,2025-11-03 00:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.35 pips threshold),1.153277,1.1532505
+2025-11-03 02:15:00+00:00,2025-11-03 02:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.10 pips < 0.35 pips threshold),1.1527850000000002,1.1527749999999999
+2025-11-03 02:15:00+00:00,2025-11-03 02:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15286,1.152796
+2025-11-03 02:30:00+00:00,2025-11-03 02:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1529120000000002,1.1528174999999998
+2025-11-03 02:30:00+00:00,2025-11-03 02:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152964,1.1528389999999997
+2025-11-03 02:45:00+00:00,2025-11-03 03:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1530200000000002,1.1528479999999999
+2025-11-03 02:45:00+00:00,2025-11-03 03:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153076,1.1528569999999998
+2025-11-03 03:00:00+00:00,2025-11-03 03:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153124,1.1528719999999997
+2025-11-03 03:00:00+00:00,2025-11-03 03:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153172,1.1528869999999998
+2025-11-03 03:15:00+00:00,2025-11-03 03:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1531680000000002,1.1529119999999997
+2025-11-03 03:15:00+00:00,2025-11-03 03:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153164,1.1529369999999999
+2025-11-03 03:30:00+00:00,2025-11-03 03:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153157,1.152971
+2025-11-03 03:30:00+00:00,2025-11-03 03:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15315,1.1530049999999998
+2025-11-03 03:45:00+00:00,2025-11-03 04:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1531689999999999,1.1530405
+2025-11-03 03:45:00+00:00,2025-11-03 04:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1531879999999999,1.153076
+2025-11-03 04:00:00+00:00,2025-11-03 04:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153241,1.1531305
+2025-11-03 04:00:00+00:00,2025-11-03 04:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153294,1.1531850000000001
+2025-11-03 04:15:00+00:00,2025-11-03 04:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153323,1.1532235
+2025-11-03 04:15:00+00:00,2025-11-03 04:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1533520000000004,1.1532620000000002
+2025-11-03 04:30:00+00:00,2025-11-03 04:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153374,1.1532710000000004
+2025-11-03 04:30:00+00:00,2025-11-03 04:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1533959999999999,1.15328
+2025-11-03 04:45:00+00:00,2025-11-03 05:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1534239999999998,1.1532905000000004
+2025-11-03 04:45:00+00:00,2025-11-03 05:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153452,1.1533010000000004
+2025-11-03 05:00:00+00:00,2025-11-03 05:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1534470000000001,1.1533080000000004
+2025-11-03 05:00:00+00:00,2025-11-03 05:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153442,1.1533150000000003
+2025-11-03 05:15:00+00:00,2025-11-03 05:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1534240000000002,1.1533325000000003
+2025-11-03 05:15:00+00:00,2025-11-03 05:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1534060000000002,1.15335
+2025-11-03 05:30:00+00:00,2025-11-03 05:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1534290000000003,1.1533760000000002
+2025-11-03 05:30:00+00:00,2025-11-03 05:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1534520000000001,1.1534020000000003
+2025-11-03 05:45:00+00:00,2025-11-03 06:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153473,1.1534235000000002
+2025-11-03 05:45:00+00:00,2025-11-03 06:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153494,1.153445
+2025-11-03 06:00:00+00:00,2025-11-03 06:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1535140000000002,1.153469
+2025-11-03 06:00:00+00:00,2025-11-03 06:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153534,1.153493
+2025-11-03 06:15:00+00:00,2025-11-03 06:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153574,1.1535105
+2025-11-03 06:15:00+00:00,2025-11-03 06:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153614,1.153528
+2025-11-03 06:30:00+00:00,2025-11-03 06:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1536639999999998,1.1535440000000001
+2025-11-03 06:30:00+00:00,2025-11-03 06:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153714,1.1535600000000001
+2025-11-03 06:45:00+00:00,2025-11-03 07:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1537199999999999,1.1535745000000002
+2025-11-03 06:45:00+00:00,2025-11-03 07:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1537259999999998,1.1535890000000002
+2025-11-03 07:00:00+00:00,2025-11-03 07:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1537339999999996,1.1536035000000002
+2025-11-03 07:00:00+00:00,2025-11-03 07:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153742,1.1536180000000003
+2025-11-03 07:15:00+00:00,2025-11-03 07:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1537330000000001,1.1536235000000004
+2025-11-03 07:15:00+00:00,2025-11-03 07:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153724,1.1536290000000002
+2025-11-03 07:30:00+00:00,2025-11-03 07:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1537600000000001,1.1536670000000002
+2025-11-03 07:30:00+00:00,2025-11-03 07:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153796,1.153705
+2025-11-03 07:45:00+00:00,2025-11-03 08:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153794,1.153729
+2025-11-03 07:45:00+00:00,2025-11-03 08:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153792,1.153753
+2025-11-03 10:45:00+00:00,2025-11-03 11:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.03 pips < 0.35 pips threshold),1.1515460000000002,1.1515429999999998
+2025-11-03 11:00:00+00:00,2025-11-03 11:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1515950000000001,1.1515555
+2025-11-03 11:00:00+00:00,2025-11-03 11:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1516440000000001,1.151568
+2025-11-03 11:15:00+00:00,2025-11-03 11:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1516790000000001,1.1515855000000002
+2025-11-03 11:15:00+00:00,2025-11-03 11:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1517140000000001,1.1516030000000002
+2025-11-03 11:30:00+00:00,2025-11-03 11:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15169,1.1516125000000001
+2025-11-03 11:30:00+00:00,2025-11-03 11:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.151666,1.1516220000000001
+2025-11-03 11:45:00+00:00,2025-11-03 12:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.151652,1.1516070000000003
+2025-11-03 11:45:00+00:00,2025-11-03 12:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1516380000000002,1.1515920000000002
+2025-11-03 12:00:00+00:00,2025-11-03 12:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1516490000000001,1.1515975
+2025-11-03 12:00:00+00:00,2025-11-03 12:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1516600000000001,1.1516030000000002
+2025-11-03 12:15:00+00:00,2025-11-03 12:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.30 pips < 0.35 pips threshold),1.151656,1.1516255000000002
+2025-11-03 12:15:00+00:00,2025-11-03 12:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.151652,1.1516480000000002
+2025-11-03 12:30:00+00:00,2025-11-03 12:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.04 pips < 0.35 pips threshold),1.151688,1.1516835
+2025-11-03 12:30:00+00:00,2025-11-03 12:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.05 pips < 0.35 pips threshold),1.1517240000000002,1.1517190000000002
+2025-11-03 12:45:00+00:00,2025-11-03 13:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.31 pips < 0.35 pips threshold),1.151752,1.1517210000000002
+2025-11-03 12:45:00+00:00,2025-11-03 13:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15178,1.151723
+2025-11-03 13:00:00+00:00,2025-11-03 13:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.151748,1.1517
+2025-11-03 13:00:00+00:00,2025-11-03 13:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1517160000000002,1.1516769999999998
+2025-11-03 15:15:00+00:00,2025-11-03 15:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.29 pips < 0.35 pips threshold),1.1511190000000002,1.1510905
+2025-11-03 15:15:00+00:00,2025-11-03 15:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1511300000000002,1.1510529999999999
+2025-11-03 15:30:00+00:00,2025-11-03 15:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1511910000000003,1.151062
+2025-11-03 15:30:00+00:00,2025-11-03 15:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1512520000000002,1.151071
+2025-11-03 15:45:00+00:00,2025-11-03 16:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.151428,1.1511634999999998
+2025-11-03 15:45:00+00:00,2025-11-03 16:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.151604,1.1512559999999998
+2025-11-03 16:00:00+00:00,2025-11-03 16:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1517569999999997,1.1513329999999997
+2025-11-03 16:00:00+00:00,2025-11-03 16:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1519099999999998,1.1514099999999998
+2025-11-03 16:15:00+00:00,2025-11-03 16:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1519850000000003,1.1514969999999998
+2025-11-03 16:15:00+00:00,2025-11-03 16:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15206,1.151584
+2025-11-03 16:30:00+00:00,2025-11-03 16:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152273,1.151696
+2025-11-03 16:30:00+00:00,2025-11-03 16:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1524860000000001,1.1518080000000002
+2025-11-03 16:45:00+00:00,2025-11-03 17:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1526530000000001,1.1519220000000001
+2025-11-03 16:45:00+00:00,2025-11-03 17:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1528199999999997,1.1520360000000003
+2025-11-03 17:00:00+00:00,2025-11-03 17:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152886,1.152157
+2025-11-03 17:00:00+00:00,2025-11-03 17:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1529520000000002,1.1522780000000001
+2025-11-03 17:15:00+00:00,2025-11-03 17:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1530600000000002,1.1524085
+2025-11-03 17:15:00+00:00,2025-11-03 17:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1531680000000002,1.1525389999999998
+2025-11-03 17:30:00+00:00,2025-11-03 17:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15319,1.1525874999999999
+2025-11-03 17:30:00+00:00,2025-11-03 17:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153212,1.1526359999999998
+2025-11-03 17:45:00+00:00,2025-11-03 18:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153173,1.1527229999999997
+2025-11-03 17:45:00+00:00,2025-11-03 18:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153134,1.15281
+2025-11-03 18:00:00+00:00,2025-11-03 18:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1531,1.1528765
+2025-11-03 18:00:00+00:00,2025-11-03 18:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153066,1.152943
+2025-11-03 18:15:00+00:00,2025-11-03 18:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152991,1.1529384999999999
+2025-11-03 22:45:00+00:00,2025-11-03 23:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.26 pips < 0.35 pips threshold),1.151961,1.1519355
+2025-11-03 22:45:00+00:00,2025-11-03 23:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152006,1.1519300000000001
+2025-11-03 23:00:00+00:00,2025-11-03 23:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1519990000000004,1.151929
+2025-11-03 23:00:00+00:00,2025-11-03 23:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1519920000000003,1.151928
+2025-11-03 23:15:00+00:00,2025-11-03 23:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15199,1.1519305
+2025-11-03 23:15:00+00:00,2025-11-03 23:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.151988,1.151933
+2025-11-03 23:30:00+00:00,2025-11-03 23:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.151996,1.1519355
+2025-11-03 23:30:00+00:00,2025-11-03 23:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152004,1.1519380000000001
+2025-11-03 23:45:00+00:00,2025-11-04 00:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.151988,1.1519410000000003
+2025-11-03 23:45:00+00:00,2025-11-04 00:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.28 pips < 0.35 pips threshold),1.151972,1.1519440000000003

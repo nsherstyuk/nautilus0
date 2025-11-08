@@ -1,0 +1,18 @@
+{
+  "symbol": "GBP/USD",
+  "venue": "IDEALPRO",
+  "bar_spec": "1-MINUTE-MID-EXTERNAL",
+  "start_date": "2024-01-01T00:00:00Z",
+  "expected_trades": 0,
+  "expected_rejection_reason": "crossover_threshold_not_met",
+  "test_purpose": "Crossover with insufficient separation (0.5 pips) should fail threshold filter",
+  "filter_config": {
+    "filter_type": "crossover_threshold",
+    "scenario": "crossover_threshold_fail",
+    "parameters": {
+      "separation_after": 5e-05,
+      "separation_before": 0.0002,
+      "crossover_type": "bullish"
+    }
+  }
+}

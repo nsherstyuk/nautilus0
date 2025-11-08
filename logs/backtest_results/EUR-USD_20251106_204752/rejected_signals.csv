@@ -1,0 +1,251 @@
+timestamp,bar_close_time,signal_type,action,reason,fast_sma,slow_sma
+2025-10-28 03:00:00+00:00,2025-10-28 03:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.09 pips < 0.35 pips threshold),1.165773,1.1657815
+2025-10-28 03:00:00+00:00,2025-10-28 03:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.18 pips < 0.35 pips threshold),1.1657540000000002,1.165772
+2025-10-28 03:15:00+00:00,2025-10-28 03:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1657140000000001,1.1657815
+2025-10-28 03:15:00+00:00,2025-10-28 03:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1656739999999999,1.165791
+2025-10-28 03:30:00+00:00,2025-10-28 03:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.165651,1.1657714999999997
+2025-10-28 03:30:00+00:00,2025-10-28 03:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1656279999999999,1.1657519999999997
+2025-10-28 03:45:00+00:00,2025-10-28 04:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.1656680000000001,1.1657714999999995
+2025-10-28 03:45:00+00:00,2025-10-28 04:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.165708,1.1657909999999998
+2025-10-28 04:00:00+00:00,2025-10-28 04:15:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.15 pips < 0.35 pips threshold),1.165803,1.1658179999999998
+2025-10-28 06:15:00+00:00,2025-10-28 06:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.166388,1.166433
+2025-10-28 06:30:00+00:00,2025-10-28 06:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1663270000000001,1.1664125
+2025-10-28 06:30:00+00:00,2025-10-28 06:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1662660000000002,1.166392
+2025-10-28 06:45:00+00:00,2025-10-28 07:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bearish crossing was 2 bars ago, max=1)",1.1661820000000003,1.1663565000000002
+2025-10-28 06:45:00+00:00,2025-10-28 07:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bearish crossing was 3 bars ago, max=1)",1.166098,1.1663210000000004
+2025-10-28 07:00:00+00:00,2025-10-28 07:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.166016,1.1662760000000003
+2025-10-28 07:00:00+00:00,2025-10-28 07:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1659339999999998,1.1662310000000002
+2025-10-28 07:15:00+00:00,2025-10-28 07:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1658699999999997,1.1661790000000003
+2025-10-28 07:15:00+00:00,2025-10-28 07:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.165806,1.1661270000000001
+2025-10-28 07:30:00+00:00,2025-10-28 07:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.165778,1.1660980000000003
+2025-10-28 07:30:00+00:00,2025-10-28 07:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1657499999999998,1.1660690000000002
+2025-10-28 07:45:00+00:00,2025-10-28 08:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165703,1.1660150000000002
+2025-10-28 07:45:00+00:00,2025-10-28 08:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1656559999999998,1.165961
+2025-10-28 08:00:00+00:00,2025-10-28 08:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bearish crossing was 2 bars ago, max=1)",1.1656350000000002,1.1659085
+2025-10-28 08:00:00+00:00,2025-10-28 08:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1656140000000001,1.1658559999999998
+2025-10-28 08:15:00+00:00,2025-10-28 08:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.165639,1.1658275
+2025-10-28 08:15:00+00:00,2025-10-28 08:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.165664,1.165799
+2025-10-28 08:30:00+00:00,2025-10-28 08:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1656920000000002,1.1657809999999997
+2025-10-28 08:30:00+00:00,2025-10-28 08:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1657199999999999,1.1657629999999997
+2025-10-28 08:45:00+00:00,2025-10-28 09:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.165639,1.1657084999999998
+2025-10-28 08:45:00+00:00,2025-10-28 09:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bearish crossing was 2 bars ago, max=1)",1.165558,1.1656540000000004
+2025-10-28 09:00:00+00:00,2025-10-28 09:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.165505,1.1656040000000003
+2025-10-28 09:00:00+00:00,2025-10-28 09:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.165452,1.1655540000000002
+2025-10-28 09:15:00+00:00,2025-10-28 09:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1654179999999998,1.1655265000000001
+2025-10-28 09:15:00+00:00,2025-10-28 09:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.165384,1.165499
+2025-10-28 09:30:00+00:00,2025-10-28 09:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1653859999999998,1.1655125000000002
+2025-10-28 09:30:00+00:00,2025-10-28 09:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1653879999999996,1.1655260000000003
+2025-10-28 09:45:00+00:00,2025-10-28 10:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.1653699999999998,1.165531
+2025-10-28 10:15:00+00:00,2025-10-28 10:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.35 pips threshold),1.1655699999999998,1.1655375
+2025-10-28 10:15:00+00:00,2025-10-28 10:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 3 bars ago, max=1)",1.1656639999999998,1.165558
+2025-10-28 10:30:00+00:00,2025-10-28 10:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 4 bars ago, max=1)",1.1657669999999998,1.1655925
+2025-10-28 10:30:00+00:00,2025-10-28 10:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 5 bars ago, max=1)",1.1658699999999997,1.165627
+2025-10-28 10:45:00+00:00,2025-10-28 11:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 6 bars ago, max=1)",1.1659279999999999,1.165657
+2025-10-28 10:45:00+00:00,2025-10-28 11:00:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 7 bars ago, max=1)",1.1659859999999997,1.1656869999999997
+2025-10-28 11:00:00+00:00,2025-10-28 11:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1659929999999998,1.1656814999999998
+2025-10-28 11:00:00+00:00,2025-10-28 11:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.166,1.165676
+2025-10-28 11:15:00+00:00,2025-10-28 11:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.165974,1.1656939999999998
+2025-10-28 11:15:00+00:00,2025-10-28 11:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1659480000000002,1.1657119999999996
+2025-10-28 11:30:00+00:00,2025-10-28 11:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1659210000000002,1.1657454999999994
+2025-10-28 11:30:00+00:00,2025-10-28 11:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1658939999999998,1.1657789999999995
+2025-10-28 11:45:00+00:00,2025-10-28 12:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.16588,1.1658234999999995
+2025-10-28 14:30:00+00:00,2025-10-28 14:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1644469999999998,1.16426
+2025-10-28 14:30:00+00:00,2025-10-28 14:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1647499999999997,1.164304
+2025-10-28 14:45:00+00:00,2025-10-28 15:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1650059999999998,1.1643475000000003
+2025-10-28 14:45:00+00:00,2025-10-28 15:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1652619999999998,1.164391
+2025-10-28 15:00:00+00:00,2025-10-28 15:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.165451,1.164462
+2025-10-28 15:00:00+00:00,2025-10-28 15:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1656400000000002,1.164533
+2025-10-28 15:15:00+00:00,2025-10-28 15:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1657490000000001,1.1646235
+2025-10-28 15:15:00+00:00,2025-10-28 15:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.165858,1.1647140000000002
+2025-10-28 15:30:00+00:00,2025-10-28 15:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.165902,1.1648795
+2025-10-28 15:30:00+00:00,2025-10-28 15:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1659460000000001,1.1650449999999999
+2025-10-28 15:45:00+00:00,2025-10-28 16:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.165931,1.165189
+2025-10-28 15:45:00+00:00,2025-10-28 16:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.165916,1.165333
+2025-10-28 16:00:00+00:00,2025-10-28 16:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1659019999999998,1.165454
+2025-10-28 16:00:00+00:00,2025-10-28 16:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1658879999999998,1.165575
+2025-10-28 16:15:00+00:00,2025-10-28 16:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1659249999999999,1.165688
+2025-10-28 16:15:00+00:00,2025-10-28 16:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.165962,1.1658010000000003
+2025-10-28 16:30:00+00:00,2025-10-28 16:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.165928,1.1658385
+2025-10-28 16:30:00+00:00,2025-10-28 16:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.18 pips < 0.35 pips threshold),1.1658940000000002,1.165876
+2025-10-28 16:45:00+00:00,2025-10-28 17:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.165974,1.165938
+2025-10-28 16:45:00+00:00,2025-10-28 17:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1660540000000001,1.166
+2025-10-28 17:00:00+00:00,2025-10-28 17:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1660860000000002,1.1660084999999998
+2025-10-28 17:00:00+00:00,2025-10-28 17:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1661180000000002,1.1660169999999996
+2025-10-28 17:15:00+00:00,2025-10-28 17:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.166165,1.1660334999999997
+2025-10-28 17:15:00+00:00,2025-10-28 17:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1662119999999998,1.1660499999999998
+2025-10-28 17:30:00+00:00,2025-10-28 17:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1662299999999999,1.1660774999999999
+2025-10-28 17:30:00+00:00,2025-10-28 17:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.166248,1.1661050000000002
+2025-10-28 17:45:00+00:00,2025-10-28 18:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1663299999999999,1.1661290000000002
+2025-10-28 17:45:00+00:00,2025-10-28 18:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1664119999999998,1.166153
+2025-10-28 18:00:00+00:00,2025-10-28 18:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1663409999999999,1.1661575000000002
+2025-10-28 18:00:00+00:00,2025-10-28 18:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1662699999999997,1.1661620000000001
+2025-10-28 18:15:00+00:00,2025-10-28 18:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.166228,1.166157
+2025-10-28 18:15:00+00:00,2025-10-28 18:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.35 pips threshold),1.1661860000000002,1.1661520000000003
+2025-10-28 19:30:00+00:00,2025-10-28 19:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.16 pips < 0.35 pips threshold),1.1662180000000002,1.166202
+2025-10-29 00:00:00+00:00,2025-10-29 00:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.09 pips < 0.35 pips threshold),1.1652609999999999,1.1652515
+2025-10-29 00:00:00+00:00,2025-10-29 00:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1653239999999998,1.165272
+2025-10-29 00:15:00+00:00,2025-10-29 00:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1653889999999998,1.1652955
+2025-10-29 00:15:00+00:00,2025-10-29 00:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.165454,1.1653190000000002
+2025-10-29 00:30:00+00:00,2025-10-29 00:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.16551,1.1653315000000002
+2025-10-29 00:30:00+00:00,2025-10-29 00:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1655659999999999,1.1653440000000004
+2025-10-29 00:45:00+00:00,2025-10-29 01:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1655989999999998,1.1653480000000003
+2025-10-29 00:45:00+00:00,2025-10-29 01:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.165632,1.165352
+2025-10-29 01:00:00+00:00,2025-10-29 01:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.165592,1.1653635000000002
+2025-10-29 01:00:00+00:00,2025-10-29 01:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.165552,1.1653750000000003
+2025-10-29 01:15:00+00:00,2025-10-29 01:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1654849999999999,1.165373
+2025-10-29 01:15:00+00:00,2025-10-29 01:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1654179999999998,1.165371
+2025-10-29 07:15:00+00:00,2025-10-29 07:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.163147,1.1631035
+2025-10-29 07:15:00+00:00,2025-10-29 07:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1631999999999998,1.1631120000000001
+2025-10-29 07:30:00+00:00,2025-10-29 07:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1632569999999998,1.1631385
+2025-10-29 07:30:00+00:00,2025-10-29 07:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.163314,1.1631649999999998
+2025-10-29 07:45:00+00:00,2025-10-29 08:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1633449999999999,1.163184
+2025-10-29 07:45:00+00:00,2025-10-29 08:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1633759999999997,1.163203
+2025-10-29 08:00:00+00:00,2025-10-29 08:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.163339,1.163183
+2025-10-29 08:00:00+00:00,2025-10-29 08:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1633019999999998,1.1631630000000002
+2025-10-29 08:15:00+00:00,2025-10-29 08:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1632820000000001,1.1631705
+2025-10-29 08:15:00+00:00,2025-10-29 08:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163262,1.1631779999999998
+2025-10-29 08:30:00+00:00,2025-10-29 08:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.29 pips < 0.35 pips threshold),1.163205,1.163176
+2025-10-29 10:00:00+00:00,2025-10-29 10:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163262,1.1631424999999997
+2025-10-29 10:00:00+00:00,2025-10-29 10:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163446,1.1631719999999999
+2025-10-29 10:15:00+00:00,2025-10-29 10:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 2 bars ago, max=1)",1.1636670000000002,1.1632364999999998
+2025-10-29 10:15:00+00:00,2025-10-29 10:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 3 bars ago, max=1)",1.1638880000000003,1.1633009999999997
+2025-10-29 10:30:00+00:00,2025-10-29 10:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.164061,1.1633989999999996
+2025-10-29 10:30:00+00:00,2025-10-29 10:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.164234,1.163497
+2025-10-29 10:45:00+00:00,2025-10-29 11:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164332,1.1635695
+2025-10-29 10:45:00+00:00,2025-10-29 11:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1644299999999999,1.163642
+2025-10-29 11:00:00+00:00,2025-10-29 11:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.164444,1.163705
+2025-10-29 11:00:00+00:00,2025-10-29 11:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1644580000000002,1.163768
+2025-10-29 11:15:00+00:00,2025-10-29 11:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1643830000000004,1.1638225000000002
+2025-10-29 11:15:00+00:00,2025-10-29 11:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1643080000000001,1.1638769999999998
+2025-10-29 11:30:00+00:00,2025-10-29 11:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.164253,1.1639599999999999
+2025-10-29 11:30:00+00:00,2025-10-29 11:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1641980000000003,1.164043
+2025-10-29 11:45:00+00:00,2025-10-29 12:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1641380000000001,1.1640994999999998
+2025-10-29 13:45:00+00:00,2025-10-29 14:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.35 pips threshold),1.1638000000000002,1.1637929999999999
+2025-10-29 14:00:00+00:00,2025-10-29 14:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163842,1.1637840000000002
+2025-10-29 14:00:00+00:00,2025-10-29 14:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.163884,1.163775
+2025-10-29 14:15:00+00:00,2025-10-29 14:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 2 bars ago, max=1)",1.163942,1.163795
+2025-10-29 14:15:00+00:00,2025-10-29 14:30:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 3 bars ago, max=1)",1.164,1.163815
+2025-10-29 14:30:00+00:00,2025-10-29 14:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.164003,1.1638320000000002
+2025-10-29 14:30:00+00:00,2025-10-29 14:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.164006,1.1638490000000001
+2025-10-29 14:45:00+00:00,2025-10-29 15:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164127,1.1639140000000001
+2025-10-29 14:45:00+00:00,2025-10-29 15:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.164248,1.163979
+2025-10-29 15:00:00+00:00,2025-10-29 15:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.164336,1.1640455
+2025-10-29 15:00:00+00:00,2025-10-29 15:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1644240000000003,1.1641119999999998
+2025-10-29 15:15:00+00:00,2025-10-29 15:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1645280000000002,1.164185
+2025-10-29 15:15:00+00:00,2025-10-29 15:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1646320000000003,1.164258
+2025-10-29 15:30:00+00:00,2025-10-29 15:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 2 bars ago, max=1)",1.164761,1.1643515
+2025-10-29 15:30:00+00:00,2025-10-29 15:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 3 bars ago, max=1)",1.1648899999999998,1.1644449999999997
+2025-10-29 15:45:00+00:00,2025-10-29 16:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.165093,1.164548
+2025-10-29 15:45:00+00:00,2025-10-29 16:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.165296,1.164651
+2025-10-29 16:00:00+00:00,2025-10-29 16:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1654129999999998,1.16477
+2025-10-29 16:00:00+00:00,2025-10-29 16:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.16553,1.164889
+2025-10-29 16:15:00+00:00,2025-10-29 16:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1656969999999998,1.1650165
+2025-10-29 16:15:00+00:00,2025-10-29 16:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1658639999999998,1.1651440000000002
+2025-10-29 16:30:00+00:00,2025-10-29 16:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1659779999999997,1.165253
+2025-10-29 16:30:00+00:00,2025-10-29 16:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.166092,1.165362
+2025-10-29 16:45:00+00:00,2025-10-29 17:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.166098,1.1654295
+2025-10-29 16:45:00+00:00,2025-10-29 17:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.166104,1.1654969999999998
+2025-10-29 17:00:00+00:00,2025-10-29 17:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1660420000000002,1.1655674999999999
+2025-10-29 17:00:00+00:00,2025-10-29 17:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.16598,1.165638
+2025-10-29 17:15:00+00:00,2025-10-29 17:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1658620000000002,1.1656374999999999
+2025-10-29 17:15:00+00:00,2025-10-29 17:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1657439999999997,1.165637
+2025-10-29 20:45:00+00:00,2025-10-29 21:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.159831,1.1596490000000004
+2025-10-29 20:45:00+00:00,2025-10-29 21:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1599359999999999,1.1594590000000002
+2025-10-30 03:45:00+00:00,2025-10-30 04:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.16151,1.1615479999999998
+2025-10-30 04:00:00+00:00,2025-10-30 04:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.161536,1.161578
+2025-10-30 07:45:00+00:00,2025-10-30 08:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.162131,1.162182
+2025-10-30 08:00:00+00:00,2025-10-30 08:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.161929,1.162179
+2025-10-30 08:15:00+00:00,2025-10-30 08:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.161826,1.1621945
+2025-10-30 08:30:00+00:00,2025-10-30 08:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1616779999999998,1.162191
+2025-10-30 08:45:00+00:00,2025-10-30 09:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.1615989999999998,1.1622005000000002
+2025-10-30 09:00:00+00:00,2025-10-30 09:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.161582,1.1621970000000004
+2025-10-30 09:15:00+00:00,2025-10-30 09:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.161642,1.16216
+2025-10-30 09:30:00+00:00,2025-10-30 09:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1616750000000002,1.1621095000000001
+2025-10-30 09:45:00+00:00,2025-10-30 10:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.161677,1.1620314999999999
+2025-10-30 10:00:00+00:00,2025-10-30 10:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1617380000000002,1.1619685
+2025-10-30 10:15:00+00:00,2025-10-30 10:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.161683,1.1619069999999998
+2025-10-30 10:30:00+00:00,2025-10-30 10:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1616940000000002,1.1618115
+2025-10-30 10:45:00+00:00,2025-10-30 11:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bearish crossing was 2 bars ago, max=1)",1.161624,1.1617250000000001
+2025-10-30 11:00:00+00:00,2025-10-30 11:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1615680000000002,1.161623
+2025-10-30 11:15:00+00:00,2025-10-30 11:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.161467,1.161533
+2025-10-30 11:30:00+00:00,2025-10-30 11:45:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.161299,1.1614405
+2025-10-30 11:45:00+00:00,2025-10-30 12:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1610209999999999,1.1613315
+2025-10-30 12:00:00+00:00,2025-10-30 12:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bearish crossing was 2 bars ago, max=1)",1.1607789999999998,1.1612270000000002
+2025-10-30 12:15:00+00:00,2025-10-30 12:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1604079999999999,1.1610425000000002
+2025-10-30 20:15:00+00:00,2025-10-30 20:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.33 pips < 0.35 pips threshold),1.1566480000000001,1.156615
+2025-10-30 20:30:00+00:00,2025-10-30 20:45:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 2 bars ago, max=1)",1.1566899999999998,1.1566225
+2025-10-30 20:45:00+00:00,2025-10-30 21:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.34 pips < 0.35 pips threshold),1.1566610000000002,1.1566275000000001
+2025-10-30 21:45:00+00:00,2025-10-30 22:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.07 pips < 0.35 pips threshold),1.156665,1.156658
+2025-10-30 22:00:00+00:00,2025-10-30 22:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.156706,1.1566480000000001
+2025-10-31 03:30:00+00:00,2025-10-31 03:45:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.27 pips < 0.35 pips threshold),1.1570749999999999,1.157102
+2025-10-31 03:45:00+00:00,2025-10-31 04:00:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.1569809999999998,1.1570975000000001
+2025-10-31 04:00:00+00:00,2025-10-31 04:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.156954,1.1571085
+2025-10-31 04:15:00+00:00,2025-10-31 04:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.156991,1.1571349999999998
+2025-10-31 04:30:00+00:00,2025-10-31 04:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.157005,1.1571535000000002
+2025-10-31 04:45:00+00:00,2025-10-31 05:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.156989,1.1571555
+2025-10-31 05:00:00+00:00,2025-10-31 05:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.156993,1.1571405000000001
+2025-10-31 05:15:00+00:00,2025-10-31 05:30:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.156992,1.1571175
+2025-10-31 05:30:00+00:00,2025-10-31 05:45:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bearish crossing was 2 bars ago, max=1)",1.157003,1.1570929999999997
+2025-10-31 05:45:00+00:00,2025-10-31 06:00:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bearish crossing was 3 bars ago, max=1)",1.156997,1.1570639999999996
+2025-10-31 06:00:00+00:00,2025-10-31 06:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.1570040000000001,1.1570394999999998
+2025-10-31 06:45:00+00:00,2025-10-31 07:00:00+00:00,SELL,rejected,crossover_threshold_not_met (diff=0.32 pips < 0.35 pips threshold),1.156927,1.156959
+2025-10-31 07:00:00+00:00,2025-10-31 07:15:00+00:00,SELL,rejected,"stochastic_crossing_too_old (bearish crossing was 2 bars ago, max=1)",1.156767,1.1568859999999999
+2025-10-31 07:15:00+00:00,2025-10-31 07:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.156663,1.156826
+2025-10-31 07:30:00+00:00,2025-10-31 07:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.156557,1.1567749999999999
+2025-10-31 07:45:00+00:00,2025-10-31 08:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.156526,1.1567589999999999
+2025-10-31 08:00:00+00:00,2025-10-31 08:15:00+00:00,SELL,rejected,Position already open (LONG) - signals ignored until TP/SL closes position,1.156453,1.1567280000000002
+2025-10-31 08:15:00+00:00,2025-10-31 08:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1564359999999998,1.1567165000000001
+2025-10-31 08:30:00+00:00,2025-10-31 08:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1564209999999997,1.1567125000000003
+2025-10-31 08:45:00+00:00,2025-10-31 09:00:00+00:00,SELL,rejected,stochastic_unfavorable,1.1564159999999999,1.15673
+2025-10-31 09:00:00+00:00,2025-10-31 09:15:00+00:00,SELL,rejected,stochastic_unfavorable,1.156467,1.1567470000000002
+2025-10-31 09:15:00+00:00,2025-10-31 09:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.1565499999999997,1.1567385000000003
+2025-10-31 09:30:00+00:00,2025-10-31 09:45:00+00:00,SELL,rejected,stochastic_unfavorable,1.1566599999999998,1.1567135000000002
+2025-10-31 12:15:00+00:00,2025-10-31 12:30:00+00:00,SELL,rejected,stochastic_unfavorable,1.156728,1.1567659999999997
+2025-10-31 20:45:00+00:00,2025-10-31 21:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1529120000000002,1.1528610000000001
+2025-11-02 22:15:00+00:00,2025-11-02 22:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.152992,1.1528485000000002
+2025-11-02 22:30:00+00:00,2025-11-02 22:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.153054,1.1528345000000002
+2025-11-02 22:45:00+00:00,2025-11-02 23:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1531230000000001,1.1528380000000003
+2025-11-02 23:00:00+00:00,2025-11-02 23:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153177,1.1528685000000003
+2025-11-02 23:15:00+00:00,2025-11-02 23:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1532170000000002,1.1529045
+2025-11-02 23:30:00+00:00,2025-11-02 23:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.153257,1.1529265
+2025-11-02 23:45:00+00:00,2025-11-03 00:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1532440000000002,1.1529395
+2025-11-03 00:00:00+00:00,2025-11-03 00:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1531980000000002,1.1529570000000002
+2025-11-03 00:15:00+00:00,2025-11-03 00:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1531829999999998,1.1529905
+2025-11-03 00:30:00+00:00,2025-11-03 00:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1531069999999999,1.1530095
+2025-11-03 00:45:00+00:00,2025-11-03 01:00:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.31 pips < 0.35 pips threshold),1.153055,1.1530235000000002
+2025-11-03 03:30:00+00:00,2025-11-03 03:45:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.09 pips < 0.35 pips threshold),1.153005,1.1529959999999997
+2025-11-03 03:45:00+00:00,2025-11-03 04:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153076,1.1529939999999999
+2025-11-03 04:00:00+00:00,2025-11-03 04:15:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153185,1.1529975000000001
+2025-11-03 04:15:00+00:00,2025-11-03 04:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.153262,1.1529995
+2025-11-03 04:30:00+00:00,2025-11-03 04:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1532799999999999,1.153017
+2025-11-03 04:45:00+00:00,2025-11-03 05:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.153301,1.1530485000000001
+2025-11-03 05:00:00+00:00,2025-11-03 05:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1533149999999999,1.1530770000000001
+2025-11-03 05:15:00+00:00,2025-11-03 05:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15335,1.1531035000000003
+2025-11-03 05:30:00+00:00,2025-11-03 05:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.1534020000000003,1.1531445000000002
+2025-11-03 05:45:00+00:00,2025-11-03 06:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.153445,1.153191
+2025-11-03 06:00:00+00:00,2025-11-03 06:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1534930000000003,1.1532490000000002
+2025-11-03 06:15:00+00:00,2025-11-03 06:30:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153528,1.1533020000000003
+2025-11-03 06:30:00+00:00,2025-11-03 06:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.15356,1.1533725
+2025-11-03 06:45:00+00:00,2025-11-03 07:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.153589,1.1534255
+2025-11-03 07:00:00+00:00,2025-11-03 07:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.1536179999999998,1.153449
+2025-11-03 07:15:00+00:00,2025-11-03 07:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.153629,1.1534650000000002
+2025-11-03 07:30:00+00:00,2025-11-03 07:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153705,1.1535100000000003
+2025-11-03 07:45:00+00:00,2025-11-03 08:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.153753,1.1535515000000003
+2025-11-03 08:00:00+00:00,2025-11-03 08:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.153671,1.1535365000000002
+2025-11-03 08:15:00+00:00,2025-11-03 08:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.153573,1.1535090000000001
+2025-11-03 13:00:00+00:00,2025-11-03 13:15:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.17 pips < 0.35 pips threshold),1.151677,1.1516595000000003
+2025-11-03 13:15:00+00:00,2025-11-03 13:30:00+00:00,BUY,rejected,crossover_threshold_not_met (diff=0.23 pips < 0.35 pips threshold),1.151589,1.1515660000000003
+2025-11-03 16:15:00+00:00,2025-11-03 16:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1515839999999997,1.1515099999999998
+2025-11-03 16:30:00+00:00,2025-11-03 16:45:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.151808,1.1515929999999999
+2025-11-03 16:45:00+00:00,2025-11-03 17:00:00+00:00,BUY,rejected,Position already open (SHORT) - signals ignored until TP/SL closes position,1.152036,1.1516695
+2025-11-03 17:00:00+00:00,2025-11-03 17:15:00+00:00,BUY,rejected,"stochastic_crossing_too_old (bullish crossing was 2 bars ago, max=1)",1.1522780000000004,1.1517454999999999
+2025-11-03 17:15:00+00:00,2025-11-03 17:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.152539,1.1518315
+2025-11-03 17:30:00+00:00,2025-11-03 17:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.152636,1.151882
+2025-11-03 17:45:00+00:00,2025-11-03 18:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.1528100000000001,1.1519314999999999
+2025-11-03 18:00:00+00:00,2025-11-03 18:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.152943,1.152007
+2025-11-03 18:15:00+00:00,2025-11-03 18:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.1529340000000001,1.1520949999999999
+2025-11-03 18:30:00+00:00,2025-11-03 18:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1529140000000002,1.152162
+2025-11-03 18:45:00+00:00,2025-11-03 19:00:00+00:00,BUY,rejected,stochastic_unfavorable,1.15286,1.1522219999999999
+2025-11-03 19:00:00+00:00,2025-11-03 19:15:00+00:00,BUY,rejected,stochastic_unfavorable,1.152746,1.152277
+2025-11-03 19:15:00+00:00,2025-11-03 19:30:00+00:00,BUY,rejected,stochastic_unfavorable,1.152628,1.152332
+2025-11-03 19:30:00+00:00,2025-11-03 19:45:00+00:00,BUY,rejected,stochastic_unfavorable,1.1524819999999998,1.1523800000000002

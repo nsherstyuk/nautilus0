@@ -13,23 +13,12 @@ env/
 .env
 *.env
 !.env.example
-# Test environment configs (commit these for reproducibility)
-!tests/env_configs/.env.test_*
 
 # Data and logs
 data/historical/*.csv
 data/historical/*.parquet
 logs/*.log
 logs/*.log.*
-
-# Test data catalogs (generated locally, not committed)
-data/test_catalog/
-
-# Phase 6 diagnostic reports (generated locally)
-reports/ma_diagnostics/
-
-# Phase 6 MA diagnostics test catalog (generated locally)
-data/test_catalog/phase6_ma_diagnostics/
 
 # IDE and OS
 .vscode/

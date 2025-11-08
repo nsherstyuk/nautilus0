@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2025-10-27 19:02:57,815 - live - INFO - Live logging configured. Logs directory: logs\live
 2025-10-27 19:02:57,816 - live - INFO - Starting live trading system...
 2025-10-27 19:02:57,816 - live - INFO - Performance monitoring: enabled (interval=60s)
@@ -8711,3 +8712,5 @@ AttributeError: 'InteractiveBrokersDataClient' object has no attribute 'cache'. 
 2025-11-06 18:50:39,160 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
 2025-11-06 18:51:39,279 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
 2025-11-06 18:52:39,404 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
+=======
+>>>>>>> parent of b3beacaa4 (final, live mode works)

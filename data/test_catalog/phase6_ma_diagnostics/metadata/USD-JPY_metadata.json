@@ -1,0 +1,44 @@
+{
+  "scenario_name": "USD/JPY_delayed_crossover",
+  "fast_period": 10,
+  "slow_period": 20,
+  "total_bars": 200,
+  "start_date": "2024-01-01",
+  "expected_crossovers": [
+    {
+      "bar_index": 110,
+      "timestamp": "2024-01-01T01:50:00+00:00",
+      "type": "bearish",
+      "fast_ma": 1.0889747834916093,
+      "slow_ma": 1.0889896444798048
+    },
+    {
+      "bar_index": 122,
+      "timestamp": "2024-01-01T02:02:00+00:00",
+      "type": "bullish",
+      "fast_ma": 1.0889303189891228,
+      "slow_ma": 1.0889298053331975
+    },
+    {
+      "bar_index": 131,
+      "timestamp": "2024-01-01T02:11:00+00:00",
+      "type": "bearish",
+      "fast_ma": 1.0889240136070621,
+      "slow_ma": 1.0889251215588387
+    },
+    {
+      "bar_index": 173,
+      "timestamp": "2024-01-01T02:53:00+00:00",
+      "type": "bullish",
+      "fast_ma": 1.0884838452125576,
+      "slow_ma": 1.0884801327803497
+    },
+    {
+      "bar_index": 181,
+      "timestamp": "2024-01-01T03:01:00+00:00",
+      "type": "bearish",
+      "fast_ma": 1.0883928675822756,
+      "slow_ma": 1.0884219724112758
+    }
+  ]
+}
