@@ -259,12 +259,12 @@ def create_backtest_run_config(
     trailing_stop_distance_pips: int,
     *,
     # Strategy filter parameters (from env)
-        crossover_threshold_pips: float,
+    crossover_threshold_pips: float,
     # Trend filter
     trend_filter_enabled: bool,
     trend_bar_spec: str,
-    trend_fast_period: int,
-    trend_slow_period: int,
+    trend_ema_period: int,
+    trend_ema_threshold_pips: float,
     # RSI filter
     rsi_enabled: bool,
     rsi_period: int,
@@ -289,6 +289,8 @@ def create_backtest_run_config(
     stoch_bullish_threshold: int,
     stoch_bearish_threshold: int,
     stoch_max_bars_since_crossing: int,
+    time_filter_enabled: bool,
+    excluded_hours: list[int],
 ) -> BacktestRunConfig:
     """Create BacktestRunConfig wiring data, venue and strategy."""
     # Time bounds
@@ -338,19 +340,6 @@ def create_backtest_run_config(
         )
     ]
 
-    # Optionally include DMI bar stream if different timeframe
-    if dmi_enabled and dmi_bar_spec and dmi_bar_spec != bar_spec:
-        data_cfgs.append(
-            BacktestDataConfig(
-                catalog_path=str(catalog_path),
-                data_cls=Bar,
-                instrument_id=normalized_id,
-                bar_spec=dmi_bar_spec,
-                start_time=start_ns,
-                end_time=end_ns,
-            )
-        )
-
     # Optionally include Trend filter bar stream if different timeframe
     if trend_filter_enabled and trend_bar_spec and trend_bar_spec != bar_spec:
         data_cfgs.append(
@@ -359,6 +348,19 @@ def create_backtest_run_config(
                 data_cls=Bar,
                 instrument_id=normalized_id,
                 bar_spec=trend_bar_spec,
+                start_time=start_ns,
+                end_time=end_ns,
+            )
+        )
+
+    # Optionally include DMI bar stream if different timeframe
+    if dmi_enabled and dmi_bar_spec and dmi_bar_spec != bar_spec:
+        data_cfgs.append(
+            BacktestDataConfig(
+                catalog_path=str(catalog_path),
+                data_cls=Bar,
+                instrument_id=normalized_id,
+                bar_spec=dmi_bar_spec,
                 start_time=start_ns,
                 end_time=end_ns,
             )
@@ -394,6 +396,25 @@ def create_backtest_run_config(
             "trailing_stop_distance_pips": trailing_stop_distance_pips,
             # Filters
             "crossover_threshold_pips": crossover_threshold_pips,
+            # Trend filter
+            "trend_filter_enabled": trend_filter_enabled,
+            "trend_bar_spec": trend_bar_spec,
+            "trend_ema_period": trend_ema_period,
+            "trend_ema_threshold_pips": trend_ema_threshold_pips,
+            # RSI filter
+            "rsi_enabled": rsi_enabled,
+            "rsi_period": rsi_period,
+            "rsi_overbought": rsi_overbought,
+            "rsi_oversold": rsi_oversold,
+            "rsi_divergence_lookback": rsi_divergence_lookback,
+            # Volume filter
+            "volume_enabled": volume_enabled,
+            "volume_avg_period": volume_avg_period,
+            "volume_min_multiplier": volume_min_multiplier,
+            # ATR filter
+            "atr_enabled": atr_enabled,
+            "atr_period": atr_period,
+            "atr_min_strength": atr_min_strength,
             # DMI
             "dmi_enabled": dmi_enabled,
             "dmi_period": dmi_period,
@@ -406,6 +427,9 @@ def create_backtest_run_config(
             "stoch_bullish_threshold": stoch_bullish_threshold,
             "stoch_bearish_threshold": stoch_bearish_threshold,
             "stoch_max_bars_since_crossing": stoch_max_bars_since_crossing,
+            # Time filter
+            "time_filter_enabled": time_filter_enabled,
+            "excluded_hours": excluded_hours,
         },
     )
 
@@ -553,6 +577,100 @@ def generate_reports(
         zero_trade_path = output_dir / "zero_trade_diagnostic.txt"
         zero_trade_path.write_text("\n".join(diagnostics), encoding="utf-8")
         logger.warning("Zero trade diagnostic written to %s", zero_trade_path)
+
+    # Save environment configuration to results folder
+    env_lines = []
+    env_lines.append("# Backtest Configuration - Saved from environment variables")
+    env_lines.append(f"# Generated: {datetime.now().isoformat()}")
+    env_lines.append("")
+    
+    # Backtest parameters
+    env_lines.append("# ============================================================================")
+    env_lines.append("# BACKTESTING PARAMETERS")
+    env_lines.append("# ============================================================================")
+    env_lines.append(f"BACKTEST_SYMBOL={config.symbol}")
+    env_lines.append(f"BACKTEST_START_DATE={config.start_date}")
+    env_lines.append(f"BACKTEST_END_DATE={config.end_date}")
+    env_lines.append(f"BACKTEST_VENUE={config.venue}")
+    env_lines.append(f"BACKTEST_BAR_SPEC={config.bar_spec}")
+    env_lines.append(f"BACKTEST_FAST_PERIOD={config.fast_period}")
+    env_lines.append(f"BACKTEST_SLOW_PERIOD={config.slow_period}")
+    env_lines.append(f"BACKTEST_TRADE_SIZE={config.trade_size}")
+    env_lines.append(f"BACKTEST_STARTING_CAPITAL={config.starting_capital}")
+    env_lines.append(f"CATALOG_PATH={config.catalog_path}")
+    env_lines.append(f"OUTPUT_DIR={config.output_dir}")
+    env_lines.append(f"ENFORCE_POSITION_LIMIT={str(config.enforce_position_limit).lower()}")
+    env_lines.append(f"ALLOW_POSITION_REVERSAL={str(config.allow_position_reversal).lower()}")
+    env_lines.append(f"BACKTEST_STOP_LOSS_PIPS={config.stop_loss_pips}")
+    env_lines.append(f"BACKTEST_TAKE_PROFIT_PIPS={config.take_profit_pips}")
+    env_lines.append(f"BACKTEST_TRAILING_STOP_ACTIVATION_PIPS={config.trailing_stop_activation_pips}")
+    env_lines.append(f"BACKTEST_TRAILING_STOP_DISTANCE_PIPS={config.trailing_stop_distance_pips}")
+    env_lines.append("")
+    
+    # Strategy filters
+    env_lines.append("# ============================================================================")
+    env_lines.append("# STRATEGY FILTER CONFIGURATION")
+    env_lines.append("# ============================================================================")
+    env_lines.append(f"STRATEGY_CROSSOVER_THRESHOLD_PIPS={config.crossover_threshold_pips}")
+    env_lines.append("")
+    
+    # Trend filter
+    env_lines.append("# Trend Filter")
+    env_lines.append(f"STRATEGY_TREND_FILTER_ENABLED={str(config.trend_filter_enabled).lower()}")
+    env_lines.append(f"STRATEGY_TREND_BAR_SPEC={config.trend_bar_spec}")
+    env_lines.append(f"STRATEGY_TREND_EMA_PERIOD={config.trend_ema_period}")
+    env_lines.append(f"STRATEGY_TREND_EMA_THRESHOLD_PIPS={config.trend_ema_threshold_pips}")
+    env_lines.append("")
+    
+    # RSI filter
+    env_lines.append("# RSI Filter")
+    env_lines.append(f"STRATEGY_RSI_ENABLED={str(config.rsi_enabled).lower()}")
+    env_lines.append(f"STRATEGY_RSI_PERIOD={config.rsi_period}")
+    env_lines.append(f"STRATEGY_RSI_OVERBOUGHT={config.rsi_overbought}")
+    env_lines.append(f"STRATEGY_RSI_OVERSOLD={config.rsi_oversold}")
+    env_lines.append(f"STRATEGY_RSI_DIVERGENCE_LOOKBACK={config.rsi_divergence_lookback}")
+    env_lines.append("")
+    
+    # Volume filter
+    env_lines.append("# Volume Filter")
+    env_lines.append(f"STRATEGY_VOLUME_ENABLED={str(config.volume_enabled).lower()}")
+    env_lines.append(f"STRATEGY_VOLUME_AVG_PERIOD={config.volume_avg_period}")
+    env_lines.append(f"STRATEGY_VOLUME_MIN_MULTIPLIER={config.volume_min_multiplier}")
+    env_lines.append("")
+    
+    # ATR filter
+    env_lines.append("# ATR Filter")
+    env_lines.append(f"STRATEGY_ATR_ENABLED={str(config.atr_enabled).lower()}")
+    env_lines.append(f"STRATEGY_ATR_PERIOD={config.atr_period}")
+    env_lines.append(f"STRATEGY_ATR_MIN_STRENGTH={config.atr_min_strength}")
+    env_lines.append("")
+    
+    # DMI filter
+    env_lines.append("# DMI Filter")
+    env_lines.append(f"STRATEGY_DMI_ENABLED={str(config.dmi_enabled).lower()}")
+    env_lines.append(f"STRATEGY_DMI_BAR_SPEC={config.dmi_bar_spec}")
+    env_lines.append(f"STRATEGY_DMI_PERIOD={config.dmi_period}")
+    env_lines.append("")
+    
+    # Stochastic filter
+    env_lines.append("# Stochastic Filter")
+    env_lines.append(f"STRATEGY_STOCH_ENABLED={str(config.stoch_enabled).lower()}")
+    env_lines.append(f"STRATEGY_STOCH_BAR_SPEC={config.stoch_bar_spec}")
+    env_lines.append(f"STRATEGY_STOCH_PERIOD_K={config.stoch_period_k}")
+    env_lines.append(f"STRATEGY_STOCH_PERIOD_D={config.stoch_period_d}")
+    env_lines.append(f"STRATEGY_STOCH_BULLISH_THRESHOLD={config.stoch_bullish_threshold}")
+    env_lines.append(f"STRATEGY_STOCH_BEARISH_THRESHOLD={config.stoch_bearish_threshold}")
+    env_lines.append(f"STRATEGY_STOCH_MAX_BARS_SINCE_CROSSING={config.stoch_max_bars_since_crossing}")
+    env_lines.append("")
+    
+    # Time filter
+    env_lines.append("# Time Filter")
+    env_lines.append(f"BACKTEST_TIME_FILTER_ENABLED={str(config.time_filter_enabled).lower()}")
+    env_lines.append(f"BACKTEST_EXCLUDED_HOURS={','.join(map(str, config.excluded_hours)) if config.excluded_hours else ''}")
+    
+    env_file_path = output_dir / ".env"
+    env_file_path.write_text("\n".join(env_lines), encoding="utf-8")
+    logger.info("Environment configuration saved to: %s", env_file_path)
 
     return stats
 
@@ -712,8 +830,8 @@ async def main() -> int:
         crossover_threshold_pips=cfg.crossover_threshold_pips,
         trend_filter_enabled=cfg.trend_filter_enabled,
         trend_bar_spec=cfg.trend_bar_spec,
-        trend_fast_period=cfg.trend_fast_period,
-        trend_slow_period=cfg.trend_slow_period,
+        trend_ema_period=cfg.trend_ema_period,
+        trend_ema_threshold_pips=cfg.trend_ema_threshold_pips,
         rsi_enabled=cfg.rsi_enabled,
         rsi_period=cfg.rsi_period,
         rsi_overbought=cfg.rsi_overbought,
@@ -735,6 +853,8 @@ async def main() -> int:
         stoch_bullish_threshold=cfg.stoch_bullish_threshold,
         stoch_bearish_threshold=cfg.stoch_bearish_threshold,
         stoch_max_bars_since_crossing=cfg.stoch_max_bars_since_crossing,
+        time_filter_enabled=cfg.time_filter_enabled,
+        excluded_hours=cfg.excluded_hours,
     )
 
     logger.info(
@@ -793,19 +913,6 @@ async def main() -> int:
         processed_count,
         cfg,
     )
-
-    # Copy .env file to results directory for reference
-    env_file = PROJECT_ROOT / ".env"
-    if env_file.exists():
-        try:
-            import shutil
-            env_copy_path = output_dir / ".env"
-            shutil.copy2(env_file, env_copy_path)
-            logger.info(f"Environment configuration saved to: {env_copy_path}")
-        except Exception as e:
-            logger.warning(f"Failed to copy .env file to results directory: {e}")
-    else:
-        logger.warning(f".env file not found at {env_file}, skipping copy")
 
     logger.info(f"Results written to: {output_dir}")
     return 0

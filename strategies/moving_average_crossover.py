@@ -9,12 +9,13 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Optional, List, Dict, Any, Tuple, cast
+from dataclasses import field
 
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.trading.strategy import Strategy
 from nautilus_trader.model.identifiers import InstrumentId
 from nautilus_trader.model.data import Bar, BarType
-from nautilus_trader.indicators import SimpleMovingAverage, Stochastics, RelativeStrengthIndex, AverageTrueRange
+from nautilus_trader.indicators import SimpleMovingAverage, ExponentialMovingAverage, Stochastics, RelativeStrengthIndex, AverageTrueRange
 from nautilus_trader.model.position import Position
 from nautilus_trader.model.objects import Quantity, Price
 from nautilus_trader.model.enums import OrderSide, TriggerType
@@ -60,9 +61,9 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
 
     # Higher timeframe trend confirmation
     trend_filter_enabled: bool = False
-    trend_bar_spec: str = "1-HOUR-MID-EXTERNAL"
-    trend_fast_period: int = 20
-    trend_slow_period: int = 50
+    trend_bar_spec: str = "1-MINUTE-MID-EXTERNAL"
+    trend_ema_period: int = 150
+    trend_ema_threshold_pips: float = 0.0  # Minimum distance in pips above/below EMA (default: 0.0 = no threshold)
 
     # RSI divergence filter
     rsi_enabled: bool = False
@@ -80,6 +81,10 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     atr_enabled: bool = False
     atr_period: int = 14
     atr_min_strength: float = 0.001
+
+    # Time filter
+    time_filter_enabled: bool = False
+    excluded_hours: list[int] = field(default_factory=list)  # List of hours (0-23) to exclude from trading
 
     # Entry timing improvements
     entry_timing_enabled: bool = False
@@ -131,14 +136,12 @@ class MovingAverageCrossover(Strategy):
                 dmi_bar_spec = f"{dmi_bar_spec}-EXTERNAL"
             self.dmi_bar_type = BarType.from_str(f"{config.instrument_id}-{dmi_bar_spec}")
 
-        # Higher timeframe trend filter (optional, 1-hour bars)
+        # Higher timeframe trend filter (optional, default 1-minute bars)
         self.trend_filter_enabled = config.trend_filter_enabled
-        self.trend_fast_sma: Optional[SimpleMovingAverage] = None
-        self.trend_slow_sma: Optional[SimpleMovingAverage] = None
+        self.trend_ema: Optional[ExponentialMovingAverage] = None
         self.trend_bar_type: Optional[BarType] = None
         if config.trend_filter_enabled:
-            self.trend_fast_sma = SimpleMovingAverage(period=config.trend_fast_period)
-            self.trend_slow_sma = SimpleMovingAverage(period=config.trend_slow_period)
+            self.trend_ema = ExponentialMovingAverage(period=config.trend_ema_period)
             trend_bar_spec = config.trend_bar_spec
             if not trend_bar_spec.upper().endswith("-EXTERNAL") and not trend_bar_spec.upper().endswith("-INTERNAL"):
                 trend_bar_spec = f"{trend_bar_spec}-EXTERNAL"
@@ -161,6 +164,10 @@ class MovingAverageCrossover(Strategy):
         self.atr: Optional[AverageTrueRange] = None
         if config.atr_enabled:
             self.atr = AverageTrueRange(period=config.atr_period)
+
+        # Time filter (optional)
+        self.time_filter_enabled = config.time_filter_enabled
+        self.excluded_hours: set[int] = set(config.excluded_hours) if config.excluded_hours else set()
 
         # Stochastic indicator for momentum confirmation (optional, 15-minute bars)
         self.stoch: Optional[Stochastics] = None
@@ -223,12 +230,11 @@ class MovingAverageCrossover(Strategy):
             f"Position limits enforced={self._enforce_position_limit}, allow_reversal={self._allow_reversal}"
         )
 
-        # Subscribe to 1-hour bars for trend filter if enabled
+        # Subscribe to trend bars for trend filter if enabled
         if self.trend_filter_enabled and self.trend_bar_type is not None:
-            self.register_indicator_for_bars(self.trend_bar_type, self.trend_fast_sma)
-            self.register_indicator_for_bars(self.trend_bar_type, self.trend_slow_sma)
+            self.register_indicator_for_bars(self.trend_bar_type, self.trend_ema)
             self.subscribe_bars(self.trend_bar_type)
-            self.log.info(f"Trend filter enabled: subscribed to {self.trend_bar_type} (fast={self.cfg.trend_fast_period}, slow={self.cfg.trend_slow_period})")
+            self.log.info(f"Trend filter enabled: subscribed to {self.trend_bar_type} (EMA period={self.cfg.trend_ema_period})")
         else:
             self.log.info("Trend filter disabled")
 
@@ -319,51 +325,61 @@ class MovingAverageCrossover(Strategy):
         return True
 
     def _check_trend_filter(self, direction: str, bar: Bar) -> bool:
-        """Check if higher timeframe trend aligns with crossover direction.
+        """Check if bar closing price is above/below trend EMA by threshold amount.
 
         Args:
             direction: "BUY" or "SELL"
-            bar: Current bar for logging
+            bar: Current bar for logging (primary bar for signal generation)
 
         Returns:
             True if trend check passes or is disabled/not ready, False if trend mismatch
         """
         # Skip check if trend filter is disabled
-        if not self.trend_filter_enabled or self.trend_fast_sma is None or self.trend_slow_sma is None:
+        if not self.trend_filter_enabled or self.trend_ema is None:
             return True
 
-        # Get current trend EMA values
-        trend_fast = self.trend_fast_sma.value
-        trend_slow = self.trend_slow_sma.value
+        # Get current trend EMA value (updated from trend bars)
+        trend_ema_value = self.trend_ema.value
 
-        # Skip check if trend EMAs not ready yet
-        if trend_fast is None or trend_slow is None:
-            self.log.debug("Trend filter EMAs not ready yet, skipping trend check")
+        # Skip check if trend EMA not ready yet
+        if trend_ema_value is None:
+            self.log.debug("Trend filter EMA not ready yet, skipping trend check")
             return True
 
-        trend_direction = "BULLISH" if trend_fast > trend_slow else "BEARISH"
+        # Get bar closing price (from primary bar)
+        bar_close = Decimal(str(bar.close))
+        ema_value = Decimal(str(trend_ema_value))
+
+        # Calculate pip value for threshold check
+        pip_value = self._calculate_pip_value()
+        threshold_pips = Decimal(str(self.cfg.trend_ema_threshold_pips))
+        threshold_decimal = threshold_pips * pip_value
 
         if direction == "BUY":
-            # Bullish crossover requires bullish higher timeframe trend
-            if trend_direction != "BULLISH":
+            # BUY requires closing price above EMA by at least threshold
+            price_diff = bar_close - ema_value
+            if price_diff <= threshold_decimal:
+                diff_pips = price_diff / pip_value
                 self._log_rejected_signal(
                     "BUY",
-                    f"trend_filter_mismatch (higher timeframe is {trend_direction}, need BULLISH for BUY signals)",
+                    f"trend_filter_price_below_ema_threshold (close={bar_close}, EMA={ema_value}, diff={diff_pips:.2f} pips < {threshold_pips} pips threshold)",
                     bar
                 )
                 return False
         elif direction == "SELL":
-            # Bearish crossover requires bearish higher timeframe trend
-            if trend_direction != "BEARISH":
+            # SELL requires closing price below EMA by at least threshold
+            price_diff = ema_value - bar_close
+            if price_diff <= threshold_decimal:
+                diff_pips = price_diff / pip_value
                 self._log_rejected_signal(
                     "SELL",
-                    f"trend_filter_mismatch (higher timeframe is {trend_direction}, need BEARISH for SELL signals)",
+                    f"trend_filter_price_above_ema_threshold (close={bar_close}, EMA={ema_value}, diff={diff_pips:.2f} pips < {threshold_pips} pips threshold)",
                     bar
                 )
                 return False
 
-        # Trend aligns
-        self.log.debug(f"Higher timeframe trend confirmed for {direction}: fast={trend_fast:.5f}, slow={trend_slow:.5f} ({trend_direction})")
+        diff_pips = abs(bar_close - ema_value) / pip_value
+        self.log.debug(f"Trend filter confirmed {direction} signal: close={bar_close}, EMA={ema_value}, diff={diff_pips:.2f} pips")
         return True
 
     def _check_rsi_filter(self, direction: str, bar: Bar) -> bool:
@@ -438,6 +454,25 @@ class MovingAverageCrossover(Strategy):
             return False
 
         self.log.debug(f"ATR trend strength confirmed for {direction}: ATR={atr_value:.5f}")
+        return True
+
+    def _check_time_filter(self, bar: Bar) -> bool:
+        """Check if current bar time is within allowed trading hours."""
+        if not self.time_filter_enabled or not self.excluded_hours:
+            return True
+
+        # Get hour from bar timestamp (UTC)
+        bar_time = datetime.fromtimestamp(bar.ts_event / 1e9, tz=timezone.utc)
+        current_hour = bar_time.hour
+
+        if current_hour in self.excluded_hours:
+            self._log_rejected_signal(
+                "BUY",  # Direction doesn't matter for time filter
+                f"time_filter_excluded_hour (hour={current_hour:02d}:00 UTC is excluded)",
+                bar
+            )
+            return False
+
         return True
 
     def _check_dmi_trend(self, direction: str, bar: Bar) -> bool:
@@ -735,6 +770,15 @@ class MovingAverageCrossover(Strategy):
         ):
             self.log.debug(f"Received DMI bar: close={bar.close}")
             return
+
+        # Route trend bars - update EMA but don't generate signals
+        if (
+            self.trend_bar_type is not None
+            and bar.bar_type == self.trend_bar_type
+            and bar.bar_type != self.bar_type
+        ):
+            self.log.debug(f"Received trend bar: close={bar.close}, EMA={self.trend_ema.value if self.trend_ema else None}")
+            return  # Trend EMA updates automatically via registration, no signal generation
         
         # Process stochastic crossing detection for all stochastic bars
         if (
@@ -879,6 +923,10 @@ class MovingAverageCrossover(Strategy):
             if not self._check_atr_filter("BUY", bar):
                 return
 
+            # Check time filter (excluded hours)
+            if not self._check_time_filter(bar):
+                return
+
             # Check DMI trend alignment
             if not self._check_dmi_trend("BUY", bar):
                 return
@@ -987,6 +1035,10 @@ class MovingAverageCrossover(Strategy):
 
             # Check ATR trend strength
             if not self._check_atr_filter("SELL", bar):
+                return
+
+            # Check time filter (excluded hours)
+            if not self._check_time_filter(bar):
                 return
 
             # Check DMI trend alignment

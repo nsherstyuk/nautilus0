@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import logging
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -38,27 +38,23 @@ class BacktestConfig:
     crossover_threshold_pips: float = 0.7
     # Trend filter
     trend_filter_enabled: bool = False
-    trend_bar_spec: str = "1-HOUR-MID-EXTERNAL"
-    trend_fast_period: int = 20
-    trend_slow_period: int = 50
-
+    trend_bar_spec: str = "1-MINUTE-MID-EXTERNAL"
+    trend_ema_period: int = 150
+    trend_ema_threshold_pips: float = 0.0  # Minimum distance in pips above/below EMA
     # RSI filter
     rsi_enabled: bool = False
     rsi_period: int = 14
     rsi_overbought: int = 70
     rsi_oversold: int = 30
     rsi_divergence_lookback: int = 5
-
     # Volume filter
     volume_enabled: bool = False
     volume_avg_period: int = 20
     volume_min_multiplier: float = 1.2
-
     # ATR filter
     atr_enabled: bool = False
     atr_period: int = 14
     atr_min_strength: float = 0.001
-
     dmi_enabled: bool = True
     dmi_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
     dmi_period: int = 14
@@ -69,6 +65,9 @@ class BacktestConfig:
     stoch_bullish_threshold: int = 30
     stoch_bearish_threshold: int = 70
     stoch_max_bars_since_crossing: int = 18
+    # Time filter
+    time_filter_enabled: bool = False
+    excluded_hours: list[int] = field(default_factory=list)  # List of hours (0-23) to exclude from trading
 
 
 def _require(name: str, value: Optional[str]) -> str:
@@ -95,6 +94,23 @@ def _parse_float(name: str, value: Optional[str], default: float) -> float:
         raise ValueError(f"{name} must be a float, got: {value}")
 
 
+def _parse_excluded_hours(name: str, value: Optional[str]) -> list[int]:
+    """Parse comma-separated list of hours (0-23) to exclude from trading."""
+    if value is None or value == "":
+        return []
+    try:
+        hours = [int(h.strip()) for h in value.split(",") if h.strip()]
+        # Validate hours are in range 0-23
+        for hour in hours:
+            if not (0 <= hour <= 23):
+                raise ValueError(f"{name} contains invalid hour: {hour} (must be 0-23)")
+        return sorted(set(hours))  # Remove duplicates and sort
+    except ValueError as e:
+        if "invalid hour" in str(e):
+            raise
+        raise ValueError(f"{name} must be comma-separated integers (0-23), got: {value}") from e
+
+
 def _validate_date(name: str, value: str) -> None:
     try:
         datetime.strptime(value, "%Y-%m-%d")
@@ -113,8 +129,7 @@ def get_backtest_config() -> BacktestConfig:
     BACKTEST_TRAILING_STOP_DISTANCE_PIPS,     STRATEGY_CROSSOVER_THRESHOLD_PIPS,
     STRATEGY_DMI_ENABLED, STRATEGY_DMI_BAR_SPEC, STRATEGY_DMI_PERIOD,
     STRATEGY_STOCH_ENABLED, STRATEGY_STOCH_BAR_SPEC, STRATEGY_STOCH_PERIOD_K,
-    STRATEGY_STOCH_PERIOD_D, STRATEGY_STOCH_BULLISH_THRESHOLD, STRATEGY_STOCH_BEARISH_THRESHOLD,
-    STRATEGY_STOCH_MAX_BARS_SINCE_CROSSING
+    STRATEGY_STOCH_PERIOD_D, STRATEGY_STOCH_BULLISH_THRESHOLD, STRATEGY_STOCH_BEARISH_THRESHOLD
     """
     load_dotenv()
 
@@ -152,9 +167,9 @@ def get_backtest_config() -> BacktestConfig:
 
     # Trend filter
     trend_filter_enabled = os.getenv("STRATEGY_TREND_FILTER_ENABLED", "false").lower() in ("true", "1", "yes")
-    trend_bar_spec = os.getenv("STRATEGY_TREND_BAR_SPEC", "1-HOUR-MID-EXTERNAL")
-    trend_fast_period = _parse_int("STRATEGY_TREND_FAST_PERIOD", os.getenv("STRATEGY_TREND_FAST_PERIOD"), 20)
-    trend_slow_period = _parse_int("STRATEGY_TREND_SLOW_PERIOD", os.getenv("STRATEGY_TREND_SLOW_PERIOD"), 50)
+    trend_bar_spec = os.getenv("STRATEGY_TREND_BAR_SPEC", "1-MINUTE-MID-EXTERNAL")
+    trend_ema_period = _parse_int("STRATEGY_TREND_EMA_PERIOD", os.getenv("STRATEGY_TREND_EMA_PERIOD"), 150)
+    trend_ema_threshold_pips = _parse_float("STRATEGY_TREND_EMA_THRESHOLD_PIPS", os.getenv("STRATEGY_TREND_EMA_THRESHOLD_PIPS"), 0.0)
 
     # RSI filter
     rsi_enabled = os.getenv("STRATEGY_RSI_ENABLED", "false").lower() in ("true", "1", "yes")
@@ -176,7 +191,7 @@ def get_backtest_config() -> BacktestConfig:
     dmi_enabled = os.getenv("STRATEGY_DMI_ENABLED", "true").lower() in ("true", "1", "yes")
     dmi_bar_spec = os.getenv("STRATEGY_DMI_BAR_SPEC", "2-MINUTE-MID-EXTERNAL")
     dmi_period = _parse_int("STRATEGY_DMI_PERIOD", os.getenv("STRATEGY_DMI_PERIOD"), 14)
-
+    
     stoch_enabled = os.getenv("STRATEGY_STOCH_ENABLED", "true").lower() in ("true", "1", "yes")
     stoch_bar_spec = os.getenv("STRATEGY_STOCH_BAR_SPEC", "15-MINUTE-MID-EXTERNAL")
     stoch_period_k = _parse_int("STRATEGY_STOCH_PERIOD_K", os.getenv("STRATEGY_STOCH_PERIOD_K"), 14)
@@ -184,6 +199,10 @@ def get_backtest_config() -> BacktestConfig:
     stoch_bullish_threshold = _parse_int("STRATEGY_STOCH_BULLISH_THRESHOLD", os.getenv("STRATEGY_STOCH_BULLISH_THRESHOLD"), 30)
     stoch_bearish_threshold = _parse_int("STRATEGY_STOCH_BEARISH_THRESHOLD", os.getenv("STRATEGY_STOCH_BEARISH_THRESHOLD"), 70)
     stoch_max_bars_since_crossing = _parse_int("STRATEGY_STOCH_MAX_BARS_SINCE_CROSSING", os.getenv("STRATEGY_STOCH_MAX_BARS_SINCE_CROSSING"), 18)
+    
+    # Time filter parameters
+    time_filter_enabled = os.getenv("BACKTEST_TIME_FILTER_ENABLED", "false").lower() in ("true", "1", "yes")
+    excluded_hours = _parse_excluded_hours("BACKTEST_EXCLUDED_HOURS", os.getenv("BACKTEST_EXCLUDED_HOURS"))
     
     # Normalize DMI bar_spec for FX instruments (similar to primary bar_spec normalization)
     if dmi_enabled and "/" in symbol:
@@ -314,10 +333,6 @@ def get_backtest_config() -> BacktestConfig:
                 "STRATEGY_STOCH_BEARISH_THRESHOLD (%d) < 50 may reject many valid bearish signals",
                 stoch_bearish_threshold
             )
-    
-    # Validate stoch_max_bars_since_crossing
-    if stoch_max_bars_since_crossing < 0:
-        raise ValueError("STRATEGY_STOCH_MAX_BARS_SINCE_CROSSING must be >= 0 (0 = disabled)")
 
     catalog_path = os.getenv("CATALOG_PATH", "data/historical")
     output_dir = os.getenv("OUTPUT_DIR", "logs/backtest_results")
@@ -380,8 +395,8 @@ def get_backtest_config() -> BacktestConfig:
         crossover_threshold_pips=crossover_threshold_pips,
         trend_filter_enabled=trend_filter_enabled,
         trend_bar_spec=trend_bar_spec,
-        trend_fast_period=trend_fast_period,
-        trend_slow_period=trend_slow_period,
+        trend_ema_period=trend_ema_period,
+        trend_ema_threshold_pips=trend_ema_threshold_pips,
         rsi_enabled=rsi_enabled,
         rsi_period=rsi_period,
         rsi_overbought=rsi_overbought,
@@ -403,6 +418,8 @@ def get_backtest_config() -> BacktestConfig:
         stoch_bullish_threshold=stoch_bullish_threshold,
         stoch_bearish_threshold=stoch_bearish_threshold,
         stoch_max_bars_since_crossing=stoch_max_bars_since_crossing,
+        time_filter_enabled=time_filter_enabled,
+        excluded_hours=excluded_hours,
     )
 
 

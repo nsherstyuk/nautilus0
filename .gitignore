@@ -17,8 +17,7 @@ env/
 # Data and logs
 data/historical/*.csv
 data/historical/*.parquet
-logs/*.log
-logs/*.log.*
+logs/
 
 # IDE and OS
 .vscode/

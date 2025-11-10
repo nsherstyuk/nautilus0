@@ -1,28 +1,6 @@
 version: 1
 formatters:
   standard:
-    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-handlers:
-  console:
-    class: logging.StreamHandler
-    formatter: standard
-    level: DEBUG
-    stream: ext://sys.stdout
-loggers:
-  strategies.moving_average_crossover:
-    level: DEBUG
-    handlers: [console]
-    propagate: yes
-  backtest.run_backtest:
-    level: DEBUG
-    handlers: [console]
-    propagate: yes
-root:
-  level: INFO
-  handlers: [console]
-version: 1
-formatters:
-  standard:
     format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 handlers:
   console:
