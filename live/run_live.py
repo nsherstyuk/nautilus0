@@ -11,6 +11,17 @@ from typing import Tuple
 
 import yaml
 
+# Ensure project root is in sys.path BEFORE importing patches
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from patches import apply_ib_connection_patch
+
+# Apply NautilusTrader IB connection patch before importing adapter modules
+apply_ib_connection_patch()
+
+from nautilus_trader.trading.config import StrategyFactory
 from nautilus_trader.adapters.interactive_brokers.common import IB, IB_VENUE
 from nautilus_trader.adapters.interactive_brokers.config import (
     IBMarketDataTypeEnum,
@@ -76,6 +87,19 @@ def _resolve_market_data_type(value: str) -> IBMarketDataTypeEnum:
     return mapping.get(value.upper(), IBMarketDataTypeEnum.DELAYED_FROZEN)
 
 
+def _resolve_symbology_method(value: str) -> SymbologyMethod:
+    """Resolve string to IB symbology enum, defaulting to IB_SIMPLIFIED if invalid."""
+    try:
+        v = (value or "").strip().upper()
+    except Exception:
+        v = ""
+    mapping = {
+        "IB_SIMPLIFIED": SymbologyMethod.IB_SIMPLIFIED,
+        "IB_RAW": SymbologyMethod.IB_RAW,
+    }
+    return mapping.get(v, SymbologyMethod.IB_SIMPLIFIED)
+
+
 async def validate_ibkr_connection(ibkr_config) -> bool:
     """Log IBKR connection details prior to node startup."""
     logger = logging.getLogger("live")
@@ -98,9 +122,11 @@ def create_trading_node_config(
     """Create trading node configuration for live trading with full backtest feature parity."""
     instrument_id = f"{live_config.symbol}.{live_config.venue}"
     market_data_type = _resolve_market_data_type(ibkr_config.market_data_type)
+    # Resolve symbology method from config, defaulting to IB_SIMPLIFIED if invalid
+    symbology_method = _resolve_symbology_method(getattr(ibkr_config, "symbology_method", "IB_SIMPLIFIED"))
     instrument_provider_config = InteractiveBrokersInstrumentProviderConfig(
-        symbology_method=SymbologyMethod.IB,
-        load_ids=frozenset({instrument_id}),
+        symbology_method=symbology_method,
+        # load_ids=frozenset({instrument_id}),  # Disable pre-loading to avoid instrument resolution issues
     )
 
     data_client_config = InteractiveBrokersDataClientConfig(
@@ -214,11 +240,11 @@ def create_trading_node_config(
             time_bars_timestamp_on_close=False,
             validate_data_sequence=True,
         ),
-        timeout_connection=90.0,
-        timeout_reconciliation=5.0,
-        timeout_portfolio=5.0,
-        timeout_disconnection=5.0,
-        timeout_post_stop=2.0,
+        timeout_connection=120.0,  # Increased for instrument loading
+        timeout_reconciliation=30.0,  # Increased for instrument initialization
+        timeout_portfolio=30.0,  # Increased for account initialization
+        timeout_disconnection=10.0,
+        timeout_post_stop=5.0,
     )
 
     return trading_node_config, strategy_config
@@ -268,16 +294,20 @@ async def main() -> int:
         live_config.trade_size,
     )
     logger.info(
-        "IBKR connection details: host=%s port=%s client_id=%s account=%s market_data_type=%s",
+        "IBKR connection details: host=%s port=%d client_id=%d account=%s market_data_type=%s",
         ibkr_config.host,
         ibkr_config.port,
         ibkr_config.client_id,
         ibkr_config.account_id or "<not set>",
         ibkr_config.market_data_type,
     )
+    
+    # Resolve and log market data type enum
+    market_data_enum = _resolve_market_data_type(ibkr_config.market_data_type)
     logger.info(
-        "Resolved IBKR market data type enum: %s",
-        _resolve_market_data_type(ibkr_config.market_data_type).name,
+        "Resolved IBKR market data type enum: %s (%s)",
+        market_data_enum.name if hasattr(market_data_enum, 'name') else str(market_data_enum),
+        market_data_enum.value if hasattr(market_data_enum, 'value') else market_data_enum,
     )
 
     # Log new features
@@ -297,9 +327,23 @@ async def main() -> int:
     node.add_exec_client_factory(IB, InteractiveBrokersLiveExecClientFactory)
 
     node.build()
-    node.portfolio.set_specific_venue(IB_VENUE)
-    node.trader.add_strategy(strategy_config)
+    try:
+        node.cache.set_specific_venue(IB_VENUE)
+    except Exception:
+        # Fallback for older versions
+        try:
+            node.portfolio.set_specific_venue(IB_VENUE)
+        except Exception:
+            pass
+    
+    # Create concrete Strategy instance from ImportableStrategyConfig
+    strategy_instance = StrategyFactory.create(strategy_config)
+    node.trader.add_strategy(strategy_instance)
     setup_signal_handlers(node)
+
+    logger.info("Waiting for IBKR clients to connect (up to 60 seconds)...")
+    # Give clients time to establish connection before starting main loop
+    await asyncio.sleep(60)
 
     logger.info("Live trading node built successfully. Starting...")
 

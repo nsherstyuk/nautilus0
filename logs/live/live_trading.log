@@ -8714,3 +8714,199 @@ AttributeError: 'InteractiveBrokersDataClient' object has no attribute 'cache'. 
 2025-11-06 18:52:39,404 - live - INFO - Performance snapshot: PnL=$0.00, Trades=0, Win Rate=0.0%, Sharpe=0.000
 =======
 >>>>>>> parent of b3beacaa4 (final, live mode works)
+2025-11-13 16:02:23,381 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 16:02:23,381 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 16:02:23,382 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 16:02:23,395 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 16:02:23,395 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 16:03:14,853 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 16:03:14,854 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 16:03:14,854 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 16:03:14,867 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 16:03:14,867 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 16:03:14,867 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 16:03:14,867 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 16:03:14,867 - live - INFO - Regime detection: enabled=False
+2025-11-13 16:03:14,867 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 16:03:14,867 - live - INFO - RSI filter: enabled=False
+2025-11-13 16:03:14,867 - live - INFO - Volume filter: enabled=False
+2025-11-13 16:03:14,867 - live - INFO - ATR filter: enabled=False
+2025-11-13 16:03:14,867 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 16:03:14,868 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 16:03:58,120 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 16:03:58,120 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 16:03:58,120 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 16:03:58,135 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 16:03:58,135 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 16:03:58,135 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 16:03:58,135 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 16:03:58,135 - live - INFO - Regime detection: enabled=False
+2025-11-13 16:03:58,135 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 16:03:58,135 - live - INFO - RSI filter: enabled=False
+2025-11-13 16:03:58,135 - live - INFO - Volume filter: enabled=False
+2025-11-13 16:03:58,135 - live - INFO - ATR filter: enabled=False
+2025-11-13 16:03:58,135 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 16:03:58,136 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 16:14:12,487 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 16:14:12,487 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 16:14:12,488 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 16:14:12,500 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 16:14:12,501 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 16:14:12,501 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 16:14:12,501 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 16:14:12,501 - live - INFO - Regime detection: enabled=False
+2025-11-13 16:14:12,501 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 16:14:12,501 - live - INFO - RSI filter: enabled=False
+2025-11-13 16:14:12,501 - live - INFO - Volume filter: enabled=False
+2025-11-13 16:14:12,501 - live - INFO - ATR filter: enabled=False
+2025-11-13 16:14:12,502 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 16:14:12,502 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 16:15:11,208 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 16:15:11,208 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 16:15:11,209 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 16:15:11,222 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 16:15:11,222 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 16:15:11,222 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 16:15:11,222 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 16:15:11,222 - live - INFO - Regime detection: enabled=False
+2025-11-13 16:15:11,223 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 16:15:11,223 - live - INFO - RSI filter: enabled=False
+2025-11-13 16:15:11,223 - live - INFO - Volume filter: enabled=False
+2025-11-13 16:15:11,223 - live - INFO - ATR filter: enabled=False
+2025-11-13 16:15:11,223 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 16:15:11,223 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 16:15:11,683 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-13 16:15:11,684 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-13 16:15:11,684 - live - INFO - Live trading node built successfully. Starting...
+2025-11-13 16:15:16,723 - live - INFO - Live trading system stopped.
+2025-11-13 16:18:31,454 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 16:18:31,454 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 16:18:31,455 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 16:18:31,468 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 16:18:31,468 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 16:18:31,468 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 16:18:31,468 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 16:18:31,468 - live - INFO - Regime detection: enabled=False
+2025-11-13 16:18:31,468 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 16:18:31,468 - live - INFO - RSI filter: enabled=False
+2025-11-13 16:18:31,468 - live - INFO - Volume filter: enabled=False
+2025-11-13 16:18:31,468 - live - INFO - ATR filter: enabled=False
+2025-11-13 16:18:31,469 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 16:18:31,469 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 16:18:31,890 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-13 16:18:31,891 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-13 16:18:31,891 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-11-13 16:19:01,905 - live - INFO - Live trading node built successfully. Starting...
+2025-11-13 16:19:06,934 - live - INFO - Live trading system stopped.
+2025-11-13 18:13:00,308 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 18:13:00,309 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 18:13:00,309 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 18:13:00,322 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 18:13:00,323 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 18:13:00,323 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 18:13:00,323 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 18:13:00,323 - live - INFO - Regime detection: enabled=False
+2025-11-13 18:13:00,323 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 18:13:00,323 - live - INFO - RSI filter: enabled=False
+2025-11-13 18:13:00,324 - live - INFO - Volume filter: enabled=False
+2025-11-13 18:13:00,324 - live - INFO - ATR filter: enabled=False
+2025-11-13 18:13:00,324 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 18:13:00,324 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 18:13:00,688 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-13 18:13:00,688 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-13 18:13:00,688 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-11-13 18:13:30,703 - live - INFO - Live trading node built successfully. Starting...
+2025-11-13 18:13:35,765 - live - INFO - Live trading system stopped.
+2025-11-13 18:16:58,764 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 18:16:58,765 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 18:16:58,765 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 18:16:58,778 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 18:16:58,778 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 18:16:58,778 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 18:16:58,778 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 18:16:58,778 - live - INFO - Regime detection: enabled=False
+2025-11-13 18:16:58,779 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 18:16:58,779 - live - INFO - RSI filter: enabled=False
+2025-11-13 18:16:58,779 - live - INFO - Volume filter: enabled=False
+2025-11-13 18:16:58,779 - live - INFO - ATR filter: enabled=False
+2025-11-13 18:16:58,779 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 18:16:58,779 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 18:16:59,130 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-13 18:16:59,130 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-13 18:16:59,130 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-11-13 18:17:29,143 - live - INFO - Live trading node built successfully. Starting...
+2025-11-13 18:17:34,177 - live - INFO - Live trading system stopped.
+2025-11-13 18:26:19,742 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 18:26:19,742 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 18:26:19,742 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 18:26:19,763 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 18:26:19,763 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 18:26:19,764 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 18:26:19,764 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 18:26:19,765 - live - INFO - Regime detection: enabled=False
+2025-11-13 18:26:19,766 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 18:26:19,766 - live - INFO - RSI filter: enabled=False
+2025-11-13 18:26:19,766 - live - INFO - Volume filter: enabled=False
+2025-11-13 18:26:19,766 - live - INFO - ATR filter: enabled=False
+2025-11-13 18:26:19,767 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 18:26:19,767 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 18:26:20,203 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-13 18:26:20,203 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-13 18:26:20,203 - live - INFO - Waiting for IBKR clients to connect (up to 30 seconds)...
+2025-11-13 18:26:50,220 - live - INFO - Live trading node built successfully. Starting...
+2025-11-13 18:26:55,259 - live - INFO - Live trading system stopped.
+2025-11-13 18:29:50,556 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 18:29:50,556 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 18:29:50,556 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 18:29:50,574 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 18:29:50,574 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 18:29:50,574 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 18:29:50,574 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 18:29:50,574 - live - INFO - Regime detection: enabled=False
+2025-11-13 18:29:50,574 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 18:29:50,574 - live - INFO - RSI filter: enabled=False
+2025-11-13 18:29:50,574 - live - INFO - Volume filter: enabled=False
+2025-11-13 18:29:50,574 - live - INFO - ATR filter: enabled=False
+2025-11-13 18:29:50,574 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 18:29:50,574 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 18:29:50,922 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-13 18:29:50,928 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-13 18:29:50,929 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-13 18:30:50,921 - live - INFO - Live trading node built successfully. Starting...
+2025-11-13 18:31:01,001 - live - INFO - Live trading system stopped.
+2025-11-13 18:38:35,041 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 18:38:35,041 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 18:38:35,041 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 18:38:35,057 - live - INFO - Live configuration loaded: symbol=EUR.USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 18:38:35,058 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 18:38:35,058 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 18:38:35,059 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 18:38:35,059 - live - INFO - Regime detection: enabled=False
+2025-11-13 18:38:35,059 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 18:38:35,059 - live - INFO - RSI filter: enabled=False
+2025-11-13 18:38:35,060 - live - INFO - Volume filter: enabled=False
+2025-11-13 18:38:35,060 - live - INFO - ATR filter: enabled=False
+2025-11-13 18:38:35,060 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 18:38:35,061 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 18:38:35,478 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-13 18:38:35,478 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-13 18:38:35,478 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-13 18:38:53,419 - live - WARNING - Signal 2 received. Initiating shutdown...
+2025-11-13 18:40:28,825 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-13 18:40:28,825 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-13 18:40:28,825 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-13 18:40:28,842 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=46 slow=297 trade_size=100000
+2025-11-13 18:40:28,842 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=17 account=DU1558484 market_data_type=REALTIME
+2025-11-13 18:40:28,842 - live - INFO - Resolved IBKR market data type enum: 1 (1)
+2025-11-13 18:40:28,842 - live - INFO - Adaptive stops: mode=atr
+2025-11-13 18:40:28,842 - live - INFO - Regime detection: enabled=False
+2025-11-13 18:40:28,842 - live - INFO - Weekday exclusions: mode=flat
+2025-11-13 18:40:28,842 - live - INFO - RSI filter: enabled=False
+2025-11-13 18:40:28,842 - live - INFO - Volume filter: enabled=False
+2025-11-13 18:40:28,842 - live - INFO - ATR filter: enabled=False
+2025-11-13 18:40:28,857 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=17
+2025-11-13 18:40:28,857 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-13 18:40:29,313 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-13 18:40:29,313 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-13 18:40:29,313 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-13 18:40:45,427 - live - WARNING - Signal 2 received. Initiating shutdown...
