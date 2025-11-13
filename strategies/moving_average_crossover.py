@@ -96,6 +96,8 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     # Time filter
     time_filter_enabled: bool = False
     excluded_hours: list[int] = field(default_factory=list)  # List of hours (0-23) to exclude from trading
+    excluded_hours_mode: str = "flat"  # "flat" | "weekday" - whether to use same exclusion for all days or weekday-specific
+    excluded_hours_by_weekday: dict[str, list[int]] = field(default_factory=dict)  # Weekday-specific exclusions
 
     # Entry timing improvements
     entry_timing_enabled: bool = False
@@ -190,6 +192,8 @@ class MovingAverageCrossover(Strategy):
         # Time filter (optional)
         self.time_filter_enabled = config.time_filter_enabled
         self.excluded_hours: set[int] = set(config.excluded_hours) if config.excluded_hours else set()
+        self.excluded_hours_mode = config.excluded_hours_mode
+        self.excluded_hours_by_weekday = config.excluded_hours_by_weekday
 
         # Stochastic indicator for momentum confirmation (optional, 15-minute bars)
         self.stoch: Optional[Stochastics] = None
@@ -213,6 +217,16 @@ class MovingAverageCrossover(Strategy):
         self._trailing_active: bool = False
         self._last_stop_price: Optional[Decimal] = None
         self._last_regime: Optional[str] = None  # Track regime changes for logging
+        
+        # Entry timing state (for pullback/breakout/momentum entry)
+        self.entry_timing_enabled = config.entry_timing_enabled
+        self.entry_timing_bar_type: Optional[BarType] = None
+        self._pending_signal: Optional[Dict[str, Any]] = None  # {'direction': 'BUY'/'SELL', 'bar_count': 0, 'signal_price': 1.0850}
+        if config.entry_timing_enabled:
+            entry_bar_spec = config.entry_timing_bar_spec
+            if not entry_bar_spec.upper().endswith("-EXTERNAL") and not entry_bar_spec.upper().endswith("-INTERNAL"):
+                entry_bar_spec = f"{entry_bar_spec}-EXTERNAL"
+            self.entry_timing_bar_type = BarType.from_str(f"{config.instrument_id}-{entry_bar_spec}")
 
     @property
     def cfg(self) -> MovingAverageCrossoverConfig:
@@ -276,6 +290,11 @@ class MovingAverageCrossover(Strategy):
             self.log.info(f"Stochastic filter enabled: subscribed to {self.stoch_bar_type} (period_k={self.cfg.stoch_period_k}, period_d={self.cfg.stoch_period_d}, bullish_threshold={self.cfg.stoch_bullish_threshold}, bearish_threshold={self.cfg.stoch_bearish_threshold}, max_bars_since_crossing={self.cfg.stoch_max_bars_since_crossing})")
         else:
             self.log.info("Stochastic filter disabled")
+        
+        # Subscribe to entry timing bars if enabled
+        if self.entry_timing_enabled and self.entry_timing_bar_type is not None:
+            self.subscribe_bars(self.entry_timing_bar_type)
+            self.log.info(f"Entry timing enabled: subscribed to {self.entry_timing_bar_type} (method={self.cfg.entry_timing_method}, timeout={self.cfg.entry_timing_timeout_bars} bars)")
 
     def _current_position(self) -> Optional[Position]:
         """Get the current open position for this instrument."""
@@ -481,7 +500,7 @@ class MovingAverageCrossover(Strategy):
 
     def _check_time_filter(self, bar: Bar) -> bool:
         """Check if current bar time is within allowed trading hours."""
-        if not self.time_filter_enabled or not self.excluded_hours:
+        if not self.time_filter_enabled:
             return True
 
         # Get hour from bar timestamp (UTC)
@@ -546,8 +565,25 @@ class MovingAverageCrossover(Strategy):
                 bar_close_time = bar_time
         
         current_hour = bar_close_time.hour
+        
+        # Determine which excluded hours to use based on mode
+        if self.excluded_hours_mode == "weekday":
+            # Get weekday name (Monday, Tuesday, etc.)
+            weekday_name = bar_close_time.strftime("%A")
+            excluded_hours_for_check = set(self.excluded_hours_by_weekday.get(weekday_name, []))
+            
+            # If no specific exclusion for this weekday, fall back to flat exclusion
+            if not excluded_hours_for_check:
+                excluded_hours_for_check = self.excluded_hours
+        else:
+            # Use flat exclusion for all days
+            excluded_hours_for_check = self.excluded_hours
+        
+        # Skip check if no hours are excluded
+        if not excluded_hours_for_check:
+            return True
 
-        if current_hour in self.excluded_hours:
+        if current_hour in excluded_hours_for_check:
             self._log_rejected_signal(
                 "BUY",  # Direction doesn't matter for time filter
                 f"time_filter_excluded_hour (hour={current_hour:02d}:00 UTC is excluded, bar_close={bar_close_time.isoformat()}, ts_event={bar_time.isoformat()})",
@@ -739,6 +775,69 @@ class MovingAverageCrossover(Strategy):
         
         return True
 
+    def _execute_entry(self, direction: str, entry_bar: Bar) -> None:
+        """
+        Execute entry order for BUY or SELL direction.
+        Extracted to common method for use by both immediate and delayed entries.
+        """
+        # Safety check: ensure no position exists
+        position: Optional[Position] = self._current_position()
+        if position is not None:
+            self.log.warning(f"Unexpected position found during {direction} entry: {position}. Skipping entry.")
+            return
+        
+        if not self._is_fx:
+            # For non-FX instruments, create market order without SL/TP
+            order_side = OrderSide.BUY if direction == "BUY" else OrderSide.SELL
+            order = self.order_factory.market(
+                instrument_id=self.instrument_id,
+                order_side=order_side,
+                quantity=Quantity.from_str(f"{int(self.trade_size)}.00"),
+                tags=[self.cfg.order_id_tag],
+            )
+            self.submit_order(order)
+            self.log.info(f"{direction} order submitted (no SL/TP for non-FX instrument)")
+            return
+        
+        # FX instrument - create bracket order with SL/TP
+        entry_price = Decimal(str(entry_bar.close))
+        order_side = OrderSide.BUY if direction == "BUY" else OrderSide.SELL
+        sl_price, tp_price = self._calculate_sl_tp_prices(entry_price, order_side, entry_bar)
+        
+        # Log SL/TP calculations
+        self.log.info(
+            f"{direction} order - Entry: {entry_price}, SL: {sl_price}, TP: {tp_price}"
+        )
+        
+        # Create bracket order with entry + SL + TP
+        try:
+            bracket_orders = self.order_factory.bracket(
+                instrument_id=self.instrument_id,
+                order_side=order_side,
+                quantity=Quantity.from_str(f"{int(self.trade_size)}.00"),
+                sl_trigger_price=sl_price,
+                sl_trigger_type=TriggerType.DEFAULT,
+                tp_price=tp_price,
+                entry_tags=[self.cfg.order_id_tag],
+                sl_tags=[f"{self.cfg.order_id_tag}_SL"],
+                tp_tags=[f"{self.cfg.order_id_tag}_TP"],
+            )
+            
+            # Submit all orders in the bracket
+            self.submit_order_list(bracket_orders)
+            
+            # Track the stop order for trailing stops
+            for order in bracket_orders.orders:
+                if isinstance(order, StopMarketOrder):
+                    self._current_stop_order = order
+                    self._position_entry_price = entry_price
+                    break
+            
+            self.log.info(f"{direction} bracket order submitted successfully")
+            
+        except Exception as exc:
+            self.log.error(f"Failed to create {direction} bracket order: {exc}")
+    
     def _calculate_pip_value(self) -> Decimal:
         """Calculate pip value based on instrument precision."""
         if self.instrument.price_precision == 5:
@@ -748,6 +847,56 @@ class MovingAverageCrossover(Strategy):
         else:
             # For non-FX or other precisions, use the instrument's minimum tick/price increment
             return Decimal(str(self.instrument.price_increment))
+    
+    def _check_pullback_entry(self, bar: Bar, direction: str) -> bool:
+        """
+        Check if current 2-min bar meets pullback entry criteria.
+        
+        Pullback logic:
+        - For BUY: Wait for price to pull back near fast EMA, then bounce up
+        - For SELL: Wait for price to rally near fast EMA, then reject down
+        
+        Returns True if entry condition is met.
+        """
+        if not self._pending_signal:
+            return False
+        
+        current_price = Decimal(str(bar.close))
+        pip_value = self._calculate_pip_value()
+        pullback_buffer = Decimal('3') * pip_value  # 3 pips buffer
+        
+        # Get current fast EMA value (from primary timeframe)
+        fast_ema = self.fast_sma.value
+        if fast_ema is None:
+            return False
+        
+        fast_ema_decimal = Decimal(str(fast_ema))
+        
+        if direction == "BUY":
+            # Looking for pullback to near fast EMA, then bounce
+            # Entry when price is within 3 pips above fast EMA and showing strength
+            target_level = fast_ema_decimal + pullback_buffer
+            
+            if current_price <= target_level and current_price >= fast_ema_decimal:
+                # Check if bar closed higher than it opened (bullish candle)
+                bar_open = Decimal(str(bar.open))
+                if current_price > bar_open:
+                    self.log.info(f"[ENTRY_TIMING] BUY pullback confirmed: price={current_price}, fast_EMA={fast_ema_decimal}, bounce detected")
+                    return True
+        
+        elif direction == "SELL":
+            # Looking for rally to near fast EMA, then rejection
+            # Entry when price is within 3 pips below fast EMA and showing weakness
+            target_level = fast_ema_decimal - pullback_buffer
+            
+            if current_price >= target_level and current_price <= fast_ema_decimal:
+                # Check if bar closed lower than it opened (bearish candle)
+                bar_open = Decimal(str(bar.open))
+                if current_price < bar_open:
+                    self.log.info(f"[ENTRY_TIMING] SELL pullback confirmed: price={current_price}, fast_EMA={fast_ema_decimal}, rejection detected")
+                    return True
+        
+        return False
 
     def _detect_market_regime(self, bar: Bar) -> str:
         """
@@ -1066,6 +1215,42 @@ class MovingAverageCrossover(Strategy):
             self.log.debug(f"Received trend bar: close={bar.close}, EMA={self.trend_ema.value if self.trend_ema else None}")
             return  # Trend EMA updates automatically via registration, no signal generation
         
+        # Process entry timing bars (2-min bars for pullback detection)
+        if (
+            self.entry_timing_bar_type is not None
+            and bar.bar_type == self.entry_timing_bar_type
+        ):
+            # Check if we have a pending signal waiting for entry
+            if self._pending_signal is not None:
+                direction = self._pending_signal['direction']
+                self._pending_signal['bar_count'] += 1
+                
+                # Check for timeout
+                if self._pending_signal['bar_count'] > self.cfg.entry_timing_timeout_bars:
+                    self.log.info(f"[ENTRY_TIMING] {direction} signal timed out after {self._pending_signal['bar_count']} bars, cancelling")
+                    self._pending_signal = None
+                    if bar.bar_type != self.bar_type:
+                        return
+                else:
+                    # Check if pullback entry condition is met
+                    if self._check_pullback_entry(bar, direction):
+                        # Execute the trade immediately
+                        signal_bar = self._pending_signal['signal_bar']
+                        self.log.info(f"[ENTRY_TIMING] Pullback entry triggered for {direction}, executing trade")
+                        
+                        # Call the entry execution with the original signal bar
+                        self._execute_entry(direction, bar)
+                        
+                        # Clear pending signal
+                        self._pending_signal = None
+                    
+                    # If entry timing bars are not the same as primary bars, return
+                    if bar.bar_type != self.bar_type:
+                        return
+            elif bar.bar_type != self.bar_type:
+                # No pending signal and not primary bar, just return
+                return
+        
         # Process stochastic crossing detection for all stochastic bars
         if (
             self.stoch_bar_type is not None
@@ -1226,77 +1411,20 @@ class MovingAverageCrossover(Strategy):
                 self._log_rejected_signal("BUY", reason, bar)
                 return  # Reject signal - position already open, will only close via TP/SL
             else:
-                # No position open, proceed with entry
-                position: Optional[Position] = self._current_position()
-                has_position = position is not None
+                # Check if entry timing is enabled
+                if self.entry_timing_enabled and self.cfg.entry_timing_method == "pullback":
+                    # Set up pending signal - wait for pullback entry on 2-min bars
+                    self._pending_signal = {
+                        'direction': 'BUY',
+                        'bar_count': 0,
+                        'signal_price': Decimal(str(bar.close)),
+                        'signal_bar': bar
+                    }
+                    self.log.info(f"[ENTRY_TIMING] BUY signal detected at {bar.close}, waiting for pullback entry (timeout: {self.cfg.entry_timing_timeout_bars} bars)")
+                    return  # Don't enter immediately, wait for timing signal
                 
-                # Safety check: ensure no position exists (should not happen)
-                if has_position:
-                    self.log.warning(f"Unexpected position found during BUY signal: {position}. Skipping entry.")
-                    self._log_rejected_signal("BUY", "Unexpected position found", bar)
-                    return
-                
-                self.log.debug(f"Current net position before BUY: {position}")
-                
-                if self._is_fx:
-                    # Calculate SL/TP prices using bar close as entry reference for FX instruments
-                    entry_price = Decimal(str(bar.close))
-                    sl_price, tp_price = self._calculate_sl_tp_prices(entry_price, OrderSide.BUY, bar)
-                    
-                    # Log SL/TP calculations
-                    self.log.info(
-                        f"BUY order - Entry: {entry_price}, SL: {sl_price}, TP: {tp_price}, "
-                        f"Risk: {self.cfg.stop_loss_pips} pips, Reward: {self.cfg.take_profit_pips} pips"
-                    )
-                    
-                    # Create bracket order with entry + SL + TP
-                    try:
-                        bracket_orders = self.order_factory.bracket(
-                            instrument_id=self.instrument_id,
-                            order_side=OrderSide.BUY,
-                            quantity=Quantity.from_str(f"{int(self.trade_size)}.00"),
-                            sl_trigger_price=sl_price,
-                            sl_trigger_type=TriggerType.DEFAULT,
-                            tp_price=tp_price,
-                            entry_tags=[self.cfg.order_id_tag],
-                            sl_tags=[f"{self.cfg.order_id_tag}_SL"],
-                            tp_tags=[f"{self.cfg.order_id_tag}_TP"],
-                        )
-                        
-                        # Log bracket order details for verification
-                        self.log.info(
-                            f"Created bracket order with {len(bracket_orders.orders)} orders: "
-                            f"{[o.order_type.name for o in bracket_orders.orders]}"
-                        )
-                        
-                        self.submit_order_list(bracket_orders)
-                        
-                        # Extract stop loss order from bracket for trailing functionality
-                        stop_orders = [o for o in bracket_orders.orders if "SL" in o.tags or o.order_type.name == "STOP_MARKET"]
-                        if stop_orders:
-                            self._current_stop_order = stop_orders[0]
-                            self._trailing_active = False
-                            self._last_stop_price = Decimal(str(self._current_stop_order.trigger_price))
-                            self.log.debug(f"Tracking stop loss order: {self._current_stop_order.client_order_id} at {self._last_stop_price}")
-                        else:
-                            self.log.warning("No stop loss order found in bracket orders!")
-                        
-                        # Store entry price for trailing stop calculations (will be updated on fill)
-                        self._position_entry_price = Decimal(str(bar.close))
-                        self.log.info(f"Bullish crossover - BUY {self.trade_size} with SL/TP bracket order submitted")
-                    except Exception as exc:
-                        self.log.error(f"Failed to create/submit bracket order: {exc}", exc_info=True)
-                        raise
-                else:
-                    # For non-FX instruments, create market order without SL/TP
-                    order = self.order_factory.market(
-                        instrument_id=self.instrument_id,
-                        order_side=OrderSide.BUY,
-                        quantity=Quantity.from_str(f"{int(self.trade_size)}.00"),
-                        tags=[self.cfg.order_id_tag],
-                    )
-                    self.submit_order(order)
-                    self.log.info(f"Bullish crossover - BUY {self.trade_size} (no SL/TP for non-FX instrument)")
+                # No entry timing or immediate entry - use common entry method
+                self._execute_entry("BUY", bar)
         elif bearish:
             self.log.info(
                 f"Bearish crossover detected (prev_fast={self._prev_fast}, prev_slow={self._prev_slow}, current_fast={fast}, current_slow={slow})"
@@ -1340,77 +1468,20 @@ class MovingAverageCrossover(Strategy):
                 self._log_rejected_signal("SELL", reason, bar)
                 return  # Reject signal - position already open, will only close via TP/SL
             else:
-                # No position open, proceed with entry
-                position: Optional[Position] = self._current_position()
-                has_position = position is not None
+                # Check if entry timing is enabled
+                if self.entry_timing_enabled and self.cfg.entry_timing_method == "pullback":
+                    # Set up pending signal - wait for pullback entry on 2-min bars
+                    self._pending_signal = {
+                        'direction': 'SELL',
+                        'bar_count': 0,
+                        'signal_price': Decimal(str(bar.close)),
+                        'signal_bar': bar
+                    }
+                    self.log.info(f"[ENTRY_TIMING] SELL signal detected at {bar.close}, waiting for pullback entry (timeout: {self.cfg.entry_timing_timeout_bars} bars)")
+                    return  # Don't enter immediately, wait for timing signal
                 
-                # Safety check: ensure no position exists (should not happen)
-                if has_position:
-                    self.log.warning(f"Unexpected position found during SELL signal: {position}. Skipping entry.")
-                    self._log_rejected_signal("SELL", "Unexpected position found", bar)
-                    return
-                
-                self.log.debug(f"Current net position before SELL: {position}")
-                
-                if self._is_fx:
-                    # Calculate SL/TP prices using bar close as entry reference for FX instruments
-                    entry_price = Decimal(str(bar.close))
-                    sl_price, tp_price = self._calculate_sl_tp_prices(entry_price, OrderSide.SELL, bar)
-                    
-                    # Log SL/TP calculations
-                    self.log.info(
-                        f"SELL order - Entry: {entry_price}, SL: {sl_price}, TP: {tp_price}, "
-                        f"Risk: {self.cfg.stop_loss_pips} pips, Reward: {self.cfg.take_profit_pips} pips"
-                    )
-                    
-                    # Create bracket order with entry + SL + TP
-                    try:
-                        bracket_orders = self.order_factory.bracket(
-                            instrument_id=self.instrument_id,
-                            order_side=OrderSide.SELL,
-                            quantity=Quantity.from_str(f"{int(self.trade_size)}.00"),
-                            sl_trigger_price=sl_price,
-                            sl_trigger_type=TriggerType.DEFAULT,
-                            tp_price=tp_price,
-                            entry_tags=[self.cfg.order_id_tag],
-                            sl_tags=[f"{self.cfg.order_id_tag}_SL"],
-                            tp_tags=[f"{self.cfg.order_id_tag}_TP"],
-                        )
-                        
-                        # Log bracket order details for verification
-                        self.log.info(
-                            f"Created bracket order with {len(bracket_orders.orders)} orders: "
-                            f"{[o.order_type.name for o in bracket_orders.orders]}"
-                        )
-                        
-                        self.submit_order_list(bracket_orders)
-                        
-                        # Extract stop loss order from bracket for trailing functionality
-                        stop_orders = [o for o in bracket_orders.orders if "SL" in o.tags or o.order_type.name == "STOP_MARKET"]
-                        if stop_orders:
-                            self._current_stop_order = stop_orders[0]
-                            self._trailing_active = False
-                            self._last_stop_price = Decimal(str(self._current_stop_order.trigger_price))
-                            self.log.debug(f"Tracking stop loss order: {self._current_stop_order.client_order_id} at {self._last_stop_price}")
-                        else:
-                            self.log.warning("No stop loss order found in bracket orders!")
-                        
-                        # Store entry price for trailing stop calculations (will be updated on fill)
-                        self._position_entry_price = Decimal(str(bar.close))
-                        self.log.info(f"Bearish crossover - SELL {self.trade_size} with SL/TP bracket order submitted")
-                    except Exception as exc:
-                        self.log.error(f"Failed to create/submit bracket order: {exc}", exc_info=True)
-                        raise
-                else:
-                    # For non-FX instruments, create market order without SL/TP
-                    order = self.order_factory.market(
-                        instrument_id=self.instrument_id,
-                        order_side=OrderSide.SELL,
-                        quantity=Quantity.from_str(f"{int(self.trade_size)}.00"),
-                        tags=[self.cfg.order_id_tag],
-                    )
-                    self.submit_order(order)
-                    self.log.info(f"Bearish crossover - SELL {self.trade_size} (no SL/TP for non-FX instrument)")
+                # No entry timing or immediate entry - use common entry method
+                self._execute_entry("SELL", bar)
 
         # Update trailing stop if position is open
         self._update_trailing_stop(bar)

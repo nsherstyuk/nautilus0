@@ -90,6 +90,13 @@ class BacktestConfig:
     # Time filter
     time_filter_enabled: bool = False
     excluded_hours: list[int] = field(default_factory=list)  # List of hours (0-23) to exclude from trading
+    excluded_hours_mode: str = "flat"  # "flat" | "weekday" - whether to use same exclusion for all days or weekday-specific
+    excluded_hours_by_weekday: dict[str, list[int]] = field(default_factory=dict)  # Weekday-specific exclusions (Monday, Tuesday, etc.)
+    # Entry timing (pullback/breakout)
+    entry_timing_enabled: bool = False
+    entry_timing_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
+    entry_timing_method: str = "pullback"  # pullback | breakout | momentum
+    entry_timing_timeout_bars: int = 10  # Max bars to wait for entry (e.g., 10 × 2min = 20 minutes)
 
 
 def _require(name: str, value: Optional[str]) -> str:
@@ -250,6 +257,23 @@ def get_backtest_config() -> BacktestConfig:
     # Time filter parameters
     time_filter_enabled = os.getenv("BACKTEST_TIME_FILTER_ENABLED", "false").lower() in ("true", "1", "yes")
     excluded_hours = _parse_excluded_hours("BACKTEST_EXCLUDED_HOURS", os.getenv("BACKTEST_EXCLUDED_HOURS"))
+    excluded_hours_mode = os.getenv("BACKTEST_EXCLUDED_HOURS_MODE", "flat").lower()
+    
+    # Parse weekday-specific exclusions if mode is "weekday"
+    excluded_hours_by_weekday = {}
+    if excluded_hours_mode == "weekday":
+        weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        for weekday in weekdays:
+            env_var = f"BACKTEST_EXCLUDED_HOURS_{weekday.upper()}"
+            weekday_hours = _parse_excluded_hours(env_var, os.getenv(env_var))
+            if weekday_hours:
+                excluded_hours_by_weekday[weekday] = weekday_hours
+    
+    # Entry timing parameters
+    entry_timing_enabled = os.getenv("STRATEGY_ENTRY_TIMING_ENABLED", "false").lower() in ("true", "1", "yes")
+    entry_timing_bar_spec = os.getenv("STRATEGY_ENTRY_TIMING_BAR_SPEC", "2-MINUTE-MID-EXTERNAL")
+    entry_timing_method = os.getenv("STRATEGY_ENTRY_TIMING_METHOD", "pullback")
+    entry_timing_timeout_bars = _parse_int("STRATEGY_ENTRY_TIMING_TIMEOUT_BARS", os.getenv("STRATEGY_ENTRY_TIMING_TIMEOUT_BARS"), 10)
     
     # Normalize DMI bar_spec for FX instruments (similar to primary bar_spec normalization)
     if dmi_enabled and "/" in symbol:
@@ -487,6 +511,12 @@ def get_backtest_config() -> BacktestConfig:
         stoch_max_bars_since_crossing=stoch_max_bars_since_crossing,
         time_filter_enabled=time_filter_enabled,
         excluded_hours=excluded_hours,
+        excluded_hours_mode=excluded_hours_mode,
+        excluded_hours_by_weekday=excluded_hours_by_weekday,
+        entry_timing_enabled=entry_timing_enabled,
+        entry_timing_bar_spec=entry_timing_bar_spec,
+        entry_timing_method=entry_timing_method,
+        entry_timing_timeout_bars=entry_timing_timeout_bars,
     )
 
 

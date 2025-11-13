@@ -311,6 +311,13 @@ def create_backtest_run_config(
     stoch_max_bars_since_crossing: int,
     time_filter_enabled: bool,
     excluded_hours: list[int],
+    excluded_hours_mode: str,
+    excluded_hours_by_weekday: dict[str, list[int]],
+    # Entry timing parameters
+    entry_timing_enabled: bool,
+    entry_timing_bar_spec: str,
+    entry_timing_method: str,
+    entry_timing_timeout_bars: int,
 ) -> BacktestRunConfig:
     """Create BacktestRunConfig wiring data, venue and strategy."""
     # Time bounds
@@ -399,6 +406,19 @@ def create_backtest_run_config(
             )
         )
 
+    # Optionally include Entry Timing bar stream if enabled and different timeframe
+    if entry_timing_enabled and entry_timing_bar_spec and entry_timing_bar_spec != bar_spec:
+        data_cfgs.append(
+            BacktestDataConfig(
+                catalog_path=str(catalog_path),
+                data_cls=Bar,
+                instrument_id=normalized_id,
+                bar_spec=entry_timing_bar_spec,
+                start_time=start_ns,
+                end_time=end_ns,
+            )
+        )
+
     strat_cfg = ImportableStrategyConfig(
         strategy_path="strategies.moving_average_crossover:MovingAverageCrossover",
         config_path="strategies.moving_average_crossover:MovingAverageCrossoverConfig",
@@ -471,6 +491,13 @@ def create_backtest_run_config(
             # Time filter
             "time_filter_enabled": time_filter_enabled,
             "excluded_hours": excluded_hours,
+            "excluded_hours_mode": excluded_hours_mode,
+            "excluded_hours_by_weekday": excluded_hours_by_weekday,
+            # Entry timing
+            "entry_timing_enabled": entry_timing_enabled,
+            "entry_timing_bar_spec": entry_timing_bar_spec,
+            "entry_timing_method": entry_timing_method,
+            "entry_timing_timeout_bars": entry_timing_timeout_bars,
         },
     )
 
@@ -725,6 +752,21 @@ def generate_reports(
     env_lines.append("# Time Filter")
     env_lines.append(f"BACKTEST_TIME_FILTER_ENABLED={str(config.time_filter_enabled).lower()}")
     env_lines.append(f"BACKTEST_EXCLUDED_HOURS={','.join(map(str, config.excluded_hours)) if config.excluded_hours else ''}")
+    env_lines.append(f"BACKTEST_EXCLUDED_HOURS_MODE={config.excluded_hours_mode}")
+    
+    # Write weekday-specific exclusions if in weekday mode
+    if config.excluded_hours_mode == "weekday" and config.excluded_hours_by_weekday:
+        for weekday, hours in config.excluded_hours_by_weekday.items():
+            env_lines.append(f"BACKTEST_EXCLUDED_HOURS_{weekday.upper()}={','.join(map(str, hours)) if hours else ''}")
+    
+    env_lines.append("")
+    
+    # Entry timing
+    env_lines.append("# Entry Timing (Pullback/Breakout Entry)")
+    env_lines.append(f"STRATEGY_ENTRY_TIMING_ENABLED={str(config.entry_timing_enabled).lower()}")
+    env_lines.append(f"STRATEGY_ENTRY_TIMING_BAR_SPEC={config.entry_timing_bar_spec}")
+    env_lines.append(f"STRATEGY_ENTRY_TIMING_METHOD={config.entry_timing_method}")
+    env_lines.append(f"STRATEGY_ENTRY_TIMING_TIMEOUT_BARS={config.entry_timing_timeout_bars}")
     
     env_file_path = output_dir / ".env"
     env_file_path.write_text("\n".join(env_lines), encoding="utf-8")
@@ -1214,6 +1256,12 @@ async def main() -> int:
         stoch_max_bars_since_crossing=cfg.stoch_max_bars_since_crossing,
         time_filter_enabled=cfg.time_filter_enabled,
         excluded_hours=cfg.excluded_hours,
+        excluded_hours_mode=cfg.excluded_hours_mode,
+        excluded_hours_by_weekday=cfg.excluded_hours_by_weekday,
+        entry_timing_enabled=cfg.entry_timing_enabled,
+        entry_timing_bar_spec=cfg.entry_timing_bar_spec,
+        entry_timing_method=cfg.entry_timing_method,
+        entry_timing_timeout_bars=cfg.entry_timing_timeout_bars,
     )
 
     logger.info(
