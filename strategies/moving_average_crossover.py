@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from decimal import Decimal
 from typing import Optional, List, Dict, Any, Tuple, cast
 from dataclasses import field
+import re
 
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.trading.strategy import Strategy
@@ -94,8 +95,19 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
 
     # Market regime detection
     regime_detection_enabled: bool = False
-    regime_atr_period: int = 14
-    regime_volatility_threshold: float = 1.5
+    regime_adx_trending_threshold: float = 25.0  # ADX > 25 = trending
+    regime_adx_ranging_threshold: float = 20.0   # ADX < 20 = ranging
+    # TP multipliers (applied to base TP)
+    regime_tp_multiplier_trending: float = 1.5   # 50 pips -> 75 pips
+    regime_tp_multiplier_ranging: float = 0.8    # 50 pips -> 40 pips
+    # SL multipliers (optional - currently kept same)
+    regime_sl_multiplier_trending: float = 1.0   # Keep SL same
+    regime_sl_multiplier_ranging: float = 1.0    # Keep SL same
+    # Trailing stop multipliers
+    regime_trailing_activation_multiplier_trending: float = 0.75  # 20 -> 15 pips
+    regime_trailing_activation_multiplier_ranging: float = 1.25   # 20 -> 25 pips
+    regime_trailing_distance_multiplier_trending: float = 0.67    # 15 -> 10 pips
+    regime_trailing_distance_multiplier_ranging: float = 1.33     # 15 -> 20 pips
 
 
 class MovingAverageCrossover(Strategy):
@@ -190,6 +202,7 @@ class MovingAverageCrossover(Strategy):
         self._position_entry_price: Optional[Decimal] = None
         self._trailing_active: bool = False
         self._last_stop_price: Optional[Decimal] = None
+        self._last_regime: Optional[str] = None  # Track regime changes for logging
 
     @property
     def cfg(self) -> MovingAverageCrossoverConfig:
@@ -462,13 +475,72 @@ class MovingAverageCrossover(Strategy):
             return True
 
         # Get hour from bar timestamp (UTC)
+        # bar.ts_event represents the bar close time (end of bar period)
+        # For aggregated bars, ts_event might be the last minute bar's timestamp,
+        # so we need to calculate the actual bar close time based on bar type
         bar_time = datetime.fromtimestamp(bar.ts_event / 1e9, tz=timezone.utc)
-        current_hour = bar_time.hour
+        
+        # For aggregated bars, calculate the actual bar close time
+        # Parse bar type to get aggregation period (e.g., "15-MINUTE" -> 15 minutes)
+        bar_spec = bar.bar_type.spec.value if hasattr(bar.bar_type.spec, 'value') else str(bar.bar_type.spec)
+        bar_close_time = bar_time
+        
+        if 'MINUTE' in bar_spec.upper():
+            try:
+                # Extract minutes from bar spec (e.g., "15-MINUTE-MID-EXTERNAL" -> 15)
+                # Handle different formats: "15-MINUTE", "15M", etc.
+                bar_spec_upper = bar_spec.upper()
+                if '-MINUTE' in bar_spec_upper:
+                    minutes_str = bar_spec.split('-')[0]
+                elif 'M' in bar_spec_upper and not 'MINUTE' in bar_spec_upper:
+                    # Handle "15M" format
+                    minutes_str = bar_spec_upper.split('M')[0]
+                else:
+                    # Try to extract number from beginning
+                    match = re.match(r'(\d+)', bar_spec)
+                    if match:
+                        minutes_str = match.group(1)
+                    else:
+                        raise ValueError(f"Cannot parse bar minutes from: {bar_spec}")
+                
+                bar_minutes = int(minutes_str)
+                
+                # For aggregated bars, ts_event might be the last 1-minute bar's timestamp
+                # (e.g., 13:59:00 for a bar covering 13:45-14:00)
+                # We need to round up to the bar boundary (14:00:00)
+                current_minute = bar_time.minute
+                current_second = bar_time.second
+                
+                # Calculate the bar close time: round up to next bar boundary
+                # For a 15-minute bar, boundaries are at :00, :15, :30, :45
+                if current_minute % bar_minutes != 0 or current_second > 0:
+                    # Not aligned - round up to next boundary
+                    next_boundary_minute = ((current_minute // bar_minutes) + 1) * bar_minutes
+                    if next_boundary_minute >= 60:
+                        bar_close_time = bar_time.replace(hour=bar_time.hour + 1, minute=0, second=0, microsecond=0)
+                    else:
+                        bar_close_time = bar_time.replace(minute=next_boundary_minute, second=0, microsecond=0)
+                else:
+                    # Already aligned at bar boundary - ts_event is correct
+                    bar_close_time = bar_time.replace(second=0, microsecond=0)
+                    
+                # Log for debugging if we're adjusting the time
+                if bar_close_time.hour != bar_time.hour:
+                    self.log.debug(
+                        f"Time filter adjusted bar time: ts_event={bar_time.isoformat()} "
+                        f"-> bar_close={bar_close_time.isoformat()} (bar_minutes={bar_minutes})"
+                    )
+            except (ValueError, IndexError, AttributeError) as e:
+                # If parsing fails, use ts_event as-is but log warning
+                self.log.warning(f"Failed to parse bar spec '{bar_spec}' for time filter: {e}, using ts_event as-is")
+                bar_close_time = bar_time
+        
+        current_hour = bar_close_time.hour
 
         if current_hour in self.excluded_hours:
             self._log_rejected_signal(
                 "BUY",  # Direction doesn't matter for time filter
-                f"time_filter_excluded_hour (hour={current_hour:02d}:00 UTC is excluded)",
+                f"time_filter_excluded_hour (hour={current_hour:02d}:00 UTC is excluded, bar_close={bar_close_time.isoformat()}, ts_event={bar_time.isoformat()})",
                 bar
             )
             return False
@@ -667,11 +739,78 @@ class MovingAverageCrossover(Strategy):
             # For non-FX or other precisions, use the instrument's minimum tick/price increment
             return Decimal(str(self.instrument.price_increment))
 
-    def _calculate_sl_tp_prices(self, entry_price: Decimal, order_side: OrderSide) -> Tuple[Price, Price]:
-        """Calculate stop loss and take profit prices based on entry price and order side."""
+    def _detect_market_regime(self, bar: Bar) -> str:
+        """
+        Detect current market regime using ADX from DMI indicator.
+        
+        Returns:
+            'trending': Strong trend (ADX > threshold_strong)
+            'ranging': Weak/no trend (ADX < threshold_weak)
+            'moderate': Moderate trend (between thresholds)
+            'moderate': Default if DMI not initialized or regime detection disabled
+        """
+        if not self.cfg.regime_detection_enabled:
+            return 'moderate'  # Default if disabled
+        
+        if not self.dmi or not self.dmi.initialized:
+            return 'moderate'  # Default if DMI not ready
+        
+        # Get ADX value
+        adx_value = self.dmi.adx
+        
+        # Get thresholds from config
+        threshold_strong = self.cfg.regime_adx_trending_threshold
+        threshold_weak = self.cfg.regime_adx_ranging_threshold
+        
+        # Determine regime
+        if adx_value > threshold_strong:
+            regime = 'trending'
+        elif adx_value < threshold_weak:
+            regime = 'ranging'
+        else:
+            regime = 'moderate'
+        
+        # Log regime changes
+        if regime != self._last_regime:
+            self.log.info(
+                f"Market regime: {regime} (ADX={adx_value:.2f}, "
+                f"thresholds: strong>{threshold_strong}, weak<{threshold_weak})"
+            )
+            self._last_regime = regime
+        
+        return regime
+
+    def _calculate_sl_tp_prices(self, entry_price: Decimal, order_side: OrderSide, bar: Bar) -> Tuple[Price, Price]:
+        """
+        Calculate stop loss and take profit prices based on entry price and order side.
+        Adjusts TP/SL based on detected market regime if regime detection is enabled.
+        """
         pip_value = self._calculate_pip_value()
-        sl_pips = Decimal(str(self.cfg.stop_loss_pips))
-        tp_pips = Decimal(str(self.cfg.take_profit_pips))
+        
+        # Get base TP/SL from config
+        base_sl_pips = Decimal(str(self.cfg.stop_loss_pips))
+        base_tp_pips = Decimal(str(self.cfg.take_profit_pips))
+        
+        # Apply regime-based adjustments if enabled
+        if self.cfg.regime_detection_enabled:
+            regime = self._detect_market_regime(bar)
+            
+            if regime == 'trending':
+                # Trending: Wider TP to let trends run
+                tp_pips = base_tp_pips * Decimal(str(self.cfg.regime_tp_multiplier_trending))
+                sl_pips = base_sl_pips * Decimal(str(self.cfg.regime_sl_multiplier_trending))
+            elif regime == 'ranging':
+                # Ranging: Tighter TP to take profits quickly
+                tp_pips = base_tp_pips * Decimal(str(self.cfg.regime_tp_multiplier_ranging))
+                sl_pips = base_sl_pips * Decimal(str(self.cfg.regime_sl_multiplier_ranging))
+            else:
+                # Moderate: Use base values
+                tp_pips = base_tp_pips
+                sl_pips = base_sl_pips
+        else:
+            # No regime detection: use base values
+            tp_pips = base_tp_pips
+            sl_pips = base_sl_pips
         
         if order_side == OrderSide.BUY:
             # For BUY orders: SL below entry, TP above entry
@@ -720,15 +859,34 @@ class MovingAverageCrossover(Strategy):
         else:  # SHORT
             profit_pips = (self._position_entry_price - current_price) / pip_value
         
+        # Get regime-adjusted trailing parameters if enabled
+        if self.cfg.regime_detection_enabled:
+            regime = self._detect_market_regime(bar)
+            
+            if regime == 'trending':
+                # Trending: Lower activation (activate sooner), tighter distance
+                activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips)) * Decimal(str(self.cfg.regime_trailing_activation_multiplier_trending))
+                trailing_distance = Decimal(str(self.cfg.trailing_stop_distance_pips)) * Decimal(str(self.cfg.regime_trailing_distance_multiplier_trending))
+            elif regime == 'ranging':
+                # Ranging: Higher activation (wait for confirmation), wider distance
+                activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips)) * Decimal(str(self.cfg.regime_trailing_activation_multiplier_ranging))
+                trailing_distance = Decimal(str(self.cfg.trailing_stop_distance_pips)) * Decimal(str(self.cfg.regime_trailing_distance_multiplier_ranging))
+            else:
+                # Moderate: Use base values
+                activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips))
+                trailing_distance = Decimal(str(self.cfg.trailing_stop_distance_pips))
+        else:
+            # No regime detection: use base values
+            activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips))
+            trailing_distance = Decimal(str(self.cfg.trailing_stop_distance_pips))
+        
         # Check if we should activate trailing
-        activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips))
         if profit_pips >= activation_threshold and not self._trailing_active:
             self._trailing_active = True
-            self.log.info(f"Trailing stop activated at +{profit_pips:.1f} pips profit")
+            self.log.info(f"Trailing stop activated at +{profit_pips:.1f} pips profit (threshold={activation_threshold:.1f} pips)")
         
         # Update trailing stop if active
         if self._trailing_active:
-            trailing_distance = Decimal(str(self.cfg.trailing_stop_distance_pips))
             
             if position.side.name == "LONG":
                 new_stop = current_price - (trailing_distance * pip_value)
@@ -955,7 +1113,7 @@ class MovingAverageCrossover(Strategy):
                 if self._is_fx:
                     # Calculate SL/TP prices using bar close as entry reference for FX instruments
                     entry_price = Decimal(str(bar.close))
-                    sl_price, tp_price = self._calculate_sl_tp_prices(entry_price, OrderSide.BUY)
+                    sl_price, tp_price = self._calculate_sl_tp_prices(entry_price, OrderSide.BUY, bar)
                     
                     # Log SL/TP calculations
                     self.log.info(
@@ -1069,7 +1227,7 @@ class MovingAverageCrossover(Strategy):
                 if self._is_fx:
                     # Calculate SL/TP prices using bar close as entry reference for FX instruments
                     entry_price = Decimal(str(bar.close))
-                    sl_price, tp_price = self._calculate_sl_tp_prices(entry_price, OrderSide.SELL)
+                    sl_price, tp_price = self._calculate_sl_tp_prices(entry_price, OrderSide.SELL, bar)
                     
                     # Log SL/TP calculations
                     self.log.info(
@@ -1151,6 +1309,7 @@ class MovingAverageCrossover(Strategy):
         self._position_entry_price = None
         self._trailing_active = False
         self._last_stop_price = None
+        self._last_regime = None
         if self.dmi is not None:
             self.dmi.reset()
         if self.stoch is not None:

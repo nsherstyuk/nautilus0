@@ -35,6 +35,18 @@ class BacktestConfig:
     take_profit_pips: int = 50
     trailing_stop_activation_pips: int = 20
     trailing_stop_distance_pips: int = 15
+    # Market regime detection
+    regime_detection_enabled: bool = False
+    regime_adx_trending_threshold: float = 25.0
+    regime_adx_ranging_threshold: float = 20.0
+    regime_tp_multiplier_trending: float = 1.5
+    regime_tp_multiplier_ranging: float = 0.8
+    regime_sl_multiplier_trending: float = 1.0
+    regime_sl_multiplier_ranging: float = 1.0
+    regime_trailing_activation_multiplier_trending: float = 0.75
+    regime_trailing_activation_multiplier_ranging: float = 1.25
+    regime_trailing_distance_multiplier_trending: float = 0.67
+    regime_trailing_distance_multiplier_ranging: float = 1.33
     crossover_threshold_pips: float = 0.7
     # Trend filter
     trend_filter_enabled: bool = False
@@ -159,6 +171,20 @@ def get_backtest_config() -> BacktestConfig:
     take_profit_pips = _parse_int("BACKTEST_TAKE_PROFIT_PIPS", os.getenv("BACKTEST_TAKE_PROFIT_PIPS"), 50)
     trailing_stop_activation_pips = _parse_int("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS", os.getenv("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS"), 20)
     trailing_stop_distance_pips = _parse_int("BACKTEST_TRAILING_STOP_DISTANCE_PIPS", os.getenv("BACKTEST_TRAILING_STOP_DISTANCE_PIPS"), 15)
+    
+    # Market regime detection
+    regime_detection_enabled = os.getenv("STRATEGY_REGIME_DETECTION_ENABLED", "false").lower() in ("true", "1", "yes")
+    regime_adx_trending_threshold = _parse_float("STRATEGY_REGIME_ADX_TRENDING_THRESHOLD", os.getenv("STRATEGY_REGIME_ADX_TRENDING_THRESHOLD"), 25.0)
+    regime_adx_ranging_threshold = _parse_float("STRATEGY_REGIME_ADX_RANGING_THRESHOLD", os.getenv("STRATEGY_REGIME_ADX_RANGING_THRESHOLD"), 20.0)
+    regime_tp_multiplier_trending = _parse_float("STRATEGY_REGIME_TP_MULTIPLIER_TRENDING", os.getenv("STRATEGY_REGIME_TP_MULTIPLIER_TRENDING"), 1.5)
+    regime_tp_multiplier_ranging = _parse_float("STRATEGY_REGIME_TP_MULTIPLIER_RANGING", os.getenv("STRATEGY_REGIME_TP_MULTIPLIER_RANGING"), 0.8)
+    regime_sl_multiplier_trending = _parse_float("STRATEGY_REGIME_SL_MULTIPLIER_TRENDING", os.getenv("STRATEGY_REGIME_SL_MULTIPLIER_TRENDING"), 1.0)
+    regime_sl_multiplier_ranging = _parse_float("STRATEGY_REGIME_SL_MULTIPLIER_RANGING", os.getenv("STRATEGY_REGIME_SL_MULTIPLIER_RANGING"), 1.0)
+    regime_trailing_activation_multiplier_trending = _parse_float("STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_TRENDING", os.getenv("STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_TRENDING"), 0.75)
+    regime_trailing_activation_multiplier_ranging = _parse_float("STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_RANGING", os.getenv("STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_RANGING"), 1.25)
+    regime_trailing_distance_multiplier_trending = _parse_float("STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_TRENDING", os.getenv("STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_TRENDING"), 0.67)
+    regime_trailing_distance_multiplier_ranging = _parse_float("STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_RANGING", os.getenv("STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_RANGING"), 1.33)
+    
     crossover_threshold_pips = _parse_float(
         "STRATEGY_CROSSOVER_THRESHOLD_PIPS",
         os.getenv("STRATEGY_CROSSOVER_THRESHOLD_PIPS"),
@@ -392,6 +418,17 @@ def get_backtest_config() -> BacktestConfig:
         take_profit_pips=take_profit_pips,
         trailing_stop_activation_pips=trailing_stop_activation_pips,
         trailing_stop_distance_pips=trailing_stop_distance_pips,
+        regime_detection_enabled=regime_detection_enabled,
+        regime_adx_trending_threshold=regime_adx_trending_threshold,
+        regime_adx_ranging_threshold=regime_adx_ranging_threshold,
+        regime_tp_multiplier_trending=regime_tp_multiplier_trending,
+        regime_tp_multiplier_ranging=regime_tp_multiplier_ranging,
+        regime_sl_multiplier_trending=regime_sl_multiplier_trending,
+        regime_sl_multiplier_ranging=regime_sl_multiplier_ranging,
+        regime_trailing_activation_multiplier_trending=regime_trailing_activation_multiplier_trending,
+        regime_trailing_activation_multiplier_ranging=regime_trailing_activation_multiplier_ranging,
+        regime_trailing_distance_multiplier_trending=regime_trailing_distance_multiplier_trending,
+        regime_trailing_distance_multiplier_ranging=regime_trailing_distance_multiplier_ranging,
         crossover_threshold_pips=crossover_threshold_pips,
         trend_filter_enabled=trend_filter_enabled,
         trend_bar_spec=trend_bar_spec,

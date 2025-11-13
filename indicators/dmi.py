@@ -51,6 +51,7 @@ class DMI(Indicator):
         # Outputs
         self._plus_di: float = 0.0
         self._minus_di: float = 0.0
+        self._adx: float = 0.0  # Average Directional Index
 
         # State tracking
         # Number of raw samples collected (DM/TR observations), excludes the very first bar
@@ -124,6 +125,7 @@ class DMI(Indicator):
         if self._smoothed_tr is None or self._smoothed_tr == 0.0:
             self._plus_di = 0.0
             self._minus_di = 0.0
+            self._adx = 0.0
             return
 
         # Scale to 0-100
@@ -135,6 +137,13 @@ class DMI(Indicator):
             (self._smoothed_minus_dm if self._smoothed_minus_dm is not None else 0.0)
             / self._smoothed_tr
         )
+        
+        # Calculate ADX: 100 * |(+DI) - (-DI)| / ((+DI) + (-DI))
+        di_sum = self._plus_di + self._minus_di
+        if di_sum > 0:
+            self._adx = 100.0 * abs(self._plus_di - self._minus_di) / di_sum
+        else:
+            self._adx = 0.0
 
     def handle_quote_tick(self, tick) -> None:  # noqa: D401 - no-op
         # DMI only uses bar data
@@ -155,6 +164,7 @@ class DMI(Indicator):
 
         self._plus_di = 0.0
         self._minus_di = 0.0
+        self._adx = 0.0
 
         self._samples = 0
         self._prev_high = None
@@ -187,6 +197,11 @@ class DMI(Indicator):
     @property
     def minus_di(self) -> float:
         return self._minus_di
+
+    @property
+    def adx(self) -> float:
+        """Average Directional Index (ADX) - measures trend strength (0-100 scale)."""
+        return self._adx
 
     @property
     def is_bullish(self) -> bool:

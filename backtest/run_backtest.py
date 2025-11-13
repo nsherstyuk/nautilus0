@@ -257,6 +257,17 @@ def create_backtest_run_config(
     take_profit_pips: int,
     trailing_stop_activation_pips: int,
     trailing_stop_distance_pips: int,
+    regime_detection_enabled: bool,
+    regime_adx_trending_threshold: float,
+    regime_adx_ranging_threshold: float,
+    regime_tp_multiplier_trending: float,
+    regime_tp_multiplier_ranging: float,
+    regime_sl_multiplier_trending: float,
+    regime_sl_multiplier_ranging: float,
+    regime_trailing_activation_multiplier_trending: float,
+    regime_trailing_activation_multiplier_ranging: float,
+    regime_trailing_distance_multiplier_trending: float,
+    regime_trailing_distance_multiplier_ranging: float,
     *,
     # Strategy filter parameters (from env)
     crossover_threshold_pips: float,
@@ -394,6 +405,17 @@ def create_backtest_run_config(
             "take_profit_pips": take_profit_pips,
             "trailing_stop_activation_pips": trailing_stop_activation_pips,
             "trailing_stop_distance_pips": trailing_stop_distance_pips,
+            "regime_detection_enabled": regime_detection_enabled,
+            "regime_adx_trending_threshold": regime_adx_trending_threshold,
+            "regime_adx_ranging_threshold": regime_adx_ranging_threshold,
+            "regime_tp_multiplier_trending": regime_tp_multiplier_trending,
+            "regime_tp_multiplier_ranging": regime_tp_multiplier_ranging,
+            "regime_sl_multiplier_trending": regime_sl_multiplier_trending,
+            "regime_sl_multiplier_ranging": regime_sl_multiplier_ranging,
+            "regime_trailing_activation_multiplier_trending": regime_trailing_activation_multiplier_trending,
+            "regime_trailing_activation_multiplier_ranging": regime_trailing_activation_multiplier_ranging,
+            "regime_trailing_distance_multiplier_trending": regime_trailing_distance_multiplier_trending,
+            "regime_trailing_distance_multiplier_ranging": regime_trailing_distance_multiplier_ranging,
             # Filters
             "crossover_threshold_pips": crossover_threshold_pips,
             # Trend filter
@@ -475,6 +497,10 @@ def generate_reports(
     fills_df.to_csv(output_dir / "fills.csv", index=False)
     positions_df.to_csv(output_dir / "positions.csv", index=False)
     account_df.to_csv(output_dir / "account.csv", index=False)
+
+    # Generate statistical analysis report
+    if not positions_df.empty:
+        generate_statistical_analysis(positions_df, output_dir, logger)
 
     rejected_signals: List[Dict[str, Any]] = []
 
@@ -605,6 +631,19 @@ def generate_reports(
     env_lines.append(f"BACKTEST_TAKE_PROFIT_PIPS={config.take_profit_pips}")
     env_lines.append(f"BACKTEST_TRAILING_STOP_ACTIVATION_PIPS={config.trailing_stop_activation_pips}")
     env_lines.append(f"BACKTEST_TRAILING_STOP_DISTANCE_PIPS={config.trailing_stop_distance_pips}")
+    # Market regime detection
+    env_lines.append("# Market Regime Detection")
+    env_lines.append(f"STRATEGY_REGIME_DETECTION_ENABLED={str(config.regime_detection_enabled).lower()}")
+    env_lines.append(f"STRATEGY_REGIME_ADX_TRENDING_THRESHOLD={config.regime_adx_trending_threshold}")
+    env_lines.append(f"STRATEGY_REGIME_ADX_RANGING_THRESHOLD={config.regime_adx_ranging_threshold}")
+    env_lines.append(f"STRATEGY_REGIME_TP_MULTIPLIER_TRENDING={config.regime_tp_multiplier_trending}")
+    env_lines.append(f"STRATEGY_REGIME_TP_MULTIPLIER_RANGING={config.regime_tp_multiplier_ranging}")
+    env_lines.append(f"STRATEGY_REGIME_SL_MULTIPLIER_TRENDING={config.regime_sl_multiplier_trending}")
+    env_lines.append(f"STRATEGY_REGIME_SL_MULTIPLIER_RANGING={config.regime_sl_multiplier_ranging}")
+    env_lines.append(f"STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_TRENDING={config.regime_trailing_activation_multiplier_trending}")
+    env_lines.append(f"STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_RANGING={config.regime_trailing_activation_multiplier_ranging}")
+    env_lines.append(f"STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_TRENDING={config.regime_trailing_distance_multiplier_trending}")
+    env_lines.append(f"STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_RANGING={config.regime_trailing_distance_multiplier_ranging}")
     env_lines.append("")
     
     # Strategy filters
@@ -673,6 +712,287 @@ def generate_reports(
     logger.info("Environment configuration saved to: %s", env_file_path)
 
     return stats
+
+
+def generate_statistical_analysis(
+    positions_df: pd.DataFrame,
+    output_dir: Path,
+    logger: logging.Logger,
+) -> None:
+    """
+    Generate comprehensive statistical analysis report for trading hours, weekdays, and months.
+    
+    Creates:
+    - trading_hours_analysis.txt: Comprehensive text report
+    - hourly_pnl_overall.csv: PnL statistics by hour (overall)
+    - hourly_pnl_by_weekday.csv: PnL statistics by hour and weekday
+    - weekday_pnl_overall.csv: PnL statistics by weekday (overall)
+    - weekday_pnl_by_month.csv: PnL statistics by weekday and month
+    - monthly_pnl_analysis.csv: PnL statistics by month
+    """
+    try:
+        # Parse timestamps and extract PnL
+        if 'ts_opened' not in positions_df.columns:
+            logger.warning("positions_df missing 'ts_opened' column, skipping statistical analysis")
+            return
+        
+        if 'realized_pnl' not in positions_df.columns:
+            logger.warning("positions_df missing 'realized_pnl' column, skipping statistical analysis")
+            return
+        
+        pos = positions_df.copy()
+        pos['ts_opened'] = pd.to_datetime(pos['ts_opened'])
+        
+        # Extract PnL value (handle different formats)
+        if pos['realized_pnl'].dtype == 'object':
+            pos['pnl_value'] = pos['realized_pnl'].str.replace(' USD', '', regex=False).str.replace('USD', '', regex=False).str.strip().astype(float)
+        else:
+            pos['pnl_value'] = pos['realized_pnl'].astype(float)
+        
+        pos['hour'] = pos['ts_opened'].dt.hour
+        pos['weekday'] = pos['ts_opened'].dt.day_name()
+        pos['month'] = pos['ts_opened'].dt.to_period('M').astype(str)
+        pos['date'] = pos['ts_opened'].dt.date
+        
+        # ============================================================================
+        # 1. HOURLY PnL ANALYSIS (OVERALL)
+        # ============================================================================
+        hourly_overall = pos.groupby('hour').agg({
+            'pnl_value': ['sum', 'mean', 'count', 'std']
+        }).reset_index()
+        hourly_overall.columns = ['hour', 'total_pnl', 'avg_pnl', 'trade_count', 'std_pnl']
+        # Calculate wins/losses correctly - merge to ensure all hours are included
+        wins_df = pos[pos['pnl_value'] > 0].groupby('hour').size().reset_index(name='wins')
+        losses_df = pos[pos['pnl_value'] < 0].groupby('hour').size().reset_index(name='losses')
+        hourly_overall = hourly_overall.merge(wins_df, on='hour', how='left')
+        hourly_overall = hourly_overall.merge(losses_df, on='hour', how='left')
+        hourly_overall['wins'] = hourly_overall['wins'].fillna(0).astype(int)
+        hourly_overall['losses'] = hourly_overall['losses'].fillna(0).astype(int)
+        hourly_overall['win_rate'] = (hourly_overall['wins'] / hourly_overall['trade_count'] * 100).round(1)
+        hourly_overall['std_pnl'] = hourly_overall['std_pnl'].fillna(0)
+        hourly_overall = hourly_overall.sort_values('hour')
+        hourly_overall.to_csv(output_dir / "hourly_pnl_overall.csv", index=False)
+        
+        # ============================================================================
+        # 2. HOURLY PnL BY WEEKDAY (OVERALL)
+        # ============================================================================
+        hourly_weekday = pos.groupby(['hour', 'weekday']).agg({
+            'pnl_value': ['sum', 'mean', 'count', 'std']
+        }).reset_index()
+        hourly_weekday.columns = ['hour', 'weekday', 'total_pnl', 'avg_pnl', 'trade_count', 'std_pnl']
+        # Calculate wins/losses correctly
+        wins_df = pos[pos['pnl_value'] > 0].groupby(['hour', 'weekday']).size().reset_index(name='wins')
+        losses_df = pos[pos['pnl_value'] < 0].groupby(['hour', 'weekday']).size().reset_index(name='losses')
+        hourly_weekday = hourly_weekday.merge(wins_df, on=['hour', 'weekday'], how='left')
+        hourly_weekday = hourly_weekday.merge(losses_df, on=['hour', 'weekday'], how='left')
+        hourly_weekday['wins'] = hourly_weekday['wins'].fillna(0).astype(int)
+        hourly_weekday['losses'] = hourly_weekday['losses'].fillna(0).astype(int)
+        hourly_weekday['win_rate'] = (hourly_weekday['wins'] / hourly_weekday['trade_count'] * 100).round(1)
+        hourly_weekday['std_pnl'] = hourly_weekday['std_pnl'].fillna(0)
+        hourly_weekday = hourly_weekday.sort_values(['weekday', 'hour'])
+        hourly_weekday.to_csv(output_dir / "hourly_pnl_by_weekday.csv", index=False)
+        
+        # ============================================================================
+        # 3. WEEKDAY PnL ANALYSIS (OVERALL)
+        # ============================================================================
+        weekday_overall = pos.groupby('weekday').agg({
+            'pnl_value': ['sum', 'mean', 'count', 'std']
+        }).reset_index()
+        weekday_overall.columns = ['weekday', 'total_pnl', 'avg_pnl', 'trade_count', 'std_pnl']
+        # Calculate wins/losses correctly - merge to ensure all weekdays are included
+        wins_df = pos[pos['pnl_value'] > 0].groupby('weekday').size().reset_index(name='wins')
+        losses_df = pos[pos['pnl_value'] < 0].groupby('weekday').size().reset_index(name='losses')
+        weekday_overall = weekday_overall.merge(wins_df, on='weekday', how='left')
+        weekday_overall = weekday_overall.merge(losses_df, on='weekday', how='left')
+        weekday_overall['wins'] = weekday_overall['wins'].fillna(0).astype(int)
+        weekday_overall['losses'] = weekday_overall['losses'].fillna(0).astype(int)
+        weekday_overall['win_rate'] = (weekday_overall['wins'] / weekday_overall['trade_count'] * 100).round(1)
+        weekday_overall['std_pnl'] = weekday_overall['std_pnl'].fillna(0)
+        # Order by weekday (Monday to Sunday)
+        weekday_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        weekday_overall['weekday'] = pd.Categorical(weekday_overall['weekday'], categories=weekday_order, ordered=True)
+        weekday_overall = weekday_overall.sort_values('weekday')
+        weekday_overall.to_csv(output_dir / "weekday_pnl_overall.csv", index=False)
+        
+        # ============================================================================
+        # 4. WEEKDAY PnL BY MONTH
+        # ============================================================================
+        weekday_month = pos.groupby(['month', 'weekday']).agg({
+            'pnl_value': ['sum', 'mean', 'count', 'std']
+        }).reset_index()
+        weekday_month.columns = ['month', 'weekday', 'total_pnl', 'avg_pnl', 'trade_count', 'std_pnl']
+        # Calculate wins/losses correctly
+        wins_df = pos[pos['pnl_value'] > 0].groupby(['month', 'weekday']).size().reset_index(name='wins')
+        losses_df = pos[pos['pnl_value'] < 0].groupby(['month', 'weekday']).size().reset_index(name='losses')
+        weekday_month = weekday_month.merge(wins_df, on=['month', 'weekday'], how='left')
+        weekday_month = weekday_month.merge(losses_df, on=['month', 'weekday'], how='left')
+        weekday_month['wins'] = weekday_month['wins'].fillna(0).astype(int)
+        weekday_month['losses'] = weekday_month['losses'].fillna(0).astype(int)
+        weekday_month['win_rate'] = (weekday_month['wins'] / weekday_month['trade_count'] * 100).round(1)
+        weekday_month['std_pnl'] = weekday_month['std_pnl'].fillna(0)
+        weekday_month['weekday'] = pd.Categorical(weekday_month['weekday'], categories=weekday_order, ordered=True)
+        weekday_month = weekday_month.sort_values(['month', 'weekday'])
+        weekday_month.to_csv(output_dir / "weekday_pnl_by_month.csv", index=False)
+        
+        # ============================================================================
+        # 5. MONTHLY PnL ANALYSIS
+        # ============================================================================
+        monthly = pos.groupby('month').agg({
+            'pnl_value': ['sum', 'mean', 'count', 'std']
+        }).reset_index()
+        monthly.columns = ['month', 'total_pnl', 'avg_pnl', 'trade_count', 'std_pnl']
+        # Calculate wins/losses correctly - merge to ensure all months are included
+        wins_df = pos[pos['pnl_value'] > 0].groupby('month').size().reset_index(name='wins')
+        losses_df = pos[pos['pnl_value'] < 0].groupby('month').size().reset_index(name='losses')
+        monthly = monthly.merge(wins_df, on='month', how='left')
+        monthly = monthly.merge(losses_df, on='month', how='left')
+        monthly['wins'] = monthly['wins'].fillna(0).astype(int)
+        monthly['losses'] = monthly['losses'].fillna(0).astype(int)
+        monthly['win_rate'] = (monthly['wins'] / monthly['trade_count'] * 100).round(1)
+        monthly['std_pnl'] = monthly['std_pnl'].fillna(0)
+        monthly = monthly.sort_values('month')
+        monthly.to_csv(output_dir / "monthly_pnl_analysis.csv", index=False)
+        
+        # ============================================================================
+        # GENERATE COMPREHENSIVE TEXT REPORT
+        # ============================================================================
+        report_lines = []
+        report_lines.append("=" * 100)
+        report_lines.append("TRADING STATISTICAL ANALYSIS REPORT")
+        report_lines.append("=" * 100)
+        report_lines.append(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        report_lines.append(f"Total Trades: {len(pos)}")
+        report_lines.append(f"Total PnL: ${pos['pnl_value'].sum():.2f}")
+        report_lines.append(f"Average PnL per Trade: ${pos['pnl_value'].mean():.2f}")
+        report_lines.append(f"Overall Win Rate: {(pos['pnl_value'] > 0).sum() / len(pos) * 100:.1f}%")
+        report_lines.append(f"Winning Trades: {(pos['pnl_value'] > 0).sum()}")
+        report_lines.append(f"Losing Trades: {(pos['pnl_value'] < 0).sum()}")
+        if (pos['pnl_value'] > 0).sum() > 0:
+            report_lines.append(f"Average Win: ${pos[pos['pnl_value'] > 0]['pnl_value'].mean():.2f}")
+        if (pos['pnl_value'] < 0).sum() > 0:
+            report_lines.append(f"Average Loss: ${pos[pos['pnl_value'] < 0]['pnl_value'].mean():.2f}")
+        report_lines.append("")
+        
+        # HOURLY ANALYSIS (OVERALL)
+        report_lines.append("=" * 100)
+        report_lines.append("1. TRADING HOURS PROFITABILITY (OVERALL - UTC)")
+        report_lines.append("=" * 100)
+        report_lines.append(f"{'Hour':<6} {'Trades':<8} {'Total PnL':<15} {'Avg PnL':<15} {'Win Rate':<12} {'Wins':<8} {'Losses':<8}")
+        report_lines.append("-" * 100)
+        for _, row in hourly_overall.iterrows():
+            win_rate_str = f"{row['win_rate']:.1f}%" if pd.notna(row['win_rate']) else "N/A"
+            report_lines.append(
+                f"{row['hour']:<6} {row['trade_count']:<8} ${row['total_pnl']:>13.2f}  "
+                f"${row['avg_pnl']:>13.2f}  {win_rate_str:>10}  {row['wins']:<8} {row['losses']:<8}"
+            )
+        
+        report_lines.append("\nBest Performing Hours (Top 10):")
+        report_lines.append(f"{'Hour':<6} {'Trades':<8} {'Total PnL':<15} {'Avg PnL':<15} {'Win Rate':<12}")
+        report_lines.append("-" * 60)
+        for _, row in hourly_overall.nlargest(10, 'total_pnl').iterrows():
+            win_rate_str = f"{row['win_rate']:.1f}%" if pd.notna(row['win_rate']) else "N/A"
+            report_lines.append(
+                f"{row['hour']:<6} {row['trade_count']:<8} ${row['total_pnl']:>13.2f}  "
+                f"${row['avg_pnl']:>13.2f}  {win_rate_str:>10}"
+            )
+        
+        report_lines.append("\nWorst Performing Hours (Bottom 10):")
+        report_lines.append(f"{'Hour':<6} {'Trades':<8} {'Total PnL':<15} {'Avg PnL':<15} {'Win Rate':<12}")
+        report_lines.append("-" * 60)
+        for _, row in hourly_overall.nsmallest(10, 'total_pnl').iterrows():
+            win_rate_str = f"{row['win_rate']:.1f}%" if pd.notna(row['win_rate']) else "N/A"
+            report_lines.append(
+                f"{row['hour']:<6} {row['trade_count']:<8} ${row['total_pnl']:>13.2f}  "
+                f"${row['avg_pnl']:>13.2f}  {win_rate_str:>10}"
+            )
+        
+        # HOURLY BY WEEKDAY
+        report_lines.append("\n" + "=" * 100)
+        report_lines.append("2. TRADING HOURS PROFITABILITY BY WEEKDAY (OVERALL)")
+        report_lines.append("=" * 100)
+        for weekday in weekday_order:
+            weekday_hours = hourly_weekday[hourly_weekday['weekday'] == weekday]
+            if not weekday_hours.empty:
+                report_lines.append(f"\n{weekday}:")
+                report_lines.append(f"{'Hour':<6} {'Trades':<8} {'Total PnL':<15} {'Avg PnL':<15} {'Win Rate':<12}")
+                report_lines.append("-" * 60)
+                for _, row in weekday_hours.sort_values('hour').iterrows():
+                    win_rate_str = f"{row['win_rate']:.1f}%" if pd.notna(row['win_rate']) else "N/A"
+                    report_lines.append(
+                        f"{row['hour']:<6} {row['trade_count']:<8} ${row['total_pnl']:>13.2f}  "
+                        f"${row['avg_pnl']:>13.2f}  {win_rate_str:>10}"
+                    )
+        
+        # WEEKDAY OVERALL
+        report_lines.append("\n" + "=" * 100)
+        report_lines.append("3. WEEKDAY PROFITABILITY (OVERALL)")
+        report_lines.append("=" * 100)
+        report_lines.append(f"{'Weekday':<12} {'Trades':<8} {'Total PnL':<15} {'Avg PnL':<15} {'Win Rate':<12} {'Wins':<8} {'Losses':<8}")
+        report_lines.append("-" * 100)
+        for _, row in weekday_overall.iterrows():
+            win_rate_str = f"{row['win_rate']:.1f}%" if pd.notna(row['win_rate']) else "N/A"
+            report_lines.append(
+                f"{row['weekday']:<12} {row['trade_count']:<8} ${row['total_pnl']:>13.2f}  "
+                f"${row['avg_pnl']:>13.2f}  {win_rate_str:>10}  {row['wins']:<8} {row['losses']:<8}"
+            )
+        
+        # WEEKDAY BY MONTH
+        report_lines.append("\n" + "=" * 100)
+        report_lines.append("4. WEEKDAY PROFITABILITY BY MONTH")
+        report_lines.append("=" * 100)
+        for month in sorted(weekday_month['month'].unique()):
+            month_data = weekday_month[weekday_month['month'] == month]
+            if not month_data.empty:
+                report_lines.append(f"\n{month}:")
+                report_lines.append(f"{'Weekday':<12} {'Trades':<8} {'Total PnL':<15} {'Avg PnL':<15} {'Win Rate':<12}")
+                report_lines.append("-" * 60)
+                for _, row in month_data.iterrows():
+                    win_rate_str = f"{row['win_rate']:.1f}%" if pd.notna(row['win_rate']) else "N/A"
+                    report_lines.append(
+                        f"{row['weekday']:<12} {row['trade_count']:<8} ${row['total_pnl']:>13.2f}  "
+                        f"${row['avg_pnl']:>13.2f}  {win_rate_str:>10}"
+                    )
+        
+        # MONTHLY ANALYSIS
+        report_lines.append("\n" + "=" * 100)
+        report_lines.append("5. MONTHLY PnL STATISTICS")
+        report_lines.append("=" * 100)
+        report_lines.append(f"{'Month':<12} {'Trades':<8} {'Total PnL':<15} {'Avg PnL':<15} {'Win Rate':<12} {'Wins':<8} {'Losses':<8}")
+        report_lines.append("-" * 100)
+        for _, row in monthly.iterrows():
+            win_rate_str = f"{row['win_rate']:.1f}%" if pd.notna(row['win_rate']) else "N/A"
+            report_lines.append(
+                f"{row['month']:<12} {row['trade_count']:<8} ${row['total_pnl']:>13.2f}  "
+                f"${row['avg_pnl']:>13.2f}  {win_rate_str:>10}  {row['wins']:<8} {row['losses']:<8}"
+            )
+        
+        report_lines.append("\nBest Performing Months:")
+        report_lines.append(f"{'Month':<12} {'Trades':<8} {'Total PnL':<15} {'Avg PnL':<15} {'Win Rate':<12}")
+        report_lines.append("-" * 60)
+        for _, row in monthly.nlargest(5, 'total_pnl').iterrows():
+            win_rate_str = f"{row['win_rate']:.1f}%" if pd.notna(row['win_rate']) else "N/A"
+            report_lines.append(
+                f"{row['month']:<12} {row['trade_count']:<8} ${row['total_pnl']:>13.2f}  "
+                f"${row['avg_pnl']:>13.2f}  {win_rate_str:>10}"
+            )
+        
+        report_lines.append("\nWorst Performing Months:")
+        report_lines.append(f"{'Month':<12} {'Trades':<8} {'Total PnL':<15} {'Avg PnL':<15} {'Win Rate':<12}")
+        report_lines.append("-" * 60)
+        for _, row in monthly.nsmallest(5, 'total_pnl').iterrows():
+            win_rate_str = f"{row['win_rate']:.1f}%" if pd.notna(row['win_rate']) else "N/A"
+            report_lines.append(
+                f"{row['month']:<12} {row['trade_count']:<8} ${row['total_pnl']:>13.2f}  "
+                f"${row['avg_pnl']:>13.2f}  {win_rate_str:>10}"
+            )
+        
+        # Write report
+        report_path = output_dir / "trading_hours_analysis.txt"
+        report_path.write_text("\n".join(report_lines), encoding="utf-8")
+        logger.info("Statistical analysis report generated: %s", report_path)
+        
+    except Exception as e:
+        logger.error("Failed to generate statistical analysis: %s", e, exc_info=True)
 
 
 async def main() -> int:
@@ -827,6 +1147,17 @@ async def main() -> int:
         take_profit_pips=cfg.take_profit_pips,
         trailing_stop_activation_pips=cfg.trailing_stop_activation_pips,
         trailing_stop_distance_pips=cfg.trailing_stop_distance_pips,
+        regime_detection_enabled=cfg.regime_detection_enabled,
+        regime_adx_trending_threshold=cfg.regime_adx_trending_threshold,
+        regime_adx_ranging_threshold=cfg.regime_adx_ranging_threshold,
+        regime_tp_multiplier_trending=cfg.regime_tp_multiplier_trending,
+        regime_tp_multiplier_ranging=cfg.regime_tp_multiplier_ranging,
+        regime_sl_multiplier_trending=cfg.regime_sl_multiplier_trending,
+        regime_sl_multiplier_ranging=cfg.regime_sl_multiplier_ranging,
+        regime_trailing_activation_multiplier_trending=cfg.regime_trailing_activation_multiplier_trending,
+        regime_trailing_activation_multiplier_ranging=cfg.regime_trailing_activation_multiplier_ranging,
+        regime_trailing_distance_multiplier_trending=cfg.regime_trailing_distance_multiplier_trending,
+        regime_trailing_distance_multiplier_ranging=cfg.regime_trailing_distance_multiplier_ranging,
         crossover_threshold_pips=cfg.crossover_threshold_pips,
         trend_filter_enabled=cfg.trend_filter_enabled,
         trend_bar_spec=cfg.trend_bar_spec,
