@@ -1,0 +1,13 @@
+{
+  "description": "TP/SL optimization to improve win rate while maintaining good PnL",
+  "note": "Testing tighter TP (3.5-4.25) and wider SL (1.2-1.5) combinations",
+  "parameters": {
+    "BACKTEST_ADAPTIVE_STOP_MODE": ["percentile"],
+    "BACKTEST_TP_ATR_MULT": [3.5, 3.75, 4.0, 4.25],
+    "BACKTEST_SL_ATR_MULT": [1.2, 1.3, 1.4, 1.5],
+    "BACKTEST_TRAIL_ACTIVATION_ATR_MULT": [0.8],
+    "BACKTEST_TRAIL_DISTANCE_ATR_MULT": [0.6],
+    "BACKTEST_VOLATILITY_WINDOW": [200],
+    "BACKTEST_VOLATILITY_SENSITIVITY": [0.6]
+  }
+}

@@ -35,6 +35,16 @@ class BacktestConfig:
     take_profit_pips: int = 50
     trailing_stop_activation_pips: int = 20
     trailing_stop_distance_pips: int = 15
+    # Adaptive stops configuration
+    adaptive_stop_mode: str = "atr"  # 'fixed' | 'atr' | 'percentile'
+    adaptive_atr_period: int = 14
+    tp_atr_mult: float = 2.5
+    sl_atr_mult: float = 1.5
+    trail_activation_atr_mult: float = 1.0
+    trail_distance_atr_mult: float = 0.8
+    volatility_window: int = 200
+    volatility_sensitivity: float = 0.6
+    min_stop_distance_pips: float = 5.0  # Minimum stop distance to avoid spread/noise
     # Market regime detection
     regime_detection_enabled: bool = False
     regime_adx_trending_threshold: float = 25.0
@@ -171,6 +181,17 @@ def get_backtest_config() -> BacktestConfig:
     take_profit_pips = _parse_int("BACKTEST_TAKE_PROFIT_PIPS", os.getenv("BACKTEST_TAKE_PROFIT_PIPS"), 50)
     trailing_stop_activation_pips = _parse_int("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS", os.getenv("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS"), 20)
     trailing_stop_distance_pips = _parse_int("BACKTEST_TRAILING_STOP_DISTANCE_PIPS", os.getenv("BACKTEST_TRAILING_STOP_DISTANCE_PIPS"), 15)
+    
+    # Adaptive stops configuration
+    adaptive_stop_mode = os.getenv("BACKTEST_ADAPTIVE_STOP_MODE", "atr")  # 'fixed' | 'atr' | 'percentile'
+    adaptive_atr_period = _parse_int("BACKTEST_ADAPTIVE_ATR_PERIOD", os.getenv("BACKTEST_ADAPTIVE_ATR_PERIOD"), 14)
+    tp_atr_mult = _parse_float("BACKTEST_TP_ATR_MULT", os.getenv("BACKTEST_TP_ATR_MULT"), 2.5)
+    sl_atr_mult = _parse_float("BACKTEST_SL_ATR_MULT", os.getenv("BACKTEST_SL_ATR_MULT"), 1.5)
+    trail_activation_atr_mult = _parse_float("BACKTEST_TRAIL_ACTIVATION_ATR_MULT", os.getenv("BACKTEST_TRAIL_ACTIVATION_ATR_MULT"), 1.0)
+    trail_distance_atr_mult = _parse_float("BACKTEST_TRAIL_DISTANCE_ATR_MULT", os.getenv("BACKTEST_TRAIL_DISTANCE_ATR_MULT"), 0.8)
+    volatility_window = _parse_int("BACKTEST_VOLATILITY_WINDOW", os.getenv("BACKTEST_VOLATILITY_WINDOW"), 200)
+    volatility_sensitivity = _parse_float("BACKTEST_VOLATILITY_SENSITIVITY", os.getenv("BACKTEST_VOLATILITY_SENSITIVITY"), 0.6)
+    min_stop_distance_pips = _parse_float("BACKTEST_MIN_STOP_DISTANCE_PIPS", os.getenv("BACKTEST_MIN_STOP_DISTANCE_PIPS"), 5.0)
     
     # Market regime detection
     regime_detection_enabled = os.getenv("STRATEGY_REGIME_DETECTION_ENABLED", "false").lower() in ("true", "1", "yes")
@@ -418,6 +439,15 @@ def get_backtest_config() -> BacktestConfig:
         take_profit_pips=take_profit_pips,
         trailing_stop_activation_pips=trailing_stop_activation_pips,
         trailing_stop_distance_pips=trailing_stop_distance_pips,
+        adaptive_stop_mode=adaptive_stop_mode,
+        adaptive_atr_period=adaptive_atr_period,
+        tp_atr_mult=tp_atr_mult,
+        sl_atr_mult=sl_atr_mult,
+        trail_activation_atr_mult=trail_activation_atr_mult,
+        trail_distance_atr_mult=trail_distance_atr_mult,
+        volatility_window=volatility_window,
+        volatility_sensitivity=volatility_sensitivity,
+        min_stop_distance_pips=min_stop_distance_pips,
         regime_detection_enabled=regime_detection_enabled,
         regime_adx_trending_threshold=regime_adx_trending_threshold,
         regime_adx_ranging_threshold=regime_adx_ranging_threshold,

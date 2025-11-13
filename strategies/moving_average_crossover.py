@@ -48,6 +48,16 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     take_profit_pips: int = 50
     trailing_stop_activation_pips: int = 20
     trailing_stop_distance_pips: int = 15
+    # Adaptive stops configuration
+    adaptive_stop_mode: str = "atr"  # 'fixed' | 'atr' | 'percentile'
+    adaptive_atr_period: int = 14
+    tp_atr_mult: float = 2.5
+    sl_atr_mult: float = 1.5
+    trail_activation_atr_mult: float = 1.0
+    trail_distance_atr_mult: float = 0.8
+    volatility_window: int = 200
+    volatility_sensitivity: float = 0.6
+    min_stop_distance_pips: float = 5.0
     crossover_threshold_pips: float = 0.7
     dmi_enabled: bool = True
     dmi_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
@@ -783,43 +793,112 @@ class MovingAverageCrossover(Strategy):
     def _calculate_sl_tp_prices(self, entry_price: Decimal, order_side: OrderSide, bar: Bar) -> Tuple[Price, Price]:
         """
         Calculate stop loss and take profit prices based on entry price and order side.
-        Adjusts TP/SL based on detected market regime if regime detection is enabled.
+        Uses adaptive stops (ATR-based) if enabled, otherwise falls back to fixed pips.
+        Also adjusts TP/SL based on detected market regime if regime detection is enabled.
         """
+        from strategies.adaptive_stops import compute_adaptive_levels, get_bars_dataframe
+        
         pip_value = self._calculate_pip_value()
         
-        # Get base TP/SL from config
-        base_sl_pips = Decimal(str(self.cfg.stop_loss_pips))
-        base_tp_pips = Decimal(str(self.cfg.take_profit_pips))
+        # Determine if we should use adaptive stops
+        use_adaptive = self.cfg.adaptive_stop_mode in ('atr', 'percentile')
         
-        # Apply regime-based adjustments if enabled
-        if self.cfg.regime_detection_enabled:
-            regime = self._detect_market_regime(bar)
+        self.log.info(f"[ADAPTIVE_DEBUG] Mode: {self.cfg.adaptive_stop_mode}, use_adaptive: {use_adaptive}")
+        
+        if use_adaptive:
+            # Try to compute adaptive levels
+            # Get historical bars for ATR calculation
+            bars_list = self.cache.bars(self.bar_type)
+            self.log.info(f"[ADAPTIVE_DEBUG] Retrieved {len(list(bars_list)) if bars_list else 0} bars from cache")
+            bars_df = get_bars_dataframe(list(bars_list) if bars_list else [], 
+                                         lookback=max(300, self.cfg.volatility_window + 50))
             
-            if regime == 'trending':
-                # Trending: Wider TP to let trends run
-                tp_pips = base_tp_pips * Decimal(str(self.cfg.regime_tp_multiplier_trending))
-                sl_pips = base_sl_pips * Decimal(str(self.cfg.regime_sl_multiplier_trending))
-            elif regime == 'ranging':
-                # Ranging: Tighter TP to take profits quickly
-                tp_pips = base_tp_pips * Decimal(str(self.cfg.regime_tp_multiplier_ranging))
-                sl_pips = base_sl_pips * Decimal(str(self.cfg.regime_sl_multiplier_ranging))
+            if bars_df is not None and len(bars_df) >= self.cfg.adaptive_atr_period + 1:
+                # Prepare config for adaptive calculation
+                adaptive_cfg = {
+                    'mode': self.cfg.adaptive_stop_mode,
+                    'atr_period': self.cfg.adaptive_atr_period,
+                    'tp_atr_mult': self.cfg.tp_atr_mult,
+                    'sl_atr_mult': self.cfg.sl_atr_mult,
+                    'trail_activation_atr_mult': self.cfg.trail_activation_atr_mult,
+                    'trail_distance_atr_mult': self.cfg.trail_distance_atr_mult,
+                    'volatility_window': self.cfg.volatility_window,
+                    'volatility_sensitivity': self.cfg.volatility_sensitivity,
+                    'min_distance_pips': self.cfg.min_stop_distance_pips
+                }
+                
+                # Compute adaptive levels
+                self.log.info(f"[ADAPTIVE_DEBUG] Calling compute_adaptive_levels with mode={adaptive_cfg['mode']}")
+                levels = compute_adaptive_levels(bars_df, entry_price, adaptive_cfg, fallback_pips=None)
+                self.log.info(f"[ADAPTIVE_DEBUG] Returned mode={levels['mode']}, sl_distance={levels['sl_distance']}, atr={levels.get('atr')}")
+                
+                if levels['mode'] != 'fixed' and levels['sl_distance'] is not None:
+                    # Successfully computed adaptive levels
+                    sl_distance = levels['sl_distance']
+                    tp_distance = levels['tp_distance']
+                    
+                    # Log adaptive calculation details
+                    if levels.get('atr'):
+                        atr_pips = levels['atr'] / pip_value
+                        self.log.info(
+                            f"[ADAPTIVE_APPLIED] ATR={atr_pips:.2f} pips, mode={levels['mode']}, "
+                            f"SL={sl_distance/pip_value:.1f} pips, TP={tp_distance/pip_value:.1f} pips"
+                        )
+                        if levels.get('volatility_percentile'):
+                            self.log.debug(
+                                f"Volatility: percentile={levels['volatility_percentile']:.1f}%, "
+                                f"scale={levels['volatility_scale']:.2f}"
+                            )
+                else:
+                    # Adaptive calculation failed, use fixed fallback
+                    use_adaptive = False
+                    self.log.warning(f"[ADAPTIVE_FALLBACK] Calculation returned fixed mode, using fallback")
             else:
-                # Moderate: Use base values
+                # Not enough bars for ATR, use fixed fallback
+                use_adaptive = False
+                self.log.warning(f"[ADAPTIVE_FALLBACK] Insufficient bars (have {len(bars_df) if bars_df is not None else 0}, need {self.cfg.adaptive_atr_period}+)")
+        
+        # Fallback to fixed pip-based calculation
+        if not use_adaptive:
+            self.log.info(f"[ADAPTIVE_FALLBACK] Using fixed pips: SL={self.cfg.stop_loss_pips}, TP={self.cfg.take_profit_pips}")
+            # Get base TP/SL from config
+            base_sl_pips = Decimal(str(self.cfg.stop_loss_pips))
+            base_tp_pips = Decimal(str(self.cfg.take_profit_pips))
+            
+            # Apply regime-based adjustments if enabled
+            if self.cfg.regime_detection_enabled:
+                regime = self._detect_market_regime(bar)
+                
+                if regime == 'trending':
+                    # Trending: Wider TP to let trends run
+                    tp_pips = base_tp_pips * Decimal(str(self.cfg.regime_tp_multiplier_trending))
+                    sl_pips = base_sl_pips * Decimal(str(self.cfg.regime_sl_multiplier_trending))
+                elif regime == 'ranging':
+                    # Ranging: Tighter TP to take profits quickly
+                    tp_pips = base_tp_pips * Decimal(str(self.cfg.regime_tp_multiplier_ranging))
+                    sl_pips = base_sl_pips * Decimal(str(self.cfg.regime_sl_multiplier_ranging))
+                else:
+                    # Moderate: Use base values
+                    tp_pips = base_tp_pips
+                    sl_pips = base_sl_pips
+            else:
+                # No regime detection: use base values
                 tp_pips = base_tp_pips
                 sl_pips = base_sl_pips
-        else:
-            # No regime detection: use base values
-            tp_pips = base_tp_pips
-            sl_pips = base_sl_pips
+            
+            # Convert pips to price distances
+            sl_distance = sl_pips * pip_value
+            tp_distance = tp_pips * pip_value
         
+        # Calculate actual SL/TP prices based on order side
         if order_side == OrderSide.BUY:
             # For BUY orders: SL below entry, TP above entry
-            sl_price = entry_price - (sl_pips * pip_value)
-            tp_price = entry_price + (tp_pips * pip_value)
+            sl_price = entry_price - sl_distance
+            tp_price = entry_price + tp_distance
         else:
             # For SELL orders: SL above entry, TP below entry
-            sl_price = entry_price + (sl_pips * pip_value)
-            tp_price = entry_price - (tp_pips * pip_value)
+            sl_price = entry_price + sl_distance
+            tp_price = entry_price - tp_distance
         
         # Round to instrument's price increment and convert to Price objects
         price_increment = self.instrument.price_increment
@@ -859,26 +938,75 @@ class MovingAverageCrossover(Strategy):
         else:  # SHORT
             profit_pips = (self._position_entry_price - current_price) / pip_value
         
-        # Get regime-adjusted trailing parameters if enabled
-        if self.cfg.regime_detection_enabled:
-            regime = self._detect_market_regime(bar)
+        # Determine trailing parameters (adaptive or fixed)
+        use_adaptive = self.cfg.adaptive_stop_mode in ('atr', 'percentile')
+        self.log.info(f"[ADAPTIVE_TRAIL] Mode: {self.cfg.adaptive_stop_mode}, use_adaptive: {use_adaptive}")
+        
+        if use_adaptive:
+            # Try to get adaptive trailing levels
+            from strategies.adaptive_stops import compute_adaptive_levels, get_bars_dataframe
             
-            if regime == 'trending':
-                # Trending: Lower activation (activate sooner), tighter distance
-                activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips)) * Decimal(str(self.cfg.regime_trailing_activation_multiplier_trending))
-                trailing_distance = Decimal(str(self.cfg.trailing_stop_distance_pips)) * Decimal(str(self.cfg.regime_trailing_distance_multiplier_trending))
-            elif regime == 'ranging':
-                # Ranging: Higher activation (wait for confirmation), wider distance
-                activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips)) * Decimal(str(self.cfg.regime_trailing_activation_multiplier_ranging))
-                trailing_distance = Decimal(str(self.cfg.trailing_stop_distance_pips)) * Decimal(str(self.cfg.regime_trailing_distance_multiplier_ranging))
+            bars_list = self.cache.bars(self.bar_type)
+            bars_df = get_bars_dataframe(list(bars_list) if bars_list else [], 
+                                         lookback=max(300, self.cfg.volatility_window + 50))
+            
+            self.log.info(f"[ADAPTIVE_TRAIL] Retrieved {len(bars_df) if bars_df is not None else 0} bars from cache")
+            
+            if bars_df is not None and len(bars_df) >= self.cfg.adaptive_atr_period + 1:
+                adaptive_cfg = {
+                    'mode': self.cfg.adaptive_stop_mode,
+                    'atr_period': self.cfg.adaptive_atr_period,
+                    'tp_atr_mult': self.cfg.tp_atr_mult,
+                    'sl_atr_mult': self.cfg.sl_atr_mult,
+                    'trail_activation_atr_mult': self.cfg.trail_activation_atr_mult,
+                    'trail_distance_atr_mult': self.cfg.trail_distance_atr_mult,
+                    'volatility_window': self.cfg.volatility_window,
+                    'volatility_sensitivity': self.cfg.volatility_sensitivity,
+                    'min_distance_pips': self.cfg.min_stop_distance_pips
+                }
+                
+                self.log.info(f"[ADAPTIVE_TRAIL] Calling compute_adaptive_levels with mode={adaptive_cfg['mode']}")
+                levels = compute_adaptive_levels(bars_df, current_price, adaptive_cfg, fallback_pips=None)
+                self.log.info(f"[ADAPTIVE_TRAIL] Returned mode={levels['mode']}, trail_activation={levels.get('trail_activation')}, trail_distance={levels.get('trail_distance')}")
+                
+                if levels['mode'] != 'fixed' and levels['trail_activation'] is not None:
+                    # Use adaptive trailing distances (in price units, convert to pips for threshold)
+                    activation_threshold = levels['trail_activation'] / pip_value
+                    trailing_distance_price = levels['trail_distance']
+                    use_adaptive = True
+                    self.log.info(f"[ADAPTIVE_TRAIL_APPLIED] ATR-based activation={activation_threshold:.1f} pips, distance={trailing_distance_price/pip_value:.1f} pips")
+                else:
+                    use_adaptive = False
+                    self.log.warning(f"[ADAPTIVE_TRAIL_FALLBACK] Calculation returned fixed mode")
             else:
-                # Moderate: Use base values
+                use_adaptive = False
+                self.log.warning(f"[ADAPTIVE_TRAIL_FALLBACK] Insufficient bars (have {len(bars_df) if bars_df is not None else 0}, need {self.cfg.adaptive_atr_period}+)")
+        
+        # Fallback to fixed/regime-based trailing parameters
+        if not use_adaptive:
+            # Get regime-adjusted trailing parameters if enabled
+            if self.cfg.regime_detection_enabled:
+                regime = self._detect_market_regime(bar)
+                
+                if regime == 'trending':
+                    # Trending: Lower activation (activate sooner), tighter distance
+                    activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips)) * Decimal(str(self.cfg.regime_trailing_activation_multiplier_trending))
+                    trailing_distance_pips = Decimal(str(self.cfg.trailing_stop_distance_pips)) * Decimal(str(self.cfg.regime_trailing_distance_multiplier_trending))
+                elif regime == 'ranging':
+                    # Ranging: Higher activation (wait for confirmation), wider distance
+                    activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips)) * Decimal(str(self.cfg.regime_trailing_activation_multiplier_ranging))
+                    trailing_distance_pips = Decimal(str(self.cfg.trailing_stop_distance_pips)) * Decimal(str(self.cfg.regime_trailing_distance_multiplier_ranging))
+                else:
+                    # Moderate: Use base values
+                    activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips))
+                    trailing_distance_pips = Decimal(str(self.cfg.trailing_stop_distance_pips))
+            else:
+                # No regime detection: use base values
                 activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips))
-                trailing_distance = Decimal(str(self.cfg.trailing_stop_distance_pips))
-        else:
-            # No regime detection: use base values
-            activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips))
-            trailing_distance = Decimal(str(self.cfg.trailing_stop_distance_pips))
+                trailing_distance_pips = Decimal(str(self.cfg.trailing_stop_distance_pips))
+            
+            # Convert pips to price distance
+            trailing_distance_price = trailing_distance_pips * pip_value
         
         # Check if we should activate trailing
         if profit_pips >= activation_threshold and not self._trailing_active:
@@ -889,11 +1017,11 @@ class MovingAverageCrossover(Strategy):
         if self._trailing_active:
             
             if position.side.name == "LONG":
-                new_stop = current_price - (trailing_distance * pip_value)
+                new_stop = current_price - trailing_distance_price
                 # For LONG: new stop must be higher (tighter) than last stop
                 is_better = self._last_stop_price is None or new_stop > self._last_stop_price
             else:  # SHORT
-                new_stop = current_price + (trailing_distance * pip_value)
+                new_stop = current_price + trailing_distance_price
                 # For SHORT: new stop must be lower (tighter) than last stop
                 is_better = self._last_stop_price is None or new_stop < self._last_stop_price
             

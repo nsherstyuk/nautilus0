@@ -1,0 +1,9 @@
+{
+  "adaptive_stop_mode": ["percentile"],
+  "sl_atr_mult": [1.0],
+  "tp_atr_mult": [4.0, 4.5, 5.0, 5.5, 6.0],
+  "trail_activation_atr_mult": [0.8],
+  "trail_distance_atr_mult": [0.6],
+  "volatility_window": [200],
+  "volatility_sensitivity": [0.6]
+}
