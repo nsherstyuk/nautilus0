@@ -7,7 +7,7 @@ import logging.config
 import signal
 import sys
 from pathlib import Path
-from typing import Tuple
+from typing import Optional, Tuple
 
 import yaml
 
@@ -34,6 +34,7 @@ from nautilus_trader.adapters.interactive_brokers.factories import (
     InteractiveBrokersLiveDataClientFactory,
     InteractiveBrokersLiveExecClientFactory,
 )
+from nautilus_trader.adapters.interactive_brokers.data import InteractiveBrokersDataClient
 from nautilus_trader.config import (
     ImportableStrategyConfig,
     LiveDataEngineConfig,
@@ -43,9 +44,18 @@ from nautilus_trader.config import (
 )
 from nautilus_trader.live.node import TradingNode
 
+
+NODE_REFERENCE: Optional[TradingNode] = None
+
 from config.ibkr_config import get_ibkr_config
 from config.live_config import LiveConfig, get_live_config, validate_live_config
-from live.historical_backfill import calculate_required_bars, calculate_required_duration_hours, backfill_historical_data
+from live.historical_backfill import (
+    calculate_required_bars,
+    calculate_required_duration_hours,
+    calculate_required_duration_days,
+    backfill_historical_data,
+    feed_historical_bars_to_strategy,
+)
 
 
 def setup_logging(log_dir: Path) -> logging.Logger:
@@ -257,7 +267,7 @@ def setup_signal_handlers(node: TradingNode) -> None:
 
     def handler(signum, frame):  # pragma: no cover - runtime behaviour
         logger.warning("Signal %s received. Initiating shutdown...", signum)
-        node.shutdown_system(reason=f"Signal {signum} received")
+        node.stop()
 
     signal.signal(signal.SIGINT, handler)
     logger.info("SIGINT handler registered for graceful shutdown.")
@@ -323,6 +333,8 @@ async def main() -> int:
 
     trading_node_config, strategy_config = create_trading_node_config(live_config, ibkr_config)
     node = TradingNode(config=trading_node_config)
+    global NODE_REFERENCE
+    NODE_REFERENCE = node
 
     node.add_data_client_factory(IB, InteractiveBrokersLiveDataClientFactory)
     node.add_exec_client_factory(IB, InteractiveBrokersLiveExecClientFactory)
@@ -344,83 +356,99 @@ async def main() -> int:
 
     logger.info("Waiting for IBKR clients to connect (up to 60 seconds)...")
     # Give clients time to establish connection before starting main loop
-    await asyncio.sleep(60)
+    await asyncio.sleep(30)
 
-    # Perform historical data backfill to warm up indicators
     logger.info("Starting historical data backfill for indicator warmup...")
     try:
         required_bars = calculate_required_bars(live_config.slow_period, live_config.bar_spec)
         required_hours = calculate_required_duration_hours(live_config.slow_period, live_config.bar_spec)
+        required_days = calculate_required_duration_days(live_config.slow_period, live_config.bar_spec)
         logger.info(
-            "Calculated backfill requirements: %d bars, %.1f hours duration",
-            required_bars, required_hours
+            "Calculated backfill requirements: %d bars, %.1f hours (%.2f days)",
+            required_bars,
+            required_hours,
+            required_days,
         )
-        
-        # Perform backfill using the established IBKR connection
-        # Get the data client from the node
-        ib_data_client = None
-        for client_id, client in node.data_engine.clients.items():
-            if hasattr(client, 'client_id') and 'INTERACTIVE_BROKERS' in str(client_id):
-                ib_data_client = client
-                break
-        
-        if ib_data_client:
-            # Create instrument ID and bar type
-            from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
-            from nautilus_trader.model.data import BarType
-            from nautilus_trader.model.enums import PriceType
-            from nautilus_trader.model.data import BarSpecification, BarAggregation
-            
-            instrument_id = InstrumentId(Symbol(live_config.symbol), Venue(live_config.venue))
-            
-            # Parse bar specification
-            parts = live_config.bar_spec.split('-')
-            if len(parts) >= 4:
-                step = int(parts[0])
-                aggregation = BarAggregation[parts[1].upper()]
-                price_type = PriceType[parts[2].upper()]
-                bar_spec = BarSpecification(step, aggregation, price_type)
-                bar_type = BarType(instrument_id, bar_spec)
-                
-                success, bars_loaded, bars = await backfill_historical_data(
-                    data_client=ib_data_client,
-                    instrument_id=instrument_id,
-                    bar_type=bar_type,
-                    slow_period=live_config.slow_period,
-                    bar_spec=live_config.bar_spec,
-                    is_forex=live_config.venue == "IDEALPRO"
-                )
-                
-                if success:
-                    logger.info(f"Backfill successful: loaded {bars_loaded} bars")
-                else:
-                    logger.warning("Backfill was not successful")
-            else:
-                logger.error(f"Could not parse bar specification: {live_config.bar_spec}")
+
+        data_client = None
+        data_engine = getattr(node.kernel, "data_engine", None)
+        if data_engine and hasattr(data_engine, "_clients"):
+            for client_id, client in data_engine._clients.items():
+                if isinstance(client, InteractiveBrokersDataClient):
+                    data_client = client
+                    logger.info("Found Interactive Brokers data client: %s", client_id)
+                    break
+
+        if data_client is None:
+            logger.warning("Interactive Brokers data client not available; skipping historical backfill")
+            logger.info("Strategy will warm up naturally as live bars arrive")
         else:
-            logger.warning("Could not find IBKR data client for backfill")
-        logger.info("Historical data backfill completed successfully")
+            from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
+            from nautilus_trader.model.data import BarType, BarSpecification, BarAggregation
+            from nautilus_trader.model.enums import PriceType
+
+            instrument_id = InstrumentId(Symbol(live_config.symbol), Venue(live_config.venue))
+
+            parts = live_config.bar_spec.split('-')
+            if len(parts) < 4:
+                logger.error("Could not parse bar specification: %s", live_config.bar_spec)
+            else:
+                try:
+                    step = int(parts[0])
+                    aggregation = BarAggregation[parts[1].upper()]
+                    price_type = PriceType[parts[2].upper()]
+                except (KeyError, ValueError) as exc:
+                    logger.error("Invalid bar specification %s: %s", live_config.bar_spec, exc)
+                else:
+                    bar_spec = BarSpecification(step, aggregation, price_type)
+                    bar_type = BarType(instrument_id, bar_spec)
+                    is_forex = live_config.venue.upper() == "IDEALPRO" or "/" in live_config.symbol
+
+                    success, bars_loaded, bars = await backfill_historical_data(
+                        data_client=data_client,
+                        instrument_id=instrument_id,
+                        bar_type=bar_type,
+                        slow_period=live_config.slow_period,
+                        bar_spec=live_config.bar_spec,
+                        is_forex=is_forex,
+                    )
+
+                    if success and bars:
+                        logger.info("Backfill successful: loaded %d bars", bars_loaded)
+                        await feed_historical_bars_to_strategy(
+                            strategy_instance=strategy_instance,
+                            bars=bars,
+                            bar_type=bar_type,
+                        )
+                        logger.info("Historical data backfill completed successfully")
+                    elif success:
+                        logger.info(
+                            "Historical data already sufficient; using %d cached bars for warmup",
+                            bars_loaded,
+                        )
+                    else:
+                        logger.warning("Historical data backfill was not successful; strategy will warm up with live data")
     except Exception as exc:
-        logger.warning("Historical backfill failed, continuing with live data only: %s", exc)
+        logger.warning("Historical backfill failed, continuing with live data only: %s", exc, exc_info=True)
         logger.info("Strategy will warm up naturally as live bars arrive")
 
     logger.info("Live trading node built successfully. Starting...")
 
+    return_code = 0
     try:
-        await asyncio.to_thread(node.run)
-        return_code = 0
-    except KeyboardInterrupt:
-        logger.warning("KeyboardInterrupt received. Initiating shutdown...")
-        node.shutdown_system(reason="KeyboardInterrupt")
-        return_code = 0
+        await node.run_async()
+    except asyncio.CancelledError:
+        logger.info("Live trading run cancelled; proceeding with shutdown.")
     except Exception as exc:  # pragma: no cover
         logger.exception("Live trading encountered an error: %s", exc)
         return_code = 1
     finally:
-        try:
-            node.stop()
-        finally:
-            node.dispose()
+        if node.is_running():
+            logger.info("Stopping trading node...")
+            try:
+                await node.stop_async()
+            except Exception as stop_exc:  # pragma: no cover
+                logger.exception("Error while stopping trading node: %s", stop_exc)
         logger.info("Live trading system stopped.")
 
     return return_code
@@ -431,4 +459,11 @@ if __name__ == "__main__":
         exit_code = asyncio.run(main())
     except KeyboardInterrupt:
         exit_code = 0
+    finally:
+        if NODE_REFERENCE is not None:
+            try:
+                NODE_REFERENCE.dispose()
+            except Exception:  # pragma: no cover
+                logging.getLogger("live").exception("Error disposing trading node during shutdown.")
+            NODE_REFERENCE = None
     sys.exit(exit_code)
