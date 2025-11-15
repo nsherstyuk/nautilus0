@@ -10,13 +10,14 @@ ENV/
 env/
 
 # Environment and secrets
-.env
-*.env
+# .env files are now tracked for reproducibility
+# .env
+# *.env
 !.env.example
 
 # Data and logs
-data/historical/*.csv
-data/historical/*.parquet
+# data/historical/*.csv
+# data/historical/*.parquet
 logs/
 
 # IDE and OS

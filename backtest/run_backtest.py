@@ -771,6 +771,33 @@ def generate_reports(
     env_file_path = output_dir / ".env"
     env_file_path.write_text("\n".join(env_lines), encoding="utf-8")
     logger.info("Environment configuration saved to: %s", env_file_path)
+    
+    # Save FULL environment (all OS environment variables)
+    full_env_lines = []
+    full_env_lines.append("# COMPLETE ENVIRONMENT SNAPSHOT - All OS Environment Variables")
+    full_env_lines.append(f"# Generated: {datetime.now().isoformat()}")
+    full_env_lines.append("# This file contains ALL environment variables at the time of backtest execution")
+    full_env_lines.append("")
+    
+    # Get all environment variables and sort them
+    for key in sorted(os.environ.keys()):
+        value = os.environ[key]
+        # Escape special characters for .env format
+        # Handle multiline values and quotes
+        if '\n' in value or '\r' in value:
+            # For multiline values, use JSON encoding
+            value_escaped = json.dumps(value)
+            full_env_lines.append(f'{key}={value_escaped}')
+        elif '"' in value or "'" in value or ' ' in value:
+            # Quote values with special characters
+            value_escaped = value.replace('\\', '\\\\').replace('"', '\\"')
+            full_env_lines.append(f'{key}="{value_escaped}"')
+        else:
+            full_env_lines.append(f'{key}={value}')
+    
+    full_env_file_path = output_dir / ".env.full"
+    full_env_file_path.write_text("\n".join(full_env_lines), encoding="utf-8")
+    logger.info("Full environment snapshot saved to: %s", full_env_file_path)
 
     return stats
 
