@@ -173,9 +173,9 @@ class MovingAverageCrossover(Strategy):
 
         # RSI divergence filter (optional, primary timeframe bars)
         self.rsi_enabled = config.rsi_enabled
-        self.rsi: Optional[RSI] = None
+        self.rsi: Optional[RelativeStrengthIndex] = None
         if config.rsi_enabled:
-            self.rsi = RSI(period=config.rsi_period)
+            self.rsi = RelativeStrengthIndex(period=config.rsi_period)
 
         # Volume confirmation filter (optional, primary timeframe bars)
         self.volume_enabled = config.volume_enabled
@@ -1027,7 +1027,7 @@ class MovingAverageCrossover(Strategy):
                     tp_pips = base_tp_pips * Decimal(str(self.cfg.regime_tp_multiplier_ranging))
                     sl_pips = base_sl_pips * Decimal(str(self.cfg.regime_sl_multiplier_ranging))
                 else:
-                    # Moderate: Use base values
+                    # Moderate: Use base values (no adjustment)
                     tp_pips = base_tp_pips
                     sl_pips = base_sl_pips
             else:

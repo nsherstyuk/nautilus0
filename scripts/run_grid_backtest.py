@@ -84,6 +84,13 @@ def setup_logging(output_dir: Path) -> logging.Logger:
     return logger
 
 
+def format_env_value(value: Any) -> str:
+    """Format parameter values for environment variables."""
+    if isinstance(value, bool):
+        return 'true' if value else 'false'
+    return str(value)
+
+
 def generate_parameter_combinations(grid: Dict[str, List]) -> List[Dict[str, Any]]:
     """Generate all combinations of parameters from the grid."""
     keys = list(grid.keys())
@@ -118,13 +125,19 @@ def run_backtest(
     
     # Override parameters - handle both formats (with/without BACKTEST_ prefix)
     for key, value in params.items():
-        # If key already has BACKTEST_ prefix, use it directly
-        if key.startswith('BACKTEST_'):
-            env[key] = str(value)
+        formatted_value = format_env_value(value)
+
+        # If key already has a known prefix (BACKTEST_, STRATEGY_, LIVE_, etc.), use it directly
+        if key.startswith(('BACKTEST_', 'STRATEGY_', 'LIVE_', 'DATA_', 'CATALOG_')):
+            env[key] = formatted_value
+
+            # Also set BACKTEST_ prefixed variant for STRATEGY_ keys for compatibility with legacy parsing
+            if key.startswith('STRATEGY_'):
+                env[f'BACKTEST_{key}'] = formatted_value
         else:
             # Convert lowercase underscore format to BACKTEST_ prefix format
             env_key = f'BACKTEST_{key.upper()}'
-            env[env_key] = str(value)
+            env[env_key] = formatted_value
     
     # Set output directory for this run
     env['OUTPUT_DIR'] = str(run_output_dir)

@@ -106,6 +106,7 @@ def _require(name: str, value: Optional[str]) -> str:
 
 
 def _parse_int(name: str, value: Optional[str], default: int) -> int:
+    value = _get_env_value(name, value)
     if value is None or value == "":
         return default
     try:
@@ -115,6 +116,7 @@ def _parse_int(name: str, value: Optional[str], default: int) -> int:
 
 
 def _parse_float(name: str, value: Optional[str], default: float) -> float:
+    value = _get_env_value(name, value)
     if value is None or value == "":
         return default
     try:
@@ -124,6 +126,7 @@ def _parse_float(name: str, value: Optional[str], default: float) -> float:
 
 
 def _parse_excluded_hours(name: str, value: Optional[str]) -> list[int]:
+    value = _get_env_value(name, value)
     """Parse comma-separated list of hours (0-23) to exclude from trading."""
     if value is None or value == "":
         return []
@@ -147,6 +150,18 @@ def _validate_date(name: str, value: str) -> None:
         raise ValueError(f"{name} must be in YYYY-MM-DD format, got: {value}")
 
 
+def _get_env_value(name: str, value: Optional[str] = None) -> Optional[str]:
+    """Retrieve environment variable with legacy BACKTEST_ fallback for STRATEGY_ keys."""
+    if value not in (None, ""):
+        return value
+
+    resolved = os.getenv(name)
+    if resolved in (None, "") and name.startswith("STRATEGY_"):
+        resolved = os.getenv(f"BACKTEST_{name}")
+
+    return resolved
+
+
 def get_backtest_config() -> BacktestConfig:
     """Load backtest configuration from environment variables.
 
@@ -160,7 +175,8 @@ def get_backtest_config() -> BacktestConfig:
     STRATEGY_STOCH_ENABLED, STRATEGY_STOCH_BAR_SPEC, STRATEGY_STOCH_PERIOD_K,
     STRATEGY_STOCH_PERIOD_D, STRATEGY_STOCH_BULLISH_THRESHOLD, STRATEGY_STOCH_BEARISH_THRESHOLD
     """
-    load_dotenv()
+    # Don't override environment variables that are already set (e.g., by grid runner)
+    load_dotenv(override=False)
 
     symbol = _require("BACKTEST_SYMBOL", os.getenv("BACKTEST_SYMBOL"))
     start_date = _require("BACKTEST_START_DATE", os.getenv("BACKTEST_START_DATE"))
@@ -201,7 +217,7 @@ def get_backtest_config() -> BacktestConfig:
     min_stop_distance_pips = _parse_float("BACKTEST_MIN_STOP_DISTANCE_PIPS", os.getenv("BACKTEST_MIN_STOP_DISTANCE_PIPS"), 5.0)
     
     # Market regime detection
-    regime_detection_enabled = os.getenv("STRATEGY_REGIME_DETECTION_ENABLED", "false").lower() in ("true", "1", "yes")
+    regime_detection_enabled = (_get_env_value("STRATEGY_REGIME_DETECTION_ENABLED") or "false").lower() in ("true", "1", "yes")
     regime_adx_trending_threshold = _parse_float("STRATEGY_REGIME_ADX_TRENDING_THRESHOLD", os.getenv("STRATEGY_REGIME_ADX_TRENDING_THRESHOLD"), 25.0)
     regime_adx_ranging_threshold = _parse_float("STRATEGY_REGIME_ADX_RANGING_THRESHOLD", os.getenv("STRATEGY_REGIME_ADX_RANGING_THRESHOLD"), 20.0)
     regime_tp_multiplier_trending = _parse_float("STRATEGY_REGIME_TP_MULTIPLIER_TRENDING", os.getenv("STRATEGY_REGIME_TP_MULTIPLIER_TRENDING"), 1.5)
@@ -220,34 +236,34 @@ def get_backtest_config() -> BacktestConfig:
     )
 
     # Trend filter
-    trend_filter_enabled = os.getenv("STRATEGY_TREND_FILTER_ENABLED", "false").lower() in ("true", "1", "yes")
-    trend_bar_spec = os.getenv("STRATEGY_TREND_BAR_SPEC", "1-MINUTE-MID-EXTERNAL")
+    trend_filter_enabled = (_get_env_value("STRATEGY_TREND_FILTER_ENABLED") or "false").lower() in ("true", "1", "yes")
+    trend_bar_spec = _get_env_value("STRATEGY_TREND_BAR_SPEC") or "1-MINUTE-MID-EXTERNAL"
     trend_ema_period = _parse_int("STRATEGY_TREND_EMA_PERIOD", os.getenv("STRATEGY_TREND_EMA_PERIOD"), 150)
     trend_ema_threshold_pips = _parse_float("STRATEGY_TREND_EMA_THRESHOLD_PIPS", os.getenv("STRATEGY_TREND_EMA_THRESHOLD_PIPS"), 0.0)
 
     # RSI filter
-    rsi_enabled = os.getenv("STRATEGY_RSI_ENABLED", "false").lower() in ("true", "1", "yes")
+    rsi_enabled = (_get_env_value("STRATEGY_RSI_ENABLED") or "false").lower() in ("true", "1", "yes")
     rsi_period = _parse_int("STRATEGY_RSI_PERIOD", os.getenv("STRATEGY_RSI_PERIOD"), 14)
     rsi_overbought = _parse_int("STRATEGY_RSI_OVERBOUGHT", os.getenv("STRATEGY_RSI_OVERBOUGHT"), 70)
     rsi_oversold = _parse_int("STRATEGY_RSI_OVERSOLD", os.getenv("STRATEGY_RSI_OVERSOLD"), 30)
     rsi_divergence_lookback = _parse_int("STRATEGY_RSI_DIVERGENCE_LOOKBACK", os.getenv("STRATEGY_RSI_DIVERGENCE_LOOKBACK"), 5)
 
     # Volume filter
-    volume_enabled = os.getenv("STRATEGY_VOLUME_ENABLED", "false").lower() in ("true", "1", "yes")
+    volume_enabled = (_get_env_value("STRATEGY_VOLUME_ENABLED") or "false").lower() in ("true", "1", "yes")
     volume_avg_period = _parse_int("STRATEGY_VOLUME_AVG_PERIOD", os.getenv("STRATEGY_VOLUME_AVG_PERIOD"), 20)
-    volume_min_multiplier = float(os.getenv("STRATEGY_VOLUME_MIN_MULTIPLIER", "1.2"))
+    volume_min_multiplier = float(_get_env_value("STRATEGY_VOLUME_MIN_MULTIPLIER") or "1.2")
 
     # ATR filter
-    atr_enabled = os.getenv("STRATEGY_ATR_ENABLED", "false").lower() in ("true", "1", "yes")
+    atr_enabled = (_get_env_value("STRATEGY_ATR_ENABLED") or "false").lower() in ("true", "1", "yes")
     atr_period = _parse_int("STRATEGY_ATR_PERIOD", os.getenv("STRATEGY_ATR_PERIOD"), 14)
-    atr_min_strength = float(os.getenv("STRATEGY_ATR_MIN_STRENGTH", "0.001"))
+    atr_min_strength = _parse_float("STRATEGY_ATR_MIN_STRENGTH", os.getenv("STRATEGY_ATR_MIN_STRENGTH"), 0.001)
 
-    dmi_enabled = os.getenv("STRATEGY_DMI_ENABLED", "true").lower() in ("true", "1", "yes")
-    dmi_bar_spec = os.getenv("STRATEGY_DMI_BAR_SPEC", "2-MINUTE-MID-EXTERNAL")
+    dmi_enabled = (_get_env_value("STRATEGY_DMI_ENABLED") or "true").lower() in ("true", "1", "yes")
+    dmi_bar_spec = _get_env_value("STRATEGY_DMI_BAR_SPEC") or "2-MINUTE-MID-EXTERNAL"
     dmi_period = _parse_int("STRATEGY_DMI_PERIOD", os.getenv("STRATEGY_DMI_PERIOD"), 14)
-    
-    stoch_enabled = os.getenv("STRATEGY_STOCH_ENABLED", "true").lower() in ("true", "1", "yes")
-    stoch_bar_spec = os.getenv("STRATEGY_STOCH_BAR_SPEC", "15-MINUTE-MID-EXTERNAL")
+
+    stoch_enabled = (_get_env_value("STRATEGY_STOCH_ENABLED") or "true").lower() in ("true", "1", "yes")
+    stoch_bar_spec = _get_env_value("STRATEGY_STOCH_BAR_SPEC") or "15-MINUTE-MID-EXTERNAL"
     stoch_period_k = _parse_int("STRATEGY_STOCH_PERIOD_K", os.getenv("STRATEGY_STOCH_PERIOD_K"), 14)
     stoch_period_d = _parse_int("STRATEGY_STOCH_PERIOD_D", os.getenv("STRATEGY_STOCH_PERIOD_D"), 3)
     stoch_bullish_threshold = _parse_int("STRATEGY_STOCH_BULLISH_THRESHOLD", os.getenv("STRATEGY_STOCH_BULLISH_THRESHOLD"), 30)
@@ -270,9 +286,9 @@ def get_backtest_config() -> BacktestConfig:
                 excluded_hours_by_weekday[weekday] = weekday_hours
     
     # Entry timing parameters
-    entry_timing_enabled = os.getenv("STRATEGY_ENTRY_TIMING_ENABLED", "false").lower() in ("true", "1", "yes")
-    entry_timing_bar_spec = os.getenv("STRATEGY_ENTRY_TIMING_BAR_SPEC", "2-MINUTE-MID-EXTERNAL")
-    entry_timing_method = os.getenv("STRATEGY_ENTRY_TIMING_METHOD", "pullback")
+    entry_timing_enabled = (_get_env_value("STRATEGY_ENTRY_TIMING_ENABLED") or "false").lower() in ("true", "1", "yes")
+    entry_timing_bar_spec = _get_env_value("STRATEGY_ENTRY_TIMING_BAR_SPEC") or "2-MINUTE-MID-EXTERNAL"
+    entry_timing_method = _get_env_value("STRATEGY_ENTRY_TIMING_METHOD") or "pullback"
     entry_timing_timeout_bars = _parse_int("STRATEGY_ENTRY_TIMING_TIMEOUT_BARS", os.getenv("STRATEGY_ENTRY_TIMING_TIMEOUT_BARS"), 10)
     
     # Normalize DMI bar_spec for FX instruments (similar to primary bar_spec normalization)
