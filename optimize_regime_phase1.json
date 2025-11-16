@@ -1,0 +1,27 @@
+{
+  "description": "Phase 1: Focused regime detection optimization - Test if concept works",
+  "base_config": ".env",
+  "output_dir": "logs/regime_phase1_focused",
+  "parameters": {
+    "STRATEGY_REGIME_DETECTION_ENABLED": [true],
+    "STRATEGY_DMI_ENABLED": [true],
+    "STRATEGY_REGIME_ADX_TRENDING_THRESHOLD": [20.0, 25.0, 30.0],
+    "STRATEGY_REGIME_ADX_RANGING_THRESHOLD": [15.0, 20.0],
+    "STRATEGY_REGIME_TP_MULTIPLIER_TRENDING": [1.0, 1.3, 1.6],
+    "STRATEGY_REGIME_TP_MULTIPLIER_RANGING": [0.7, 0.85, 1.0],
+    "STRATEGY_REGIME_SL_MULTIPLIER_TRENDING": [1.0],
+    "STRATEGY_REGIME_SL_MULTIPLIER_RANGING": [1.0]
+  },
+  "notes": [
+    "Grid size: 3 × 2 × 3 × 3 × 1 × 1 = 54 runs (REASONABLE!)",
+    "Estimated time: ~45-60 minutes (50 sec per run)",
+    "Goal: VALIDATE if regime detection CAN work with ANY parameters",
+    "Strategy: Start small, expand if promising",
+    "ADX thresholds: 3 trending (20/25/30) × 2 ranging (15/20) = 6 combos",
+    "TP multipliers: 3 trending (1.0/1.3/1.6) × 3 ranging (0.7/0.85/1.0) = 9 combos",
+    "SL multipliers: Fixed at 1.0 (no adjustment) to reduce variables",
+    "Total: 6 × 9 = 54 runs - Fast enough to get quick feedback!",
+    "If ANY config beats baseline → Expand grid in Phase 1b",
+    "If ALL fail → Abandon regime detection entirely"
+  ]
+}

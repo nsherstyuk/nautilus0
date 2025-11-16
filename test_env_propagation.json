@@ -1,0 +1,8 @@
+{
+  "description": "Single test run with adaptive stops DISABLED",
+  "parameters": {
+    "BACKTEST_ADAPTIVE_STOP_MODE": ["fixed"],
+    "BACKTEST_STOP_LOSS_PIPS": [30],
+    "BACKTEST_TAKE_PROFIT_PIPS": [90]
+  }
+}

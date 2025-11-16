@@ -1,0 +1,117 @@
+# Regime Detection Optimization Configuration
+# Optimizes ADX thresholds and TP/SL/trailing stop multipliers for market regime detection
+#
+# This optimization tests if regime detection can improve strategy performance
+# by adjusting TP/SL and trailing stops based on market conditions (trending vs ranging)
+#
+# Usage:
+#   python optimization/grid_search.py \
+#     --config optimization/configs/regime_detection_optimization.yaml \
+#     --objective sharpe_ratio \
+#     --workers 8 \
+#     --output optimization/results/regime_detection_results.csv \
+#     --no-resume
+#
+# Grid Size Calculation:
+#   ADX trending thresholds: 4 values
+#   ADX ranging thresholds: 3 values
+#   TP trending multipliers: 5 values
+#   TP ranging multipliers: 5 values
+#   SL trending multipliers: 3 values
+#   SL ranging multipliers: 3 values
+#   Trailing activation trending: 3 values
+#   Trailing activation ranging: 3 values
+#   Trailing distance trending: 3 values
+#   Trailing distance ranging: 3 values
+#   Total: 4 × 3 × 5 × 5 × 3 × 3 × 3 × 3 × 3 × 3 = 109,350 combinations
+#
+# This is too large! Use focused version instead.
+
+optimization:
+  objective: sharpe_ratio
+  workers: 8
+  checkpoint_interval: 10
+  checkpoint_file: optimization/checkpoints/regime_detection_checkpoint.csv
+  output_file: optimization/results/regime_detection_results.csv
+  timeout_seconds: 300
+
+parameters:
+  # ADX Thresholds - Determine when market is trending vs ranging
+  regime_adx_trending_threshold:
+    values: [20.0, 25.0, 30.0, 35.0]
+    description: "ADX value above which market is considered 'trending'"
+  
+  regime_adx_ranging_threshold:
+    values: [10.0, 15.0, 20.0]
+    description: "ADX value below which market is considered 'ranging'"
+  
+  # Take Profit Multipliers - Adjust TP based on regime
+  regime_tp_multiplier_trending:
+    values: [1.0, 1.2, 1.4, 1.6, 1.8]
+    description: "TP multiplier for trending markets (wider TP to let trends run)"
+  
+  regime_tp_multiplier_ranging:
+    values: [0.6, 0.7, 0.8, 0.9, 1.0]
+    description: "TP multiplier for ranging markets (tighter TP to lock profits)"
+  
+  # Stop Loss Multipliers - Adjust SL based on regime
+  regime_sl_multiplier_trending:
+    values: [0.8, 1.0, 1.2]
+    description: "SL multiplier for trending markets"
+  
+  regime_sl_multiplier_ranging:
+    values: [0.8, 1.0, 1.2]
+    description: "SL multiplier for ranging markets"
+  
+  # Trailing Stop Activation Multipliers
+  regime_trailing_activation_multiplier_trending:
+    values: [0.5, 0.75, 1.0]
+    description: "Trailing activation multiplier for trending (activate sooner)"
+  
+  regime_trailing_activation_multiplier_ranging:
+    values: [1.0, 1.25, 1.5]
+    description: "Trailing activation multiplier for ranging (wait longer)"
+  
+  # Trailing Stop Distance Multipliers
+  regime_trailing_distance_multiplier_trending:
+    values: [0.5, 0.67, 1.0]
+    description: "Trailing distance multiplier for trending (tighter trailing)"
+  
+  regime_trailing_distance_multiplier_ranging:
+    values: [1.0, 1.33, 1.67]
+    description: "Trailing distance multiplier for ranging (wider trailing)"
+
+fixed:
+  # Base strategy parameters (from 14k PnL configuration)
+  fast_period: 42
+  slow_period: 270
+  crossover_threshold_pips: 0.35
+  stop_loss_pips: 35
+  take_profit_pips: 50
+  trailing_stop_activation_pips: 22
+  trailing_stop_distance_pips: 12
+  
+  # Filters (from 14k PnL configuration)
+  dmi_enabled: true
+  dmi_period: 10
+  dmi_bar_spec: "2-MINUTE-MID-EXTERNAL"
+  stoch_enabled: true
+  stoch_period_k: 18
+  stoch_period_d: 3
+  stoch_bullish_threshold: 30
+  stoch_bearish_threshold: 65
+  stoch_bar_spec: "15-MINUTE-MID-EXTERNAL"
+  
+  # Regime detection must be enabled
+  regime_detection_enabled: true
+  
+  # Other filters disabled
+  trend_filter_enabled: false
+  entry_timing_enabled: false
+  rsi_enabled: false
+  volume_enabled: false
+  atr_enabled: false
+  
+  # Time filter disabled (to match 14k config)
+  time_filter_enabled: false
+

@@ -1,0 +1,27 @@
+{
+  "description": "Phase 3: Time-of-day TP/SL multipliers on top of best ATR config (regime multipliers had no effect, keeping at 1.0)",
+  "parameters": {
+    "BACKTEST_ADAPTIVE_STOP_MODE": ["atr"],
+
+    "BACKTEST_STOP_LOSS_PIPS": [25],
+    "BACKTEST_TAKE_PROFIT_PIPS": [70],
+    "BACKTEST_TRAILING_STOP_ACTIVATION_PIPS": [25],
+    "BACKTEST_TRAILING_STOP_DISTANCE_PIPS": [20],
+
+    "BACKTEST_SL_ATR_MULT": [2.0],
+    "BACKTEST_TP_ATR_MULT": [2.5],
+    "BACKTEST_TRAIL_ACTIVATION_ATR_MULT": [0.8],
+    "BACKTEST_TRAIL_DISTANCE_ATR_MULT": [0.5],
+
+    "STRATEGY_REGIME_DETECTION_ENABLED": ["false"],
+
+    "STRATEGY_TIME_MULTIPLIER_ENABLED": ["true"],
+    "STRATEGY_TIME_TP_MULTIPLIER_EU_MORNING": [1.0, 1.2],
+    "STRATEGY_TIME_TP_MULTIPLIER_US_SESSION": [1.0, 1.2],
+    "STRATEGY_TIME_TP_MULTIPLIER_OTHER": [0.8, 1.0],
+    "STRATEGY_TIME_SL_MULTIPLIER_EU_MORNING": [0.8, 1.0],
+    "STRATEGY_TIME_SL_MULTIPLIER_US_SESSION": [0.8, 1.0],
+    "STRATEGY_TIME_SL_MULTIPLIER_OTHER": [1.0, 1.2]
+  },
+  "notes": "Total: 2^6 = 64 runs (~53 min). Best ATR config from Phase 1: SL_ATR=2.0, TP_ATR=2.5 (8526.44 PnL, 51.66% WR). Regime grid showed no variation, keeping regime detection OFF. Time profiles: EU morning (7-11 UTC), US session (13-17 UTC), Other hours. Expected to show variation based on 2.55x hourly PnL variance from earlier analysis."
+}

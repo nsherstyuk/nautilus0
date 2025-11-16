@@ -1,0 +1,11 @@
+{
+  "description": "Phase 0: TP/SL optimization with VALID trailing stop combinations (distance < activation) and ADAPTIVE STOPS DISABLED",
+  "parameters": {
+    "BACKTEST_ADAPTIVE_STOP_MODE": ["fixed"],
+    "BACKTEST_STOP_LOSS_PIPS": [20, 25, 30],
+    "BACKTEST_TAKE_PROFIT_PIPS": [70, 80, 90],
+    "BACKTEST_TRAILING_STOP_ACTIVATION_PIPS": [20, 25, 30],
+    "BACKTEST_TRAILING_STOP_DISTANCE_PIPS": [15, 20]
+  },
+  "notes": "Total: 1x3x3x3x2 = 54 combinations (~45 min at 50 sec/run). CRITICAL: Must set adaptive_stop_mode=fixed to use static TP/SL values instead of ATR-based dynamic stops. Baseline: SL=25, TP=80, trailing_activation=25, trailing_distance=20."
+}

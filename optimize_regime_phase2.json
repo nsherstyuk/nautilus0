@@ -1,0 +1,22 @@
+{
+  "description": "Phase 2: Regime-based TP/SL multipliers on top of best ATR config (SL_ATR=2.0, TP_ATR=2.5)",
+  "parameters": {
+    "BACKTEST_ADAPTIVE_STOP_MODE": ["atr"],
+
+    "BACKTEST_STOP_LOSS_PIPS": [25],
+    "BACKTEST_TAKE_PROFIT_PIPS": [70],
+    "BACKTEST_TRAILING_STOP_ACTIVATION_PIPS": [25],
+    "BACKTEST_TRAILING_STOP_DISTANCE_PIPS": [20],
+
+    "BACKTEST_SL_ATR_MULT": [2.0],
+    "BACKTEST_TP_ATR_MULT": [2.5],
+    "BACKTEST_TRAIL_ACTIVATION_ATR_MULT": [0.8],
+    "BACKTEST_TRAIL_DISTANCE_ATR_MULT": [0.5],
+
+    "STRATEGY_REGIME_TP_MULTIPLIER_TRENDING": [1.0, 1.2],
+    "STRATEGY_REGIME_TP_MULTIPLIER_RANGING": [1.0, 0.8],
+    "STRATEGY_REGIME_SL_MULTIPLIER_TRENDING": [1.0, 0.8],
+    "STRATEGY_REGIME_SL_MULTIPLIER_RANGING": [1.0, 1.2]
+  },
+  "notes": "Total: 2x2x2x2 = 16 runs. Best ATR config from atr_phase1 run_0029: SL_ATR=2.0, TP_ATR=2.5, Trail_Act_ATR=0.8, Trail_Dist_ATR=0.5 achieved 8526.44 PnL with 51.66% win rate. Now sweeping regime multipliers around neutral=1.0."
+}

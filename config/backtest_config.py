@@ -58,6 +58,14 @@ class BacktestConfig:
     regime_trailing_distance_multiplier_trending: float = 0.67
     regime_trailing_distance_multiplier_ranging: float = 1.33
     crossover_threshold_pips: float = 0.7
+    # Time-of-day multipliers (applied after regime multipliers)
+    time_multiplier_enabled: bool = False
+    time_tp_multiplier_eu_morning: float = 1.0  # 7-11 UTC (EU session start)
+    time_tp_multiplier_us_session: float = 1.0  # 13-17 UTC (US session overlap)
+    time_tp_multiplier_other: float = 1.0       # All other hours
+    time_sl_multiplier_eu_morning: float = 1.0
+    time_sl_multiplier_us_session: float = 1.0
+    time_sl_multiplier_other: float = 1.0
     # Trend filter
     trend_filter_enabled: bool = False
     trend_bar_spec: str = "1-MINUTE-MID-EXTERNAL"
@@ -175,8 +183,8 @@ def get_backtest_config() -> BacktestConfig:
     STRATEGY_STOCH_ENABLED, STRATEGY_STOCH_BAR_SPEC, STRATEGY_STOCH_PERIOD_K,
     STRATEGY_STOCH_PERIOD_D, STRATEGY_STOCH_BULLISH_THRESHOLD, STRATEGY_STOCH_BEARISH_THRESHOLD
     """
-    # Don't override environment variables that are already set (e.g., by grid runner)
-    load_dotenv(override=False)
+    # Load .env as fallback, but allow subprocess env vars (from grid runner) to override
+    load_dotenv(override=False)  # False = .env doesn't override existing os.environ vars
 
     symbol = _require("BACKTEST_SYMBOL", os.getenv("BACKTEST_SYMBOL"))
     start_date = _require("BACKTEST_START_DATE", os.getenv("BACKTEST_START_DATE"))
@@ -205,6 +213,9 @@ def get_backtest_config() -> BacktestConfig:
     trailing_stop_activation_pips = _parse_int("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS", os.getenv("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS"), 20)
     trailing_stop_distance_pips = _parse_int("BACKTEST_TRAILING_STOP_DISTANCE_PIPS", os.getenv("BACKTEST_TRAILING_STOP_DISTANCE_PIPS"), 15)
     
+    # Debug: Log TP/SL values being used
+    print(f"DEBUG CONFIG: SL={stop_loss_pips}, TP={take_profit_pips}, TrailAct={trailing_stop_activation_pips}, TrailDist={trailing_stop_distance_pips}", flush=True)
+    
     # Adaptive stops configuration
     adaptive_stop_mode = os.getenv("BACKTEST_ADAPTIVE_STOP_MODE", "atr")  # 'fixed' | 'atr' | 'percentile'
     adaptive_atr_period = _parse_int("BACKTEST_ADAPTIVE_ATR_PERIOD", os.getenv("BACKTEST_ADAPTIVE_ATR_PERIOD"), 14)
@@ -228,6 +239,15 @@ def get_backtest_config() -> BacktestConfig:
     regime_trailing_activation_multiplier_ranging = _parse_float("STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_RANGING", os.getenv("STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_RANGING"), 1.25)
     regime_trailing_distance_multiplier_trending = _parse_float("STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_TRENDING", os.getenv("STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_TRENDING"), 0.67)
     regime_trailing_distance_multiplier_ranging = _parse_float("STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_RANGING", os.getenv("STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_RANGING"), 1.33)
+    
+    # Time-of-day multipliers
+    time_multiplier_enabled = (_get_env_value("STRATEGY_TIME_MULTIPLIER_ENABLED") or "false").lower() in ("true", "1", "yes")
+    time_tp_multiplier_eu_morning = _parse_float("STRATEGY_TIME_TP_MULTIPLIER_EU_MORNING", None, 1.0)
+    time_tp_multiplier_us_session = _parse_float("STRATEGY_TIME_TP_MULTIPLIER_US_SESSION", None, 1.0)
+    time_tp_multiplier_other = _parse_float("STRATEGY_TIME_TP_MULTIPLIER_OTHER", None, 1.0)
+    time_sl_multiplier_eu_morning = _parse_float("STRATEGY_TIME_SL_MULTIPLIER_EU_MORNING", None, 1.0)
+    time_sl_multiplier_us_session = _parse_float("STRATEGY_TIME_SL_MULTIPLIER_US_SESSION", None, 1.0)
+    time_sl_multiplier_other = _parse_float("STRATEGY_TIME_SL_MULTIPLIER_OTHER", None, 1.0)
     
     crossover_threshold_pips = _parse_float(
         "STRATEGY_CROSSOVER_THRESHOLD_PIPS",
@@ -499,6 +519,13 @@ def get_backtest_config() -> BacktestConfig:
         regime_trailing_activation_multiplier_ranging=regime_trailing_activation_multiplier_ranging,
         regime_trailing_distance_multiplier_trending=regime_trailing_distance_multiplier_trending,
         regime_trailing_distance_multiplier_ranging=regime_trailing_distance_multiplier_ranging,
+        time_multiplier_enabled=time_multiplier_enabled,
+        time_tp_multiplier_eu_morning=time_tp_multiplier_eu_morning,
+        time_tp_multiplier_us_session=time_tp_multiplier_us_session,
+        time_tp_multiplier_other=time_tp_multiplier_other,
+        time_sl_multiplier_eu_morning=time_sl_multiplier_eu_morning,
+        time_sl_multiplier_us_session=time_sl_multiplier_us_session,
+        time_sl_multiplier_other=time_sl_multiplier_other,
         crossover_threshold_pips=crossover_threshold_pips,
         trend_filter_enabled=trend_filter_enabled,
         trend_bar_spec=trend_bar_spec,

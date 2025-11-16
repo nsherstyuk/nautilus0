@@ -1,0 +1,10 @@
+{
+  "description": "Phase 0: TP/SL optimization around baseline values (SL=25, TP=80, trailing_activation=25, trailing_distance=20)",
+  "parameters": {
+    "BACKTEST_STOP_LOSS_PIPS": [20, 25, 30],
+    "BACKTEST_TAKE_PROFIT_PIPS": [70, 80, 90],
+    "BACKTEST_TRAILING_STOP_ACTIVATION_PIPS": [20, 25, 30],
+    "BACKTEST_TRAILING_STOP_DISTANCE_PIPS": [15, 20, 25]
+  },
+  "notes": "Total: 3x3x3x3 = 81 combinations (~1 hour at 50 sec/run). Baseline: SL=25, TP=80, trailing_activation=25, trailing_distance=20 from EUR-USD_20251113_195050."
+}

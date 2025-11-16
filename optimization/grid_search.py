@@ -164,6 +164,19 @@ FIXED_TO_ENV = {
     # Optional overrides
     "bar_spec": "BACKTEST_BAR_SPEC",
     "starting_capital": "BACKTEST_STARTING_CAPITAL",
+    
+    # Regime Detection Parameters
+    "regime_detection_enabled": "STRATEGY_REGIME_DETECTION_ENABLED",
+    "regime_adx_trending_threshold": "STRATEGY_REGIME_ADX_TRENDING_THRESHOLD",
+    "regime_adx_ranging_threshold": "STRATEGY_REGIME_ADX_RANGING_THRESHOLD",
+    "regime_tp_multiplier_trending": "STRATEGY_REGIME_TP_MULTIPLIER_TRENDING",
+    "regime_tp_multiplier_ranging": "STRATEGY_REGIME_TP_MULTIPLIER_RANGING",
+    "regime_sl_multiplier_trending": "STRATEGY_REGIME_SL_MULTIPLIER_TRENDING",
+    "regime_sl_multiplier_ranging": "STRATEGY_REGIME_SL_MULTIPLIER_RANGING",
+    "regime_trailing_activation_multiplier_trending": "STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_TRENDING",
+    "regime_trailing_activation_multiplier_ranging": "STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_RANGING",
+    "regime_trailing_distance_multiplier_trending": "STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_TRENDING",
+    "regime_trailing_distance_multiplier_ranging": "STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_RANGING",
 }
 
 def fixed_to_env(fixed: dict[str, Any]) -> dict[str, str]:
@@ -209,6 +222,18 @@ class ParameterSet:
     entry_timing_timeout_bars: int = 10
     # Primary bar specification (for signal generation)
     bar_spec: str = "15-MINUTE-MID-EXTERNAL"
+    # Regime Detection Parameters
+    regime_detection_enabled: bool = False
+    regime_adx_trending_threshold: float = 25.0
+    regime_adx_ranging_threshold: float = 20.0
+    regime_tp_multiplier_trending: float = 1.5
+    regime_tp_multiplier_ranging: float = 0.8
+    regime_sl_multiplier_trending: float = 1.0
+    regime_sl_multiplier_ranging: float = 1.0
+    regime_trailing_activation_multiplier_trending: float = 0.75
+    regime_trailing_activation_multiplier_ranging: float = 1.25
+    regime_trailing_distance_multiplier_trending: float = 0.67
+    regime_trailing_distance_multiplier_ranging: float = 1.33
 
     def to_env_dict(self) -> Dict[str, str]:
         """Convert parameters to environment variable dictionary."""
@@ -239,6 +264,18 @@ class ParameterSet:
             "BACKTEST_ENTRY_TIMING_TIMEOUT_BARS": str(self.entry_timing_timeout_bars),
             # Primary bar specification
             "BACKTEST_BAR_SPEC": str(self.bar_spec),
+            # Regime Detection Parameters
+            "STRATEGY_REGIME_DETECTION_ENABLED": str(self.regime_detection_enabled).lower(),
+            "STRATEGY_REGIME_ADX_TRENDING_THRESHOLD": str(self.regime_adx_trending_threshold),
+            "STRATEGY_REGIME_ADX_RANGING_THRESHOLD": str(self.regime_adx_ranging_threshold),
+            "STRATEGY_REGIME_TP_MULTIPLIER_TRENDING": str(self.regime_tp_multiplier_trending),
+            "STRATEGY_REGIME_TP_MULTIPLIER_RANGING": str(self.regime_tp_multiplier_ranging),
+            "STRATEGY_REGIME_SL_MULTIPLIER_TRENDING": str(self.regime_sl_multiplier_trending),
+            "STRATEGY_REGIME_SL_MULTIPLIER_RANGING": str(self.regime_sl_multiplier_ranging),
+            "STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_TRENDING": str(self.regime_trailing_activation_multiplier_trending),
+            "STRATEGY_REGIME_TRAILING_ACTIVATION_MULTIPLIER_RANGING": str(self.regime_trailing_activation_multiplier_ranging),
+            "STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_TRENDING": str(self.regime_trailing_distance_multiplier_trending),
+            "STRATEGY_REGIME_TRAILING_DISTANCE_MULTIPLIER_RANGING": str(self.regime_trailing_distance_multiplier_ranging),
         }
 
 
@@ -356,7 +393,13 @@ def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, L
         "trend_filter_enabled", "trend_bar_spec", "trend_fast_period", "trend_slow_period",
         "entry_timing_enabled", "entry_timing_bar_spec", "entry_timing_method", "entry_timing_timeout_bars",
         # Primary bar specification (for signal generation)
-        "bar_spec"
+        "bar_spec",
+        # Regime Detection Parameters
+        "regime_detection_enabled", "regime_adx_trending_threshold", "regime_adx_ranging_threshold",
+        "regime_tp_multiplier_trending", "regime_tp_multiplier_ranging",
+        "regime_sl_multiplier_trending", "regime_sl_multiplier_ranging",
+        "regime_trailing_activation_multiplier_trending", "regime_trailing_activation_multiplier_ranging",
+        "regime_trailing_distance_multiplier_trending", "regime_trailing_distance_multiplier_ranging"
     }
 
     for param_name, param_config in param_ranges.items():
@@ -369,10 +412,15 @@ def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, L
         
         # Validate value types
         for value in values:
-            if param_name in ["dmi_enabled", "stoch_enabled", "trend_filter_enabled", "entry_timing_enabled"]:
+            if param_name in ["dmi_enabled", "stoch_enabled", "trend_filter_enabled", "entry_timing_enabled", "regime_detection_enabled"]:
                 if not isinstance(value, bool):
                     raise ValueError(f"Parameter {param_name} values must be boolean")
-            elif param_name in ["crossover_threshold_pips", "dmi_minimum_difference"]:
+            elif param_name in ["crossover_threshold_pips", "dmi_minimum_difference", 
+                               "regime_adx_trending_threshold", "regime_adx_ranging_threshold",
+                               "regime_tp_multiplier_trending", "regime_tp_multiplier_ranging",
+                               "regime_sl_multiplier_trending", "regime_sl_multiplier_ranging",
+                               "regime_trailing_activation_multiplier_trending", "regime_trailing_activation_multiplier_ranging",
+                               "regime_trailing_distance_multiplier_trending", "regime_trailing_distance_multiplier_ranging"]:
                 if not isinstance(value, (int, float)):
                     raise ValueError(f"Parameter {param_name} values must be numeric")
             elif param_name in ["trend_bar_spec", "entry_timing_bar_spec", "entry_timing_method", "bar_spec"]:
@@ -434,6 +482,18 @@ def generate_parameter_combinations(param_ranges: Dict[str, List[Any]], fixed_pa
                 entry_timing_timeout_bars=params_dict.get("entry_timing_timeout_bars", 10),
                 # Primary bar specification
                 bar_spec=params_dict.get("bar_spec", "15-MINUTE-MID-EXTERNAL"),
+                # Regime Detection Parameters
+                regime_detection_enabled=params_dict.get("regime_detection_enabled", False),
+                regime_adx_trending_threshold=params_dict.get("regime_adx_trending_threshold", 25.0),
+                regime_adx_ranging_threshold=params_dict.get("regime_adx_ranging_threshold", 20.0),
+                regime_tp_multiplier_trending=params_dict.get("regime_tp_multiplier_trending", 1.5),
+                regime_tp_multiplier_ranging=params_dict.get("regime_tp_multiplier_ranging", 0.8),
+                regime_sl_multiplier_trending=params_dict.get("regime_sl_multiplier_trending", 1.0),
+                regime_sl_multiplier_ranging=params_dict.get("regime_sl_multiplier_ranging", 1.0),
+                regime_trailing_activation_multiplier_trending=params_dict.get("regime_trailing_activation_multiplier_trending", 0.75),
+                regime_trailing_activation_multiplier_ranging=params_dict.get("regime_trailing_activation_multiplier_ranging", 1.25),
+                regime_trailing_distance_multiplier_trending=params_dict.get("regime_trailing_distance_multiplier_trending", 0.67),
+                regime_trailing_distance_multiplier_ranging=params_dict.get("regime_trailing_distance_multiplier_ranging", 1.33),
             )
             
             # Validate combination

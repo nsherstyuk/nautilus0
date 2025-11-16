@@ -1,0 +1,91 @@
+# Regime Detection Optimization - FOCUSED VERSION
+# Smaller grid for faster testing (~54-162 combinations)
+#
+# This is a focused optimization to test if regime detection CAN work
+# before running the full grid search
+#
+# Usage:
+#   python optimization/grid_search.py \
+#     --config optimization/configs/regime_detection_focused.yaml \
+#     --objective sharpe_ratio \
+#     --workers 8 \
+#     --output optimization/results/regime_detection_focused_results.csv \
+#     --no-resume
+#
+# Grid Size: 3 × 2 × 3 × 3 × 1 × 1 × 1 × 1 × 1 × 1 = 54 combinations
+# Estimated time: ~45-60 minutes (50 sec per run)
+
+optimization:
+  objective: sharpe_ratio
+  workers: 8
+  checkpoint_interval: 10
+  checkpoint_file: optimization/checkpoints/regime_detection_focused_checkpoint.csv
+  output_file: optimization/results/regime_detection_focused_results.csv
+  timeout_seconds: 300
+
+parameters:
+  # ADX Thresholds - Focused range
+  regime_adx_trending_threshold:
+    values: [20.0, 25.0, 30.0]
+    description: "ADX value above which market is considered 'trending'"
+  
+  regime_adx_ranging_threshold:
+    values: [15.0, 20.0]
+    description: "ADX value below which market is considered 'ranging'"
+  
+  # Take Profit Multipliers - Focused range
+  regime_tp_multiplier_trending:
+    values: [1.0, 1.3, 1.6]
+    description: "TP multiplier for trending markets"
+  
+  regime_tp_multiplier_ranging:
+    values: [0.7, 0.85, 1.0]
+    description: "TP multiplier for ranging markets"
+  
+  # Stop Loss Multipliers - Fixed at 1.0 (no adjustment) to reduce variables
+  # Trailing multipliers - Fixed at defaults to reduce variables
+
+fixed:
+  # Base strategy parameters (from 14k PnL configuration)
+  fast_period: 42
+  slow_period: 270
+  crossover_threshold_pips: 0.35
+  stop_loss_pips: 35
+  take_profit_pips: 50
+  trailing_stop_activation_pips: 22
+  trailing_stop_distance_pips: 12
+  
+  # Filters (from 14k PnL configuration)
+  dmi_enabled: true
+  dmi_period: 10
+  dmi_bar_spec: "2-MINUTE-MID-EXTERNAL"
+  stoch_enabled: true
+  stoch_period_k: 18
+  stoch_period_d: 3
+  stoch_bullish_threshold: 30
+  stoch_bearish_threshold: 65
+  stoch_bar_spec: "15-MINUTE-MID-EXTERNAL"
+  
+  # Regime detection must be enabled
+  regime_detection_enabled: true
+  
+  # SL multipliers fixed at 1.0 (no adjustment)
+  regime_sl_multiplier_trending: 1.0
+  regime_sl_multiplier_ranging: 1.0
+  
+  # Trailing multipliers fixed at defaults
+  regime_trailing_activation_multiplier_trending: 0.75
+  regime_trailing_activation_multiplier_ranging: 1.25
+  regime_trailing_distance_multiplier_trending: 0.67
+  regime_trailing_distance_multiplier_ranging: 1.33
+  
+  # Other filters disabled
+  trend_filter_enabled: false
+  entry_timing_enabled: false
+  rsi_enabled: false
+  volume_enabled: false
+  atr_enabled: false
+  
+  # Time filter disabled
+  time_filter_enabled: false
+

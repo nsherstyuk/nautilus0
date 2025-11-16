@@ -120,6 +120,15 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     regime_trailing_activation_multiplier_ranging: float = 1.25   # 20 -> 25 pips
     regime_trailing_distance_multiplier_trending: float = 0.67    # 15 -> 10 pips
     regime_trailing_distance_multiplier_ranging: float = 1.33     # 15 -> 20 pips
+    
+    # Time-of-day multipliers (applied after regime adjustments)
+    time_multiplier_enabled: bool = False
+    time_tp_multiplier_eu_morning: float = 1.0  # 7-11 UTC (EU session start)
+    time_tp_multiplier_us_session: float = 1.0  # 13-17 UTC (US session overlap)
+    time_tp_multiplier_other: float = 1.0       # All other hours
+    time_sl_multiplier_eu_morning: float = 1.0
+    time_sl_multiplier_us_session: float = 1.0
+    time_sl_multiplier_other: float = 1.0
 
 
 class MovingAverageCrossover(Strategy):
@@ -939,6 +948,42 @@ class MovingAverageCrossover(Strategy):
         
         return regime
 
+    def _get_time_profile_multipliers(self, timestamp) -> tuple[float, float]:
+        """
+        Get TP and SL multipliers based on time of day (UTC hour).
+        
+        Args:
+            timestamp: Event timestamp from the bar
+            
+        Returns:
+            (tp_mult, sl_mult): Tuple of TP and SL multipliers for current time
+        """
+        if not self.cfg.time_multiplier_enabled:
+            return (1.0, 1.0)
+        
+        # Extract hour in UTC from nanosecond timestamp
+        # NautilusTrader timestamps are in nanoseconds since epoch
+        dt_utc = datetime.fromtimestamp(timestamp / 1_000_000_000, tz=timezone.utc)
+        hour = dt_utc.hour
+        
+        # Define time profiles
+        # EU morning: 7-11 UTC (London open, early volatility)
+        # US session: 13-17 UTC (NY open, overlap with EU close)
+        # Other: all other hours
+        
+        if 7 <= hour < 11:
+            profile = "EU_MORNING"
+            result = (self.cfg.time_tp_multiplier_eu_morning, self.cfg.time_sl_multiplier_eu_morning)
+        elif 13 <= hour < 17:
+            profile = "US_SESSION"
+            result = (self.cfg.time_tp_multiplier_us_session, self.cfg.time_sl_multiplier_us_session)
+        else:
+            profile = "OTHER"
+            result = (self.cfg.time_tp_multiplier_other, self.cfg.time_sl_multiplier_other)
+        
+        self.log.debug(f"[TIME_PROFILE] Hour={hour} UTC -> {profile}, multipliers=(TP={result[0]}, SL={result[1]})")
+        return result
+
     def _calculate_sl_tp_prices(self, entry_price: Decimal, order_side: OrderSide, bar: Bar) -> Tuple[Price, Price]:
         """
         Calculate stop loss and take profit prices based on entry price and order side.
@@ -985,6 +1030,16 @@ class MovingAverageCrossover(Strategy):
                     # Successfully computed adaptive levels
                     sl_distance = levels['sl_distance']
                     tp_distance = levels['tp_distance']
+                    
+                    # Apply time-of-day multipliers to adaptive stops
+                    time_tp_mult, time_sl_mult = self._get_time_profile_multipliers(bar.ts_event)
+                    if time_tp_mult != 1.0 or time_sl_mult != 1.0:
+                        sl_distance = sl_distance * Decimal(str(time_sl_mult))
+                        tp_distance = tp_distance * Decimal(str(time_tp_mult))
+                        self.log.info(
+                            f"[TIME_MULTIPLIER] Applied: TP={time_tp_mult}, SL={time_sl_mult} "
+                            f"-> SL={sl_distance/pip_value:.1f} pips, TP={tp_distance/pip_value:.1f} pips"
+                        )
                     
                     # Log adaptive calculation details
                     if levels.get('atr'):
@@ -1034,6 +1089,11 @@ class MovingAverageCrossover(Strategy):
                 # No regime detection: use base values
                 tp_pips = base_tp_pips
                 sl_pips = base_sl_pips
+            
+            # Apply time-of-day multipliers (after regime adjustments)
+            time_tp_mult, time_sl_mult = self._get_time_profile_multipliers(bar.ts_event)
+            tp_pips = tp_pips * Decimal(str(time_tp_mult))
+            sl_pips = sl_pips * Decimal(str(time_sl_mult))
             
             # Convert pips to price distances
             sl_distance = sl_pips * pip_value
