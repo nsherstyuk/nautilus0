@@ -62,6 +62,7 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     dmi_enabled: bool = True
     dmi_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
     dmi_period: int = 14
+    dmi_adx_min_strength: float = 0.0  # Minimum ADX to confirm trend (0 = disabled, 20+ recommended to filter choppy markets)
     stoch_enabled: bool = True
     stoch_bar_spec: str = "15-MINUTE-MID-EXTERNAL"
     stoch_period_k: int = 14
@@ -129,6 +130,11 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     time_sl_multiplier_eu_morning: float = 1.0
     time_sl_multiplier_us_session: float = 1.0
     time_sl_multiplier_other: float = 1.0
+    
+    # Minimum hold time feature (wider initial stops)
+    min_hold_time_enabled: bool = False
+    min_hold_time_hours: float = 4.0            # Minimum hours before normal stop applies
+    min_hold_time_stop_multiplier: float = 1.5  # Initial stop width multiplier (e.g., 1.5 = 50% wider)
 
 
 class MovingAverageCrossover(Strategy):
@@ -621,6 +627,17 @@ class MovingAverageCrossover(Strategy):
             self.log.debug("DMI not initialized yet, skipping DMI check")
             return True
         
+        # Check ADX strength if threshold is set (filters choppy/ranging markets)
+        if self.cfg.dmi_adx_min_strength > 0:
+            adx_value = self.dmi.adx
+            if adx_value < self.cfg.dmi_adx_min_strength:
+                self._log_rejected_signal(
+                    direction,
+                    f"dmi_adx_too_weak (ADX={adx_value:.2f} < {self.cfg.dmi_adx_min_strength:.2f}, choppy market)",
+                    bar
+                )
+                return False
+        
         # Check trend alignment
         if direction == "BUY":
             # Bullish crossover requires +DI > -DI (bullish trend)
@@ -642,7 +659,7 @@ class MovingAverageCrossover(Strategy):
                 return False
         
         # DMI confirms the trend
-        self.log.debug(f"DMI trend confirmed for {direction}: +DI={self.dmi.plus_di:.2f}, -DI={self.dmi.minus_di:.2f}")
+        self.log.debug(f"DMI trend confirmed for {direction}: +DI={self.dmi.plus_di:.2f}, -DI={self.dmi.minus_di:.2f}, ADX={self.dmi.adx:.2f}")
         return True
 
     def _check_stochastic_momentum(self, direction: str, bar: Bar) -> bool:
@@ -1041,6 +1058,22 @@ class MovingAverageCrossover(Strategy):
                             f"-> SL={sl_distance/pip_value:.1f} pips, TP={tp_distance/pip_value:.1f} pips"
                         )
                     
+                    # Apply minimum hold time multiplier (wider initial stop) for adaptive mode
+                    if self.cfg.min_hold_time_enabled:
+                        current_position = self._current_position()
+                        if current_position is not None:
+                            time_held_ns = bar.ts_event - current_position.ts_opened
+                            time_held_hours = time_held_ns / 1e9 / 3600
+                            
+                            if time_held_hours < self.cfg.min_hold_time_hours:
+                                original_sl_pips = float(sl_distance / pip_value)
+                                sl_distance = sl_distance * Decimal(str(self.cfg.min_hold_time_stop_multiplier))
+                                self.log.info(
+                                    f"[MIN_HOLD_TIME] Position held {time_held_hours:.2f}h < {self.cfg.min_hold_time_hours}h: "
+                                    f"Widening SL from {original_sl_pips:.1f} to {float(sl_distance/pip_value):.1f} pips "
+                                    f"(multiplier={self.cfg.min_hold_time_stop_multiplier})"
+                                )
+                    
                     # Log adaptive calculation details
                     if levels.get('atr'):
                         atr_pips = levels['atr'] / pip_value
@@ -1094,6 +1127,24 @@ class MovingAverageCrossover(Strategy):
             time_tp_mult, time_sl_mult = self._get_time_profile_multipliers(bar.ts_event)
             tp_pips = tp_pips * Decimal(str(time_tp_mult))
             sl_pips = sl_pips * Decimal(str(time_sl_mult))
+            
+            # Apply minimum hold time multiplier (wider initial stop)
+            if self.cfg.min_hold_time_enabled:
+                # Check if we have an existing position that's still within min hold time
+                current_position = self._current_position()
+                if current_position is not None:
+                    time_held_ns = bar.ts_event - current_position.ts_opened
+                    time_held_hours = time_held_ns / 1e9 / 3600
+                    
+                    if time_held_hours < self.cfg.min_hold_time_hours:
+                        # Position still in initial period - use wider stop
+                        original_sl_pips = float(sl_pips)
+                        sl_pips = sl_pips * Decimal(str(self.cfg.min_hold_time_stop_multiplier))
+                        self.log.info(
+                            f"[MIN_HOLD_TIME] Position held {time_held_hours:.2f}h < {self.cfg.min_hold_time_hours}h: "
+                            f"Widening SL from {original_sl_pips:.1f} to {float(sl_pips):.1f} pips "
+                            f"(multiplier={self.cfg.min_hold_time_stop_multiplier})"
+                        )
             
             # Convert pips to price distances
             sl_distance = sl_pips * pip_value
