@@ -34,6 +34,7 @@ from nautilus_trader.adapters.interactive_brokers.factories import (
     InteractiveBrokersLiveDataClientFactory,
     InteractiveBrokersLiveExecClientFactory,
 )
+from nautilus_trader.adapters.interactive_brokers.data import InteractiveBrokersDataClient
 from nautilus_trader.config import (
     ImportableStrategyConfig,
     LiveDataEngineConfig,
@@ -45,7 +46,7 @@ from nautilus_trader.live.node import TradingNode
 
 from config.ibkr_config import get_ibkr_config
 from config.live_config import LiveConfig, get_live_config, validate_live_config
-from live.historical_backfill import calculate_required_bars, calculate_required_duration_hours, backfill_historical_data
+from live.historical_backfill import calculate_required_bars, calculate_required_duration_hours, backfill_historical_data, feed_historical_bars_to_strategy
 
 
 def setup_logging(log_dir: Path) -> logging.Logger:
@@ -257,7 +258,8 @@ def setup_signal_handlers(node: TradingNode) -> None:
 
     def handler(signum, frame):  # pragma: no cover - runtime behaviour
         logger.warning("Signal %s received. Initiating shutdown...", signum)
-        node.shutdown_system(reason=f"Signal {signum} received")
+        if node.is_running():
+            asyncio.create_task(node.stop_async())
 
     signal.signal(signal.SIGINT, handler)
     logger.info("SIGINT handler registered for graceful shutdown.")
@@ -342,9 +344,9 @@ async def main() -> int:
     node.trader.add_strategy(strategy_instance)
     setup_signal_handlers(node)
 
-    logger.info("Waiting for IBKR clients to connect (up to 60 seconds)...")
+    logger.info("Waiting for IBKR clients to connect (up to 30 seconds)...")
     # Give clients time to establish connection before starting main loop
-    await asyncio.sleep(60)
+    await asyncio.sleep(30)
 
     # =========================================================================
     # HISTORICAL DATA BACKFILL - DISABLED
@@ -383,11 +385,12 @@ async def main() -> int:
     # =========================================================================
     logger.info("Starting historical data backfill for indicator warmup...")
     try:
-        # Access IBKR data client through trader's data engine (private attribute)
+        # Access IBKR data client through kernel's data engine
         ib_data_client = None
-        if hasattr(node.trader, '_data_engine') and hasattr(node.trader._data_engine, '_clients'):
-            for client_id, client in node.trader._data_engine._clients.items():
-                if 'INTERACTIVE_BROKERS' in str(client_id):
+        data_engine = getattr(node.kernel, "data_engine", None)
+        if data_engine and hasattr(data_engine, "_clients"):
+            for client_id, client in data_engine._clients.items():
+                if isinstance(client, InteractiveBrokersDataClient):
                     ib_data_client = client
                     logger.info(f"Found IBKR data client: {client_id}")
                     break
@@ -423,15 +426,17 @@ async def main() -> int:
                 
                 if success and historical_bars and len(historical_bars) > 0:
                     logger.info(f"✓ Backfill successful: retrieved {bars_loaded} bars")
-                    logger.info(f"Injecting {len(historical_bars)} bars into cache...")
+                    logger.info(f"Feeding {len(historical_bars)} bars directly to strategy...")
                     
-                    # ✅ INJECT BARS INTO CACHE - Strategy will consume these on startup
-                    # Note: add_bars() takes a list of bars (bars contain bar_type internally)
-                    node.cache.add_bars(historical_bars)
+                    # ✅ FEED BARS DIRECTLY TO STRATEGY - Proven working approach from Live_works_with_optimization branch
+                    await feed_historical_bars_to_strategy(
+                        strategy_instance=strategy_instance,
+                        bars=historical_bars,
+                        bar_type=bar_type,
+                    )
                     
-                    cached_bars = node.cache.bar_count(bar_type)
-                    logger.info(f"✓ Cache injection complete: {cached_bars} bars now available")
-                    logger.info("Strategy will consume historical bars during startup and warm up immediately")
+                    logger.info("✓ Historical bars fed to strategy successfully")
+                    logger.info("Strategy warmup should be complete or nearly complete")
                 elif success:
                     logger.warning("Backfill retrieved 0 bars - strategy will warm up naturally")
                 else:
@@ -449,21 +454,28 @@ async def main() -> int:
     logger.info("Historical data backfill process completed")
     logger.info("Live trading node built successfully. Starting...")
 
+    return_code = 0
     try:
-        await asyncio.to_thread(node.run)
-        return_code = 0
+        await node.run_async()
+    except asyncio.CancelledError:
+        logger.info("Live trading run cancelled; proceeding with shutdown.")
     except KeyboardInterrupt:
         logger.warning("KeyboardInterrupt received. Initiating shutdown...")
-        node.shutdown_system(reason="KeyboardInterrupt")
         return_code = 0
     except Exception as exc:  # pragma: no cover
         logger.exception("Live trading encountered an error: %s", exc)
         return_code = 1
     finally:
+        if node.is_running():
+            logger.info("Stopping trading node...")
+            try:
+                await node.stop_async()
+            except Exception as stop_exc:
+                logger.warning("Error during node shutdown: %s", stop_exc)
         try:
-            node.stop()
-        finally:
             node.dispose()
+        except Exception as dispose_exc:
+            logger.warning("Error during node disposal: %s", dispose_exc)
         logger.info("Live trading system stopped.")
 
     return return_code
