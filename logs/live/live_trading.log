@@ -8996,3 +8996,312 @@ AttributeError: 'InteractiveBrokersDataClient' object has no attribute 'cache'. 
 2025-11-20 08:59:43,056 - live - INFO - Strategy will warm up naturally as live bars arrive
 2025-11-20 08:59:43,056 - live - INFO - Live trading node built successfully. Starting...
 2025-11-20 08:59:53,102 - live - INFO - Live trading system stopped.
+2025-11-20 09:45:44,515 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-20 09:45:44,516 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-20 09:45:44,516 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-20 09:45:44,522 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=40 slow=260 trade_size=10000
+2025-11-20 09:45:44,522 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-11-20 09:45:44,522 - live - INFO - Resolved IBKR market data type enum: 4 (4)
+2025-11-20 09:45:44,523 - live - INFO - Adaptive stops: mode=fixed
+2025-11-20 09:45:44,523 - live - INFO - Regime detection: enabled=False
+2025-11-20 09:45:44,523 - live - INFO - Weekday exclusions: mode=flat
+2025-11-20 09:45:44,523 - live - INFO - RSI filter: enabled=False
+2025-11-20 09:45:44,523 - live - INFO - Volume filter: enabled=False
+2025-11-20 09:45:44,523 - live - INFO - ATR filter: enabled=False
+2025-11-20 09:45:44,523 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-11-20 09:45:44,523 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-20 09:45:44,959 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-20 09:45:44,959 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-20 09:45:44,960 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-20 09:46:44,960 - live - INFO - ================================================================================
+2025-11-20 09:46:44,961 - live - INFO - STRATEGY WARMUP INFO
+2025-11-20 09:46:44,961 - live - INFO - ================================================================================
+2025-11-20 09:46:44,961 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 09:46:45,004 - live - INFO - Slow period: 260 bars
+2025-11-20 09:46:45,004 - live - INFO - Bar interval: 15-MINUTE-MID-EXTERNAL
+2025-11-20 09:46:45,005 - live - INFO - Strategy will warm up naturally as live bars arrive
+2025-11-20 09:46:45,005 - live - INFO - NO TRADING SIGNALS will be generated until warmup completes
+2025-11-20 09:46:45,005 - live - INFO - Watch for '[STRATEGY READY]' message in logs
+2025-11-20 09:46:45,005 - live - INFO - ================================================================================
+2025-11-20 09:46:45,005 - live - INFO - Starting historical data backfill for indicator warmup...
+2025-11-20 09:46:45,005 - live - INFO - Found IBKR data client: INTERACTIVE_BROKERS
+2025-11-20 09:46:45,005 - live - INFO - Requesting historical bars for EUR/USD.IDEALPRO, bar_type=EUR/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL
+2025-11-20 09:46:45,005 - live - INFO - ================================================================================
+2025-11-20 09:46:45,006 - live - INFO - HISTORICAL DATA BACKFILL ANALYSIS
+2025-11-20 09:46:45,006 - live - INFO - ================================================================================
+2025-11-20 09:46:45,006 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 09:46:45,006 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 09:46:45,006 - live - INFO - Instrument: EUR/USD.IDEALPRO
+2025-11-20 09:46:45,006 - live - INFO - Bar specification: 15-MINUTE-MID-EXTERNAL
+2025-11-20 09:46:45,006 - live - INFO - Slow indicator period: 260
+2025-11-20 09:46:45,006 - live - INFO - Required bars for warmup: 312
+2025-11-20 09:46:45,006 - live - INFO - Required duration: 109.20 hours (4.55 days)
+2025-11-20 09:46:45,006 - live - INFO - [WARN] Historical data backfill required: 0 bars available (required: 312)
+2025-11-20 09:46:45,006 - live - INFO - Requesting 109.20 hours (4.55 days) of historical data...
+2025-11-20 09:46:45,006 - live - INFO - Requesting 132.60 hours of 1-minute bars (need ~7956 bars to create 312 15-minute bars)
+2025-11-20 09:46:45,006 - live - INFO - Requesting historical bars: instrument=EUR/USD.IDEALPRO, bar_type=EUR/USD.IDEALPRO-1-MINUTE-MID-EXTERNAL, duration=132.60 hours
+2025-11-20 09:46:45,007 - live - INFO - Instrument EUR/USD.IDEALPRO not found, loading...
+2025-11-20 09:46:46,100 - live - INFO - Instrument EUR/USD.IDEALPRO is in cache
+2025-11-20 09:46:46,101 - live - INFO - Using contract: IBContract(secType='CASH', conId=12087792, exchange='IDEALPRO', symbol='EUR', localSymbol='EUR.USD', currency='USD', tradingClass='EUR.USD', strike=0.0, comboLegs=[])
+2025-11-20 09:46:46,101 - live - DEBUG - Matched 1-MINUTE pattern in '1-MINUTE-MID-EXTERNAL', chunk_size=7.0 days
+2025-11-20 09:46:46,102 - live - INFO - Chunk size calculation: bar_spec='1-MINUTE-MID-EXTERNAL', chunk_size_days=7.0, duration_days=5.52
+2025-11-20 09:46:46,102 - live - INFO - Duration (5.52 days) within chunk limit (7.0 days), using single request
+2025-11-20 09:46:47,404 - live - INFO - Retrieved 6692 historical bars
+2025-11-20 09:46:47,404 - live - INFO - Retrieved 6692 1-minute bars, aggregating into 15-minute bars...
+2025-11-20 09:46:47,440 - live - INFO - [OK] Successfully aggregated 447 15-minute bars from 6692 1-minute bars (required: 312)
+2025-11-20 09:46:47,440 - live - INFO - ================================================================================
+2025-11-20 09:46:47,443 - live - INFO - Injecting 447 bars into cache...
+2025-11-20 09:46:47,443 - live - ERROR - Historical backfill failed: add_bars() takes exactly 1 positional argument (2 given)
+Traceback (most recent call last):
+  File "C:\nautilus0\live\run_live.py", line 429, in main
+    node.cache.add_bars(bar_type, historical_bars)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "nautilus_trader/cache/cache.pyx", line 1759, in nautilus_trader.cache.cache.Cache.add_bars
+TypeError: add_bars() takes exactly 1 positional argument (2 given)
+2025-11-20 09:46:47,444 - live - INFO - Continuing without backfill - strategy will warm up naturally
+2025-11-20 09:46:47,444 - live - INFO - Historical data backfill process completed
+2025-11-20 09:46:47,444 - live - INFO - Live trading node built successfully. Starting...
+2025-11-20 09:46:57,500 - live - INFO - Live trading system stopped.
+2025-11-20 11:35:18,108 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-20 11:35:18,109 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-20 11:35:18,109 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-20 11:35:18,116 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=40 slow=260 trade_size=10000
+2025-11-20 11:35:18,116 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-11-20 11:35:18,116 - live - INFO - Resolved IBKR market data type enum: 4 (4)
+2025-11-20 11:35:18,116 - live - INFO - Adaptive stops: mode=fixed
+2025-11-20 11:35:18,116 - live - INFO - Regime detection: enabled=False
+2025-11-20 11:35:18,117 - live - INFO - Weekday exclusions: mode=flat
+2025-11-20 11:35:18,117 - live - INFO - RSI filter: enabled=False
+2025-11-20 11:35:18,117 - live - INFO - Volume filter: enabled=False
+2025-11-20 11:35:18,117 - live - INFO - ATR filter: enabled=False
+2025-11-20 11:35:18,117 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-11-20 11:35:18,117 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-20 11:35:18,612 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-20 11:35:18,613 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-20 11:35:18,613 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-20 11:36:18,625 - live - INFO - ================================================================================
+2025-11-20 11:36:18,625 - live - INFO - STRATEGY WARMUP INFO
+2025-11-20 11:36:18,625 - live - INFO - ================================================================================
+2025-11-20 11:36:18,625 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:36:18,629 - live - INFO - Slow period: 260 bars
+2025-11-20 11:36:18,630 - live - INFO - Bar interval: 15-MINUTE-MID-EXTERNAL
+2025-11-20 11:36:18,630 - live - INFO - Strategy will warm up naturally as live bars arrive
+2025-11-20 11:36:18,630 - live - INFO - NO TRADING SIGNALS will be generated until warmup completes
+2025-11-20 11:36:18,630 - live - INFO - Watch for '[STRATEGY READY]' message in logs
+2025-11-20 11:36:18,630 - live - INFO - ================================================================================
+2025-11-20 11:36:18,630 - live - INFO - Starting historical data backfill for indicator warmup...
+2025-11-20 11:36:18,630 - live - INFO - Found IBKR data client: INTERACTIVE_BROKERS
+2025-11-20 11:36:18,630 - live - INFO - Requesting historical bars for EUR/USD.IDEALPRO, bar_type=EUR/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL
+2025-11-20 11:36:18,630 - live - INFO - ================================================================================
+2025-11-20 11:36:18,630 - live - INFO - HISTORICAL DATA BACKFILL ANALYSIS
+2025-11-20 11:36:18,630 - live - INFO - ================================================================================
+2025-11-20 11:36:18,630 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:36:18,630 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:36:18,630 - live - INFO - Instrument: EUR/USD.IDEALPRO
+2025-11-20 11:36:18,631 - live - INFO - Bar specification: 15-MINUTE-MID-EXTERNAL
+2025-11-20 11:36:18,631 - live - INFO - Slow indicator period: 260
+2025-11-20 11:36:18,631 - live - INFO - Required bars for warmup: 312
+2025-11-20 11:36:18,631 - live - INFO - Required duration: 109.20 hours (4.55 days)
+2025-11-20 11:36:18,631 - live - INFO - [WARN] Historical data backfill required: 0 bars available (required: 312)
+2025-11-20 11:36:18,631 - live - INFO - Requesting 109.20 hours (4.55 days) of historical data...
+2025-11-20 11:36:18,631 - live - INFO - Requesting 132.60 hours of 1-minute bars (need ~7956 bars to create 312 15-minute bars)
+2025-11-20 11:36:18,631 - live - INFO - Requesting historical bars: instrument=EUR/USD.IDEALPRO, bar_type=EUR/USD.IDEALPRO-1-MINUTE-MID-EXTERNAL, duration=132.60 hours
+2025-11-20 11:36:18,631 - live - INFO - Instrument EUR/USD.IDEALPRO not found, loading...
+2025-11-20 11:36:19,695 - live - INFO - Instrument EUR/USD.IDEALPRO is in cache
+2025-11-20 11:36:19,695 - live - INFO - Using contract: IBContract(secType='CASH', conId=12087792, exchange='IDEALPRO', symbol='EUR', localSymbol='EUR.USD', currency='USD', tradingClass='EUR.USD', strike=0.0, comboLegs=[])
+2025-11-20 11:36:19,695 - live - DEBUG - Matched 1-MINUTE pattern in '1-MINUTE-MID-EXTERNAL', chunk_size=7.0 days
+2025-11-20 11:36:19,695 - live - INFO - Chunk size calculation: bar_spec='1-MINUTE-MID-EXTERNAL', chunk_size_days=7.0, duration_days=5.52
+2025-11-20 11:36:19,695 - live - INFO - Duration (5.52 days) within chunk limit (7.0 days), using single request
+2025-11-20 11:36:20,589 - live - INFO - Retrieved 6802 historical bars
+2025-11-20 11:36:20,589 - live - INFO - Retrieved 6802 1-minute bars, aggregating into 15-minute bars...
+2025-11-20 11:36:20,621 - live - INFO - [OK] Successfully aggregated 454 15-minute bars from 6802 1-minute bars (required: 312)
+2025-11-20 11:36:20,621 - live - INFO - ================================================================================
+2025-11-20 11:36:20,623 - live - INFO - Injecting 454 bars into cache...
+2025-11-20 11:36:20,623 - live - ERROR - Historical backfill failed: add_bars() takes exactly 1 positional argument (2 given)
+Traceback (most recent call last):
+  File "C:\nautilus0\live\run_live.py", line 429, in main
+    node.cache.add_bars(bar_type, historical_bars)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "nautilus_trader/cache/cache.pyx", line 1759, in nautilus_trader.cache.cache.Cache.add_bars
+TypeError: add_bars() takes exactly 1 positional argument (2 given)
+2025-11-20 11:36:20,623 - live - INFO - Continuing without backfill - strategy will warm up naturally
+2025-11-20 11:36:20,623 - live - INFO - Historical data backfill process completed
+2025-11-20 11:36:20,623 - live - INFO - Live trading node built successfully. Starting...
+2025-11-20 11:36:30,682 - live - INFO - Live trading system stopped.
+2025-11-20 11:37:16,171 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-20 11:37:16,171 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-20 11:37:16,171 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-20 11:37:16,179 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=40 slow=260 trade_size=10000
+2025-11-20 11:37:16,179 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-11-20 11:37:16,179 - live - INFO - Resolved IBKR market data type enum: 4 (4)
+2025-11-20 11:37:16,179 - live - INFO - Adaptive stops: mode=fixed
+2025-11-20 11:37:16,179 - live - INFO - Regime detection: enabled=False
+2025-11-20 11:37:16,179 - live - INFO - Weekday exclusions: mode=flat
+2025-11-20 11:37:16,179 - live - INFO - RSI filter: enabled=False
+2025-11-20 11:37:16,180 - live - INFO - Volume filter: enabled=False
+2025-11-20 11:37:16,180 - live - INFO - ATR filter: enabled=False
+2025-11-20 11:37:16,180 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-11-20 11:37:16,180 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-20 11:37:16,937 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-20 11:37:16,937 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-20 11:37:16,937 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-20 11:38:16,948 - live - INFO - ================================================================================
+2025-11-20 11:38:16,948 - live - INFO - STRATEGY WARMUP INFO
+2025-11-20 11:38:16,948 - live - INFO - ================================================================================
+2025-11-20 11:38:16,948 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:38:16,952 - live - INFO - Slow period: 260 bars
+2025-11-20 11:38:16,952 - live - INFO - Bar interval: 15-MINUTE-MID-EXTERNAL
+2025-11-20 11:38:16,952 - live - INFO - Strategy will warm up naturally as live bars arrive
+2025-11-20 11:38:16,952 - live - INFO - NO TRADING SIGNALS will be generated until warmup completes
+2025-11-20 11:38:16,952 - live - INFO - Watch for '[STRATEGY READY]' message in logs
+2025-11-20 11:38:16,952 - live - INFO - ================================================================================
+2025-11-20 11:38:16,952 - live - INFO - Starting historical data backfill for indicator warmup...
+2025-11-20 11:38:16,952 - live - INFO - Found IBKR data client: INTERACTIVE_BROKERS
+2025-11-20 11:38:16,952 - live - INFO - Requesting historical bars for EUR/USD.IDEALPRO, bar_type=EUR/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL
+2025-11-20 11:38:16,952 - live - INFO - ================================================================================
+2025-11-20 11:38:16,952 - live - INFO - HISTORICAL DATA BACKFILL ANALYSIS
+2025-11-20 11:38:16,952 - live - INFO - ================================================================================
+2025-11-20 11:38:16,952 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:38:16,953 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:38:16,953 - live - INFO - Instrument: EUR/USD.IDEALPRO
+2025-11-20 11:38:16,953 - live - INFO - Bar specification: 15-MINUTE-MID-EXTERNAL
+2025-11-20 11:38:16,953 - live - INFO - Slow indicator period: 260
+2025-11-20 11:38:16,953 - live - INFO - Required bars for warmup: 312
+2025-11-20 11:38:16,953 - live - INFO - Required duration: 109.20 hours (4.55 days)
+2025-11-20 11:38:16,953 - live - INFO - [WARN] Historical data backfill required: 0 bars available (required: 312)
+2025-11-20 11:38:16,953 - live - INFO - Requesting 109.20 hours (4.55 days) of historical data...
+2025-11-20 11:38:16,953 - live - INFO - Requesting 132.60 hours of 1-minute bars (need ~7956 bars to create 312 15-minute bars)
+2025-11-20 11:38:16,953 - live - INFO - Requesting historical bars: instrument=EUR/USD.IDEALPRO, bar_type=EUR/USD.IDEALPRO-1-MINUTE-MID-EXTERNAL, duration=132.60 hours
+2025-11-20 11:38:16,953 - live - INFO - Instrument EUR/USD.IDEALPRO not found, loading...
+2025-11-20 11:38:18,003 - live - INFO - Instrument EUR/USD.IDEALPRO is in cache
+2025-11-20 11:38:18,003 - live - INFO - Using contract: IBContract(secType='CASH', conId=12087792, exchange='IDEALPRO', symbol='EUR', localSymbol='EUR.USD', currency='USD', tradingClass='EUR.USD', strike=0.0, comboLegs=[])
+2025-11-20 11:38:18,003 - live - DEBUG - Matched 1-MINUTE pattern in '1-MINUTE-MID-EXTERNAL', chunk_size=7.0 days
+2025-11-20 11:38:18,003 - live - INFO - Chunk size calculation: bar_spec='1-MINUTE-MID-EXTERNAL', chunk_size_days=7.0, duration_days=5.52
+2025-11-20 11:38:18,003 - live - INFO - Duration (5.52 days) within chunk limit (7.0 days), using single request
+2025-11-20 11:38:18,919 - live - INFO - Retrieved 6804 historical bars
+2025-11-20 11:38:18,920 - live - INFO - Retrieved 6804 1-minute bars, aggregating into 15-minute bars...
+2025-11-20 11:38:18,952 - live - INFO - [OK] Successfully aggregated 454 15-minute bars from 6804 1-minute bars (required: 312)
+2025-11-20 11:38:18,952 - live - INFO - ================================================================================
+2025-11-20 11:38:18,954 - live - INFO - Injecting 454 bars into cache...
+2025-11-20 11:38:18,957 - live - INFO - Strategy will consume historical bars during startup and warm up immediately
+2025-11-20 11:38:18,957 - live - INFO - Historical data backfill process completed
+2025-11-20 11:38:18,958 - live - INFO - Live trading node built successfully. Starting...
+2025-11-20 11:38:29,013 - live - INFO - Live trading system stopped.
+2025-11-20 11:38:48,063 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-20 11:38:48,063 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-20 11:38:48,063 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-20 11:38:48,070 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=40 slow=260 trade_size=10000
+2025-11-20 11:38:48,070 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-11-20 11:38:48,070 - live - INFO - Resolved IBKR market data type enum: 4 (4)
+2025-11-20 11:38:48,070 - live - INFO - Adaptive stops: mode=fixed
+2025-11-20 11:38:48,070 - live - INFO - Regime detection: enabled=False
+2025-11-20 11:38:48,070 - live - INFO - Weekday exclusions: mode=flat
+2025-11-20 11:38:48,070 - live - INFO - RSI filter: enabled=False
+2025-11-20 11:38:48,070 - live - INFO - Volume filter: enabled=False
+2025-11-20 11:38:48,070 - live - INFO - ATR filter: enabled=False
+2025-11-20 11:38:48,070 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-11-20 11:38:48,071 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-20 11:38:48,514 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-20 11:38:48,515 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-20 11:38:48,515 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-20 11:39:48,517 - live - INFO - ================================================================================
+2025-11-20 11:39:48,518 - live - INFO - STRATEGY WARMUP INFO
+2025-11-20 11:39:48,518 - live - INFO - ================================================================================
+2025-11-20 11:39:48,518 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:39:48,560 - live - INFO - Slow period: 260 bars
+2025-11-20 11:39:48,560 - live - INFO - Bar interval: 15-MINUTE-MID-EXTERNAL
+2025-11-20 11:39:48,560 - live - INFO - Strategy will warm up naturally as live bars arrive
+2025-11-20 11:39:48,560 - live - INFO - NO TRADING SIGNALS will be generated until warmup completes
+2025-11-20 11:39:48,560 - live - INFO - Watch for '[STRATEGY READY]' message in logs
+2025-11-20 11:39:48,560 - live - INFO - ================================================================================
+2025-11-20 11:39:48,561 - live - INFO - Starting historical data backfill for indicator warmup...
+2025-11-20 11:39:48,561 - live - INFO - Found IBKR data client: INTERACTIVE_BROKERS
+2025-11-20 11:39:48,561 - live - INFO - Requesting historical bars for EUR/USD.IDEALPRO, bar_type=EUR/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL
+2025-11-20 11:39:48,561 - live - INFO - ================================================================================
+2025-11-20 11:39:48,561 - live - INFO - HISTORICAL DATA BACKFILL ANALYSIS
+2025-11-20 11:39:48,561 - live - INFO - ================================================================================
+2025-11-20 11:39:48,561 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:39:48,561 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:39:48,561 - live - INFO - Instrument: EUR/USD.IDEALPRO
+2025-11-20 11:39:48,561 - live - INFO - Bar specification: 15-MINUTE-MID-EXTERNAL
+2025-11-20 11:39:48,561 - live - INFO - Slow indicator period: 260
+2025-11-20 11:39:48,561 - live - INFO - Required bars for warmup: 312
+2025-11-20 11:39:48,561 - live - INFO - Required duration: 109.20 hours (4.55 days)
+2025-11-20 11:39:48,561 - live - INFO - [WARN] Historical data backfill required: 0 bars available (required: 312)
+2025-11-20 11:39:48,561 - live - INFO - Requesting 109.20 hours (4.55 days) of historical data...
+2025-11-20 11:39:48,561 - live - INFO - Requesting 132.60 hours of 1-minute bars (need ~7956 bars to create 312 15-minute bars)
+2025-11-20 11:39:48,561 - live - INFO - Requesting historical bars: instrument=EUR/USD.IDEALPRO, bar_type=EUR/USD.IDEALPRO-1-MINUTE-MID-EXTERNAL, duration=132.60 hours
+2025-11-20 11:39:48,561 - live - INFO - Instrument EUR/USD.IDEALPRO not found, loading...
+2025-11-20 11:39:49,617 - live - INFO - Instrument EUR/USD.IDEALPRO is in cache
+2025-11-20 11:39:49,617 - live - INFO - Using contract: IBContract(secType='CASH', conId=12087792, exchange='IDEALPRO', symbol='EUR', localSymbol='EUR.USD', currency='USD', tradingClass='EUR.USD', strike=0.0, comboLegs=[])
+2025-11-20 11:39:49,618 - live - DEBUG - Matched 1-MINUTE pattern in '1-MINUTE-MID-EXTERNAL', chunk_size=7.0 days
+2025-11-20 11:39:49,618 - live - INFO - Chunk size calculation: bar_spec='1-MINUTE-MID-EXTERNAL', chunk_size_days=7.0, duration_days=5.52
+2025-11-20 11:39:49,618 - live - INFO - Duration (5.52 days) within chunk limit (7.0 days), using single request
+2025-11-20 11:39:50,457 - live - INFO - Retrieved 6805 historical bars
+2025-11-20 11:39:50,457 - live - INFO - Retrieved 6805 1-minute bars, aggregating into 15-minute bars...
+2025-11-20 11:39:50,488 - live - INFO - [OK] Successfully aggregated 454 15-minute bars from 6805 1-minute bars (required: 312)
+2025-11-20 11:39:50,488 - live - INFO - ================================================================================
+2025-11-20 11:39:50,489 - live - INFO - Injecting 454 bars into cache...
+2025-11-20 11:39:50,491 - live - INFO - Strategy will consume historical bars during startup and warm up immediately
+2025-11-20 11:39:50,491 - live - INFO - Historical data backfill process completed
+2025-11-20 11:39:50,491 - live - INFO - Live trading node built successfully. Starting...
+2025-11-20 11:40:00,547 - live - INFO - Live trading system stopped.
+2025-11-20 11:40:15,424 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-20 11:40:15,424 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-20 11:40:15,424 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-20 11:40:15,431 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=40 slow=260 trade_size=10000
+2025-11-20 11:40:15,431 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-11-20 11:40:15,431 - live - INFO - Resolved IBKR market data type enum: 4 (4)
+2025-11-20 11:40:15,431 - live - INFO - Adaptive stops: mode=fixed
+2025-11-20 11:40:15,431 - live - INFO - Regime detection: enabled=False
+2025-11-20 11:40:15,432 - live - INFO - Weekday exclusions: mode=flat
+2025-11-20 11:40:15,432 - live - INFO - RSI filter: enabled=False
+2025-11-20 11:40:15,432 - live - INFO - Volume filter: enabled=False
+2025-11-20 11:40:15,432 - live - INFO - ATR filter: enabled=False
+2025-11-20 11:40:15,432 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-11-20 11:40:15,432 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-20 11:40:15,866 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-20 11:40:15,866 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-20 11:40:15,867 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-20 11:41:15,876 - live - INFO - ================================================================================
+2025-11-20 11:41:15,876 - live - INFO - STRATEGY WARMUP INFO
+2025-11-20 11:41:15,876 - live - INFO - ================================================================================
+2025-11-20 11:41:15,876 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:41:15,880 - live - INFO - Slow period: 260 bars
+2025-11-20 11:41:15,880 - live - INFO - Bar interval: 15-MINUTE-MID-EXTERNAL
+2025-11-20 11:41:15,881 - live - INFO - Strategy will warm up naturally as live bars arrive
+2025-11-20 11:41:15,881 - live - INFO - NO TRADING SIGNALS will be generated until warmup completes
+2025-11-20 11:41:15,881 - live - INFO - Watch for '[STRATEGY READY]' message in logs
+2025-11-20 11:41:15,881 - live - INFO - ================================================================================
+2025-11-20 11:41:15,881 - live - INFO - Starting historical data backfill for indicator warmup...
+2025-11-20 11:41:15,881 - live - INFO - Found IBKR data client: INTERACTIVE_BROKERS
+2025-11-20 11:41:15,881 - live - INFO - Requesting historical bars for EUR/USD.IDEALPRO, bar_type=EUR/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL
+2025-11-20 11:41:15,881 - live - INFO - ================================================================================
+2025-11-20 11:41:15,881 - live - INFO - HISTORICAL DATA BACKFILL ANALYSIS
+2025-11-20 11:41:15,881 - live - INFO - ================================================================================
+2025-11-20 11:41:15,881 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:41:15,881 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 11:41:15,881 - live - INFO - Instrument: EUR/USD.IDEALPRO
+2025-11-20 11:41:15,881 - live - INFO - Bar specification: 15-MINUTE-MID-EXTERNAL
+2025-11-20 11:41:15,881 - live - INFO - Slow indicator period: 260
+2025-11-20 11:41:15,881 - live - INFO - Required bars for warmup: 312
+2025-11-20 11:41:15,881 - live - INFO - Required duration: 109.20 hours (4.55 days)
+2025-11-20 11:41:15,881 - live - INFO - [WARN] Historical data backfill required: 0 bars available (required: 312)
+2025-11-20 11:41:15,882 - live - INFO - Requesting 109.20 hours (4.55 days) of historical data...
+2025-11-20 11:41:15,882 - live - INFO - Requesting 132.60 hours of 1-minute bars (need ~7956 bars to create 312 15-minute bars)
+2025-11-20 11:41:15,882 - live - INFO - Requesting historical bars: instrument=EUR/USD.IDEALPRO, bar_type=EUR/USD.IDEALPRO-1-MINUTE-MID-EXTERNAL, duration=132.60 hours
+2025-11-20 11:41:15,882 - live - INFO - Instrument EUR/USD.IDEALPRO not found, loading...
+2025-11-20 11:41:16,936 - live - INFO - Instrument EUR/USD.IDEALPRO is in cache
+2025-11-20 11:41:16,937 - live - INFO - Using contract: IBContract(secType='CASH', conId=12087792, exchange='IDEALPRO', symbol='EUR', localSymbol='EUR.USD', currency='USD', tradingClass='EUR.USD', strike=0.0, comboLegs=[])
+2025-11-20 11:41:16,937 - live - DEBUG - Matched 1-MINUTE pattern in '1-MINUTE-MID-EXTERNAL', chunk_size=7.0 days
+2025-11-20 11:41:16,937 - live - INFO - Chunk size calculation: bar_spec='1-MINUTE-MID-EXTERNAL', chunk_size_days=7.0, duration_days=5.52
+2025-11-20 11:41:16,937 - live - INFO - Duration (5.52 days) within chunk limit (7.0 days), using single request
+2025-11-20 11:41:17,787 - live - INFO - Retrieved 6807 historical bars
+2025-11-20 11:41:17,787 - live - INFO - Retrieved 6807 1-minute bars, aggregating into 15-minute bars...
+2025-11-20 11:41:17,821 - live - INFO - [OK] Successfully aggregated 454 15-minute bars from 6807 1-minute bars (required: 312)
+2025-11-20 11:41:17,821 - live - INFO - ================================================================================
+2025-11-20 11:41:17,822 - live - INFO - Injecting 454 bars into cache...
+2025-11-20 11:41:17,824 - live - INFO - Strategy will consume historical bars during startup and warm up immediately
+2025-11-20 11:41:17,824 - live - INFO - Historical data backfill process completed
+2025-11-20 11:41:17,824 - live - INFO - Live trading node built successfully. Starting...
+2025-11-20 11:41:27,886 - live - INFO - Live trading system stopped.

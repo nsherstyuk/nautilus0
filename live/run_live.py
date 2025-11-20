@@ -426,7 +426,8 @@ async def main() -> int:
                     logger.info(f"Injecting {len(historical_bars)} bars into cache...")
                     
                     # ✅ INJECT BARS INTO CACHE - Strategy will consume these on startup
-                    node.cache.add_bars(bar_type, historical_bars)
+                    # Note: add_bars() takes a list of bars (bars contain bar_type internally)
+                    node.cache.add_bars(historical_bars)
                     
                     cached_bars = node.cache.bar_count(bar_type)
                     logger.info(f"✓ Cache injection complete: {cached_bars} bars now available")
