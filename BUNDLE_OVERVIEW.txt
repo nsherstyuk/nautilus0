@@ -1,0 +1,169 @@
+BUNDLE OVERVIEW
+===============
+
+Project purpose
+---------------
+NautilusTrader-based trading stack implementing a Moving Average Crossover strategy with a rich set of risk and filter features, supporting:
+- Backtesting against a ParquetDataCatalog
+- Live trading via Interactive Brokers (IBKR)
+- Full feature parity between backtest and live (stops, filters, regime detection, time filters, etc.)
+
+Core components in this bundle
+------------------------------
+- backtest/
+  - run_backtest.py
+    - Creates instruments (FX and equities) and normalizes instrument IDs.
+    - Builds BacktestRunConfig (engine, venues, data streams) and wires in the strategy.
+    - Loads historical bars from a ParquetDataCatalog.
+    - Runs a BacktestNode and generates reports (orders, fills, positions, account, equity curve, stats).
+
+- live/
+  - run_live.py
+    - Entry point for live trading.
+    - Loads LiveConfig (strategy/risk/time filters) and IBKRConfig (IB connection) from env.
+    - Applies an IB connection patch *before* importing Nautilus IB adapter modules.
+    - Builds TradingNodeConfig with InteractiveBrokers data and exec clients.
+    - Performs historical backfill via historical_backfill.py to warm up indicators.
+    - Starts a NautilusTradingNode and runs the MovingAverageCrossover strategy live.
+  - historical_backfill.py
+    - Requests historical bars from IBKR.
+    - Handles chunking/pacing of IB requests.
+    - Aggregates 1-minute bars into higher timeframes for indicator warmup.
+
+- strategies/
+  - moving_average_crossover.py
+    - Main strategy implementation.
+    - Uses fast/slow SMA crossover for signals.
+    - Implements extensive filter stack:
+      - Crossover threshold (minimum SMA separation in pips).
+      - Higher timeframe trend filter (EMA based).
+      - RSI filter.
+      - Volume filter.
+      - ATR-based trend-strength filter.
+      - DMI-based trend confirmation.
+      - Stochastic momentum filter with max-bars-since-crossing logic.
+      - Time-of-day filters and weekday-specific hour exclusions.
+    - Rich position and order management:
+      - Fixed and adaptive (ATR/percentile) SL/TP.
+      - Trailing stops (including duration-based behavior).
+      - Minimum hold time logic.
+      - Detailed diagnostics for rejected signals.
+  - adaptive_stops.py
+    - Supporting logic for adaptive stop configuration.
+
+- indicators/
+  - dmi.py
+    - Custom DMI (Directional Movement Index) indicator used by the strategy.
+
+- utils/
+  - instruments.py
+    - Helpers for instrument ID normalization and FX pair handling.
+
+- config/
+  - backtest_config.py
+    - Reads backtest parameters from env.
+    - Covers symbol, venue, time range, bar specs, risk settings, filters, and output locations.
+  - live_config.py
+    - Reads live trading parameters from env.
+    - Mirrors the backtest feature set so live trading matches backtest behavior.
+  - ibkr_config.py
+    - Centralized IBKR configuration.
+    - Reads IB connection settings from environment variables (host, port, client id, account id, market data type).
+  - live_trading.yaml
+    - Higher-level production / safety configuration (position limits, circuit breakers, account metadata).
+  - logging.yaml / logging.live.yaml
+    - Logging configuration for backtest and live runs.
+  - env_variables.md
+    - Documentation of key env vars, especially for backtests and IBKR.
+
+- patches/
+  - __init__.py
+    - Exposes apply_ib_connection_patch().
+  - ib_connection_patch.py
+    - Runtime patch that monkey-patches NautilusTrader's IB connection mixin before adapters are used.
+    - Mechanism:
+      - Imports original nautilus_trader.adapters.interactive_brokers.client.connection module.
+      - Imports patched version from patches.nautilus_trader.adapters.interactive_brokers.client.connection.
+      - Replaces the original class methods with the patched ones for connection handshake and socket management.
+  - patches/nautilus_trader/adapters/interactive_brokers/client/connection.py
+    - Custom InteractiveBrokersClientConnectionMixin implementation.
+    - Uses ibapi primitives but wraps connection logic more defensively.
+    - Key behaviors:
+      - Shields the async connection handshake from premature asyncio cancellation using asyncio.shield.
+      - Adds explicit connection-time logging (server version, host, port, client id).
+      - Defines safe socket connect and disconnect helpers and ensures internal "_is_ib_connected" flags are kept consistent.
+      - Implements a more robust server-version handshake with retries and clear logging.
+
+- requirements.txt
+  - Declares Python dependencies (not vendored in this bundle):
+    - nautilus_trader[ib]==1.220.0
+    - pandas, python-dotenv, pyarrow, PyYAML, matplotlib
+
+- README.md
+  - Minimal root readme; most documentation is in the various *.md files.
+
+Backtesting vs live feature parity
+----------------------------------
+- Strategy:
+  - Same MovingAverageCrossover strategy class is used in both backtests and live trading, via ImportableStrategyConfig.
+- Risk and filters:
+  - Backtests and live trading share the same configuration fields (stop distances, adaptive stops, filters, time filters, regime detection, etc.).
+  - Backtest_config.py and live_config.py are aligned so you can transfer a validated backtest configuration into live with minimal changes.
+- Data:
+  - Backtests use ParquetDataCatalog bar data (ingested previously from IBKR or other sources).
+  - Live trading uses real-time IBKR data via NautilusTrader's InteractiveBrokers data client, plus an on-start historical backfill.
+
+IBKR integration and custom connector behavior
+----------------------------------------------
+- NautilusTrader's IB integration is used, but its connection mixin is patched at runtime to improve stability.
+- Flow for live trading:
+  1. live/run_live.py adds the project root to sys.path.
+  2. It imports and calls patches.apply_ib_connection_patch() *before* importing any Nautilus IB adapter modules.
+  3. apply_ib_connection_patch() replaces key methods (_connect, _connect_socket, _send_version_info, _receive_server_info) on the original InteractiveBrokersClientConnectionMixin with the patched versions.
+  4. Subsequent imports of nautilus_trader.adapters.interactive_brokers.* see the patched behavior automatically.
+- The patched mixin in patches/nautilus_trader/.../connection.py:
+  - Wraps the async handshake in asyncio.shield to prevent outer task cancellation from aborting the underlying socket negotiation.
+  - Performs a more explicit handshake:
+    - Initialize connection parameters.
+    - Open socket and set EClient state to CONNECTING.
+    - Send version information and process server response.
+    - Only then mark connection as CONNECTED and log connection details.
+  - Adds robust error handling and logging around connection failure, timeout, and server version negotiation.
+
+What an LLM reviewer should focus on
+-----------------------------------
+- Strategy correctness and robustness
+  - strategies/moving_average_crossover.py
+    - Order lifecycle and position management (especially trailing stops, duration-based rules, and minimum hold-time logic).
+    - Signal filters and their interaction (DMI, Stochastic, RSI, volume, ATR, time-of-day, regime detection).
+    - Use of pip-based logic for FX vs non-FX instruments.
+
+- Backtest wiring
+  - backtest/run_backtest.py
+    - Construction of BacktestRunConfig and ImportableStrategyConfig.
+    - Handling of multi-timeframe data (additional BacktestDataConfig entries).
+    - Report generation and diagnostics for zero-trade scenarios.
+
+- Live trading wiring and IBKR integration
+  - live/run_live.py
+    - Construction of TradingNodeConfig, especially data/exec client configs and timeouts.
+    - Use of historical_backfill to warm up indicators.
+    - Signal handling and shutdown behavior.
+  - live/historical_backfill.py
+    - Chunking logic for historical bar requests.
+    - Aggregation of 1-minute bars into higher timeframes.
+  - patches/*
+    - Robustness of the patched IBKR connection mixin.
+
+- Configuration surface
+  - config/backtest_config.py and config/live_config.py
+  - config/ibkr_config.py and config/env_variables.md
+  - env.example, .env.live.template, and .env.bundle.template (this file is intended as a consolidated overview for reviewers).
+
+Notes for reviewers
+-------------------
+- The NautilusTrader library itself is *not* vendored in this bundle; it is expected to be installed via pip as specified in requirements.txt.
+- This bundle is designed mainly for:
+  - Inspecting and reviewing how this project wires into NautilusTrader for backtesting and live trading.
+  - Evaluating strategy logic, risk management, and IBKR integration.
+  - Suggesting improvements to code clarity, robustness, and configuration design.

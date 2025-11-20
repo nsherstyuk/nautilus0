@@ -105,7 +105,33 @@ class BacktestConfig:
     entry_timing_bar_spec: str = "2-MINUTE-MID-EXTERNAL"
     entry_timing_method: str = "pullback"  # pullback | breakout | momentum
     entry_timing_timeout_bars: int = 10  # Max bars to wait for entry (e.g., 10 × 2min = 20 minutes)
+    # Duration-based trailing stop optimization
+    trailing_duration_enabled: bool = False
+    trailing_duration_threshold_hours: float = 12.0
+    trailing_duration_distance_pips: int = 30
+    trailing_duration_remove_tp: bool = True
+    trailing_duration_activate_if_not_active: bool = True
+    # Partial close on trailing activation
+    partial_close_enabled: bool = False
+    partial_close_fraction: float = 0.5
+    partial_close_move_sl_to_be: bool = True
+    partial_close_remainder_trail_multiplier: float = 1.0
+    # First partial close before trailing activation
+    partial1_enabled: bool = False
+    partial1_fraction: float = 0.3
+    partial1_threshold_pips: float = 10.0
+    partial1_move_sl_to_be: bool = False
+    # Market structure filter (avoid recent extremes)
+    structure_filter_enabled: bool = False
+    structure_lookback_bars: int = 100
+    structure_buffer_pips: float = 3.0
+    structure_mode: str = "avoid"
+    # Minimum hold time feature (wider initial stops)
+    min_hold_time_enabled: bool = False
+    min_hold_time_hours: float = 4.0
+    min_hold_time_stop_multiplier: float = 1.5
 
+    # (Note: Additional strategy toggles can be appended here)
 
 def _require(name: str, value: Optional[str]) -> str:
     if not value:
@@ -311,6 +337,36 @@ def get_backtest_config() -> BacktestConfig:
     entry_timing_method = _get_env_value("STRATEGY_ENTRY_TIMING_METHOD") or "pullback"
     entry_timing_timeout_bars = _parse_int("STRATEGY_ENTRY_TIMING_TIMEOUT_BARS", os.getenv("STRATEGY_ENTRY_TIMING_TIMEOUT_BARS"), 10)
     
+    # Duration-based trailing stop optimization
+    trailing_duration_enabled = (_get_env_value("STRATEGY_TRAILING_DURATION_ENABLED") or "false").lower() in ("true", "1", "yes")
+    trailing_duration_threshold_hours = _parse_float("STRATEGY_TRAILING_DURATION_THRESHOLD_HOURS", os.getenv("STRATEGY_TRAILING_DURATION_THRESHOLD_HOURS"), 12.0)
+    trailing_duration_distance_pips = _parse_int("STRATEGY_TRAILING_DURATION_DISTANCE_PIPS", os.getenv("STRATEGY_TRAILING_DURATION_DISTANCE_PIPS"), 30)
+    trailing_duration_remove_tp = (_get_env_value("STRATEGY_TRAILING_DURATION_REMOVE_TP") or "true").lower() in ("true", "1", "yes")
+    trailing_duration_activate_if_not_active = (_get_env_value("STRATEGY_TRAILING_DURATION_ACTIVATE_IF_NOT_ACTIVE") or "true").lower() in ("true", "1", "yes")
+    
+    # Minimum hold time feature (wider initial stops)
+    min_hold_time_enabled = (_get_env_value("STRATEGY_MIN_HOLD_TIME_ENABLED") or "false").lower() in ("true", "1", "yes")
+    min_hold_time_hours = _parse_float("STRATEGY_MIN_HOLD_TIME_HOURS", os.getenv("STRATEGY_MIN_HOLD_TIME_HOURS"), 4.0)
+    min_hold_time_stop_multiplier = _parse_float("STRATEGY_MIN_HOLD_TIME_STOP_MULTIPLIER", os.getenv("STRATEGY_MIN_HOLD_TIME_STOP_MULTIPLIER"), 1.5)
+    
+    # Partial close on trailing activation
+    partial_close_enabled = (_get_env_value("STRATEGY_PARTIAL_CLOSE_ENABLED") or "false").lower() in ("true", "1", "yes")
+    partial_close_fraction = _parse_float("STRATEGY_PARTIAL_CLOSE_FRACTION", os.getenv("STRATEGY_PARTIAL_CLOSE_FRACTION"), 0.5)
+    partial_close_move_sl_to_be = (_get_env_value("STRATEGY_PARTIAL_CLOSE_MOVE_SL_TO_BE") or "true").lower() in ("true", "1", "yes")
+    partial_close_remainder_trail_multiplier = _parse_float("STRATEGY_PARTIAL_CLOSE_REMAINDER_TRAIL_MULTIPLIER", os.getenv("STRATEGY_PARTIAL_CLOSE_REMAINDER_TRAIL_MULTIPLIER"), 1.0)
+    
+    # First partial close BEFORE trailing activation
+    partial1_enabled = (_get_env_value("STRATEGY_PARTIAL1_ENABLED") or "false").lower() in ("true", "1", "yes")
+    partial1_fraction = _parse_float("STRATEGY_PARTIAL1_FRACTION", os.getenv("STRATEGY_PARTIAL1_FRACTION"), 0.3)
+    partial1_threshold_pips = _parse_float("STRATEGY_PARTIAL1_THRESHOLD_PIPS", os.getenv("STRATEGY_PARTIAL1_THRESHOLD_PIPS"), 10.0)
+    partial1_move_sl_to_be = (_get_env_value("STRATEGY_PARTIAL1_MOVE_SL_TO_BE") or "false").lower() in ("true", "1", "yes")
+    
+    # Market structure filter
+    structure_filter_enabled = (_get_env_value("STRATEGY_STRUCTURE_FILTER_ENABLED") or "false").lower() in ("true", "1", "yes")
+    structure_lookback_bars = _parse_int("STRATEGY_STRUCTURE_LOOKBACK_BARS", os.getenv("STRATEGY_STRUCTURE_LOOKBACK_BARS"), 100)
+    structure_buffer_pips = _parse_float("STRATEGY_STRUCTURE_BUFFER_PIPS", os.getenv("STRATEGY_STRUCTURE_BUFFER_PIPS"), 3.0)
+    structure_mode = os.getenv("STRATEGY_STRUCTURE_MODE", "avoid")
+    
     # Normalize DMI bar_spec for FX instruments (similar to primary bar_spec normalization)
     if dmi_enabled and "/" in symbol:
         original_dmi_bar_spec = dmi_bar_spec
@@ -378,6 +434,23 @@ def get_backtest_config() -> BacktestConfig:
     
     if trailing_stop_activation_pips <= trailing_stop_distance_pips:
         raise ValueError("BACKTEST_TRAILING_STOP_ACTIVATION_PIPS must be greater than BACKTEST_TRAILING_STOP_DISTANCE_PIPS")
+    
+    if partial_close_fraction <= 0.0 or partial_close_fraction >= 1.0:
+        raise ValueError("STRATEGY_PARTIAL_CLOSE_FRACTION must be between 0 and 1 (exclusive)")
+    
+    if partial_close_remainder_trail_multiplier <= 0.0:
+        raise ValueError("STRATEGY_PARTIAL_CLOSE_REMAINDER_TRAIL_MULTIPLIER must be > 0")
+    
+    if partial1_fraction <= 0.0 or partial1_fraction >= 1.0:
+        raise ValueError("STRATEGY_PARTIAL1_FRACTION must be between 0 and 1 (exclusive)")
+    
+    if partial1_threshold_pips <= 0.0:
+        raise ValueError("STRATEGY_PARTIAL1_THRESHOLD_PIPS must be > 0")
+    
+    if structure_lookback_bars < 1:
+        raise ValueError("STRATEGY_STRUCTURE_LOOKBACK_BARS must be >= 1")
+    if structure_buffer_pips < 0.0:
+        raise ValueError("STRATEGY_STRUCTURE_BUFFER_PIPS must be >= 0")
     
     if trailing_stop_activation_pips > take_profit_pips:
         logger = logging.getLogger(__name__)
@@ -560,6 +633,26 @@ def get_backtest_config() -> BacktestConfig:
         entry_timing_bar_spec=entry_timing_bar_spec,
         entry_timing_method=entry_timing_method,
         entry_timing_timeout_bars=entry_timing_timeout_bars,
+        trailing_duration_enabled=trailing_duration_enabled,
+        trailing_duration_threshold_hours=trailing_duration_threshold_hours,
+        trailing_duration_distance_pips=trailing_duration_distance_pips,
+        trailing_duration_remove_tp=trailing_duration_remove_tp,
+        trailing_duration_activate_if_not_active=trailing_duration_activate_if_not_active,
+        min_hold_time_enabled=min_hold_time_enabled,
+        min_hold_time_hours=min_hold_time_hours,
+        min_hold_time_stop_multiplier=min_hold_time_stop_multiplier,
+        partial_close_enabled=partial_close_enabled,
+        partial_close_fraction=partial_close_fraction,
+        partial_close_move_sl_to_be=partial_close_move_sl_to_be,
+        partial_close_remainder_trail_multiplier=partial_close_remainder_trail_multiplier,
+        partial1_enabled=partial1_enabled,
+        partial1_fraction=partial1_fraction,
+        partial1_threshold_pips=partial1_threshold_pips,
+        partial1_move_sl_to_be=partial1_move_sl_to_be,
+        structure_filter_enabled=structure_filter_enabled,
+        structure_lookback_bars=structure_lookback_bars,
+        structure_buffer_pips=structure_buffer_pips,
+        structure_mode=structure_mode,
     )
 
 

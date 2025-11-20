@@ -166,3 +166,4 @@ print(top_10[['regime_adx_trending_threshold', 'regime_adx_ranging_threshold',
 
 The optimization is ready to use. Start with `--focused` to quickly test if regime detection can improve your strategy!
 
+

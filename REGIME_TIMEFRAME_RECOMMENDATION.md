@@ -218,3 +218,4 @@ STRATEGY_DMI_BAR_SPEC=15-MINUTE-MID-EXTERNAL
 **Note:** This affects both DMI trend filtering AND regime detection since they share the same indicator.
 
 
+

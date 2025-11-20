@@ -145,3 +145,4 @@ for mult in sorted(completed['regime_tp_multiplier_ranging'].unique()):
 
 print("\n" + "=" * 80)
 
+

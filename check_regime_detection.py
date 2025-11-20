@@ -164,3 +164,4 @@ if dmi_enabled and regime_enabled:
     print("   - Verify DMI bars are available in data catalog")
 
 
+

@@ -292,3 +292,4 @@ Test TP/SL/trailing combinations across many random scenarios.
 5. **Multi-Objective Optimization**: Balance PnL, Sharpe, win rate
 
 
+

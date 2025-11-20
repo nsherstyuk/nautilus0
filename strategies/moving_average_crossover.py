@@ -135,6 +135,34 @@ class MovingAverageCrossoverConfig(StrategyConfig, kw_only=True):
     min_hold_time_enabled: bool = False
     min_hold_time_hours: float = 4.0            # Minimum hours before normal stop applies
     min_hold_time_stop_multiplier: float = 1.5  # Initial stop width multiplier (e.g., 1.5 = 50% wider)
+    
+    # Duration-based trailing stop optimization (for >12h trades)
+    trailing_duration_enabled: bool = False
+    trailing_duration_threshold_hours: float = 12.0    # Activate enhanced trailing after this duration
+    trailing_duration_distance_pips: int = 30          # Wider trailing distance for long-duration trades
+    trailing_duration_remove_tp: bool = True           # Remove TP limit to let winners run
+    trailing_duration_activate_if_not_active: bool = True  # Force activation after threshold
+    
+    # Partial close on first trailing activation
+    partial_close_enabled: bool = False
+    partial_close_fraction: float = 0.5                 # Fraction of position to close on first activation (0 < f < 1)
+    partial_close_move_sl_to_be: bool = True            # Move SL to breakeven (+1 pip) for remainder
+    partial_close_remainder_trail_multiplier: float = 1.0  # Multiply trailing distance for remainder (e.g., 1.3 widens)
+    
+    # First partial close BEFORE trailing activation (fixed profit threshold)
+    partial1_enabled: bool = False
+    partial1_fraction: float = 0.3                      # Fraction to close at fixed profit threshold (0 < f < 1)
+    partial1_threshold_pips: float = 10.0               # Profit threshold in pips to trigger first partial
+    partial1_move_sl_to_be: bool = False                # Optionally move SL to BE (+1 pip) after first partial
+    
+    # Market structure filter (avoid trading into nearby extremes)
+    structure_filter_enabled: bool = False
+    structure_lookback_bars: int = 100
+    structure_buffer_pips: float = 3.0
+    structure_mode: str = "avoid"  # "avoid" | (placeholders for future modes)
+    structure_extreme_left_bars: int = 2
+    structure_extreme_right_bars: int = 2
+    structure_extreme_lookback_bars: int = 200
 
 
 class MovingAverageCrossover(Strategy):
@@ -232,6 +260,11 @@ class MovingAverageCrossover(Strategy):
         self._trailing_active: bool = False
         self._last_stop_price: Optional[Decimal] = None
         self._last_regime: Optional[str] = None  # Track regime changes for logging
+        self._position_opened_time: Optional[int] = None  # Timestamp when position opened (for duration tracking)
+        # Partial close state
+        self._partial_close_done: bool = False
+        self._partial_remainder_trail_multiplier: Decimal = Decimal("1.0")
+        self._partial1_done: bool = False
         
         # Entry timing state (for pullback/breakout/momentum entry)
         self.entry_timing_enabled = config.entry_timing_enabled
@@ -310,11 +343,30 @@ class MovingAverageCrossover(Strategy):
         if self.entry_timing_enabled and self.entry_timing_bar_type is not None:
             self.subscribe_bars(self.entry_timing_bar_type)
             self.log.info(f"Entry timing enabled: subscribed to {self.entry_timing_bar_type} (method={self.cfg.entry_timing_method}, timeout={self.cfg.entry_timing_timeout_bars} bars)")
+        
+        # PHASE 1 VERIFICATION: Log strategy initialization with fix version
+        self.log.warning("=" * 80)
+        self.log.warning("🔧 STRATEGY INITIALIZED WITH TRAILING STOP FIX v2.6")
+        self.log.warning("   FIX: Tag-based SL lookup, active status filter, _last_stop_price init")
+        self.log.warning("   CRITICAL: Clear stale order reference after modify_order()")
+        self.log.warning(f"   Trailing activation: {self.cfg.trailing_stop_activation_pips} pips")
+        self.log.warning(f"   Trailing distance: {self.cfg.trailing_stop_distance_pips} pips")
+        self.log.warning(f"   Duration-based: {'ENABLED' if self.cfg.trailing_duration_enabled else 'DISABLED'}")
+        if self.cfg.trailing_duration_enabled:
+            self.log.warning(f"   Duration threshold: {self.cfg.trailing_duration_threshold_hours}h")
+            self.log.warning(f"   Duration distance: {self.cfg.trailing_duration_distance_pips} pips")
+        self.log.warning("=" * 80)
 
     def _current_position(self) -> Optional[Position]:
         """Get the current open position for this instrument."""
         positions = self.cache.positions_open(instrument_id=self.instrument_id)
-        return positions[0] if positions else None
+        position = positions[0] if positions else None
+        
+        # Phase 1 diagnostic logging
+        if positions:
+            self.log.warning(f"[DIAGNOSTIC] _current_position found {len(positions)} positions")
+        
+        return position
 
     def _check_can_open_position(self, signal_type: str) -> Tuple[bool, str]:
         """
@@ -379,6 +431,106 @@ class MovingAverageCrossover(Strategy):
                 bar,
             )
             return False
+        return True
+    
+    def _check_structure_filter(self, direction: str, bar: Bar) -> bool:
+        """Avoid entries when price is too close to confirmed swing extremes."""
+        if not self.cfg.structure_filter_enabled:
+            return True
+        if str(self.cfg.structure_mode).lower() != "avoid":
+            return True  # Only 'avoid' implemented
+        
+        try:
+            # Recent extremes settings (backward compatible defaults)
+            recent_window_bars = int(self.cfg.structure_lookback_bars)
+            buffer_pips = Decimal(str(self.cfg.structure_buffer_pips))
+            left_bars = max(1, int(getattr(self.cfg, "structure_extreme_left_bars", 2)))
+            right_bars = max(1, int(getattr(self.cfg, "structure_extreme_right_bars", 2)))
+            extreme_lookback = max(left_bars + right_bars + 1, int(getattr(self.cfg, "structure_extreme_lookback_bars", 200)))
+        except Exception:
+            return True
+        if recent_window_bars <= 0 or buffer_pips <= 0:
+            return True
+        
+        bars_list = self.cache.bars(self.bar_type)
+        if not bars_list:
+            return True
+        bars = list(bars_list)
+        if len(bars) < 2:
+            return True
+        # Use completed bars only (exclude the current processing bar)
+        completed = bars[:-1] if len(bars) > 1 else bars
+        if not completed:
+            return True
+        # Limit the scan window for extremes
+        window = completed[-extreme_lookback:] if len(completed) > extreme_lookback else completed
+        if len(window) < (left_bars + right_bars + 1):
+            return True
+        
+        # Find last confirmed swing high/low in the window
+        last_swing_high: Optional[Decimal] = None
+        last_swing_low: Optional[Decimal] = None
+        
+        # Candidate indices are from left_bars to len(window) - right_bars - 1
+        start_idx = left_bars
+        end_idx = len(window) - right_bars - 1
+        if end_idx < start_idx:
+            return True
+        
+        # Scan from newest to oldest to get the most recent confirmed swing
+        for i in range(end_idx, start_idx - 1, -1):
+            hi = Decimal(str(window[i].high))
+            lo = Decimal(str(window[i].low))
+            is_swing_high = True
+            is_swing_low = True
+            # Check left side
+            for l in range(1, left_bars + 1):
+                if Decimal(str(window[i - l].high)) >= hi:
+                    is_swing_high = False
+                if Decimal(str(window[i - l].low)) <= lo:
+                    is_swing_low = False
+                if not is_swing_high and not is_swing_low:
+                    break
+            # Check right side
+            if is_swing_high or is_swing_low:
+                for r in range(1, right_bars + 1):
+                    if Decimal(str(window[i + r].high)) >= hi:
+                        is_swing_high = False
+                    if Decimal(str(window[i + r].low)) <= lo:
+                        is_swing_low = False
+                    if not is_swing_high and not is_swing_low:
+                        break
+            if last_swing_high is None and is_swing_high:
+                last_swing_high = hi
+            if last_swing_low is None and is_swing_low:
+                last_swing_low = lo
+            if last_swing_high is not None and last_swing_low is not None:
+                break
+        
+        current_price = Decimal(str(bar.close))
+        pip_value = self._calculate_pip_value()
+        
+        if direction == "BUY" and last_swing_high is not None:
+            distance_to_high_pips = (last_swing_high - current_price) / pip_value
+            if distance_to_high_pips <= buffer_pips:
+                self._log_rejected_signal(
+                    "BUY",
+                    f"structure_near_swing_high (dist={distance_to_high_pips:.2f} pips <= buffer={buffer_pips}, "
+                    f"left={left_bars}, right={right_bars}, window={extreme_lookback})",
+                    bar,
+                )
+                return False
+        if direction == "SELL" and last_swing_low is not None:
+            distance_to_low_pips = (current_price - last_swing_low) / pip_value
+            if distance_to_low_pips <= buffer_pips:
+                self._log_rejected_signal(
+                    "SELL",
+                    f"structure_near_swing_low (dist={distance_to_low_pips:.2f} pips <= buffer={buffer_pips}, "
+                    f"left={left_bars}, right={right_bars}, window={extreme_lookback})",
+                    bar,
+                )
+                return False
+        
         return True
 
     def _check_trend_filter(self, direction: str, bar: Bar) -> bool:
@@ -857,6 +1009,7 @@ class MovingAverageCrossover(Strategy):
                 if isinstance(order, StopMarketOrder):
                     self._current_stop_order = order
                     self._position_entry_price = entry_price
+                    self._position_opened_time = self.clock.timestamp_ns()  # Track opening time for duration-based trailing
                     break
             
             self.log.info(f"{direction} bracket order submitted successfully")
@@ -1172,8 +1325,8 @@ class MovingAverageCrossover(Strategy):
 
     def _update_trailing_stop(self, bar: Bar) -> None:
         """Update trailing stop logic for open positions."""
-        if not self._is_fx or not self._current_stop_order or not self._position_entry_price:
-            return
+        # PHASE 1 VERIFICATION: Version marker to confirm this code is executing
+        self.log.warning("[TRAILING_FIX_v2.1] ⚡ Method called")
         
         # Get current open position (NETTING ensures at most one)
         position: Optional[Position] = self._current_position()
@@ -1184,10 +1337,93 @@ class MovingAverageCrossover(Strategy):
             self._position_entry_price = None
             self._trailing_active = False
             self._last_stop_price = None
+            self._position_opened_time = None
+            self._partial_close_done = False
+            self._partial_remainder_trail_multiplier = Decimal("1.0")
             return
         
-        # Update entry price from the position (ensure it's a Decimal)
-        self._position_entry_price = Decimal(str(position.avg_px_open))
+        self.log.warning(f"[TRAILING_FIX_v2.1] 📍 Position exists: {position.id}, side={position.side}")
+        
+        # FIX v2.1: Query ALL orders (not just open) to find current stop
+        # NautilusTrader bracket orders might have different lifecycle than expected
+        all_orders = list(self.cache.orders(instrument_id=self.instrument_id))
+        self.log.warning(f"[TRAILING_FIX_v2.1] 🔍 Found {len(all_orders)} total orders for position")
+        
+        current_stop_order = None
+        sl_tag = f"{self.cfg.order_id_tag}_SL"
+        active_statuses = {"PENDING_SUBMIT", "SUBMITTED", "ACCEPTED", "PARTIALLY_FILLED"}
+        
+        for order in all_orders:
+            if not isinstance(order, StopMarketOrder):
+                continue
+
+            tags = getattr(order, "tags", []) or []
+            has_sl_tag = any(sl_tag in str(tag) for tag in tags)
+            status_name = getattr(order.status, "name", str(order.status))
+
+            self.log.warning(
+                f"[TRAILING_FIX_v2.5] 📋 StopMarketOrder: {order.client_order_id}, "
+                f"status={status_name}, trigger={order.trigger_price}, tags={tags}, has_sl_tag={has_sl_tag}"
+            )
+
+            if has_sl_tag and status_name in active_statuses:
+                current_stop_order = order
+                self.log.warning(f"[TRAILING_FIX_v2.5] ✅ Using this stop order (status={status_name}, tags={tags})")
+                break
+        
+        if not current_stop_order:
+            self.log.warning("[TRAILING_FIX_v2.1] ⚠️ No suitable STOP_MARKET order found - trying orders_open()")
+            open_orders = list(self.cache.orders_open(instrument_id=self.instrument_id))
+            self.log.warning(f"[TRAILING_FIX_v2.1] Found {len(open_orders)} open orders")
+            for order in open_orders:
+                self.log.warning(
+                    f"[TRAILING_FIX_v2.1] Open order type: {type(order).__name__}, "
+                    f"id={order.client_order_id}, tags={getattr(order, 'tags', None)}"
+                )
+                if isinstance(order, StopMarketOrder):
+                    tags = getattr(order, "tags", []) or []
+                    if any(sl_tag in str(tag) for tag in tags):
+                        current_stop_order = order
+                        self.log.warning(f"[TRAILING_FIX_v2.5] ✅ Found stop in open orders with SL tag!")
+                        break
+        
+        if not current_stop_order:
+            self.log.warning("[TRAILING_FIX_v2.1] ❌ STILL no stop order - ABORTING trailing")
+            return
+            
+        # Update the tracked order reference
+        self._current_stop_order = current_stop_order
+        self.log.warning(f"[TRAILING_FIX_v2.1] 🎯 Current stop trigger: {current_stop_order.trigger_price}")
+        
+        # Initialize last stop price from the current SL if we don't have it yet
+        if self._last_stop_price is None and current_stop_order.trigger_price is not None:
+            try:
+                self._last_stop_price = current_stop_order.trigger_price.as_decimal()
+            except AttributeError:
+                # In case trigger_price is already a Decimal-like
+                self._last_stop_price = Decimal(str(current_stop_order.trigger_price))
+            self.log.warning(f"[TRAILING_FIX_v2.5] 🧭 Initialized _last_stop_price from order: {self._last_stop_price}")
+        
+        # Skip if not FX
+        self.log.warning(f"[TRAILING_FIX_v2.1] 🔍 Checking _is_fx: {self._is_fx}")
+        if not self._is_fx:
+            self.log.warning("[TRAILING_FIX_v2.1] ❌ EARLY EXIT: Not FX instrument")
+            return
+            
+        # Skip if no entry price
+        self.log.warning(f"[TRAILING_FIX_v2.1] 🔍 Checking _position_entry_price: {self._position_entry_price}")
+        if not self._position_entry_price:
+            # FIX v2.2: Get entry price from the position if we don't have it tracked
+            self._position_entry_price = Decimal(str(position.avg_px_open))
+            self.log.warning(f"[TRAILING_FIX_v2.2] 🔧 Retrieved entry price from position: {self._position_entry_price}")
+        
+        self.log.warning("[TRAILING_FIX_v2.1] ✅ PASSED ALL CHECKS - ENTERING TRAILING LOGIC!")
+        
+        # Keep entry price in sync but avoid thrashing on every bar
+        current_entry = Decimal(str(position.avg_px_open))
+        if self._position_entry_price is None or self._position_entry_price != current_entry:
+            self._position_entry_price = current_entry
+            self.log.debug(f"[TRAILING_FIX_v2.5] Synced _position_entry_price from position: {self._position_entry_price}")
         
         # Calculate current profit in pips
         current_price = Decimal(str(bar.close))
@@ -1197,6 +1433,124 @@ class MovingAverageCrossover(Strategy):
             profit_pips = (current_price - self._position_entry_price) / pip_value
         else:  # SHORT
             profit_pips = (self._position_entry_price - current_price) / pip_value
+        
+        # --------------------------------------------------------------------
+        # FIRST PARTIAL CLOSE (before trailing activation) at fixed profit
+        # --------------------------------------------------------------------
+        if (
+            self.cfg.partial1_enabled
+            and not self._partial1_done
+            and not self._trailing_active
+        ):
+            try:
+                threshold = Decimal(str(self.cfg.partial1_threshold_pips))
+            except Exception:
+                threshold = Decimal("0")
+            if threshold > 0 and profit_pips >= threshold:
+                try:
+                    frac = Decimal(str(self.cfg.partial1_fraction))
+                    if frac > Decimal("0") and frac < Decimal("1"):
+                        # Determine base quantity to reduce (prefer position.quantity)
+                        pos_qty_attr = None
+                        try:
+                            pos_qty_attr = getattr(position, "quantity", None)
+                        except Exception:
+                            pos_qty_attr = None
+                        if pos_qty_attr is None:
+                            base_qty = Decimal(str(self.trade_size))
+                        else:
+                            base_qty = Decimal(str(pos_qty_attr))
+                        qty_to_close = (base_qty * frac)
+                        if qty_to_close > Decimal("0"):
+                            qty_str = f"{qty_to_close.quantize(Decimal('1.00'))}"
+                            opp_side = OrderSide.SELL if position.side.name == "LONG" else OrderSide.BUY
+                            reduce_order = self.order_factory.market(
+                                instrument_id=self.instrument_id,
+                                order_side=opp_side,
+                                quantity=Quantity.from_str(qty_str),
+                                tags=[f"{self.cfg.order_id_tag}_PARTIAL1"],
+                            )
+                            self.submit_order(reduce_order)
+                            self._partial1_done = True
+                            self.log.info(f"[PARTIAL1] Submitted {opp_side.name} market to reduce by {qty_str} ({float(frac)*100:.0f}%) at +{profit_pips:.1f} pips (threshold={threshold})")
+                            
+                            # Optionally move SL to breakeven (+1 pip) for the remainder
+                            if self.cfg.partial1_move_sl_to_be and self._current_stop_order is not None:
+                                be_offset = pip_value  # +1 pip
+                                if position.side.name == "LONG":
+                                    be_price = self._position_entry_price + be_offset  # type: ignore
+                                else:
+                                    be_price = self._position_entry_price - be_offset  # type: ignore
+                                price_increment = self.instrument.price_increment
+                                new_trigger = (be_price / price_increment).quantize(Decimal('1')) * price_increment
+                                
+                                status_name = getattr(self._current_stop_order.status, "name", str(self._current_stop_order.status))
+                                if status_name in {"PENDING_SUBMIT", "SUBMITTED", "ACCEPTED", "PARTIALLY_FILLED"}:
+                                    old_tr = self._current_stop_order.trigger_price
+                                    self.modify_order(self._current_stop_order, trigger_price=Price.from_str(str(new_trigger)))
+                                    # Clear stale reference per v2.6
+                                    self._current_stop_order = None
+                                    self._last_stop_price = new_trigger
+                                    self.log.info(f"[PARTIAL1] Moved SL to BE+1 pip: {old_tr} -> {new_trigger}")
+                                else:
+                                    self.log.warning(f"[PARTIAL1] Skip BE move; SL status non-active: {status_name}")
+                            # Defer further trailing logic to next bar to avoid stale references
+                            return
+                        else:
+                            self.log.warning(f"[PARTIAL1] Computed qty_to_close <= 0 from base={base_qty}, frac={frac}")
+                    else:
+                        self.log.warning(f"[PARTIAL1] Skipping - invalid fraction={frac} (must be 0<f<1)")
+                except Exception as exc:
+                    self.log.error(f"[PARTIAL1] Failed during first partial close handling: {exc}")
+        
+        # ====================================================================
+        # DURATION-BASED TRAILING OPTIMIZATION (Phase 1)
+        # ====================================================================
+        # For trades >12h with 66% win rate, use optimized trailing:
+        # - Wider trailing distance (30 pips vs 20 pips)
+        # - Remove TP limit to let winners run
+        # - Force trailing activation after threshold duration
+        # ====================================================================
+        duration_hours = None
+        apply_duration_trailing = False
+        
+        if self.cfg.trailing_duration_enabled and self._position_opened_time is not None:
+            # Calculate position duration in hours
+            current_time_ns = self.clock.timestamp_ns()
+            duration_ns = current_time_ns - self._position_opened_time
+            duration_hours = duration_ns / (1_000_000_000 * 3600)  # Convert nanoseconds to hours
+            
+            # Check if duration threshold is met
+            if duration_hours >= self.cfg.trailing_duration_threshold_hours:
+                apply_duration_trailing = True
+                
+                # Log once when threshold is first crossed
+                if not self._trailing_active or duration_hours < self.cfg.trailing_duration_threshold_hours + 0.25:  # Within 15 min of threshold
+                    print(f"[DURATION_TRAIL] Position held for {duration_hours:.1f}h (>= {self.cfg.trailing_duration_threshold_hours}h threshold)")
+                    print(f"[DURATION_TRAIL] Current price: {current_price}, Entry: {self._position_entry_price}, Profit: {profit_pips:.2f} pips")
+                    print(f"[DURATION_TRAIL] Applying optimized trailing: distance={self.cfg.trailing_duration_distance_pips} pips")
+                    print(f"[DURATION_TRAIL] Trailing active before: {self._trailing_active}")
+                    self.log.info(f"[DURATION_TRAIL] Position held for {duration_hours:.1f}h (>= {self.cfg.trailing_duration_threshold_hours}h threshold)")
+                    self.log.info(f"[DURATION_TRAIL] Current price: {current_price}, Entry: {self._position_entry_price}, Profit: {profit_pips:.2f} pips")
+                    self.log.info(f"[DURATION_TRAIL] Applying optimized trailing: distance={self.cfg.trailing_duration_distance_pips} pips")
+                
+                # Remove TP order if configured to let winners run
+                if self.cfg.trailing_duration_remove_tp:
+                    # Find and cancel TP order
+                    open_orders = list(self.cache.orders_open(instrument_id=self.instrument_id))
+                    print(f"[DURATION_TRAIL] Checking {len(open_orders)} open orders for TP cancellation")
+                    for order in open_orders:
+                        print(f"[DURATION_TRAIL]   Order: {order.client_order_id}, Type: {order.order_type}, Tags: {order.tags if hasattr(order, 'tags') else 'NO TAGS'}")
+                        if hasattr(order, 'tags') and any('TP' in tag for tag in order.tags):
+                            print(f"[DURATION_TRAIL] CANCELLING TP order: {order.client_order_id}")
+                            self.cancel_order(order)
+                            self.log.info(f"[DURATION_TRAIL] Cancelled TP order to let winner run: {order.client_order_id}")
+                
+                # Force trailing activation if configured
+                if self.cfg.trailing_duration_activate_if_not_active and not self._trailing_active:
+                    print(f"[DURATION_TRAIL] Force-activating trailing stop after {duration_hours:.1f}h (was inactive)")
+                    self._trailing_active = True
+                    self.log.info(f"[DURATION_TRAIL] Force-activated trailing stop after {duration_hours:.1f}h")
         
         # Determine trailing parameters (adaptive or fixed)
         use_adaptive = self.cfg.adaptive_stop_mode in ('atr', 'percentile')
@@ -1233,8 +1587,13 @@ class MovingAverageCrossover(Strategy):
                     # Use adaptive trailing distances (in price units, convert to pips for threshold)
                     activation_threshold = levels['trail_activation'] / pip_value
                     trailing_distance_price = levels['trail_distance']
+                    # Also keep a pips representation for diagnostics and consistency with fixed-mode logic
+                    trailing_distance_pips = trailing_distance_price / pip_value
                     use_adaptive = True
-                    self.log.info(f"[ADAPTIVE_TRAIL_APPLIED] ATR-based activation={activation_threshold:.1f} pips, distance={trailing_distance_price/pip_value:.1f} pips")
+                    self.log.info(
+                        f"[ADAPTIVE_TRAIL_APPLIED] ATR-based activation={activation_threshold:.1f} pips, "
+                        f"distance={trailing_distance_pips:.1f} pips"
+                    )
                 else:
                     use_adaptive = False
                     self.log.warning(f"[ADAPTIVE_TRAIL_FALLBACK] Calculation returned fixed mode")
@@ -1265,35 +1624,170 @@ class MovingAverageCrossover(Strategy):
                 activation_threshold = Decimal(str(self.cfg.trailing_stop_activation_pips))
                 trailing_distance_pips = Decimal(str(self.cfg.trailing_stop_distance_pips))
             
+            # Override with duration-based trailing if applicable (Phase 1 optimization)
+            if apply_duration_trailing:
+                old_distance = trailing_distance_pips
+                trailing_distance_pips = Decimal(str(self.cfg.trailing_duration_distance_pips))
+                print(f"[DURATION_TRAIL] Overriding trailing distance: {old_distance} -> {trailing_distance_pips} pips")
+                self.log.debug(f"[DURATION_TRAIL] Using optimized trailing distance: {trailing_distance_pips} pips")
+            
             # Convert pips to price distance
             trailing_distance_price = trailing_distance_pips * pip_value
+        
+        # Apply remainder trailing multiplier after partial close (applies to both adaptive and fixed modes)
+        try:
+            if self._partial_close_done and float(self.cfg.partial_close_remainder_trail_multiplier) != 1.0:
+                mult = Decimal(str(self.cfg.partial_close_remainder_trail_multiplier))
+                trailing_distance_price = trailing_distance_price * mult
+                try:
+                    # Only present in non-adaptive branch; safe to best-effort multiply
+                    trailing_distance_pips = trailing_distance_pips * mult  # type: ignore
+                except Exception:
+                    pass
+                self.log.info(f"[PARTIAL_CLOSE] Applied remainder trailing multiplier {mult}x")
+        except Exception as _e:
+            # Defensive: never break trailing due to multiplier issues
+            self.log.warning(f"[PARTIAL_CLOSE] Remainder multiplier application failed: {_e}")
+        
+        # v2.3 DIAGNOSTICS: Log activation check details
+        self.log.warning("=" * 70)
+        self.log.warning(f"[TRAILING_FIX_v2.3] 🎯 ACTIVATION CHECK:")
+        self.log.warning(f"   Profit pips: {profit_pips:.2f}")
+        self.log.warning(f"   Activation threshold: {activation_threshold:.2f}")
+        self.log.warning(f"   Comparison: {profit_pips:.2f} >= {activation_threshold:.2f} = {profit_pips >= activation_threshold}")
+        self.log.warning(f"   Currently trailing active: {self._trailing_active}")
+        self.log.warning(f"   Will activate: {profit_pips >= activation_threshold and not self._trailing_active}")
+        self.log.warning("=" * 70)
         
         # Check if we should activate trailing
         if profit_pips >= activation_threshold and not self._trailing_active:
             self._trailing_active = True
+            self.log.warning(f"[TRAILING_FIX_v2.3] ✅ TRAILING ACTIVATED at +{profit_pips:.1f} pips (threshold={activation_threshold:.1f})")
+            print(f"[TRAILING] Activated at +{profit_pips:.1f} pips profit (threshold={activation_threshold:.1f} pips)")
             self.log.info(f"Trailing stop activated at +{profit_pips:.1f} pips profit (threshold={activation_threshold:.1f} pips)")
+            
+            # Perform partial close once on first activation (if enabled)
+            if self.cfg.partial_close_enabled and not self._partial_close_done:
+                try:
+                    frac = Decimal(str(self.cfg.partial_close_fraction))
+                    if frac <= Decimal("0") or frac >= Decimal("1"):
+                        self.log.warning(f"[PARTIAL_CLOSE] Skipping - invalid fraction={frac} (must be 0<f<1)")
+                    else:
+                        # Determine base quantity to reduce (prefer position.quantity if available)
+                        base_qty: Decimal
+                        pos_qty_attr = None
+                        try:
+                            pos_qty_attr = getattr(position, "quantity", None)
+                        except Exception:
+                            pos_qty_attr = None
+                        if pos_qty_attr is None:
+                            base_qty = Decimal(str(self.trade_size))
+                        else:
+                            base_qty = Decimal(str(pos_qty_attr))
+                        qty_to_close = (base_qty * frac)
+                        # Ensure at least minimum increment by flooring to 2 decimal places (strategy uses two decimals)
+                        # Avoid over-reducing which could reverse the position
+                        if qty_to_close <= Decimal("0"):
+                            self.log.warning(f"[PARTIAL_CLOSE] Computed qty_to_close <= 0 from base={base_qty}, frac={frac}")
+                        else:
+                            # Format quantity string with two decimals to match instrument size precision
+                            qty_str = f"{qty_to_close.quantize(Decimal('1.00'))}"
+                            opp_side = OrderSide.SELL if position.side.name == "LONG" else OrderSide.BUY
+                            reduce_order = self.order_factory.market(
+                                instrument_id=self.instrument_id,
+                                order_side=opp_side,
+                                quantity=Quantity.from_str(qty_str),
+                                tags=[f"{self.cfg.order_id_tag}_PARTIAL_CLOSE"],
+                            )
+                            self.submit_order(reduce_order)
+                            self._partial_close_done = True
+                            self._partial_remainder_trail_multiplier = Decimal(str(self.cfg.partial_close_remainder_trail_multiplier))
+                            self.log.info(f"[PARTIAL_CLOSE] Submitted {opp_side.name} market to reduce by {qty_str} ({float(frac)*100:.0f}%) on activation")
+                            
+                            # Optionally move SL to breakeven (+1 pip) for the remainder
+                            if self.cfg.partial_close_move_sl_to_be and self._current_stop_order is not None:
+                                be_offset = pip_value  # +1 pip
+                                if position.side.name == "LONG":
+                                    be_price = self._position_entry_price + be_offset  # type: ignore
+                                else:
+                                    be_price = self._position_entry_price - be_offset  # type: ignore
+                                price_increment = self.instrument.price_increment
+                                new_trigger = (be_price / price_increment).quantize(Decimal('1')) * price_increment
+                                
+                                status_name = getattr(self._current_stop_order.status, "name", str(self._current_stop_order.status))
+                                if status_name in {"PENDING_SUBMIT", "SUBMITTED", "ACCEPTED", "PARTIALLY_FILLED"}:
+                                    old_tr = self._current_stop_order.trigger_price
+                                    self.modify_order(self._current_stop_order, trigger_price=Price.from_str(str(new_trigger)))
+                                    self._current_stop_order = None  # Clear stale reference per v2.6
+                                    self._last_stop_price = new_trigger
+                                    self.log.info(f"[PARTIAL_CLOSE] Moved SL to BE+1 pip: {old_tr} -> {new_trigger}")
+                                else:
+                                    self.log.warning(f"[PARTIAL_CLOSE] Skip BE move; SL status non-active: {status_name}")
+                        # After partial-close handling (and optional BE move), defer trailing adjustments to next bar
+                        return
+                except Exception as exc:
+                    self.log.error(f"[PARTIAL_CLOSE] Failed during partial close handling: {exc}")
         
         # Update trailing stop if active
         if self._trailing_active:
+            self.log.warning(f"[TRAILING_FIX_v2.3] 🔄 TRAILING IS ACTIVE - Checking if stop should move")
+        else:
+            self.log.warning(f"[TRAILING_FIX_v2.3] ⏸️  TRAILING NOT ACTIVE - Skipping stop modification (need {activation_threshold - profit_pips:.2f} more pips)")
+            
+        if self._trailing_active:
+            self.log.warning(f"[TRAILING_FIX_v2.3] 🔄 Current price: {current_price}, Profit: {profit_pips:.2f} pips")
+            print(f"[TRAILING] Active - Current price: {current_price}, Profit: {profit_pips:.2f} pips, Distance: {trailing_distance_pips} pips")
             
             if position.side.name == "LONG":
                 new_stop = current_price - trailing_distance_price
                 # For LONG: new stop must be higher (tighter) than last stop
                 is_better = self._last_stop_price is None or new_stop > self._last_stop_price
+                self.log.warning(f"[TRAILING_FIX_v2.3] LONG: new_stop={new_stop:.5f}, last_stop={self._last_stop_price}, is_better={is_better}")
             else:  # SHORT
                 new_stop = current_price + trailing_distance_price
                 # For SHORT: new stop must be lower (tighter) than last stop
                 is_better = self._last_stop_price is None or new_stop < self._last_stop_price
+                self.log.warning(f"[TRAILING_FIX_v2.3] SHORT: new_stop={new_stop:.5f}, last_stop={self._last_stop_price}, is_better={is_better}")
             
             if is_better:
                 # Round to instrument's price increment
                 price_increment = self.instrument.price_increment
                 new_stop_rounded = (new_stop / price_increment).quantize(Decimal('1')) * price_increment
                 
+                old_stop = self._current_stop_order.trigger_price
+                
+                self.log.warning("=" * 70)
+                self.log.warning(f"[TRAILING_FIX_v2.3] 🚀 MODIFYING ORDER!")
+                self.log.warning(f"   Order ID: {self._current_stop_order.client_order_id}")
+                self.log.warning(f"   Old trigger: {old_stop}")
+                self.log.warning(f"   New trigger: {new_stop_rounded}")
+                self.log.warning(f"   Change: {float(new_stop_rounded - old_stop.as_decimal()):.5f}")
+                self.log.warning(f"   Position side: {position.side.name}")
+                self.log.warning(f"   Trailing distance: {trailing_distance_pips} pips")
+                self.log.warning("=" * 70)
+                
+                # Sanity check: ensure order is still in active status before modify
+                status_name = getattr(self._current_stop_order.status, "name", str(self._current_stop_order.status))
+                if status_name not in active_statuses:
+                    self.log.warning(
+                        f"[TRAILING_FIX_v2.5] ⏹️  Stop order status became non-active ({status_name}) "
+                        "just before modify_order; skipping modification."
+                    )
+                    return
+                
+                print(f"[TRAILING] Moving stop: {old_stop} -> {new_stop_rounded} (distance={trailing_distance_pips} pips)")
                 # Modify the stop order
                 self.modify_order(self._current_stop_order, trigger_price=Price.from_str(str(new_stop_rounded)))
+                
+                self.log.warning(f"[TRAILING_FIX_v2.6] ✅ modify_order() CALLED!")
+                
+                # CRITICAL FIX: Clear stale order reference after modification
+                # NautilusTrader creates a NEW order when modifying, so we must re-discover it next bar
+                self._current_stop_order = None
                 self._last_stop_price = new_stop_rounded
-                self.log.info(f"Trailing stop moved from {self._current_stop_order.trigger_price} to {new_stop_rounded}")
+                self.log.info(f"Trailing stop moved from {old_stop} to {new_stop_rounded} (order reference cleared for re-discovery)")
+            else:
+                self.log.warning(f"[TRAILING_FIX_v2.3] ⏸️  Stop NOT better - not moving (current best: {self._last_stop_price})")
 
     def on_historical_data(self, data) -> None:
         # Indicators update automatically via registration
@@ -1517,6 +2011,10 @@ class MovingAverageCrossover(Strategy):
             if not self._check_stochastic_momentum("BUY", bar):
                 return
             
+            # Check market structure 'avoid' filter (resistance proximity)
+            if not self._check_structure_filter("BUY", bar):
+                return
+            
             can_trade, reason = self._check_can_open_position("BUY")
             if not can_trade:
                 self._log_rejected_signal("BUY", reason, bar)
@@ -1572,6 +2070,10 @@ class MovingAverageCrossover(Strategy):
             
             # Check Stochastic momentum alignment
             if not self._check_stochastic_momentum("SELL", bar):
+                return
+            
+            # Check market structure 'avoid' filter (support proximity)
+            if not self._check_structure_filter("SELL", bar):
                 return
             
             can_trade, reason = self._check_can_open_position("SELL")

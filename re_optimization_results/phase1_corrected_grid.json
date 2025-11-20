@@ -1,0 +1,42 @@
+{
+  "description": "Phase 1 CORRECTED: Core SL/TP/Trailing re-optimization with VALID parameter relationships",
+  "comment": "Fixed grid ensuring Activation > Distance and realistic activation thresholds. All 200 combinations should execute successfully.",
+  "validation_rules": "TP > SL, Activation > Distance, Activation ideally < TP for trailing to activate before TP hit",
+  
+  "BACKTEST_STOP_LOSS_PIPS": [
+    15,
+    20,
+    25,
+    30
+  ],
+  "BACKTEST_TAKE_PROFIT_PIPS": [
+    50,
+    60,
+    70,
+    80,
+    90
+  ],
+  "BACKTEST_TRAILING_STOP_ACTIVATION_PIPS": [
+    12,
+    18,
+    25,
+    35,
+    45
+  ],
+  "BACKTEST_TRAILING_STOP_DISTANCE_PIPS": [
+    5,
+    10
+  ],
+  "STRATEGY_REGIME_DETECTION_ENABLED": [
+    false
+  ],
+  "STRATEGY_TRAILING_DURATION_ENABLED": [
+    false
+  ],
+  "BACKTEST_TIME_FILTER_ENABLED": [
+    true
+  ],
+  "STRATEGY_TIME_MULTIPLIER_ENABLED": [
+    true
+  ]
+}

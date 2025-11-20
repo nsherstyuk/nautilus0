@@ -346,63 +346,87 @@ async def main() -> int:
     # Give clients time to establish connection before starting main loop
     await asyncio.sleep(60)
 
-    # Perform historical data backfill to warm up indicators
-    logger.info("Starting historical data backfill for indicator warmup...")
-    try:
-        required_bars = calculate_required_bars(live_config.slow_period, live_config.bar_spec)
-        required_hours = calculate_required_duration_hours(live_config.slow_period, live_config.bar_spec)
-        logger.info(
-            "Calculated backfill requirements: %d bars, %.1f hours duration",
-            required_bars, required_hours
-        )
-        
-        # Perform backfill using the established IBKR connection
-        # Get the data client from the node
-        ib_data_client = None
-        for client_id, client in node.data_engine.clients.items():
-            if hasattr(client, 'client_id') and 'INTERACTIVE_BROKERS' in str(client_id):
-                ib_data_client = client
-                break
-        
-        if ib_data_client:
-            # Create instrument ID and bar type
-            from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
-            from nautilus_trader.model.data import BarType
-            from nautilus_trader.model.enums import PriceType
-            from nautilus_trader.model.data import BarSpecification, BarAggregation
+    # =========================================================================
+    # HISTORICAL DATA BACKFILL - DISABLED
+    # =========================================================================
+    # Historical backfill requires access to node.data_engine which is only
+    # available after node.run() starts. Attempting backfill before that fails.
+    # 
+    # Strategy will warm up naturally as live bars arrive:
+    # - Slow period: 260 bars
+    # - Bar interval: 15 minutes
+    # - Required time: 260 × 15min = 3,900 minutes = 65 hours ≈ 2.7 days
+    # 
+    # During warmup:
+    # - Strategy will NOT generate trading signals
+    # - Indicators will gradually populate
+    # - Watch logs for "[STRATEGY READY]" message when warmup completes
+    # =========================================================================
+    logger.info("=" * 80)
+    logger.info("STRATEGY WARMUP INFO")
+    logger.info("=" * 80)
+    required_bars = calculate_required_bars(live_config.slow_period, live_config.bar_spec)
+    required_hours = calculate_required_duration_hours(live_config.slow_period, live_config.bar_spec)
+    logger.info(f"Strategy requires {required_bars} bars ({required_hours:.1f} hours ≈ {required_hours/24:.1f} days) to warm up")
+    logger.info(f"Slow period: {live_config.slow_period} bars")
+    logger.info(f"Bar interval: {live_config.bar_spec}")
+    logger.info("Strategy will warm up naturally as live bars arrive")
+    logger.info("NO TRADING SIGNALS will be generated until warmup completes")
+    logger.info("Watch for '[STRATEGY READY]' message in logs")
+    logger.info("=" * 80)
+    
+    # Historical backfill DISABLED - requires complex integration with data_engine
+    # Commenting out the backfill attempt that was causing AttributeError
+    if False:  # Disable backfill - keep code for future reference
+        # Perform historical data backfill to warm up indicators
+        logger.info("Starting historical data backfill for indicator warmup...")
+        try:
+            # Get the data client from the node
+            ib_data_client = None
+            for client_id, client in node.data_engine.clients.items():
+                if hasattr(client, 'client_id') and 'INTERACTIVE_BROKERS' in str(client_id):
+                    ib_data_client = client
+                    break
             
-            instrument_id = InstrumentId(Symbol(live_config.symbol), Venue(live_config.venue))
-            
-            # Parse bar specification
-            parts = live_config.bar_spec.split('-')
-            if len(parts) >= 4:
-                step = int(parts[0])
-                aggregation = BarAggregation[parts[1].upper()]
-                price_type = PriceType[parts[2].upper()]
-                bar_spec = BarSpecification(step, aggregation, price_type)
-                bar_type = BarType(instrument_id, bar_spec)
+            if ib_data_client:
+                # Create instrument ID and bar type
+                from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
+                from nautilus_trader.model.data import BarType
+                from nautilus_trader.model.enums import PriceType
+                from nautilus_trader.model.data import BarSpecification, BarAggregation
                 
-                success, bars_loaded, bars = await backfill_historical_data(
-                    data_client=ib_data_client,
-                    instrument_id=instrument_id,
-                    bar_type=bar_type,
-                    slow_period=live_config.slow_period,
-                    bar_spec=live_config.bar_spec,
-                    is_forex=live_config.venue == "IDEALPRO"
-                )
+                instrument_id = InstrumentId(Symbol(live_config.symbol), Venue(live_config.venue))
                 
-                if success:
-                    logger.info(f"Backfill successful: loaded {bars_loaded} bars")
+                # Parse bar specification
+                parts = live_config.bar_spec.split('-')
+                if len(parts) >= 4:
+                    step = int(parts[0])
+                    aggregation = BarAggregation[parts[1].upper()]
+                    price_type = PriceType[parts[2].upper()]
+                    bar_spec = BarSpecification(step, aggregation, price_type)
+                    bar_type = BarType(instrument_id, bar_spec)
+                    
+                    success, bars_loaded, bars = await backfill_historical_data(
+                        data_client=ib_data_client,
+                        instrument_id=instrument_id,
+                        bar_type=bar_type,
+                        slow_period=live_config.slow_period,
+                        bar_spec=live_config.bar_spec,
+                        is_forex=live_config.venue == "IDEALPRO"
+                    )
+                    
+                    if success:
+                        logger.info(f"Backfill successful: loaded {bars_loaded} bars")
+                    else:
+                        logger.warning("Backfill was not successful")
                 else:
-                    logger.warning("Backfill was not successful")
+                    logger.error(f"Could not parse bar specification: {live_config.bar_spec}")
             else:
-                logger.error(f"Could not parse bar specification: {live_config.bar_spec}")
-        else:
-            logger.warning("Could not find IBKR data client for backfill")
-        logger.info("Historical data backfill completed successfully")
-    except Exception as exc:
-        logger.warning("Historical backfill failed, continuing with live data only: %s", exc)
-        logger.info("Strategy will warm up naturally as live bars arrive")
+                logger.warning("Could not find IBKR data client for backfill")
+            logger.info("Historical data backfill completed successfully")
+        except Exception as exc:
+            logger.warning("Historical backfill failed, continuing with live data only: %s", exc)
+            logger.info("Strategy will warm up naturally as live bars arrive")
 
     logger.info("Live trading node built successfully. Starting...")
 

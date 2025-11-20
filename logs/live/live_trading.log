@@ -8910,3 +8910,89 @@ AttributeError: 'InteractiveBrokersDataClient' object has no attribute 'cache'. 
 2025-11-13 18:40:29,313 - live - INFO - SIGTERM handler registered for graceful shutdown.
 2025-11-13 18:40:29,313 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
 2025-11-13 18:40:45,427 - live - WARNING - Signal 2 received. Initiating shutdown...
+2025-11-20 08:49:24,004 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-20 08:49:24,005 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-20 08:49:24,005 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-20 08:49:24,013 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=40 slow=260 trade_size=10000
+2025-11-20 08:49:24,014 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=YOUR_IB_ACCOUNT_ID market_data_type=DELAYED_FROZEN
+2025-11-20 08:49:24,014 - live - INFO - Resolved IBKR market data type enum: 4 (4)
+2025-11-20 08:49:24,014 - live - INFO - Adaptive stops: mode=fixed
+2025-11-20 08:49:24,014 - live - INFO - Regime detection: enabled=False
+2025-11-20 08:49:24,014 - live - INFO - Weekday exclusions: mode=flat
+2025-11-20 08:49:24,014 - live - INFO - RSI filter: enabled=False
+2025-11-20 08:49:24,014 - live - INFO - Volume filter: enabled=False
+2025-11-20 08:49:24,014 - live - INFO - ATR filter: enabled=False
+2025-11-20 08:49:24,015 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-11-20 08:49:24,015 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-20 08:50:51,804 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-20 08:50:51,805 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-20 08:50:51,805 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-20 08:50:51,814 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=40 slow=260 trade_size=10000
+2025-11-20 08:50:51,815 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=YOUR_IB_ACCOUNT_ID market_data_type=DELAYED_FROZEN
+2025-11-20 08:50:51,815 - live - INFO - Resolved IBKR market data type enum: 4 (4)
+2025-11-20 08:50:51,815 - live - INFO - Adaptive stops: mode=fixed
+2025-11-20 08:50:51,815 - live - INFO - Regime detection: enabled=False
+2025-11-20 08:50:51,815 - live - INFO - Weekday exclusions: mode=flat
+2025-11-20 08:50:51,815 - live - INFO - RSI filter: enabled=False
+2025-11-20 08:50:51,815 - live - INFO - Volume filter: enabled=False
+2025-11-20 08:50:51,815 - live - INFO - ATR filter: enabled=False
+2025-11-20 08:50:51,816 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-11-20 08:50:51,816 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-20 08:50:52,306 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-20 08:50:52,306 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-20 08:50:52,306 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-20 08:51:52,316 - live - INFO - Starting historical data backfill for indicator warmup...
+2025-11-20 08:51:52,318 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 08:51:52,318 - live - INFO - Calculated backfill requirements: 312 bars, 109.2 hours duration
+2025-11-20 08:51:52,318 - live - WARNING - Historical backfill failed, continuing with live data only: 'TradingNode' object has no attribute 'data_engine'
+2025-11-20 08:51:52,318 - live - INFO - Strategy will warm up naturally as live bars arrive
+2025-11-20 08:51:52,318 - live - INFO - Live trading node built successfully. Starting...
+2025-11-20 08:52:02,371 - live - INFO - Live trading system stopped.
+2025-11-20 08:55:42,409 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-20 08:55:42,409 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-20 08:55:42,409 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-20 08:55:42,418 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=40 slow=260 trade_size=10000
+2025-11-20 08:55:42,418 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1234567 market_data_type=DELAYED_FROZEN
+2025-11-20 08:55:42,418 - live - INFO - Resolved IBKR market data type enum: 4 (4)
+2025-11-20 08:55:42,418 - live - INFO - Adaptive stops: mode=fixed
+2025-11-20 08:55:42,418 - live - INFO - Regime detection: enabled=False
+2025-11-20 08:55:42,419 - live - INFO - Weekday exclusions: mode=flat
+2025-11-20 08:55:42,419 - live - INFO - RSI filter: enabled=False
+2025-11-20 08:55:42,419 - live - INFO - Volume filter: enabled=False
+2025-11-20 08:55:42,419 - live - INFO - ATR filter: enabled=False
+2025-11-20 08:55:42,419 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-11-20 08:55:42,419 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-20 08:55:42,905 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-20 08:55:42,905 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-20 08:55:42,905 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-20 08:56:42,911 - live - INFO - Starting historical data backfill for indicator warmup...
+2025-11-20 08:56:42,911 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 08:56:42,911 - live - INFO - Calculated backfill requirements: 312 bars, 109.2 hours duration
+2025-11-20 08:56:42,911 - live - WARNING - Historical backfill failed, continuing with live data only: 'TradingNode' object has no attribute 'data_engine'
+2025-11-20 08:56:42,912 - live - INFO - Strategy will warm up naturally as live bars arrive
+2025-11-20 08:56:42,912 - live - INFO - Live trading node built successfully. Starting...
+2025-11-20 08:56:52,963 - live - INFO - Live trading system stopped.
+2025-11-20 08:58:42,548 - live - INFO - Live logging configured. Logs directory: logs\live
+2025-11-20 08:58:42,549 - live - INFO - Log files initialized: application.log, live_trading.log, strategy.log, orders.log, trades.log, errors.log
+2025-11-20 08:58:42,549 - live - INFO - Starting live trading system with full backtest feature parity...
+2025-11-20 08:58:42,557 - live - INFO - Live configuration loaded: symbol=EUR/USD venue=IDEALPRO bar_spec=15-MINUTE-MID-EXTERNAL fast=40 slow=260 trade_size=10000
+2025-11-20 08:58:42,557 - live - INFO - IBKR connection details: host=127.0.0.1 port=7497 client_id=1 account=DU1558484 market_data_type=DELAYED_FROZEN
+2025-11-20 08:58:42,557 - live - INFO - Resolved IBKR market data type enum: 4 (4)
+2025-11-20 08:58:42,557 - live - INFO - Adaptive stops: mode=fixed
+2025-11-20 08:58:42,557 - live - INFO - Regime detection: enabled=False
+2025-11-20 08:58:42,557 - live - INFO - Weekday exclusions: mode=flat
+2025-11-20 08:58:42,557 - live - INFO - RSI filter: enabled=False
+2025-11-20 08:58:42,557 - live - INFO - Volume filter: enabled=False
+2025-11-20 08:58:42,558 - live - INFO - ATR filter: enabled=False
+2025-11-20 08:58:42,558 - live - INFO - Validating IBKR connection parameters host=127.0.0.1 port=7497 client_id=1
+2025-11-20 08:58:42,558 - live - WARNING - Ensure IBKR TWS/Gateway is running with API enabled before starting live trading.
+2025-11-20 08:58:43,053 - live - INFO - SIGINT handler registered for graceful shutdown.
+2025-11-20 08:58:43,053 - live - INFO - SIGTERM handler registered for graceful shutdown.
+2025-11-20 08:58:43,054 - live - INFO - Waiting for IBKR clients to connect (up to 60 seconds)...
+2025-11-20 08:59:43,055 - live - INFO - Starting historical data backfill for indicator warmup...
+2025-11-20 08:59:43,055 - live - DEBUG - Duration calculation: required_bars=312, theoretical_hours=78.00, buffer_multiplier=1.4, total_hours=109.20
+2025-11-20 08:59:43,055 - live - INFO - Calculated backfill requirements: 312 bars, 109.2 hours duration
+2025-11-20 08:59:43,055 - live - WARNING - Historical backfill failed, continuing with live data only: 'TradingNode' object has no attribute 'data_engine'
+2025-11-20 08:59:43,056 - live - INFO - Strategy will warm up naturally as live bars arrive
+2025-11-20 08:59:43,056 - live - INFO - Live trading node built successfully. Starting...
+2025-11-20 08:59:53,102 - live - INFO - Live trading system stopped.

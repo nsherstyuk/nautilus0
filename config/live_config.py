@@ -164,7 +164,11 @@ def _parse_excluded_hours(name: str, value: Optional[str]) -> list[int]:
 
 def get_live_config() -> LiveConfig:
     """Load live trading configuration from environment variables with full backtest feature parity."""
-    load_dotenv()
+    # Load .env.live file if it exists, otherwise fall back to .env
+    env_file = Path(".env.live")
+    if not env_file.exists():
+        env_file = Path(".env")
+    load_dotenv(env_file)
 
     # Required parameters
     symbol = _require("LIVE_SYMBOL", os.getenv("LIVE_SYMBOL"))

@@ -197,3 +197,4 @@ def _update_trailing_stop(self, bar: Bar) -> None:
 """
 
 
+

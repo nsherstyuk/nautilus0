@@ -278,3 +278,4 @@ Run backtests with each to find optimal multipliers for your data.
 The key insight: **Multipliers scale your base TP/SL** based on market conditions, allowing the strategy to adapt automatically.
 
 
+

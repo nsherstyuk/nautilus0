@@ -111,3 +111,4 @@ print(df.nlargest(10, 'sharpe_ratio')[['regime_adx_trending_threshold', 'regime_
 - Checkpoints are saved every 10 runs - you can resume if interrupted
 - Results are saved to CSV for easy analysis
 
+

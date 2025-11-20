@@ -326,6 +326,31 @@ def create_backtest_run_config(
     entry_timing_bar_spec: str,
     entry_timing_method: str,
     entry_timing_timeout_bars: int,
+    # Duration-based trailing stop optimization
+    trailing_duration_enabled: bool,
+    trailing_duration_threshold_hours: float,
+    trailing_duration_distance_pips: int,
+    trailing_duration_remove_tp: bool,
+    trailing_duration_activate_if_not_active: bool,
+    # Minimum hold time feature
+    min_hold_time_enabled: bool,
+    min_hold_time_hours: float,
+    min_hold_time_stop_multiplier: float,
+    # Partial close on first trailing activation
+    partial_close_enabled: bool,
+    partial_close_fraction: float,
+    partial_close_move_sl_to_be: bool,
+    partial_close_remainder_trail_multiplier: float,
+    # First partial close BEFORE trailing activation
+    partial1_enabled: bool,
+    partial1_fraction: float,
+    partial1_threshold_pips: float,
+    partial1_move_sl_to_be: bool,
+    # Market structure filter
+    structure_filter_enabled: bool,
+    structure_lookback_bars: int,
+    structure_buffer_pips: float,
+    structure_mode: str,
 ) -> BacktestRunConfig:
     """Create BacktestRunConfig wiring data, venue and strategy."""
     # Time bounds
@@ -514,6 +539,31 @@ def create_backtest_run_config(
             "entry_timing_bar_spec": entry_timing_bar_spec,
             "entry_timing_method": entry_timing_method,
             "entry_timing_timeout_bars": entry_timing_timeout_bars,
+            # Duration-based trailing stop optimization
+            "trailing_duration_enabled": trailing_duration_enabled,
+            "trailing_duration_threshold_hours": trailing_duration_threshold_hours,
+            "trailing_duration_distance_pips": trailing_duration_distance_pips,
+            "trailing_duration_remove_tp": trailing_duration_remove_tp,
+            "trailing_duration_activate_if_not_active": trailing_duration_activate_if_not_active,
+            # Minimum hold time feature
+            "min_hold_time_enabled": min_hold_time_enabled,
+            "min_hold_time_hours": min_hold_time_hours,
+            "min_hold_time_stop_multiplier": min_hold_time_stop_multiplier,
+            # Partial close on first trailing activation
+            "partial_close_enabled": partial_close_enabled,
+            "partial_close_fraction": partial_close_fraction,
+            "partial_close_move_sl_to_be": partial_close_move_sl_to_be,
+            "partial_close_remainder_trail_multiplier": partial_close_remainder_trail_multiplier,
+            # First partial close BEFORE trailing activation
+            "partial1_enabled": partial1_enabled,
+            "partial1_fraction": partial1_fraction,
+            "partial1_threshold_pips": partial1_threshold_pips,
+            "partial1_move_sl_to_be": partial1_move_sl_to_be,
+            # Market structure filter
+            "structure_filter_enabled": structure_filter_enabled,
+            "structure_lookback_bars": structure_lookback_bars,
+            "structure_buffer_pips": structure_buffer_pips,
+            "structure_mode": structure_mode,
         },
     )
 
@@ -783,6 +833,46 @@ def generate_reports(
     env_lines.append(f"STRATEGY_ENTRY_TIMING_BAR_SPEC={config.entry_timing_bar_spec}")
     env_lines.append(f"STRATEGY_ENTRY_TIMING_METHOD={config.entry_timing_method}")
     env_lines.append(f"STRATEGY_ENTRY_TIMING_TIMEOUT_BARS={config.entry_timing_timeout_bars}")
+    env_lines.append("")
+    
+    # Duration-based trailing stop optimization
+    env_lines.append("# Duration-Based Trailing Stop Optimization")
+    env_lines.append(f"STRATEGY_TRAILING_DURATION_ENABLED={str(config.trailing_duration_enabled).lower()}")
+    env_lines.append(f"STRATEGY_TRAILING_DURATION_THRESHOLD_HOURS={config.trailing_duration_threshold_hours}")
+    env_lines.append(f"STRATEGY_TRAILING_DURATION_DISTANCE_PIPS={config.trailing_duration_distance_pips}")
+    env_lines.append(f"STRATEGY_TRAILING_DURATION_REMOVE_TP={str(config.trailing_duration_remove_tp).lower()}")
+    env_lines.append(f"STRATEGY_TRAILING_DURATION_ACTIVATE_IF_NOT_ACTIVE={str(config.trailing_duration_activate_if_not_active).lower()}")
+    env_lines.append("")
+    
+    # Minimum hold time feature
+    env_lines.append("# Minimum Hold Time Feature (Wider Initial Stops)")
+    env_lines.append(f"STRATEGY_MIN_HOLD_TIME_ENABLED={str(config.min_hold_time_enabled).lower()}")
+    env_lines.append(f"STRATEGY_MIN_HOLD_TIME_HOURS={config.min_hold_time_hours}")
+    env_lines.append(f"STRATEGY_MIN_HOLD_TIME_STOP_MULTIPLIER={config.min_hold_time_stop_multiplier}")
+    env_lines.append("")
+    
+    # Partial close on first trailing activation
+    env_lines.append("# Partial Close on First Trailing Activation")
+    env_lines.append(f"STRATEGY_PARTIAL_CLOSE_ENABLED={str(config.partial_close_enabled).lower()}")
+    env_lines.append(f"STRATEGY_PARTIAL_CLOSE_FRACTION={config.partial_close_fraction}")
+    env_lines.append(f"STRATEGY_PARTIAL_CLOSE_MOVE_SL_TO_BE={str(config.partial_close_move_sl_to_be).lower()}")
+    env_lines.append(f"STRATEGY_PARTIAL_CLOSE_REMAINDER_TRAIL_MULTIPLIER={config.partial_close_remainder_trail_multiplier}")
+    env_lines.append("")
+    
+    # First partial close BEFORE trailing activation
+    env_lines.append("# First Partial Close BEFORE Trailing Activation")
+    env_lines.append(f"STRATEGY_PARTIAL1_ENABLED={str(config.partial1_enabled).lower()}")
+    env_lines.append(f"STRATEGY_PARTIAL1_FRACTION={config.partial1_fraction}")
+    env_lines.append(f"STRATEGY_PARTIAL1_THRESHOLD_PIPS={config.partial1_threshold_pips}")
+    env_lines.append(f"STRATEGY_PARTIAL1_MOVE_SL_TO_BE={str(config.partial1_move_sl_to_be).lower()}")
+    env_lines.append("")
+    
+    # Market structure filter
+    env_lines.append("# Market Structure Filter (Avoid Recent Extremes)")
+    env_lines.append(f"STRATEGY_STRUCTURE_FILTER_ENABLED={str(config.structure_filter_enabled).lower()}")
+    env_lines.append(f"STRATEGY_STRUCTURE_LOOKBACK_BARS={config.structure_lookback_bars}")
+    env_lines.append(f"STRATEGY_STRUCTURE_BUFFER_PIPS={config.structure_buffer_pips}")
+    env_lines.append(f"STRATEGY_STRUCTURE_MODE={config.structure_mode}")
     
     env_file_path = output_dir / ".env"
     env_file_path.write_text("\n".join(env_lines), encoding="utf-8")
@@ -1312,6 +1402,26 @@ async def main() -> int:
         entry_timing_bar_spec=cfg.entry_timing_bar_spec,
         entry_timing_method=cfg.entry_timing_method,
         entry_timing_timeout_bars=cfg.entry_timing_timeout_bars,
+        trailing_duration_enabled=cfg.trailing_duration_enabled,
+        trailing_duration_threshold_hours=cfg.trailing_duration_threshold_hours,
+        trailing_duration_distance_pips=cfg.trailing_duration_distance_pips,
+        trailing_duration_remove_tp=cfg.trailing_duration_remove_tp,
+        trailing_duration_activate_if_not_active=cfg.trailing_duration_activate_if_not_active,
+        min_hold_time_enabled=cfg.min_hold_time_enabled,
+        min_hold_time_hours=cfg.min_hold_time_hours,
+        min_hold_time_stop_multiplier=cfg.min_hold_time_stop_multiplier,
+        partial_close_enabled=cfg.partial_close_enabled,
+        partial_close_fraction=cfg.partial_close_fraction,
+        partial_close_move_sl_to_be=cfg.partial_close_move_sl_to_be,
+        partial_close_remainder_trail_multiplier=cfg.partial_close_remainder_trail_multiplier,
+        partial1_enabled=cfg.partial1_enabled,
+        partial1_fraction=cfg.partial1_fraction,
+        partial1_threshold_pips=cfg.partial1_threshold_pips,
+        partial1_move_sl_to_be=cfg.partial1_move_sl_to_be,
+        structure_filter_enabled=cfg.structure_filter_enabled,
+        structure_lookback_bars=cfg.structure_lookback_bars,
+        structure_buffer_pips=cfg.structure_buffer_pips,
+        structure_mode=cfg.structure_mode,
     )
 
     logger.info(
