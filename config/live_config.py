@@ -110,6 +110,17 @@ class LiveConfig:
     entry_timing_method: str = "pullback"  # pullback | breakout | momentum
     entry_timing_timeout_bars: int = 10
 
+    # Partial Close Parameters (NEW - from backtest)
+    partial_close_enabled: bool = False
+    partial_close_fraction: float = 0.5
+    partial_close_move_sl_to_be: bool = True
+    partial_close_remainder_trail_multiplier: float = 1.0
+    
+    partial1_enabled: bool = False
+    partial1_fraction: float = 0.3
+    partial1_threshold_pips: float = 10.0
+    partial1_move_sl_to_be: bool = False
+
 
 def _require(name: str, value: Optional[str]) -> str:
     """Require an environment variable to be set."""
@@ -291,6 +302,17 @@ def get_live_config() -> LiveConfig:
     entry_timing_method = os.getenv("LIVE_ENTRY_TIMING_METHOD", "pullback")
     entry_timing_timeout_bars = _parse_int("LIVE_ENTRY_TIMING_TIMEOUT_BARS", os.getenv("LIVE_ENTRY_TIMING_TIMEOUT_BARS"), 10)
 
+    # Partial Close Parameters
+    partial_close_enabled = _parse_bool(os.getenv("STRATEGY_PARTIAL_CLOSE_ENABLED"), False)
+    partial_close_fraction = _parse_float("STRATEGY_PARTIAL_CLOSE_FRACTION", os.getenv("STRATEGY_PARTIAL_CLOSE_FRACTION"), 0.5)
+    partial_close_move_sl_to_be = _parse_bool(os.getenv("STRATEGY_PARTIAL_CLOSE_MOVE_SL_TO_BE"), True)
+    partial_close_remainder_trail_multiplier = _parse_float("STRATEGY_PARTIAL_CLOSE_REMAINDER_TRAIL_MULTIPLIER", os.getenv("STRATEGY_PARTIAL_CLOSE_REMAINDER_TRAIL_MULTIPLIER"), 1.0)
+    
+    partial1_enabled = _parse_bool(os.getenv("STRATEGY_PARTIAL1_ENABLED"), False)
+    partial1_fraction = _parse_float("STRATEGY_PARTIAL1_FRACTION", os.getenv("STRATEGY_PARTIAL1_FRACTION"), 0.3)
+    partial1_threshold_pips = _parse_float("STRATEGY_PARTIAL1_THRESHOLD_PIPS", os.getenv("STRATEGY_PARTIAL1_THRESHOLD_PIPS"), 10.0)
+    partial1_move_sl_to_be = _parse_bool(os.getenv("STRATEGY_PARTIAL1_MOVE_SL_TO_BE"), False)
+
     # Validation
     if take_profit_pips <= stop_loss_pips:
         raise ValueError("LIVE_TAKE_PROFIT_PIPS must be greater than LIVE_STOP_LOSS_PIPS")
@@ -412,6 +434,14 @@ def get_live_config() -> LiveConfig:
         entry_timing_bar_spec=entry_timing_bar_spec,
         entry_timing_method=entry_timing_method,
         entry_timing_timeout_bars=entry_timing_timeout_bars,
+        partial_close_enabled=partial_close_enabled,
+        partial_close_fraction=partial_close_fraction,
+        partial_close_move_sl_to_be=partial_close_move_sl_to_be,
+        partial_close_remainder_trail_multiplier=partial_close_remainder_trail_multiplier,
+        partial1_enabled=partial1_enabled,
+        partial1_fraction=partial1_fraction,
+        partial1_threshold_pips=partial1_threshold_pips,
+        partial1_move_sl_to_be=partial1_move_sl_to_be,
     )
 
 

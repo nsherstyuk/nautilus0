@@ -230,6 +230,15 @@ def create_trading_node_config(
             "entry_timing_bar_spec": live_config.entry_timing_bar_spec,
             "entry_timing_method": live_config.entry_timing_method,
             "entry_timing_timeout_bars": live_config.entry_timing_timeout_bars,
+            # Partial Close Parameters (NEW - full backtest parity)
+            "partial_close_enabled": live_config.partial_close_enabled,
+            "partial_close_fraction": live_config.partial_close_fraction,
+            "partial_close_move_sl_to_be": live_config.partial_close_move_sl_to_be,
+            "partial_close_remainder_trail_multiplier": live_config.partial_close_remainder_trail_multiplier,
+            "partial1_enabled": live_config.partial1_enabled,
+            "partial1_fraction": live_config.partial1_fraction,
+            "partial1_threshold_pips": live_config.partial1_threshold_pips,
+            "partial1_move_sl_to_be": live_config.partial1_move_sl_to_be,
         },
     )
 
