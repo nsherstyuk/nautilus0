@@ -260,15 +260,16 @@ def create_labels(
     """
     df = df.copy()
     
-    df.loc[:, 'label'] = 0
-    df.loc[:, 'barrier_hit'] = 'none'
+    # Initialize label columns with numpy arrays (faster and avoids indexing issues)
+    df['label'] = 0
+    df['barrier_hit'] = 'none'
     
-    timestamps = df.index.tolist()
+    labels = np.zeros(len(df), dtype=int)
+    barrier_hits = np.array(['none'] * len(df), dtype=object)
     
     for i in range(len(df) - horizon):
         current_price = df['close'].iloc[i]
         current_atr = df['atr'].iloc[i] * df['close'].iloc[i]  # De-normalize
-        current_time = timestamps[i]
         
         # Dynamic barriers
         upper_barrier = current_price + (current_atr * atr_multiplier)
@@ -283,11 +284,14 @@ def create_labels(
         lower_touch = future_prices <= lower_barrier
         
         if upper_touch.any() and (not lower_touch.any() or upper_touch.idxmax() < lower_touch.idxmax()):
-            df.loc[current_time, 'label'] = 1  # Buy
-            df.loc[current_time, 'barrier_hit'] = 'upper'
+            labels[i] = 1  # Buy
+            barrier_hits[i] = 'upper'
         elif lower_touch.any() and (not upper_touch.any() or lower_touch.idxmax() < upper_touch.idxmax()):
-            df.loc[current_time, 'label'] = -1  # Sell
-            df.loc[current_time, 'barrier_hit'] = 'lower'
+            labels[i] = -1  # Sell
+            barrier_hits[i] = 'lower'
+    
+    df['label'] = labels
+    df['barrier_hit'] = barrier_hits
     
     return df
 
