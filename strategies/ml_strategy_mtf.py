@@ -249,9 +249,8 @@ class MLSignalStrategy(Strategy):
         # Get time object
         time_obj = bar_time.time()
         
-        # Check session window
-        if not (self.session_start <= time_obj <= self.session_end):
-            return False, f"Outside session hours ({self.session_start}-{self.session_end})"
+        # Session window check removed - now trading 24/7
+        # Only using excluded hours for time filtering
         
         # Check general excluded hours
         if self.excluded_hours and bar_time.hour in self.excluded_hours:
