@@ -1,0 +1,91 @@
+{
+  "training_date": "2025-11-27T08:44:46.004022",
+  "training_period": {
+    "start": "2023-12-28T03:25:00+00:00",
+    "end": "2024-12-30T16:00:00+00:00",
+    "n_samples": 44092
+  },
+  "validation_period": {
+    "start": "2025-05-01T03:25:00+00:00",
+    "end": "2025-10-29T16:00:00+00:00",
+    "n_samples": 21809
+  },
+  "feature_columns": [
+    "log_ret",
+    "mama_diff",
+    "adx",
+    "dmp",
+    "dmn",
+    "stoch_k",
+    "stoch_d",
+    "atr",
+    "hour",
+    "day_of_week"
+  ],
+  "model_params": {
+    "categorical_features": "from_dtype",
+    "class_weight": "balanced",
+    "early_stopping": "auto",
+    "interaction_cst": null,
+    "l2_regularization": 1.987156815341724,
+    "learning_rate": 0.01055221171236024,
+    "loss": "log_loss",
+    "max_bins": 188,
+    "max_depth": null,
+    "max_features": 1.0,
+    "max_iter": 180,
+    "max_leaf_nodes": 22,
+    "min_samples_leaf": 54,
+    "monotonic_cst": null,
+    "n_iter_no_change": 10,
+    "random_state": 42,
+    "scoring": "loss",
+    "tol": 1e-07,
+    "validation_fraction": 0.1,
+    "verbose": 0,
+    "warm_start": false
+  },
+  "training_distribution": {
+    "total_samples": 44109,
+    "buy_signals": 16264,
+    "sell_signals": 16281,
+    "neutral": 11564,
+    "barrier_distribution": {
+      "lower": 16281,
+      "upper": 16264,
+      "vertical": 11552,
+      "none": 12
+    },
+    "avg_bars_to_exit": 6.433680295711726,
+    "buy_pct": 36.87229363621937,
+    "sell_pct": 36.91083452356662,
+    "neutral_pct": 26.21687184021402
+  },
+  "validation_distribution": {
+    "total_samples": 21826,
+    "buy_signals": 7834,
+    "sell_signals": 8246,
+    "neutral": 5746,
+    "barrier_distribution": {
+      "lower": 8246,
+      "upper": 7834,
+      "vertical": 5734,
+      "none": 12
+    },
+    "avg_bars_to_exit": 6.542266434399926,
+    "buy_pct": 35.89297168514616,
+    "sell_pct": 37.780628608082104,
+    "neutral_pct": 26.326399706771742
+  },
+  "performance": {
+    "best_cv_score": 0.45511291002233173,
+    "training_metrics": {
+      "accuracy": 0.5331579424838973,
+      "f1_weighted": 0.5313541542357301
+    },
+    "validation_metrics": {
+      "accuracy": 0.440460360401669,
+      "f1_weighted": 0.4355710493457572
+    }
+  }
+}
