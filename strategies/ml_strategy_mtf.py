@@ -311,6 +311,10 @@ class MLSignalStrategy(Strategy):
     
     def on_bar(self, bar: Bar) -> None:
         """Process incoming 15m bar data and generate trading signals."""
+        # Skip if model not loaded yet (during warmup before on_start)
+        if self.model is None:
+            return
+            
         # Log first few bars
         if len(self.bars_buffer_15m) < 5:
             self.log.info(f"Received 15m bar: {bar.ts_init}, close={bar.close}")

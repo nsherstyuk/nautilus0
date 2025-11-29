@@ -102,6 +102,42 @@ def calculate_features(df):
     
     return df
 
+def update_trailing_stop(position, current_price, atr, config):
+    """Update trailing stop exactly like live trading.
+    
+    Args:
+        position: Current position dictionary
+        current_price: Current bar's price
+        atr: ATR value for trailing calculations
+        config: Configuration object with trailing parameters
+    """
+    # Calculate profit in ATR units
+    if position['side'] == 'LONG':
+        profit = current_price - position['entry']
+    else:  # SHORT
+        profit = position['entry'] - current_price
+    
+    profit_atr = profit / atr
+    
+    # Check if we should activate trailing (use config parameter)
+    if not position['trailing_active'] and profit_atr >= config.trailing_activation_atr_mult:
+        position['trailing_active'] = True
+    
+    # Update trailing stop if active
+    if position['trailing_active']:
+        trail_distance = atr * config.trailing_distance_atr_mult  # Use config parameter
+        
+        if position['side'] == 'LONG':
+            new_stop = current_price - trail_distance
+            if position['last_stop_price'] is None or new_stop > position['last_stop_price']:
+                position['sl'] = new_stop
+                position['last_stop_price'] = new_stop
+        else:  # SHORT
+            new_stop = current_price + trail_distance
+            if position['last_stop_price'] is None or new_stop < position['last_stop_price']:
+                position['sl'] = new_stop
+                position['last_stop_price'] = new_stop
+
 def simulate_strategy(df, config, model):
     """Simulate trading with detailed tracking."""
     trades = []
@@ -113,6 +149,10 @@ def simulate_strategy(df, config, model):
     for idx, row in df.iterrows():
         # Manage existing position
         if position is not None:
+            # Update trailing stop first (if enabled)
+            if config.trailing_stop_enabled:
+                update_trailing_stop(position, row['close'], position['atr_value'], config)
+            
             # Check partial close first
             if config.partial_close_enabled and not position.get('partial_closed', False):
                 if position['side'] == 'LONG':
@@ -276,7 +316,10 @@ def simulate_strategy(df, config, model):
                 'tp': tp_price,
                 'size': position_size,
                 'entry_time': idx,
-                'atr_value': atr_value
+                'atr_value': atr_value,
+                'partial_closed': False,
+                'trailing_active': False,  # For trailing stop
+                'last_stop_price': None    # Track last trailing level
             }
         else:  # SHORT
             sl_price = entry_price + (atr_value * config.sl_atr_mult)
@@ -288,7 +331,10 @@ def simulate_strategy(df, config, model):
                 'tp': tp_price,
                 'size': position_size,
                 'entry_time': idx,
-                'atr_value': atr_value
+                'atr_value': atr_value,
+                'partial_closed': False,
+                'trailing_active': False,  # For trailing stop
+                'last_stop_price': None    # Track last trailing level
             }
         
         last_trade_time = idx
@@ -506,6 +552,23 @@ def main():
     print(f"\n✅ Model loaded from {config.model_path}")
     
     # Load and prepare data
+    # Debug: Print exact config being used
+    print("\n" + "="*80)
+    print("CONFIGURATION DEBUG")
+    print("="*80)
+    print(f"Partial Close ATR Mult: {config.partial_close_atr_mult}")
+    print(f"Trailing Activation ATR Mult: {config.trailing_activation_atr_mult}")
+    print(f"Trailing Distance ATR Mult: {config.trailing_distance_atr_mult}")
+    print(f"Trailing Enabled: {config.trailing_stop_enabled}")
+    print(f"Partial Close Enabled: {config.partial_close_enabled}")
+    print(f"Prediction Threshold: {config.prediction_threshold}")
+    print(f"Min ATR: {config.min_atr}")
+    print(f"Max ATR: {config.max_atr}")
+    print(f"Cooldown Minutes: {config.cooldown_minutes}")
+    print(f"Excluded Hours by Weekday: {config.excluded_hours_by_weekday}")
+    print(f"Excluded Hours (global): {config.excluded_hours}")
+    print("="*80)
+    
     print("\nLoading and preparing data...")
     df = load_and_prepare_data(config)
     df = calculate_features(df)
