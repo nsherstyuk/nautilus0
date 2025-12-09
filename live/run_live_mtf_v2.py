@@ -92,6 +92,17 @@ def setup_logging(log_dir: Path, start_time: str) -> logging.Logger:
     root_logger = logging.getLogger()
     root_logger.addHandler(console_handler)
     
+    # Suppress noisy loggers that clutter console output
+    # These still log to files but not to console
+    logging.getLogger("nautilus_trader.portfolio").setLevel(logging.WARNING)
+    logging.getLogger("nautilus_trader.cache").setLevel(logging.WARNING)
+    logging.getLogger("nautilus_trader.common").setLevel(logging.WARNING)
+    logging.getLogger("nautilus_trader.execution").setLevel(logging.WARNING)
+    logging.getLogger("nautilus_trader.risk").setLevel(logging.WARNING)
+    # Keep ib_insync at INFO for connection monitoring - we need to see disconnects/reconnects
+    # logging.getLogger("ib_insync.wrapper").setLevel(logging.WARNING)
+    # logging.getLogger("ib_insync.client").setLevel(logging.WARNING)
+    
     log = logging.getLogger("live_v2")
     log.info("V2 Live logging configured. Logs directory: %s", log_dir)
     log.info("Console log (this run): %s", console_log_file)
@@ -340,9 +351,12 @@ def main() -> int:
         # Keep main thread alive - ib_insync handles events in background
         # Health check runs every 60 seconds to detect stale connections
         health_check_interval = 60  # seconds
+        status_report_interval = 1800  # 30 minutes
         last_health_check = time.time()
+        last_status_report = time.time()
         
         logger.info(f"Health check enabled: every {health_check_interval}s, max bar age 20 mins")
+        logger.info(f"Status report: every {status_report_interval//60} minutes")
         
         while True:
             time.sleep(1)  # Check every second
@@ -357,8 +371,33 @@ def main() -> int:
             if bar_streamer.is_reconnecting():
                 continue
             
-            # Periodic health check (ib_insync handles event processing internally)
             now = time.time()
+            
+            # Periodic status report (every 30 minutes)
+            if now - last_status_report >= status_report_interval:
+                last_status_report = now
+                try:
+                    # Get portfolio state from node
+                    portfolio = node.trader.portfolio
+                    account = portfolio.account(node.trader.account_ids[0]) if node.trader.account_ids else None
+                    
+                    if account:
+                        logger.info("=" * 60)
+                        logger.info("STATUS REPORT")
+                        logger.info(f"Account Balance: {account.balance_total()}")
+                        logger.info(f"Unrealized PnL: {account.unrealized_pnl()}")
+                        logger.info(f"Open Positions: {len(portfolio.positions_open())}")
+                        
+                        # Bar streaming status
+                        bar_age = bar_streamer.get_last_bar_age_seconds()
+                        if bar_age is not None:
+                            logger.info(f"Last bar received: {bar_age:.0f}s ago")
+                        logger.info(f"IB Connected: {bar_streamer.is_connected()}")
+                        logger.info("=" * 60)
+                except Exception as e:
+                    logger.warning(f"Could not generate status report: {e}")
+            
+            # Periodic health check (ib_insync handles event processing internally)
             if now - last_health_check >= health_check_interval:
                 last_health_check = now
                 
