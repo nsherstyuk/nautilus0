@@ -99,6 +99,13 @@ def setup_logging(log_dir: Path, start_time: str) -> logging.Logger:
     logging.getLogger("nautilus_trader.common").setLevel(logging.WARNING)
     logging.getLogger("nautilus_trader.execution").setLevel(logging.WARNING)
     logging.getLogger("nautilus_trader.risk").setLevel(logging.WARNING)
+    
+    # Suppress trader-specific loggers (these use trader_id prefix)
+    logging.getLogger("TRADER-V2-001.Portfolio").setLevel(logging.WARNING)
+    logging.getLogger("TRADER-V2-001.Cache").setLevel(logging.WARNING)
+    logging.getLogger("TRADER-V2-001.RiskEngine").setLevel(logging.WARNING)
+    logging.getLogger("TRADER-V2-001.ExecEngine").setLevel(logging.WARNING)
+    
     # Keep ib_insync at INFO for connection monitoring - we need to see disconnects/reconnects
     # logging.getLogger("ib_insync.wrapper").setLevel(logging.WARNING)
     # logging.getLogger("ib_insync.client").setLevel(logging.WARNING)
@@ -243,6 +250,13 @@ def main() -> int:
     node.add_data_client_factory("INTERACTIVE_BROKERS", InteractiveBrokersLiveDataClientFactory)
     node.add_exec_client_factory("INTERACTIVE_BROKERS", InteractiveBrokersLiveExecClientFactory)
     node.build()
+    
+    # Suppress noisy trader-specific loggers AFTER node is built
+    logging.getLogger("TRADER-V2-001.Portfolio").setLevel(logging.WARNING)
+    logging.getLogger("TRADER-V2-001.Cache").setLevel(logging.WARNING)
+    logging.getLogger("TRADER-V2-001.RiskEngine").setLevel(logging.WARNING)
+    logging.getLogger("TRADER-V2-001.ExecEngine").setLevel(logging.WARNING)
+    logging.getLogger("TRADER-V2-001.DataEngine").setLevel(logging.WARNING)
     
     # Create strategy instance
     strategy_instance = StrategyFactory.create(strategy_config)
