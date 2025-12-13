@@ -1097,7 +1097,11 @@ async def main() -> int:
     try:
         # Load IBKR configuration
         config = get_ibkr_config()
-        logger.info(f"Loaded IBKR config: {config.host}:{config.port} (client_id={config.client_id})")
+        
+        # Override client ID to avoid conflict with live trading (which uses client_id from .env)
+        # Use a different client ID for data ingestion
+        config.client_id = 99  # Different from live trading client ID (17) and any other processes
+        logger.info(f"Loaded IBKR config: {config.host}:{config.port} (client_id={config.client_id}) [INGESTION]")
         
         # Read data parameters from environment
         symbols_str = os.getenv("DATA_SYMBOLS", "SPY")

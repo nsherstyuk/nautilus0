@@ -69,6 +69,14 @@ loggers:
     level: DEBUG
     handlers: [console, live_file, strategy_file]
     propagate: false
+  strategies.ml_strategy_mtf:  # MTF ML Strategy logger
+    level: DEBUG
+    handlers: [console, live_file, strategy_file]
+    propagate: false
+  MLSignalStrategy_V2:  # V2 Strategy logger
+    level: DEBUG
+    handlers: [console, live_file, strategy_file]
+    propagate: false
   orders:  # Order lifecycle events logger
     level: DEBUG
     handlers: [console, orders_file, live_file]
@@ -76,6 +84,22 @@ loggers:
   trades:  # Trade execution events logger
     level: DEBUG
     handlers: [console, trades_file, live_file]
+    propagate: false
+  TRADER-V2-001.Portfolio:  # Suppress noisy Portfolio updates from console
+    level: WARNING
+    handlers: [live_file]  # Still log to file, just not console
+    propagate: false
+  TRADER-V2-001.Cache:  # Suppress noisy Cache updates from console
+    level: WARNING
+    handlers: [live_file]
+    propagate: false
+  TRADER-V2-001.RiskEngine:  # Suppress noisy RiskEngine updates from console
+    level: WARNING
+    handlers: [live_file]
+    propagate: false
+  TRADER-V2-001.DataEngine:  # Suppress noisy DataEngine updates from console
+    level: WARNING
+    handlers: [live_file]
     propagate: false
 root:
   level: INFO

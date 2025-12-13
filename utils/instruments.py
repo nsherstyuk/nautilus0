@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import logging
+from decimal import Decimal
 from pathlib import Path
 from typing import List, Tuple
 
-from nautilus_trader.model.objects import Currency
+from nautilus_trader.model.identifiers import InstrumentId, Symbol
+from nautilus_trader.model.instruments import CurrencyPair
+from nautilus_trader.model.objects import Currency, Price, Quantity
 
 
 def validate_instrument_id_match(expected_id: str, actual_id: str, context: str) -> bool:
@@ -196,3 +199,50 @@ def try_both_instrument_formats(instrument_id: str) -> List[str]:
     else:
         # Input has no slash, return no-slash first, then slashed
         return [instrument_id, catalog_format_to_instrument_id(instrument_id)]
+
+
+def create_instrument(symbol: str, venue: str) -> CurrencyPair:
+    """Create a CurrencyPair instrument for forex trading.
+    
+    Args:
+        symbol: Forex pair symbol (e.g., "EUR/USD")
+        venue: Trading venue (e.g., "IDEALPRO")
+        
+    Returns:
+        CurrencyPair instrument configured for forex trading
+    
+    Example:
+        >>> instrument = create_instrument("EUR/USD", "IDEALPRO")
+        >>> print(instrument.id)
+        EUR/USD.IDEALPRO
+    """
+    # Parse and validate forex symbol
+    base_currency, quote_currency = parse_fx_symbol(symbol)
+    
+    # Create instrument ID
+    instrument_id = normalize_instrument_id(symbol, venue)
+    
+    # Create CurrencyPair
+    instrument = CurrencyPair(
+        instrument_id=InstrumentId.from_str(instrument_id),
+        raw_symbol=Symbol(f"{base_currency}/{quote_currency}"),
+        base_currency=Currency.from_str(base_currency),
+        quote_currency=Currency.from_str(quote_currency),
+        price_precision=5,  # Forex typically uses 5 decimals
+        size_precision=2,   # Match IB bar volume precision
+        size_increment=Quantity.from_str("0.01"),  # Minimum 0.01 units
+        price_increment=Price.from_str("0.00001"),  # 1/10th pip
+        lot_size=Quantity.from_str("1000.00"),  # Micro lot = 1,000 units
+        max_quantity=Quantity.from_str("50000000.00"),  # 50M units max
+        min_quantity=Quantity.from_str("0.01"),  # 0.01 unit minimum
+        max_price=None,  # No price limits
+        min_price=None,
+        margin_init=Decimal("0.03"),  # 3% initial margin
+        margin_maint=Decimal("0.02"),  # 2% maintenance margin
+        maker_fee=Decimal("0.00002"),  # 0.002% maker fee
+        taker_fee=Decimal("0.00002"),  # 0.002% taker fee
+        ts_event=0,
+        ts_init=0,
+    )
+    
+    return instrument

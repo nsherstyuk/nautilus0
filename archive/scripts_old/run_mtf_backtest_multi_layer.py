@@ -1,12 +1,31 @@
 #!/usr/bin/env python3
 """
-Enhanced MTF ML Strategy Backtest with Detailed Statistical Analysis.
-Includes hour-by-hour and weekday analysis similar to existing backtest reports.
+Enhanced MTF ML Strategy Backtest with MULTI-LAYER EXIT support.
+
+This is an experimental version that supports multiple partial close layers.
+Enable by setting MTF_MULTI_LAYER_ENABLED=true in .env.mtf
+
+Multi-Layer Exit Features:
+- Support for 2-4 exit layers
+- Each layer can have different trigger conditions:
+  * ATR-based profit (e.g., 2.5 = close at 2.5x ATR profit)
+  * Breakeven (0.0 = close when at entry price)
+  * Final exit (close at TP/SL/TRAIL)
+- Configurable position sizes for each layer
+- Optional move SL to breakeven after first layer
+
+Example configurations:
+- Conservative (70/20/10): Lock in 70% early, 20% at breakeven, 10% continues
+- Balanced (30/30/40): Three equal stages with more runner
+- Aggressive (20/20/60): Small early exits, let 60% run
+
+Falls back to standard partial close if multi-layer is disabled.
 Uses .env.mtf configuration file.
 """
 import sys
 from pathlib import Path
 from datetime import datetime
+import logging
 
 PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -102,6 +121,21 @@ def calculate_features(df):
     
     return df
 
+def calculate_commission(position_size):
+    """
+    Calculate IBKR commission for forex trade.
+    
+    Formula: max($1.00, position_size * 0.00002)
+    
+    Args:
+        position_size: Position size in base currency
+        
+    Returns:
+        Commission in USD
+    """
+    commission = position_size * 0.00002
+    return max(1.00, commission)
+
 def update_trailing_stop(position, current_price, atr, config):
     """Update trailing stop exactly like live trading.
     
@@ -138,7 +172,7 @@ def update_trailing_stop(position, current_price, atr, config):
                 position['sl'] = new_stop
                 position['last_stop_price'] = new_stop
 
-def simulate_strategy(df, config, model):
+def simulate_strategy(df, config, model, logger=None):
     """Simulate trading with detailed tracking."""
     trades = []
     position = None
@@ -146,33 +180,139 @@ def simulate_strategy(df, config, model):
     cooldown = pd.Timedelta(minutes=config.cooldown_minutes)
     position_size = config.position_size
     
+    # Helper to log with bar timestamp instead of real-time
+    def log_info(msg, bar_time=None):
+        if logger:
+            if bar_time:
+                # Format: [Bar Time] Message
+                logger.info(f"[{bar_time}] {msg}")
+            else:
+                logger.info(msg)
+    
     for idx, row in df.iterrows():
         # Manage existing position
         if position is not None:
             # Update trailing stop first (if enabled)
             if config.trailing_stop_enabled:
+                old_trailing_active = position.get('trailing_active', False)
+                old_sl = position['sl']
                 update_trailing_stop(position, row['close'], position['atr_value'], config)
+                
+                # Log trailing stop activation
+                if not old_trailing_active and position.get('trailing_active', False):
+                    log_info(f"[TRAILING ACTIVATED] {position['side']} trailing stop activated, new SL={position['sl']:.5f}", 
+                            bar_time=idx)
+                # Log trailing stop update
+                elif position.get('trailing_active', False) and position['sl'] != old_sl:
+                    log_info(f"[TRAILING UPDATE] {position['side']} SL moved from {old_sl:.5f} to {position['sl']:.5f}", 
+                            bar_time=idx)
             
-            # Check partial close first
-            if config.partial_close_enabled and not position.get('partial_closed', False):
+            # Multi-layer or standard partial close
+            if config.multi_layer_enabled:
+                # Multi-layer exit logic
+                if position['side'] == 'LONG':
+                    profit = row['close'] - position['entry']
+                else:  # SHORT
+                    profit = position['entry'] - row['close']
+                
+                atr_value = position['atr_value']
+                profit_atr = profit / atr_value
+                
+                # Check each layer
+                for layer_idx in range(config.multi_layer_count):
+                    layer_key = f'layer_{layer_idx}_closed'
+                    
+                    # Skip if already closed
+                    if position.get(layer_key, False):
+                        continue
+                    
+                    trigger = config.multi_layer_triggers[layer_idx]
+                    size_fraction = config.multi_layer_sizes[layer_idx]
+                    
+                    # Check if trigger condition met
+                    should_close = False
+                    
+                    if trigger == "final":
+                        # This layer closes at final exit (TP/SL/TRAIL)
+                        continue
+                    elif trigger == 0.0:
+                        # Breakeven trigger - close when at or above entry
+                        if profit_atr >= 0:
+                            should_close = True
+                    else:
+                        # ATR-based trigger
+                        if profit_atr >= trigger:
+                            should_close = True
+                    
+                    if should_close:
+                        # Close this layer
+                        layer_size = position['initial_size'] * size_fraction
+                        layer_pnl = profit * layer_size
+                        
+                        # Add commission for this partial close
+                        layer_commission = calculate_commission(layer_size)
+                        position['total_commission'] += layer_commission
+                        
+                        # Track layer closure
+                        position[layer_key] = True
+                        position['size'] -= layer_size
+                        
+                        # Accumulate partial P&L
+                        if 'partial_pnl' not in position:
+                            position['partial_pnl'] = 0
+                        position['partial_pnl'] += layer_pnl
+                        
+                        # Mark that we had partial closes
+                        position['partial_closed'] = True
+                        
+                        # Log partial close
+                        log_info(f"[PARTIAL CLOSE] Layer {layer_idx+1}/{config.multi_layer_count} closed at {row['close']:.5f}, "
+                                f"profit={profit_atr:.2f}xATR, layer_pnl=${layer_pnl:.2f}, remaining_size={position['size']:.0f}", 
+                                bar_time=idx)
+                        
+                        # Move SL to breakeven after first layer (if configured)
+                        if layer_idx == 0 and config.multi_layer_move_sl_to_be:
+                            position['sl'] = position['entry']
+                            log_info(f"[SL MOVED] Stop moved to breakeven at {position['entry']:.5f}", bar_time=idx)
+            
+            elif config.partial_close_enabled and not position.get('partial_closed', False):
+                # Standard single partial close (original logic)
                 if position['side'] == 'LONG':
                     profit = row['close'] - position['entry']
                     atr_value = position['atr_value']
                     if profit >= atr_value * config.partial_close_atr_mult:
                         partial_size = position['size'] * config.partial_close_fraction
                         partial_pnl = profit * partial_size
+                        # Add commission for partial close
+                        partial_commission = calculate_commission(partial_size)
+                        position['total_commission'] += partial_commission
                         position['size'] -= partial_size
                         position['partial_closed'] = True
                         position['partial_pnl'] = partial_pnl
+                        profit_atr = profit / atr_value
+                        log_info(f"[PARTIAL CLOSE] Standard close at {row['close']:.5f}, "
+                                f"profit={profit_atr:.2f}xATR, pnl=${partial_pnl:.2f}, remaining_size={position['size']:.0f}", 
+                                bar_time=idx)
+                        if config.partial_close_move_sl_to_be:
+                            log_info(f"[SL MOVED] Stop moved to breakeven at {position['entry']:.5f}", bar_time=idx)
                 else:  # SHORT
                     profit = position['entry'] - row['close']
                     atr_value = position['atr_value']
                     if profit >= atr_value * config.partial_close_atr_mult:
                         partial_size = position['size'] * config.partial_close_fraction
                         partial_pnl = profit * partial_size
+                        # Add commission for partial close
+                        partial_commission = calculate_commission(partial_size)
+                        position['total_commission'] += partial_commission
                         position['size'] -= partial_size
                         position['partial_closed'] = True
                         position['partial_pnl'] = partial_pnl
+                        profit_atr = profit / atr_value
+                        log_info(f"[PARTIAL CLOSE] Standard close at {row['close']:.5f}, "
+                                f"profit={profit_atr:.2f}xATR, pnl=${partial_pnl:.2f}, remaining_size={position['size']:.0f}", 
+                                bar_time=idx)
+                        if config.partial_close_move_sl_to_be:
+                            log_info(f"[SL MOVED] Stop moved to breakeven at {position['entry']:.5f}", bar_time=idx)
             
             # Check stop loss / take profit
             if position['side'] == 'LONG':
@@ -180,6 +320,17 @@ def simulate_strategy(df, config, model):
                     pnl = (position['sl'] - position['entry']) * position['size']
                     if 'partial_pnl' in position:
                         pnl += position['partial_pnl']
+                    # Add final exit commission and subtract total commissions
+                    final_commission = calculate_commission(position['size'])
+                    total_commission = position['total_commission'] + final_commission
+                    pnl -= total_commission
+                    # Determine if this was trailing stop or regular SL
+                    exit_type = 'TRAILING_STOP' if position.get('trailing_active', False) else 'SL'
+                    duration = (idx - position['entry_time']).total_seconds() / 900
+                    log_info(f"[EXIT {exit_type}] Long closed at {position['sl']:.5f}, "
+                            f"entry={position['entry']:.5f}, pnl=${pnl:.2f}, duration={duration:.0f} bars, "
+                            f"partial_closed={position.get('partial_closed', False)}", 
+                            bar_time=idx)
                     trades.append({
                         'entry_time': position['entry_time'],
                         'exit_time': idx,
@@ -187,17 +338,26 @@ def simulate_strategy(df, config, model):
                         'entry': position['entry'],
                         'exit': position['sl'],
                         'pnl': pnl,
-                        'exit_reason': 'SL',
+                        'exit_reason': exit_type,
                         'partial_closed': position.get('partial_closed', False),
                         'entry_hour': position['entry_time'].hour,
                         'entry_weekday': position['entry_time'].dayofweek,
-                        'duration_bars': (idx - position['entry_time']).total_seconds() / 900  # 15min bars
+                        'duration_bars': duration
                     })
                     position = None
                 elif row['high'] >= position['tp']:
                     pnl = (position['tp'] - position['entry']) * position['size']
                     if 'partial_pnl' in position:
                         pnl += position['partial_pnl']
+                    # Add final exit commission and subtract total commissions
+                    final_commission = calculate_commission(position['size'])
+                    total_commission = position['total_commission'] + final_commission
+                    pnl -= total_commission
+                    duration = (idx - position['entry_time']).total_seconds() / 900
+                    log_info(f"[EXIT TP] Long closed at {position['tp']:.5f}, "
+                            f"entry={position['entry']:.5f}, pnl=${pnl:.2f}, duration={duration:.0f} bars, "
+                            f"partial_closed={position.get('partial_closed', False)}", 
+                            bar_time=idx)
                     trades.append({
                         'entry_time': position['entry_time'],
                         'exit_time': idx,
@@ -209,7 +369,7 @@ def simulate_strategy(df, config, model):
                         'partial_closed': position.get('partial_closed', False),
                         'entry_hour': position['entry_time'].hour,
                         'entry_weekday': position['entry_time'].dayofweek,
-                        'duration_bars': (idx - position['entry_time']).total_seconds() / 900
+                        'duration_bars': duration
                     })
                     position = None
             else:  # SHORT
@@ -217,6 +377,17 @@ def simulate_strategy(df, config, model):
                     pnl = (position['entry'] - position['sl']) * position['size']
                     if 'partial_pnl' in position:
                         pnl += position['partial_pnl']
+                    # Add final exit commission and subtract total commissions
+                    final_commission = calculate_commission(position['size'])
+                    total_commission = position['total_commission'] + final_commission
+                    pnl -= total_commission
+                    # Determine if this was trailing stop or regular SL
+                    exit_type = 'TRAILING_STOP' if position.get('trailing_active', False) else 'SL'
+                    duration = (idx - position['entry_time']).total_seconds() / 900
+                    log_info(f"[EXIT {exit_type}] Short closed at {position['sl']:.5f}, "
+                            f"entry={position['entry']:.5f}, pnl=${pnl:.2f}, duration={duration:.0f} bars, "
+                            f"partial_closed={position.get('partial_closed', False)}", 
+                            bar_time=idx)
                     trades.append({
                         'entry_time': position['entry_time'],
                         'exit_time': idx,
@@ -224,17 +395,26 @@ def simulate_strategy(df, config, model):
                         'entry': position['entry'],
                         'exit': position['sl'],
                         'pnl': pnl,
-                        'exit_reason': 'SL',
+                        'exit_reason': exit_type,
                         'partial_closed': position.get('partial_closed', False),
                         'entry_hour': position['entry_time'].hour,
                         'entry_weekday': position['entry_time'].dayofweek,
-                        'duration_bars': (idx - position['entry_time']).total_seconds() / 900
+                        'duration_bars': duration
                     })
                     position = None
                 elif row['low'] <= position['tp']:
                     pnl = (position['entry'] - position['tp']) * position['size']
                     if 'partial_pnl' in position:
                         pnl += position['partial_pnl']
+                    # Add final exit commission and subtract total commissions
+                    final_commission = calculate_commission(position['size'])
+                    total_commission = position['total_commission'] + final_commission
+                    pnl -= total_commission
+                    duration = (idx - position['entry_time']).total_seconds() / 900
+                    log_info(f"[EXIT TP] Short closed at {position['tp']:.5f}, "
+                            f"entry={position['entry']:.5f}, pnl=${pnl:.2f}, duration={duration:.0f} bars, "
+                            f"partial_closed={position.get('partial_closed', False)}", 
+                            bar_time=idx)
                     trades.append({
                         'entry_time': position['entry_time'],
                         'exit_time': idx,
@@ -246,14 +426,39 @@ def simulate_strategy(df, config, model):
                         'partial_closed': position.get('partial_closed', False),
                         'entry_hour': position['entry_time'].hour,
                         'entry_weekday': position['entry_time'].dayofweek,
-                        'duration_bars': (idx - position['entry_time']).total_seconds() / 900
+                        'duration_bars': duration
                     })
                     position = None
+            
+            # Check if we would have had a valid signal (blocked by existing position)
+            if position is not None:
+                # Quick check: do we have enough features for prediction?
+                if not np.isnan([row['log_ret'], row['mama_diff'], row['atr']]).any():
+                    features = np.array([
+                        row['log_ret'], row['mama_diff'], row['dmp_30m'], row['dmn_30m'],
+                        row['stoch_k_30m'], row['stoch_d_30m'], row['wma_diff_30m'],
+                        row['atr'], row['hour'], row['day_of_week']
+                    ]).reshape(1, -1)
+                    if not np.isnan(features).any():
+                        probs = model.predict_proba(features)[0]
+                        prediction = model.predict(features)[0]
+                        confidence = float(probs[1] if prediction == 1 else probs[0])
+                        # Check if this would have passed filters
+                        if (confidence >= config.prediction_threshold and 
+                            row['atr'] >= config.min_atr and row['atr'] <= config.max_atr):
+                            signal_type = "LONG" if prediction == 1 else "SHORT"
+                            log_info(f"[BLOCKED] {signal_type} signal blocked by open {position['side']} position "
+                                    f"(conf={confidence:.3f}, opened at {position['entry_time']})", 
+                                    bar_time=idx)
             continue
+        
+        # If we reach here, no position is open and we can evaluate new signals
         
         # Check cooldown
         if last_trade_time is not None:
-            if idx - last_trade_time < cooldown:
+            time_since_last = idx - last_trade_time
+            if time_since_last < cooldown:
+                # Only log cooldown on predictions (not every bar)
                 continue
         
         # Check weekday-specific hour exclusions
@@ -292,15 +497,29 @@ def simulate_strategy(df, config, model):
         prediction = model.predict(features)[0]
         confidence = float(probs[1] if prediction == 1 else probs[0])
         
+        # Log prediction
+        log_info(f"[PREDICTION] prediction={prediction}, confidence={confidence:.3f}, "
+                f"ATR={row['atr']:.5f}, mama_diff={row['mama_diff']:.5f}, stoch_k_30m={row['stoch_k_30m']:.3f}", 
+                bar_time=idx)
+        
         # Apply filters
         if confidence < config.prediction_threshold:
+            log_info(f"[FILTERED] Confidence too low: {confidence:.3f} < {config.prediction_threshold} "
+                    f"(prediction={prediction})", bar_time=idx)
             continue
         
         if row['atr'] < config.min_atr:
+            log_info(f"[FILTERED] ATR too low: {row['atr']:.5f} < {config.min_atr}", bar_time=idx)
             continue
         
         if row['atr'] > config.max_atr:
+            log_info(f"[FILTERED] ATR too high: {row['atr']:.5f} > {config.max_atr}", bar_time=idx)
             continue
+        
+        # Signal passed all filters
+        signal_type = "LONG" if prediction == 1 else "SHORT"
+        log_info(f"[SIGNAL PASSED] {signal_type} signal - prediction={prediction}, confidence={confidence:.3f}, ATR={row['atr']:.5f}", 
+                bar_time=idx)
         
         # Enter trade
         entry_price = row['close']
@@ -309,32 +528,52 @@ def simulate_strategy(df, config, model):
         if prediction == 1:  # LONG
             sl_price = entry_price - (atr_value * config.sl_atr_mult)
             tp_price = entry_price + (atr_value * config.tp_atr_mult)
+            sl_atr_dist = (entry_price - sl_price) / atr_value
+            tp_atr_dist = (tp_price - entry_price) / atr_value
+            
+            log_info(f"[ORDER] Long entry at {entry_price:.5f}, confidence={confidence:.3f}, "
+                    f"SL: {sl_price:.5f} ({sl_atr_dist:.2f}xATR), TP: {tp_price:.5f} ({tp_atr_dist:.2f}xATR), "
+                    f"Trailing: {'Enabled' if config.trailing_stop_enabled else 'Disabled'}", 
+                    bar_time=idx)
+            
             position = {
                 'side': 'LONG',
                 'entry': entry_price,
                 'sl': sl_price,
                 'tp': tp_price,
                 'size': position_size,
+                'initial_size': position_size,  # For multi-layer tracking
                 'entry_time': idx,
                 'atr_value': atr_value,
                 'partial_closed': False,
                 'trailing_active': False,  # For trailing stop
-                'last_stop_price': None    # Track last trailing level
+                'last_stop_price': None,   # Track last trailing level
+                'total_commission': calculate_commission(position_size)  # Entry commission
             }
         else:  # SHORT
             sl_price = entry_price + (atr_value * config.sl_atr_mult)
             tp_price = entry_price - (atr_value * config.tp_atr_mult)
+            sl_atr_dist = (sl_price - entry_price) / atr_value
+            tp_atr_dist = (entry_price - tp_price) / atr_value
+            
+            log_info(f"[ORDER] Short entry at {entry_price:.5f}, confidence={confidence:.3f}, "
+                    f"SL: {sl_price:.5f} ({sl_atr_dist:.2f}xATR), TP: {tp_price:.5f} ({tp_atr_dist:.2f}xATR), "
+                    f"Trailing: {'Enabled' if config.trailing_stop_enabled else 'Disabled'}", 
+                    bar_time=idx)
+            
             position = {
                 'side': 'SHORT',
                 'entry': entry_price,
                 'sl': sl_price,
                 'tp': tp_price,
                 'size': position_size,
+                'initial_size': position_size,  # For multi-layer tracking
                 'entry_time': idx,
                 'atr_value': atr_value,
                 'partial_closed': False,
                 'trailing_active': False,  # For trailing stop
-                'last_stop_price': None    # Track last trailing level
+                'last_stop_price': None,   # Track last trailing level
+                'total_commission': calculate_commission(position_size)  # Entry commission
             }
         
         last_trade_time = idx
@@ -417,8 +656,11 @@ def analyze_by_month(df_trades):
     print("PERFORMANCE BY MONTH")
     print("="*80)
     
-    # Add month column
-    df_trades['entry_month'] = pd.to_datetime(df_trades['entry_time']).dt.to_period('M')
+    # Add month column (suppress timezone warning)
+    import warnings
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        df_trades['entry_month'] = pd.to_datetime(df_trades['entry_time']).dt.to_period('M')
     
     month_stats = []
     for month in df_trades['entry_month'].unique():
@@ -441,15 +683,13 @@ def analyze_by_month(df_trades):
     print(f"\n{'Month':<12} {'Trades':<8} {'Win Rate':<12} {'Total P&L':<15} {'Avg P&L':<12}")
     print("-"*65)
     for _, row in df_month.iterrows():
-        pnl_indicator = "🔴" if row['total_pnl'] < 0 else "🟢"
-        print(f"{row['month']:<12} {int(row['trades']):<8} {row['win_rate']:>10.1f}%  ${row['total_pnl']:>12,.2f}  ${row['avg_pnl']:>10,.2f} {pnl_indicator}")
+        print(f"{row['month']:<12} {int(row['trades']):<8} {row['win_rate']:>10.1f}%  ${row['total_pnl']:>12,.2f}  ${row['avg_pnl']:>10,.2f}")
     
     return df_month
 
-def save_detailed_report(df_trades, df_hour, df_weekday, df_month, output_dir):
+def save_detailed_report(df_trades, df_hour, df_weekday, df_month, report_dir):
     """Save detailed report to file."""
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    report_dir = output_dir / f"MTF_ML_{timestamp}"
+    # report_dir is now passed in, so we use it directly
     report_dir.mkdir(parents=True, exist_ok=True)
     
     # Save trades CSV
@@ -529,8 +769,14 @@ def save_detailed_report(df_trades, df_hour, df_weekday, df_month, output_dir):
         for _, row in df_weekday.head(3).iterrows():
             f.write(f"{row['weekday']} - ${row['total_pnl']:,.2f} ({int(row['trades'])} trades, {row['win_rate']:.1f}% win rate)\n")
     
-    print(f"\n✅ Detailed report saved to: {report_dir}")
-    return report_dir
+    # Copy .env.mtf file to preserve exact configuration used
+    import shutil
+    env_source = report_dir.parent.parent / ".env.mtf"
+    if env_source.exists():
+        shutil.copy2(env_source, report_dir / ".env.mtf")
+        print(f"Configuration saved: .env.mtf")
+    
+    print(f"\nDetailed report saved to: {report_dir}")
 
 def main():
     """Run detailed MTF backtest."""
@@ -544,12 +790,12 @@ def main():
     print_mtf_config(config)
     
     if not validate_mtf_config(config):
-        print("\n❌ Configuration validation failed!")
+        print("\nConfiguration validation failed!")
         return 1
     
     # Load model
     model = load(PROJECT_ROOT / config.model_path)
-    print(f"\n✅ Model loaded from {config.model_path}")
+    print(f"\nModel loaded from {config.model_path}")
     
     # Load and prepare data
     # Debug: Print exact config being used
@@ -572,14 +818,34 @@ def main():
     print("\nLoading and preparing data...")
     df = load_and_prepare_data(config)
     df = calculate_features(df)
-    print(f"✅ Data prepared: {len(df)} bars")
+    print(f"Data prepared: {len(df)} bars")
+    
+    # Setup logger for strategy decisions (will be saved to report directory)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = PROJECT_ROOT / "backtest_results"
+    report_dir = output_dir / f"MTF_ML_{timestamp}"
+    report_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Create strategy logger (no timestamp - we use bar time instead)
+    strategy_logger = logging.getLogger('backtest_strategy')
+    strategy_logger.setLevel(logging.INFO)
+    strategy_handler = logging.FileHandler(report_dir / "strategy_decisions.log")
+    strategy_handler.setFormatter(logging.Formatter('%(message)s'))  # Only message, bar time is in the message
+    strategy_logger.addHandler(strategy_handler)
+    strategy_logger.info("="*80)
+    strategy_logger.info("BACKTEST STRATEGY DECISIONS LOG")
+    strategy_logger.info("="*80)
+    strategy_logger.info(f"Backtest period: {config.backtest_start_date} to {config.backtest_end_date}")
+    strategy_logger.info(f"Prediction threshold: {config.prediction_threshold}")
+    strategy_logger.info(f"ATR range: {config.min_atr} - {config.max_atr}")
+    strategy_logger.info("="*80)
     
     # Run backtest
     print(f"\nRunning backtest...")
-    trades = simulate_strategy(df, config, model)
+    trades = simulate_strategy(df, config, model, logger=strategy_logger)
     
     if not trades:
-        print("\n❌ No trades executed!")
+        print("\nNo trades executed!")
         return
     
     df_trades = pd.DataFrame(trades)
@@ -626,15 +892,19 @@ def main():
     df_weekday = analyze_by_weekday(df_trades)
     df_month = analyze_by_month(df_trades)
     
-    # Save detailed report
-    output_dir = PROJECT_ROOT / config.backtest_output_dir
-    report_dir = save_detailed_report(df_trades, df_hour, df_weekday, df_month, output_dir)
+    # Save detailed report (reuse the report_dir we already created)
+    save_detailed_report(df_trades, df_hour, df_weekday, df_month, report_dir)
     
+    # Close logger handler
+    strategy_handler.close()
+    strategy_logger.removeHandler(strategy_handler)
+
     print("\n" + "="*80)
     print("BACKTEST COMPLETE")
     print("="*80)
     print(f"\nReport saved to: {report_dir}")
     print("\nFiles created:")
+    print("  - strategy_decisions.log (similar to live strategy.log)")
     print("  - trades.csv")
     print("  - performance_by_hour.csv")
     print("  - performance_by_weekday.csv")
@@ -643,6 +913,7 @@ def main():
     print("  - hour_weekday_trades_matrix.csv")
     print("  - hour_weekday_winrate_matrix.csv")
     print("  - summary.txt")
+    print("  - .env.mtf (configuration backup)")
 
 if __name__ == "__main__":
     main()

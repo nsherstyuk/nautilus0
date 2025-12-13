@@ -31,3 +31,19 @@ Thumbs.db
 # NautilusTrader specific
 catalog/
 .nautilus/
+
+# External MCP servers (separate repos)
+IBKR-MCP-Server/
+
+# Large data files
+*.parquet
+data/historical/
+
+# Backtest results (too large)
+backtest_results/
+
+# Model files (binary)
+*.pkl
+
+# Trader logs
+TRADER-V2-*.log

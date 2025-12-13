@@ -34,7 +34,6 @@ from nautilus_trader.adapters.interactive_brokers.factories import (
     InteractiveBrokersLiveDataClientFactory,
     InteractiveBrokersLiveExecClientFactory,
 )
-from nautilus_trader.adapters.interactive_brokers.data import InteractiveBrokersDataClient
 from nautilus_trader.config import (
     ImportableStrategyConfig,
     LiveDataEngineConfig,
@@ -46,7 +45,8 @@ from nautilus_trader.live.node import TradingNode
 
 from config.ibkr_config import get_ibkr_config
 from config.mtf_config import load_mtf_config, validate_mtf_config, print_mtf_config
-from live.historical_backfill import calculate_required_bars, calculate_required_duration_hours, backfill_historical_data, feed_historical_bars_to_strategy
+# Historical backfill - now runs AFTER node starts
+from live.historical_backfill import backfill_historical_data, feed_historical_bars_to_strategy
 
 
 def setup_logging(log_dir: Path) -> logging.Logger:
@@ -128,7 +128,7 @@ def create_trading_node_config(
     symbology_method = _resolve_symbology_method(getattr(ibkr_config, "symbology_method", "IB_SIMPLIFIED"))
     instrument_provider_config = InteractiveBrokersInstrumentProviderConfig(
         symbology_method=symbology_method,
-        # load_ids=frozenset({instrument_id}),  # Disable pre-loading to avoid instrument resolution issues
+        load_ids=frozenset({instrument_id}),  # Pre-load the instrument so it's available in on_start()
     )
 
     data_client_config = InteractiveBrokersDataClientConfig(
@@ -171,11 +171,19 @@ def create_trading_node_config(
             "partial_close_enabled": live_config.partial_close_enabled,
             "partial_close_fraction": live_config.partial_close_fraction,
             "partial_close_move_sl_to_be": live_config.partial_close_move_sl_to_be,
+            # Multi-Layer Exit (OPTIMIZED)
+            "multi_layer_enabled": live_config.multi_layer_enabled,
+            "multi_layer_count": live_config.multi_layer_count,
+            "multi_layer_sizes": live_config.multi_layer_sizes,
+            "multi_layer_triggers": live_config.multi_layer_triggers,
+            "multi_layer_move_sl_to_be": live_config.multi_layer_move_sl_to_be,
             # Trading Session
             "session_start": live_config.session_start,
             "session_end": live_config.session_end,
             "excluded_hours": live_config.excluded_hours if live_config.excluded_hours else [],
             "excluded_hours_by_weekday": live_config.excluded_hours_by_weekday if live_config.excluded_hours_by_weekday else {},
+            # Debug mode
+            "debug_mode": live_config.debug_mode,
             # Feature warmup
             "feature_warmup_bars": live_config.feature_warmup_bars,
             # Order ID tag
@@ -303,43 +311,24 @@ async def main() -> int:
     await asyncio.sleep(30)
 
     # =========================================================================
-    # HISTORICAL DATA BACKFILL - DISABLED
-    # =========================================================================
-    # Historical backfill requires access to node.data_engine which is only
-    # available after node.run() starts. Attempting backfill before that fails.
-    # 
-    # Strategy will warm up naturally as live bars arrive:
-    # - Slow period: 260 bars
-    # - Bar interval: 15 minutes
-    # - Required time: 260 × 15min = 3,900 minutes = 65 hours ≈ 2.7 days
-    # 
-    # During warmup:
-    # - Strategy will NOT generate trading signals
-    # - Indicators will gradually populate
-    # - Watch logs for "[STRATEGY READY]" message when warmup completes
+    # HISTORICAL DATA BACKFILL - Matching Live_works_with_optimization branch
     # =========================================================================
     logger.info("=" * 80)
-    logger.info("MTF STRATEGY WARMUP INFO")
+    logger.info("MTF STRATEGY - STARTING LIVE TRADING")
     logger.info("=" * 80)
-    required_bars = live_config.feature_warmup_bars
-    required_hours = calculate_required_duration_hours(required_bars, live_config.bar_spec)
-    logger.info(f"MTF strategy requires {required_bars} bars ({required_hours:.1f} hours ~= {required_hours/24:.1f} days) to warm up")
-    logger.info(f"Feature warmup: {required_bars} bars")
-    logger.info(f"Bar interval: {live_config.bar_spec}")
-    logger.info("Strategy will warm up naturally as live bars arrive")
-    logger.info("NO TRADING SIGNALS will be generated until warmup completes")
-    logger.info("Watch for feature calculation messages in logs")
+    logger.info(f"Symbol: {live_config.symbol}")
+    logger.info(f"Bar Spec: {live_config.bar_spec}")
+    logger.info(f"Warmup: {live_config.feature_warmup_bars} bars")
     logger.info("=" * 80)
     
-    # =========================================================================
-    # HISTORICAL DATA BACKFILL - Using Cache Injection
-    # =========================================================================
-    # Solution: Inject historical bars directly into node.cache after build()
-    # but before run(). Strategy will consume cached bars during startup.
-    # =========================================================================
     logger.info("Starting historical data backfill for indicator warmup...")
     try:
         # Access IBKR data client through kernel's data engine
+        from nautilus_trader.adapters.interactive_brokers.data import InteractiveBrokersDataClient
+        from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
+        from nautilus_trader.model.data import BarType, BarSpecification, BarAggregation
+        from nautilus_trader.model.enums import PriceType
+        
         ib_data_client = None
         data_engine = getattr(node.kernel, "data_engine", None)
         if data_engine and hasattr(data_engine, "_clients"):
@@ -350,12 +339,6 @@ async def main() -> int:
                     break
         
         if ib_data_client:
-            # Create instrument ID and bar type
-            from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
-            from nautilus_trader.model.data import BarType
-            from nautilus_trader.model.enums import PriceType
-            from nautilus_trader.model.data import BarSpecification, BarAggregation
-            
             instrument_id = InstrumentId(Symbol(live_config.symbol), Venue(live_config.venue))
             
             # Parse bar specification
@@ -367,49 +350,38 @@ async def main() -> int:
                 bar_spec = BarSpecification(step, aggregation, price_type)
                 bar_type = BarType(instrument_id, bar_spec)
                 
-                # Request historical bars from IBKR
-                logger.info(f"Requesting historical bars for {instrument_id}, bar_type={bar_type}")
+                logger.info(f"Requesting historical bars for {instrument_id}")
                 success, bars_loaded, historical_bars = await backfill_historical_data(
                     data_client=ib_data_client,
                     instrument_id=instrument_id,
                     bar_type=bar_type,
-                    slow_period=live_config.feature_warmup_bars,  # MTF warmup bars
+                    slow_period=live_config.feature_warmup_bars,
                     bar_spec=live_config.bar_spec,
                     is_forex=live_config.venue == "IDEALPRO"
                 )
                 
                 if success and historical_bars and len(historical_bars) > 0:
-                    logger.info(f"[OK] Backfill successful: retrieved {bars_loaded} bars")
-                    logger.info(f"Feeding {len(historical_bars)} bars directly to strategy...")
-                    
-                    # ✅ FEED BARS DIRECTLY TO STRATEGY - Proven working approach from Live_works_with_optimization branch
+                    logger.info(f"Backfill successful: {bars_loaded} bars")
                     await feed_historical_bars_to_strategy(
                         strategy_instance=strategy_instance,
                         bars=historical_bars,
                         bar_type=bar_type,
                     )
-                    
-                    logger.info("[OK] Historical bars fed to strategy successfully")
-                    logger.info("Strategy warmup should be complete or nearly complete")
-                elif success:
-                    logger.warning("Backfill retrieved 0 bars - strategy will warm up naturally")
+                    logger.info("Historical bars fed to strategy")
                 else:
-                    logger.warning("Backfill was not successful - strategy will warm up naturally")
-            else:
-                logger.error(f"Could not parse bar specification: {live_config.bar_spec}")
+                    logger.warning("Backfill unsuccessful - strategy will warm up naturally")
         else:
-            logger.warning("Could not find IBKR data client for backfill")
-            logger.info("Strategy will warm up naturally as live bars arrive")
-        
+            logger.warning("Could not find IBKR data client")
     except Exception as exc:
-        logger.error(f"Historical backfill failed: {exc}", exc_info=True)
-        logger.info("Continuing without backfill - strategy will warm up naturally")
+        logger.error(f"Backfill error: {exc}")
+        logger.info("Continuing without backfill")
     
     logger.info("Historical data backfill process completed")
     logger.info("Live trading node built successfully. Starting...")
 
     return_code = 0
     try:
+        # Use node.run_async() - the standard NautilusTrader approach
         await node.run_async()
     except asyncio.CancelledError:
         logger.info("Live trading run cancelled; proceeding with shutdown.")

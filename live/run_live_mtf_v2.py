@@ -58,6 +58,19 @@ from live.ib_bar_streamer import IBBarStreamer
 logger = logging.getLogger("live_v2")
 
 
+class PortfolioFilter(logging.Filter):
+    """Filter out noisy Portfolio/Cache/RiskEngine messages from console."""
+    def filter(self, record):
+        # Block Portfolio AccountState updates - these are extremely noisy
+        if 'Portfolio' in record.name and 'Updated AccountState' in record.getMessage():
+            return False
+        # Block other noisy update messages
+        if any(x in record.name for x in ['Cache', 'RiskEngine', 'DataEngine']):
+            if 'Updated' in record.getMessage():
+                return False
+        return True
+
+
 def setup_logging(log_dir: Path, start_time: str) -> logging.Logger:
     """Configure logging for live trading."""
     config_path = Path("config/logging.live.yaml")
@@ -80,6 +93,11 @@ def setup_logging(log_dir: Path, start_time: str) -> logging.Logger:
             logging_config["handlers"][handler_name]["filename"] = str(log_dir / filename)
 
     logging.config.dictConfig(logging_config)
+    
+    # Add filter to console handler to block noisy messages
+    for handler in logging.getLogger().handlers:
+        if isinstance(handler, logging.StreamHandler) and handler.stream == sys.stdout:
+            handler.addFilter(PortfolioFilter())
     
     # Add timestamped console log file (unique per run)
     console_log_file = log_dir / f"console_{start_time}.log"
@@ -232,7 +250,16 @@ def main() -> int:
     
     node_config = TradingNodeConfig(
         trader_id="TRADER-V2-001",
-        logging=LoggingConfig(log_level="INFO", log_level_file="DEBUG"),
+        logging=LoggingConfig(
+            log_level="INFO",
+            log_level_file="DEBUG",
+            log_component_levels={
+                "Portfolio": "WARNING",  # Suppress noisy AccountState updates
+                "Cache": "WARNING",
+                "RiskEngine": "WARNING",
+                "DataEngine": "WARNING",
+            },
+        ),
         data_engine=LiveDataEngineConfig(
             time_bars_build_with_no_updates=True,
             time_bars_timestamp_on_close=True,
@@ -251,7 +278,14 @@ def main() -> int:
     node.add_exec_client_factory("INTERACTIVE_BROKERS", InteractiveBrokersLiveExecClientFactory)
     node.build()
     
-    # Suppress noisy trader-specific loggers AFTER node is built
+    # Apply filter to ALL console handlers after node is built
+    portfolio_filter = PortfolioFilter()
+    for handler in logging.getLogger().handlers:
+        if isinstance(handler, logging.StreamHandler):
+            handler.addFilter(portfolio_filter)
+            logger.info(f"Added PortfolioFilter to handler: {handler}")
+    
+    # Also try setting logger levels (belt and suspenders approach)
     logging.getLogger("TRADER-V2-001.Portfolio").setLevel(logging.WARNING)
     logging.getLogger("TRADER-V2-001.Cache").setLevel(logging.WARNING)
     logging.getLogger("TRADER-V2-001.RiskEngine").setLevel(logging.WARNING)
