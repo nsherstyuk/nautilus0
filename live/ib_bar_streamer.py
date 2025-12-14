@@ -397,7 +397,7 @@ class IBBarStreamer:
                 bar_type=bar_type,
                 bars=bars,
                 callback=callback,
-                last_bar_time=bars[-1].date if bars else None,
+                last_bar_time=(bars[-2].date if bars and len(bars) >= 2 else (bars[-1].date if bars else None)),
                 last_bar_received=datetime.now() if bars else None,  # Initialize wall clock time
                 bar_size=bar_size,
                 what_to_show=what_to_show,
@@ -414,7 +414,7 @@ class IBBarStreamer:
             # Feed initial historical bars to callback for warmup (skip on resubscribe)
             if callback and bars and not is_resubscribe:
                 logger.info(f"Feeding {len(bars)} historical bars for warmup...")
-                for ib_bar in bars:
+                for ib_bar in bars[:-1]:
                     nautilus_bar = self._ib_bar_to_nautilus(ib_bar, bar_type)
                     try:
                         callback(nautilus_bar)
@@ -440,24 +440,28 @@ class IBBarStreamer:
         if not bars:
             return
         
-        latest_bar = bars[-1]
-        
         # Check if this is a new bar or update to existing
         if has_new_bar:
+            if len(bars) < 2:
+                logger.warning(f"[LIVE BAR] {symbol}: hasNewBar=True but only {len(bars)} bar(s), skipping")
+                return
+            
+            completed_bar = bars[-2]
+            
             logger.info(
                 f"[LIVE BAR] {symbol}: "
-                f"time={latest_bar.date}, O={latest_bar.open}, H={latest_bar.high}, "
-                f"L={latest_bar.low}, C={latest_bar.close}"
+                f"time={completed_bar.date}, O={completed_bar.open}, H={completed_bar.high}, "
+                f"L={completed_bar.low}, C={completed_bar.close}"
             )
             
             # Update last bar time
-            sub.last_bar_time = latest_bar.date
+            sub.last_bar_time = completed_bar.date
             sub.last_bar_received = datetime.now()  # Wall clock time
             
             # Convert and send to callback
             if sub.callback:
                 try:
-                    nautilus_bar = self._ib_bar_to_nautilus(latest_bar, sub.bar_type)
+                    nautilus_bar = self._ib_bar_to_nautilus(completed_bar, sub.bar_type)
                     sub.callback(nautilus_bar)
                 except Exception as e:
                     logger.error(f"Error in bar callback: {e}")
@@ -563,11 +567,13 @@ class IBBarStreamer:
             if not sub.bars:
                 continue
             
-            latest_bar = sub.bars[-1]
+            if len(sub.bars) < 2:
+                continue
             
-            # Check if this is a new bar we haven't seen
-            if sub.last_bar_time is None or latest_bar.date > sub.last_bar_time:
-                logger.info(f"[MANUAL CHECK] New bar detected for {symbol}!")
+            completed_bar = sub.bars[-2]
+            
+            if sub.last_bar_time is None or completed_bar.date > sub.last_bar_time:
+                logger.info(f"[MANUAL CHECK] New completed bar detected for {symbol}!")
                 self._on_bar_update(symbol, sub.bars, has_new_bar=True)
 
 
