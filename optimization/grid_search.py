@@ -280,10 +280,64 @@ class ParameterSet:
 
 
 @dataclass
+class MTFV2ParameterSet:
+    run_id: int
+    total_position_size: int
+    pos1_fraction: float
+    pos2_fraction: float
+    pos3_fraction: float
+    sl_atr_mult: float
+    pos1_tp_atr_mult: float
+    pos2_tp_atr_mult: float
+    pos3_tp_atr_mult: float
+    trailing_activation_atr_mult: float
+    trailing_distance_atr_mult: float
+    prediction_threshold: float
+    trade_start_hour: int
+    trade_end_hour: int
+    min_atr: float
+    max_atr: float
+    stall_detection_enabled: bool
+    stall_check_bars: int
+    stall_min_profit_atr: float
+    stall_sl_atr: float
+    backtest_start: str
+    backtest_end: str
+    initial_balance: float
+
+    def to_env_dict(self) -> Dict[str, str]:
+        return {
+            "MTF2_TOTAL_POSITION_SIZE": str(self.total_position_size),
+            "MTF2_POS1_FRACTION": str(self.pos1_fraction),
+            "MTF2_POS2_FRACTION": str(self.pos2_fraction),
+            "MTF2_POS3_FRACTION": str(self.pos3_fraction),
+            "MTF2_SL_ATR_MULT": str(self.sl_atr_mult),
+            "MTF2_POS1_TP_ATR_MULT": str(self.pos1_tp_atr_mult),
+            "MTF2_POS2_TP_ATR_MULT": str(self.pos2_tp_atr_mult),
+            "MTF2_POS3_TP_ATR_MULT": str(self.pos3_tp_atr_mult),
+            "MTF2_TRAILING_ACTIVATION_ATR_MULT": str(self.trailing_activation_atr_mult),
+            "MTF2_TRAILING_DISTANCE_ATR_MULT": str(self.trailing_distance_atr_mult),
+            "MTF2_PREDICTION_THRESHOLD": str(self.prediction_threshold),
+            "MTF2_TRADE_START_HOUR": str(self.trade_start_hour),
+            "MTF2_TRADE_END_HOUR": str(self.trade_end_hour),
+            "MTF2_MIN_ATR": str(self.min_atr),
+            "MTF2_MAX_ATR": str(self.max_atr),
+            "MTF2_STALL_DETECTION_ENABLED": str(self.stall_detection_enabled).lower(),
+            "MTF2_STALL_CHECK_BARS": str(self.stall_check_bars),
+            "MTF2_STALL_MIN_PROFIT_ATR": str(self.stall_min_profit_atr),
+            "MTF2_STALL_SL_ATR": str(self.stall_sl_atr),
+            "MTF2_BACKTEST_START": str(self.backtest_start),
+            "MTF2_BACKTEST_END": str(self.backtest_end),
+            "MTF2_INITIAL_BALANCE": str(self.initial_balance),
+            "GRID_RUN_ID": str(self.run_id),
+        }
+
+
+@dataclass
 class BacktestResult:
     """Results from a single backtest run."""
     run_id: int
-    parameters: ParameterSet
+    parameters: Any
     total_pnl: float
     sharpe_ratio: float
     win_rate: float
@@ -350,7 +404,7 @@ class BacktestResult:
             raise ValueError(f"Unknown objective: {objective}")
 
 
-def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, List[Any]], Dict[str, Any]]:
+def load_grid_config(config_path: Path) -> Tuple[str, str, OptimizationConfig, Dict[str, List[Any]], Dict[str, Any]]:
     """Load and validate YAML configuration."""
     try:
         with open(config_path, 'r') as f:
@@ -359,6 +413,28 @@ def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, L
         raise ValueError(f"Invalid YAML configuration: {e}")
     except FileNotFoundError:
         raise ValueError(f"Configuration file not found: {config_path}")
+
+    system_section = config.get("system", "ma_crossover")
+    if isinstance(system_section, str):
+        system_name = system_section
+        runner = None
+    elif isinstance(system_section, dict):
+        system_name = system_section.get("name", "ma_crossover")
+        runner = system_section.get("runner")
+    else:
+        system_name = "ma_crossover"
+        runner = None
+
+    system_name = str(system_name).strip().lower()
+    if system_name in {"ma", "ma_crossover", "crossover"}:
+        system_name = "ma_crossover"
+    elif system_name in {"mtf_v2", "mtfv2", "v2"}:
+        system_name = "mtf_v2"
+    else:
+        raise ValueError(f"Invalid system: {system_name}")
+
+    if runner is None:
+        runner = "backtest/run_backtest.py" if system_name == "ma_crossover" else "backtest/run_backtest_mtf_v2_sweep.py"
 
     # Extract optimization settings
     opt_section = config.get("optimization", {})
@@ -384,23 +460,75 @@ def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, L
         raise ValueError("No parameters specified in configuration")
 
     # Validate parameter names and types
-    valid_params = {
-        "fast_period", "slow_period", "crossover_threshold_pips", "stop_loss_pips",
-        "take_profit_pips", "trailing_stop_activation_pips", "trailing_stop_distance_pips",
-        "dmi_enabled", "dmi_period", "dmi_minimum_difference", "stoch_enabled", "stoch_period_k", "stoch_period_d",
-        "stoch_bullish_threshold", "stoch_bearish_threshold",
-        # Multi-timeframe parameters
-        "trend_filter_enabled", "trend_bar_spec", "trend_fast_period", "trend_slow_period",
-        "entry_timing_enabled", "entry_timing_bar_spec", "entry_timing_method", "entry_timing_timeout_bars",
-        # Primary bar specification (for signal generation)
-        "bar_spec",
-        # Regime Detection Parameters
-        "regime_detection_enabled", "regime_adx_trending_threshold", "regime_adx_ranging_threshold",
-        "regime_tp_multiplier_trending", "regime_tp_multiplier_ranging",
-        "regime_sl_multiplier_trending", "regime_sl_multiplier_ranging",
-        "regime_trailing_activation_multiplier_trending", "regime_trailing_activation_multiplier_ranging",
-        "regime_trailing_distance_multiplier_trending", "regime_trailing_distance_multiplier_ranging"
-    }
+    if system_name == "ma_crossover":
+        valid_params = {
+            "fast_period", "slow_period", "crossover_threshold_pips", "stop_loss_pips",
+            "take_profit_pips", "trailing_stop_activation_pips", "trailing_stop_distance_pips",
+            "dmi_enabled", "dmi_period", "dmi_minimum_difference", "stoch_enabled", "stoch_period_k", "stoch_period_d",
+            "stoch_bullish_threshold", "stoch_bearish_threshold",
+            "trend_filter_enabled", "trend_bar_spec", "trend_fast_period", "trend_slow_period",
+            "entry_timing_enabled", "entry_timing_bar_spec", "entry_timing_method", "entry_timing_timeout_bars",
+            "bar_spec",
+            "regime_detection_enabled", "regime_adx_trending_threshold", "regime_adx_ranging_threshold",
+            "regime_tp_multiplier_trending", "regime_tp_multiplier_ranging",
+            "regime_sl_multiplier_trending", "regime_sl_multiplier_ranging",
+            "regime_trailing_activation_multiplier_trending", "regime_trailing_activation_multiplier_ranging",
+            "regime_trailing_distance_multiplier_trending", "regime_trailing_distance_multiplier_ranging",
+        }
+        bool_params = {"dmi_enabled", "stoch_enabled", "trend_filter_enabled", "entry_timing_enabled", "regime_detection_enabled"}
+        str_params = {"trend_bar_spec", "entry_timing_bar_spec", "entry_timing_method", "bar_spec"}
+        float_params = {
+            "crossover_threshold_pips", "dmi_minimum_difference",
+            "regime_adx_trending_threshold", "regime_adx_ranging_threshold",
+            "regime_tp_multiplier_trending", "regime_tp_multiplier_ranging",
+            "regime_sl_multiplier_trending", "regime_sl_multiplier_ranging",
+            "regime_trailing_activation_multiplier_trending", "regime_trailing_activation_multiplier_ranging",
+            "regime_trailing_distance_multiplier_trending", "regime_trailing_distance_multiplier_ranging",
+        }
+    else:
+        valid_params = {
+            "total_position_size",
+            "pos1_fraction",
+            "pos2_fraction",
+            "pos3_fraction",
+            "sl_atr_mult",
+            "pos1_tp_atr_mult",
+            "pos2_tp_atr_mult",
+            "pos3_tp_atr_mult",
+            "trailing_activation_atr_mult",
+            "trailing_distance_atr_mult",
+            "prediction_threshold",
+            "trade_start_hour",
+            "trade_end_hour",
+            "min_atr",
+            "max_atr",
+            "stall_detection_enabled",
+            "stall_check_bars",
+            "stall_min_profit_atr",
+            "stall_sl_atr",
+            "backtest_start",
+            "backtest_end",
+            "initial_balance",
+        }
+        bool_params = {"stall_detection_enabled"}
+        str_params = {"backtest_start", "backtest_end"}
+        float_params = {
+            "pos1_fraction",
+            "pos2_fraction",
+            "pos3_fraction",
+            "sl_atr_mult",
+            "pos1_tp_atr_mult",
+            "pos2_tp_atr_mult",
+            "pos3_tp_atr_mult",
+            "trailing_activation_atr_mult",
+            "trailing_distance_atr_mult",
+            "prediction_threshold",
+            "min_atr",
+            "max_atr",
+            "stall_min_profit_atr",
+            "stall_sl_atr",
+            "initial_balance",
+        }
 
     for param_name, param_config in param_ranges.items():
         if param_name not in valid_params:
@@ -412,18 +540,13 @@ def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, L
         
         # Validate value types
         for value in values:
-            if param_name in ["dmi_enabled", "stoch_enabled", "trend_filter_enabled", "entry_timing_enabled", "regime_detection_enabled"]:
+            if param_name in bool_params:
                 if not isinstance(value, bool):
                     raise ValueError(f"Parameter {param_name} values must be boolean")
-            elif param_name in ["crossover_threshold_pips", "dmi_minimum_difference", 
-                               "regime_adx_trending_threshold", "regime_adx_ranging_threshold",
-                               "regime_tp_multiplier_trending", "regime_tp_multiplier_ranging",
-                               "regime_sl_multiplier_trending", "regime_sl_multiplier_ranging",
-                               "regime_trailing_activation_multiplier_trending", "regime_trailing_activation_multiplier_ranging",
-                               "regime_trailing_distance_multiplier_trending", "regime_trailing_distance_multiplier_ranging"]:
+            elif param_name in float_params:
                 if not isinstance(value, (int, float)):
                     raise ValueError(f"Parameter {param_name} values must be numeric")
-            elif param_name in ["trend_bar_spec", "entry_timing_bar_spec", "entry_timing_method", "bar_spec"]:
+            elif param_name in str_params:
                 if not isinstance(value, str):
                     raise ValueError(f"Parameter {param_name} values must be strings")
             else:
@@ -433,10 +556,10 @@ def load_grid_config(config_path: Path) -> Tuple[OptimizationConfig, Dict[str, L
     # Extract fixed parameters
     fixed_params = config.get("fixed", {})
 
-    return opt_config, param_ranges, fixed_params
+    return system_name, runner, opt_config, param_ranges, fixed_params
 
 
-def generate_parameter_combinations(param_ranges: Dict[str, List[Any]], fixed_params: Dict[str, Any]) -> List[ParameterSet]:
+def generate_parameter_combinations(param_ranges: Dict[str, List[Any]], fixed_params: Dict[str, Any], system_name: str) -> List[Any]:
     """Generate all parameter combinations with unique run IDs."""
     # Extract parameter names and values
     param_names = list(param_ranges.keys())
@@ -452,59 +575,80 @@ def generate_parameter_combinations(param_ranges: Dict[str, List[Any]], fixed_pa
         # Merge with fixed parameters
         params_dict.update(fixed_params)
         
-        # Create ParameterSet object
         try:
-            params = ParameterSet(
-                run_id=run_id,
-                fast_period=params_dict.get("fast_period", 10),
-                slow_period=params_dict.get("slow_period", 20),
-                crossover_threshold_pips=params_dict.get("crossover_threshold_pips", 0.7),
-                stop_loss_pips=params_dict.get("stop_loss_pips", 25),
-                take_profit_pips=params_dict.get("take_profit_pips", 50),
-                trailing_stop_activation_pips=params_dict.get("trailing_stop_activation_pips", 20),
-                trailing_stop_distance_pips=params_dict.get("trailing_stop_distance_pips", 15),
-                dmi_enabled=params_dict.get("dmi_enabled", True),
-                dmi_period=params_dict.get("dmi_period", 14),
-                dmi_minimum_difference=params_dict.get("dmi_minimum_difference", 0.0),
-                stoch_enabled=params_dict.get("stoch_enabled", True),
-                stoch_period_k=params_dict.get("stoch_period_k", 14),
-                stoch_period_d=params_dict.get("stoch_period_d", 3),
-                stoch_bullish_threshold=params_dict.get("stoch_bullish_threshold", 30),
-                stoch_bearish_threshold=params_dict.get("stoch_bearish_threshold", 70),
-                # Multi-timeframe parameters (default to disabled)
-                trend_filter_enabled=params_dict.get("trend_filter_enabled", False),
-                trend_bar_spec=params_dict.get("trend_bar_spec", "1-HOUR-MID-EXTERNAL"),
-                trend_fast_period=params_dict.get("trend_fast_period", 20),
-                trend_slow_period=params_dict.get("trend_slow_period", 50),
-                entry_timing_enabled=params_dict.get("entry_timing_enabled", False),
-                entry_timing_bar_spec=params_dict.get("entry_timing_bar_spec", "5-MINUTE-MID-EXTERNAL"),
-                entry_timing_method=params_dict.get("entry_timing_method", "pullback"),
-                entry_timing_timeout_bars=params_dict.get("entry_timing_timeout_bars", 10),
-                # Primary bar specification
-                bar_spec=params_dict.get("bar_spec", "15-MINUTE-MID-EXTERNAL"),
-                # Regime Detection Parameters
-                regime_detection_enabled=params_dict.get("regime_detection_enabled", False),
-                regime_adx_trending_threshold=params_dict.get("regime_adx_trending_threshold", 25.0),
-                regime_adx_ranging_threshold=params_dict.get("regime_adx_ranging_threshold", 20.0),
-                regime_tp_multiplier_trending=params_dict.get("regime_tp_multiplier_trending", 1.5),
-                regime_tp_multiplier_ranging=params_dict.get("regime_tp_multiplier_ranging", 0.8),
-                regime_sl_multiplier_trending=params_dict.get("regime_sl_multiplier_trending", 1.0),
-                regime_sl_multiplier_ranging=params_dict.get("regime_sl_multiplier_ranging", 1.0),
-                regime_trailing_activation_multiplier_trending=params_dict.get("regime_trailing_activation_multiplier_trending", 0.75),
-                regime_trailing_activation_multiplier_ranging=params_dict.get("regime_trailing_activation_multiplier_ranging", 1.25),
-                regime_trailing_distance_multiplier_trending=params_dict.get("regime_trailing_distance_multiplier_trending", 0.67),
-                regime_trailing_distance_multiplier_ranging=params_dict.get("regime_trailing_distance_multiplier_ranging", 1.33),
-            )
-            
-            # Validate combination
-            is_valid, error_msg = validate_parameter_combination(params)
+            if system_name == "ma_crossover":
+                params = ParameterSet(
+                    run_id=run_id,
+                    fast_period=params_dict.get("fast_period", 10),
+                    slow_period=params_dict.get("slow_period", 20),
+                    crossover_threshold_pips=params_dict.get("crossover_threshold_pips", 0.7),
+                    stop_loss_pips=params_dict.get("stop_loss_pips", 25),
+                    take_profit_pips=params_dict.get("take_profit_pips", 50),
+                    trailing_stop_activation_pips=params_dict.get("trailing_stop_activation_pips", 20),
+                    trailing_stop_distance_pips=params_dict.get("trailing_stop_distance_pips", 15),
+                    dmi_enabled=params_dict.get("dmi_enabled", True),
+                    dmi_period=params_dict.get("dmi_period", 14),
+                    dmi_minimum_difference=params_dict.get("dmi_minimum_difference", 0.0),
+                    stoch_enabled=params_dict.get("stoch_enabled", True),
+                    stoch_period_k=params_dict.get("stoch_period_k", 14),
+                    stoch_period_d=params_dict.get("stoch_period_d", 3),
+                    stoch_bullish_threshold=params_dict.get("stoch_bullish_threshold", 30),
+                    stoch_bearish_threshold=params_dict.get("stoch_bearish_threshold", 70),
+                    trend_filter_enabled=params_dict.get("trend_filter_enabled", False),
+                    trend_bar_spec=params_dict.get("trend_bar_spec", "1-HOUR-MID-EXTERNAL"),
+                    trend_fast_period=params_dict.get("trend_fast_period", 20),
+                    trend_slow_period=params_dict.get("trend_slow_period", 50),
+                    entry_timing_enabled=params_dict.get("entry_timing_enabled", False),
+                    entry_timing_bar_spec=params_dict.get("entry_timing_bar_spec", "5-MINUTE-MID-EXTERNAL"),
+                    entry_timing_method=params_dict.get("entry_timing_method", "pullback"),
+                    entry_timing_timeout_bars=params_dict.get("entry_timing_timeout_bars", 10),
+                    bar_spec=params_dict.get("bar_spec", "15-MINUTE-MID-EXTERNAL"),
+                    regime_detection_enabled=params_dict.get("regime_detection_enabled", False),
+                    regime_adx_trending_threshold=params_dict.get("regime_adx_trending_threshold", 25.0),
+                    regime_adx_ranging_threshold=params_dict.get("regime_adx_ranging_threshold", 20.0),
+                    regime_tp_multiplier_trending=params_dict.get("regime_tp_multiplier_trending", 1.5),
+                    regime_tp_multiplier_ranging=params_dict.get("regime_tp_multiplier_ranging", 0.8),
+                    regime_sl_multiplier_trending=params_dict.get("regime_sl_multiplier_trending", 1.0),
+                    regime_sl_multiplier_ranging=params_dict.get("regime_sl_multiplier_ranging", 1.0),
+                    regime_trailing_activation_multiplier_trending=params_dict.get("regime_trailing_activation_multiplier_trending", 0.75),
+                    regime_trailing_activation_multiplier_ranging=params_dict.get("regime_trailing_activation_multiplier_ranging", 1.25),
+                    regime_trailing_distance_multiplier_trending=params_dict.get("regime_trailing_distance_multiplier_trending", 0.67),
+                    regime_trailing_distance_multiplier_ranging=params_dict.get("regime_trailing_distance_multiplier_ranging", 1.33),
+                )
+            else:
+                params = MTFV2ParameterSet(
+                    run_id=run_id,
+                    total_position_size=params_dict.get("total_position_size", 100000),
+                    pos1_fraction=params_dict.get("pos1_fraction", 0.85),
+                    pos2_fraction=params_dict.get("pos2_fraction", 0.15),
+                    pos3_fraction=params_dict.get("pos3_fraction", 0.0),
+                    sl_atr_mult=params_dict.get("sl_atr_mult", 1.4),
+                    pos1_tp_atr_mult=params_dict.get("pos1_tp_atr_mult", 0.6),
+                    pos2_tp_atr_mult=params_dict.get("pos2_tp_atr_mult", 1.5),
+                    pos3_tp_atr_mult=params_dict.get("pos3_tp_atr_mult", 1.5),
+                    trailing_activation_atr_mult=params_dict.get("trailing_activation_atr_mult", 0.6),
+                    trailing_distance_atr_mult=params_dict.get("trailing_distance_atr_mult", 0.4),
+                    prediction_threshold=params_dict.get("prediction_threshold", 0.55),
+                    trade_start_hour=params_dict.get("trade_start_hour", 0),
+                    trade_end_hour=params_dict.get("trade_end_hour", 24),
+                    min_atr=params_dict.get("min_atr", 0.0003),
+                    max_atr=params_dict.get("max_atr", 0.005),
+                    stall_detection_enabled=params_dict.get("stall_detection_enabled", False),
+                    stall_check_bars=params_dict.get("stall_check_bars", 6),
+                    stall_min_profit_atr=params_dict.get("stall_min_profit_atr", 0.2),
+                    stall_sl_atr=params_dict.get("stall_sl_atr", 0.2),
+                    backtest_start=params_dict.get("backtest_start", "2024-01-01"),
+                    backtest_end=params_dict.get("backtest_end", "2025-12-30"),
+                    initial_balance=params_dict.get("initial_balance", 50000.0),
+                )
+
+            is_valid, error_msg = validate_parameter_combination(params, system_name)
             if is_valid:
                 combinations.append(params)
                 run_id += 1
             else:
                 logger.warning(f"Skipping invalid combination {run_id}: {error_msg}")
                 run_id += 1
-                
         except Exception as e:
             logger.warning(f"Skipping invalid combination {run_id}: {e}")
             run_id += 1
@@ -513,31 +657,61 @@ def generate_parameter_combinations(param_ranges: Dict[str, List[Any]], fixed_pa
     return combinations
 
 
-def validate_parameter_combination(params: ParameterSet) -> Tuple[bool, Optional[str]]:
+def validate_parameter_combination(params: Any, system_name: str) -> Tuple[bool, Optional[str]]:
     """Validate parameter relationships."""
-    if params.fast_period >= params.slow_period:
-        return False, "fast_period must be less than slow_period"
-    
-    if params.take_profit_pips <= params.stop_loss_pips:
-        return False, "take_profit_pips must be greater than stop_loss_pips"
-    
-    if params.trailing_stop_activation_pips <= params.trailing_stop_distance_pips:
-        return False, "trailing_stop_activation_pips must be greater than trailing_stop_distance_pips"
-    
-    if params.stoch_bullish_threshold >= params.stoch_bearish_threshold:
-        return False, "stoch_bullish_threshold must be less than stoch_bearish_threshold"
-    
-    # Multi-timeframe validations
-    if params.trend_filter_enabled:
-        if params.trend_fast_period >= params.trend_slow_period:
-            return False, "trend_fast_period must be less than trend_slow_period"
-    
-    if params.entry_timing_enabled:
-        if params.entry_timing_timeout_bars <= 0:
-            return False, "entry_timing_timeout_bars must be greater than 0"
-        if params.entry_timing_method not in ["pullback", "rsi", "stochastic", "breakout"]:
-            return False, f"entry_timing_method must be one of: pullback, rsi, stochastic, breakout"
-    
+    if system_name == "ma_crossover":
+        if params.fast_period >= params.slow_period:
+            return False, "fast_period must be less than slow_period"
+
+        if params.take_profit_pips <= params.stop_loss_pips:
+            return False, "take_profit_pips must be greater than stop_loss_pips"
+
+        if params.trailing_stop_activation_pips <= params.trailing_stop_distance_pips:
+            return False, "trailing_stop_activation_pips must be greater than trailing_stop_distance_pips"
+
+        if params.stoch_bullish_threshold >= params.stoch_bearish_threshold:
+            return False, "stoch_bullish_threshold must be less than stoch_bearish_threshold"
+
+        if params.trend_filter_enabled:
+            if params.trend_fast_period >= params.trend_slow_period:
+                return False, "trend_fast_period must be less than trend_slow_period"
+
+        if params.entry_timing_enabled:
+            if params.entry_timing_timeout_bars <= 0:
+                return False, "entry_timing_timeout_bars must be greater than 0"
+            if params.entry_timing_method not in ["pullback", "rsi", "stochastic", "breakout"]:
+                return False, "entry_timing_method must be one of: pullback, rsi, stochastic, breakout"
+
+        return True, None
+
+    frac_sum = float(params.pos1_fraction) + float(params.pos2_fraction) + float(params.pos3_fraction)
+    if abs(frac_sum - 1.0) > 1e-6:
+        return False, "pos1_fraction + pos2_fraction + pos3_fraction must equal 1.0"
+
+    if not (0.0 < float(params.prediction_threshold) <= 1.0):
+        return False, "prediction_threshold must be in (0, 1]"
+
+    if float(params.min_atr) <= 0 or float(params.max_atr) <= 0 or float(params.min_atr) >= float(params.max_atr):
+        return False, "min_atr must be > 0 and less than max_atr"
+
+    if int(params.trade_start_hour) < 0 or int(params.trade_start_hour) > 24:
+        return False, "trade_start_hour must be in [0, 24]"
+
+    if int(params.trade_end_hour) < 0 or int(params.trade_end_hour) > 24:
+        return False, "trade_end_hour must be in [0, 24]"
+
+    if int(params.trade_start_hour) >= int(params.trade_end_hour):
+        return False, "trade_start_hour must be less than trade_end_hour"
+
+    if float(params.sl_atr_mult) <= 0:
+        return False, "sl_atr_mult must be > 0"
+
+    if float(params.trailing_distance_atr_mult) <= 0:
+        return False, "trailing_distance_atr_mult must be > 0"
+
+    if int(params.stall_check_bars) <= 0:
+        return False, "stall_check_bars must be > 0"
+
     return True, None
 
 
@@ -703,17 +877,38 @@ def find_latest_backtest_output(base_dir: Path, symbol: str) -> Optional[Path]:
     return pattern_dirs[0]
 
 
-def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout: int, fixed_params: Dict[str, Any] = None) -> BacktestResult:
+def find_latest_mtf_v2_output(output_root: Path) -> Optional[Path]:
+    if not output_root.exists():
+        return None
+
+    candidates = [d for d in output_root.iterdir() if d.is_dir() and d.name.startswith("MTF_V2_GRID_")]
+    if not candidates:
+        return None
+    candidates.sort(key=lambda x: x.name, reverse=True)
+    return candidates[0]
+
+
+def run_single_backtest(
+    params: Any,
+    base_env: Dict[str, str],
+    timeout: int,
+    runner_path: str,
+    system_name: str,
+    fixed_params: Dict[str, Any] = None,
+) -> BacktestResult:
     """Execute a single backtest with given parameters."""
     try:
         # Prepare environment
         env = base_env.copy()
         env.update(params.to_env_dict())
-        if fixed_params:
+        if fixed_params and system_name == "ma_crossover":
             env.update(fixed_to_env(fixed_params))
-        
+
         # Ensure required environment variables are present
-        required_vars = ["BACKTEST_SYMBOL", "BACKTEST_START_DATE", "BACKTEST_END_DATE"]
+        if system_name == "ma_crossover":
+            required_vars = ["BACKTEST_SYMBOL", "BACKTEST_START_DATE", "BACKTEST_END_DATE"]
+        else:
+            required_vars = ["MTF2_BACKTEST_START", "MTF2_BACKTEST_END", "MTF2_INITIAL_BALANCE"]
         for var in required_vars:
             if var not in env:
                 return BacktestResult(
@@ -732,7 +927,7 @@ def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout:
         if 'PYTHONIOENCODING' not in env:
             env['PYTHONIOENCODING'] = 'utf-8'
         result = subprocess.run(
-            [sys.executable, "backtest/run_backtest.py"],
+            [sys.executable, runner_path],
             env=env,
             capture_output=True,
             text=True,
@@ -765,8 +960,12 @@ def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout:
             output_dir = Path(match.group(1))
         else:
             # Fallback: find most recent output directory
-            symbol = env.get("BACKTEST_SYMBOL", "EUR-USD")
-            output_dir = find_latest_backtest_output(PROJECT_ROOT, symbol)
+            if system_name == "ma_crossover":
+                symbol = env.get("BACKTEST_SYMBOL", "EUR-USD")
+                output_dir = find_latest_backtest_output(PROJECT_ROOT, symbol)
+            else:
+                output_root = Path(env.get("OUTPUT_DIR", str(PROJECT_ROOT / "backtest_results")))
+                output_dir = find_latest_mtf_v2_output(output_root)
         
         if not output_dir or not output_dir.exists():
             return BacktestResult(
@@ -840,10 +1039,89 @@ def run_single_backtest(params: ParameterSet, base_env: Dict[str, str], timeout:
         )
 
 
-def _worker_run_backtest(args: Tuple[ParameterSet, Dict[str, str], int, Dict[str, Any]]) -> BacktestResult:
+def _worker_run_backtest(args: Tuple[Any, Dict[str, str], int, str, str, Dict[str, Any]]) -> BacktestResult:
     """Worker function for multiprocessing."""
-    params, base_env, timeout, fixed_params = args
-    return run_single_backtest(params, base_env, timeout, fixed_params)
+    params, base_env, timeout, runner_path, system_name, fixed_params = args
+    return run_single_backtest(params, base_env, timeout, runner_path, system_name, fixed_params)
+
+
+def run_grid_search_parallel(
+    combinations: List[Any],
+    opt_config: OptimizationConfig,
+    base_env: Dict[str, str],
+    runner_path: str,
+    system_name: str,
+    fixed_params: Dict[str, Any] = None,
+    resume: bool = True,
+) -> List[BacktestResult]:
+    """Orchestrate parallel backtest execution with progress tracking."""
+    if resume:
+        # Load checkpoint if exists
+        checkpoint_results = load_checkpoint(opt_config.checkpoint_file)
+        completed = checkpoint_results
+        completed_ids = {r.run_id for r in checkpoint_results}
+        pending = [c for c in combinations if c.run_id not in completed_ids]
+        
+        if completed:
+            logger.info(f"Resuming from checkpoint: {len(completed)} completed, {len(pending)} remaining")
+        else:
+            logger.info(f"Starting fresh: {len(combinations)} combinations")
+            pending = combinations
+    else:
+        # Start fresh, ignore checkpoint
+        completed = []
+        pending = combinations
+        logger.info(f"Starting fresh (ignoring checkpoint): {len(combinations)} combinations")
+    
+    # Initialize progress tracking
+    total = len(combinations)
+    completed_count = len(completed)
+    start_time = time.time()
+    results = list(completed)
+    
+    if not pending:
+        logger.info("All combinations already completed")
+        return results
+    
+    # Create multiprocessing pool
+    try:
+        with multiprocessing.Pool(processes=opt_config.workers, maxtasksperchild=50) as pool:
+            # Prepare task arguments
+            task_args = [(params, base_env, opt_config.timeout_seconds, runner_path, system_name, fixed_params) for params in pending]
+            
+            # Submit tasks and process results
+            for result in pool.imap_unordered(_worker_run_backtest, task_args):
+                results.append(result)
+                completed_count += 1
+                
+                # Calculate progress
+                elapsed = time.time() - start_time
+                avg_time = elapsed / (completed_count - len(completed)) if completed_count > len(completed) else 0
+                remaining = total - completed_count
+                eta_seconds = remaining * avg_time if avg_time > 0 else 0
+                
+                # Log progress
+                logger.info(
+                    f"Progress: {completed_count}/{total} ({completed_count/total*100:.1f}%) - "
+                    f"Avg: {avg_time:.1f}s/backtest - ETA: {eta_seconds/3600:.1f}h"
+                )
+                
+                # Checkpoint every N backtests
+                if completed_count % opt_config.checkpoint_interval == 0:
+                    save_checkpoint(results, opt_config.checkpoint_file)
+                    logger.info(f"Checkpoint saved: {completed_count} backtests completed")
+    
+    except KeyboardInterrupt:
+        logger.info("Interrupted by user, saving checkpoint...")
+        save_checkpoint(results, opt_config.checkpoint_file)
+        raise
+    
+    # Final checkpoint save
+    elapsed_total = time.time() - start_time
+    save_checkpoint(results, opt_config.checkpoint_file)
+    logger.info(f"Grid search completed: {len(results)} backtests in {elapsed_total/3600:.1f}h")
+    
+    return results
 
 
 def save_checkpoint(results: List[BacktestResult], checkpoint_file: str) -> None:
@@ -886,27 +1164,76 @@ def load_checkpoint(checkpoint_file: str) -> List[BacktestResult]:
         logger.info(f"Loading checkpoint from {checkpoint_file}")
         df = pd.read_csv(checkpoint_file)
         results = []
+
+        is_mtf_v2 = "total_position_size" in df.columns
         
         for _, row in df.iterrows():
             # Create ParameterSet from row
-            params = ParameterSet(
-                run_id=int(row["run_id"]),
-                fast_period=int(row["fast_period"]),
-                slow_period=int(row["slow_period"]),
-                crossover_threshold_pips=float(row["crossover_threshold_pips"]),
-                stop_loss_pips=int(row["stop_loss_pips"]),
-                take_profit_pips=int(row["take_profit_pips"]),
-                trailing_stop_activation_pips=int(row["trailing_stop_activation_pips"]),
-                trailing_stop_distance_pips=int(row["trailing_stop_distance_pips"]),
-                dmi_enabled=parse_bool(row["dmi_enabled"]),
-                dmi_period=int(row["dmi_period"]),
-                dmi_minimum_difference=float(row.get("dmi_minimum_difference", 0.0)),
-                stoch_enabled=parse_bool(row["stoch_enabled"]),
-                stoch_period_k=int(row["stoch_period_k"]),
-                stoch_period_d=int(row["stoch_period_d"]),
-                stoch_bullish_threshold=int(row["stoch_bullish_threshold"]),
-                stoch_bearish_threshold=int(row["stoch_bearish_threshold"]),
-            )
+            if is_mtf_v2:
+                params = MTFV2ParameterSet(
+                    run_id=int(row["run_id"]),
+                    total_position_size=int(row.get("total_position_size", 100000)),
+                    pos1_fraction=float(row.get("pos1_fraction", 0.85)),
+                    pos2_fraction=float(row.get("pos2_fraction", 0.15)),
+                    pos3_fraction=float(row.get("pos3_fraction", 0.0)),
+                    sl_atr_mult=float(row.get("sl_atr_mult", 1.4)),
+                    pos1_tp_atr_mult=float(row.get("pos1_tp_atr_mult", 0.6)),
+                    pos2_tp_atr_mult=float(row.get("pos2_tp_atr_mult", 1.5)),
+                    pos3_tp_atr_mult=float(row.get("pos3_tp_atr_mult", 1.5)),
+                    trailing_activation_atr_mult=float(row.get("trailing_activation_atr_mult", 0.6)),
+                    trailing_distance_atr_mult=float(row.get("trailing_distance_atr_mult", 0.4)),
+                    prediction_threshold=float(row.get("prediction_threshold", 0.55)),
+                    trade_start_hour=int(row.get("trade_start_hour", 0)),
+                    trade_end_hour=int(row.get("trade_end_hour", 24)),
+                    min_atr=float(row.get("min_atr", 0.0003)),
+                    max_atr=float(row.get("max_atr", 0.005)),
+                    stall_detection_enabled=parse_bool(row.get("stall_detection_enabled", False)),
+                    stall_check_bars=int(row.get("stall_check_bars", 6)),
+                    stall_min_profit_atr=float(row.get("stall_min_profit_atr", 0.2)),
+                    stall_sl_atr=float(row.get("stall_sl_atr", 0.2)),
+                    backtest_start=str(row.get("backtest_start", "2024-01-01")),
+                    backtest_end=str(row.get("backtest_end", "2025-12-30")),
+                    initial_balance=float(row.get("initial_balance", 50000.0)),
+                )
+            else:
+                params = ParameterSet(
+                    run_id=int(row["run_id"]),
+                    fast_period=int(row.get("fast_period", 10)),
+                    slow_period=int(row.get("slow_period", 20)),
+                    crossover_threshold_pips=float(row.get("crossover_threshold_pips", 0.7)),
+                    stop_loss_pips=int(row.get("stop_loss_pips", 25)),
+                    take_profit_pips=int(row.get("take_profit_pips", 50)),
+                    trailing_stop_activation_pips=int(row.get("trailing_stop_activation_pips", 20)),
+                    trailing_stop_distance_pips=int(row.get("trailing_stop_distance_pips", 15)),
+                    dmi_enabled=parse_bool(row.get("dmi_enabled", True)),
+                    dmi_period=int(row.get("dmi_period", 14)),
+                    dmi_minimum_difference=float(row.get("dmi_minimum_difference", 0.0)),
+                    stoch_enabled=parse_bool(row.get("stoch_enabled", True)),
+                    stoch_period_k=int(row.get("stoch_period_k", 14)),
+                    stoch_period_d=int(row.get("stoch_period_d", 3)),
+                    stoch_bullish_threshold=int(row.get("stoch_bullish_threshold", 30)),
+                    stoch_bearish_threshold=int(row.get("stoch_bearish_threshold", 70)),
+                    trend_filter_enabled=parse_bool(row.get("trend_filter_enabled", False)),
+                    trend_bar_spec=str(row.get("trend_bar_spec", "1-HOUR-MID-EXTERNAL")),
+                    trend_fast_period=int(row.get("trend_fast_period", 20)),
+                    trend_slow_period=int(row.get("trend_slow_period", 50)),
+                    entry_timing_enabled=parse_bool(row.get("entry_timing_enabled", False)),
+                    entry_timing_bar_spec=str(row.get("entry_timing_bar_spec", "5-MINUTE-MID-EXTERNAL")),
+                    entry_timing_method=str(row.get("entry_timing_method", "pullback")),
+                    entry_timing_timeout_bars=int(row.get("entry_timing_timeout_bars", 10)),
+                    bar_spec=str(row.get("bar_spec", "15-MINUTE-MID-EXTERNAL")),
+                    regime_detection_enabled=parse_bool(row.get("regime_detection_enabled", False)),
+                    regime_adx_trending_threshold=float(row.get("regime_adx_trending_threshold", 25.0)),
+                    regime_adx_ranging_threshold=float(row.get("regime_adx_ranging_threshold", 20.0)),
+                    regime_tp_multiplier_trending=float(row.get("regime_tp_multiplier_trending", 1.5)),
+                    regime_tp_multiplier_ranging=float(row.get("regime_tp_multiplier_ranging", 0.8)),
+                    regime_sl_multiplier_trending=float(row.get("regime_sl_multiplier_trending", 1.0)),
+                    regime_sl_multiplier_ranging=float(row.get("regime_sl_multiplier_ranging", 1.0)),
+                    regime_trailing_activation_multiplier_trending=float(row.get("regime_trailing_activation_multiplier_trending", 0.75)),
+                    regime_trailing_activation_multiplier_ranging=float(row.get("regime_trailing_activation_multiplier_ranging", 1.25)),
+                    regime_trailing_distance_multiplier_trending=float(row.get("regime_trailing_distance_multiplier_trending", 0.67)),
+                    regime_trailing_distance_multiplier_ranging=float(row.get("regime_trailing_distance_multiplier_ranging", 1.33)),
+                )
             
             # Create BacktestResult from row
             result = BacktestResult(
@@ -926,7 +1253,7 @@ def load_checkpoint(checkpoint_file: str) -> List[BacktestResult]:
                 error_message=str(row["error_message"]),
                 backtest_duration_seconds=float(row["backtest_duration_seconds"]),
                 output_directory=str(row["output_directory"]),
-                consecutive_losses=int(row.get("consecutive_losses", 0)) if "consecutive_losses" in row else 0,
+                consecutive_losses=int(row.get("consecutive_losses", 0)) if "consecutive_losses" in df.columns else 0,
             )
             
             results.append(result)
@@ -948,75 +1275,6 @@ def load_checkpoint(checkpoint_file: str) -> List[BacktestResult]:
     except Exception as e:
         logger.error(f"Failed to load checkpoint from {checkpoint_file}: {e}")
         return []
-
-
-def run_grid_search_parallel(combinations: List[ParameterSet], opt_config: OptimizationConfig, base_env: Dict[str, str], fixed_params: Dict[str, Any] = None, resume: bool = True) -> List[BacktestResult]:
-    """Orchestrate parallel backtest execution with progress tracking."""
-    if resume:
-        # Load checkpoint if exists
-        completed = load_checkpoint(opt_config.checkpoint_file)
-        completed_ids = {result.run_id for result in completed}
-        pending = [c for c in combinations if c.run_id not in completed_ids]
-        
-        if completed:
-            logger.info(f"Resuming from checkpoint: {len(completed)} completed, {len(pending)} remaining")
-        else:
-            logger.info(f"Starting fresh: {len(combinations)} combinations")
-            pending = combinations
-    else:
-        # Start fresh, ignore checkpoint
-        completed = []
-        pending = combinations
-        logger.info(f"Starting fresh (ignoring checkpoint): {len(combinations)} combinations")
-    
-    # Initialize progress tracking
-    total = len(combinations)
-    completed_count = len(completed)
-    start_time = time.time()
-    results = list(completed)
-    
-    if not pending:
-        logger.info("All combinations already completed")
-        return results
-    
-    # Create multiprocessing pool
-    try:
-        with multiprocessing.Pool(processes=opt_config.workers, maxtasksperchild=50) as pool:
-            # Prepare task arguments
-            task_args = [(params, base_env, opt_config.timeout_seconds, fixed_params) for params in pending]
-            
-            # Submit tasks and process results
-            for result in pool.imap_unordered(_worker_run_backtest, task_args):
-                results.append(result)
-                completed_count += 1
-                
-                # Calculate progress
-                elapsed = time.time() - start_time
-                avg_time = elapsed / (completed_count - len(completed)) if completed_count > len(completed) else 0
-                remaining = total - completed_count
-                eta_seconds = remaining * avg_time if avg_time > 0 else 0
-                
-                # Log progress
-                logger.info(
-                    f"Progress: {completed_count}/{total} ({completed_count/total*100:.1f}%) - "
-                    f"Avg: {avg_time:.1f}s/backtest - ETA: {eta_seconds/3600:.1f}h"
-                )
-                
-                # Checkpoint every N backtests
-                if completed_count % opt_config.checkpoint_interval == 0:
-                    save_checkpoint(results, opt_config.checkpoint_file)
-                    logger.info(f"Checkpoint saved: {completed_count} backtests completed")
-    
-    except KeyboardInterrupt:
-        logger.info("Interrupted by user, saving checkpoint...")
-        save_checkpoint(results, opt_config.checkpoint_file)
-        raise
-    
-    # Final checkpoint save
-    save_checkpoint(results, opt_config.checkpoint_file)
-    logger.info(f"Grid search completed: {len(results)} backtests in {elapsed/3600:.1f}h")
-    
-    return results
 
 
 def rank_results(results: List[BacktestResult], objective: str) -> List[BacktestResult]:
@@ -1324,7 +1582,12 @@ def main() -> int:
             logger.error(f"Configuration file not found: {config_path}")
             return 2
         
-        opt_config, param_ranges, fixed_params = load_grid_config(config_path)
+        system_name, runner_path, opt_config, param_ranges, fixed_params = load_grid_config(config_path)
+
+        runner_abs = (PROJECT_ROOT / runner_path).resolve() if not Path(runner_path).is_absolute() else Path(runner_path)
+        if not runner_abs.exists():
+            logger.error(f"Runner not found: {runner_path}")
+            return 2
         
         # Override with CLI arguments
         if args.workers:
@@ -1341,7 +1604,7 @@ def main() -> int:
         logger.info(f"Loaded configuration: {len(param_ranges)} parameters, objective={opt_config.objective}")
         
         # Generate combinations
-        combinations = generate_parameter_combinations(param_ranges, fixed_params)
+        combinations = generate_parameter_combinations(param_ranges, fixed_params, system_name)
         if not combinations:
             logger.error("No valid parameter combinations generated")
             return 2
@@ -1352,23 +1615,33 @@ def main() -> int:
         
         # Prepare base environment
         base_env = os.environ.copy()
-        required_vars = [
-            "BACKTEST_SYMBOL", "BACKTEST_START_DATE", "BACKTEST_END_DATE",
-            "BACKTEST_VENUE", "BACKTEST_BAR_SPEC", "CATALOG_PATH", "OUTPUT_DIR"
-        ]
-        missing_vars = [var for var in required_vars if var not in base_env]
-        if missing_vars:
-            logger.error(f"Missing required environment variables: {missing_vars}")
-            return 2
+
+        if system_name == "ma_crossover":
+            required_vars = [
+                "BACKTEST_SYMBOL", "BACKTEST_START_DATE", "BACKTEST_END_DATE",
+                "BACKTEST_VENUE", "BACKTEST_BAR_SPEC", "CATALOG_PATH", "OUTPUT_DIR"
+            ]
+            missing_vars = [var for var in required_vars if var not in base_env]
+            if missing_vars:
+                logger.error(f"Missing required environment variables: {missing_vars}")
+                return 2
+        else:
+            if "OUTPUT_DIR" not in base_env:
+                base_env["OUTPUT_DIR"] = str(PROJECT_ROOT / "backtest_results")
+            if "CATALOG_PATH" not in base_env:
+                base_env["CATALOG_PATH"] = str(PROJECT_ROOT / "data" / "historical")
         
         logger.info("Base environment prepared")
-        logger.info(f"Resolved environment values: VENUE={base_env.get('BACKTEST_VENUE')}, BAR_SPEC={base_env.get('BACKTEST_BAR_SPEC')}, CATALOG_PATH={base_env.get('CATALOG_PATH')}, OUTPUT_DIR={base_env.get('OUTPUT_DIR')}")
+        if system_name == "ma_crossover":
+            logger.info(f"Resolved environment values: VENUE={base_env.get('BACKTEST_VENUE')}, BAR_SPEC={base_env.get('BACKTEST_BAR_SPEC')}, CATALOG_PATH={base_env.get('CATALOG_PATH')}, OUTPUT_DIR={base_env.get('OUTPUT_DIR')}")
+        else:
+            logger.info(f"Resolved environment values: CATALOG_PATH={base_env.get('CATALOG_PATH')}, OUTPUT_DIR={base_env.get('OUTPUT_DIR')}")
         
         # Compute resume behavior
         resume = args.resume or not args.no_resume
         
         # Run optimization
-        results = run_grid_search_parallel(combinations, opt_config, base_env, fixed_params, resume)
+        results = run_grid_search_parallel(combinations, opt_config, base_env, runner_path, system_name, fixed_params, resume)
         if not results:
             logger.error("No results generated")
             return 1
@@ -1382,9 +1655,12 @@ def main() -> int:
         # Print best result
         if "best" in summary:
             best = summary["best"]
-            logger.info(f"Best parameters: fast={best['parameters']['fast_period']}, "
-                       f"slow={best['parameters']['slow_period']}, "
-                       f"{opt_config.objective}={best['objective_value']:.2f}")
+            if system_name == "ma_crossover":
+                logger.info(f"Best parameters: fast={best['parameters']['fast_period']}, "
+                           f"slow={best['parameters']['slow_period']}, "
+                           f"{opt_config.objective}={best['objective_value']:.2f}")
+            else:
+                logger.info(f"Best parameters: {best['parameters']}, {opt_config.objective}={best['objective_value']:.2f}")
         
         # Optional Pareto frontier objectives from CLI
         pareto_objectives: Optional[List[str]] = None

@@ -225,7 +225,7 @@ def load_mtf_v2_config(env_file: Optional[str] = None) -> MTFV2Config:
         project_root = Path(__file__).parent.parent
         env_file = project_root / ".env.mtf_v2"
     
-    load_dotenv(env_file, override=True)
+    load_dotenv(env_file, override=False)
     
     # Parse instrument
     instrument = os.getenv("MTF2_INSTRUMENT", "EUR/USD.IDEALPRO")
