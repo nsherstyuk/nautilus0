@@ -42,8 +42,18 @@ data/historical/
 # Backtest results (too large)
 backtest_results/
 
+analysis_outputs/
+
+optimization/results/
+optimization/checkpoints/
+
 # Model files (binary)
 *.pkl
 
+models/rolling/*.csv
+models/*_Model_features.txt
+
 # Trader logs
 TRADER-V2-*.log
+
+archive/
