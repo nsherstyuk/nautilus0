@@ -186,10 +186,6 @@ def setup_logging(log_dir: Path, start_time: str) -> None:
     logging.getLogger("TRADER-V2-001.RiskEngine").setLevel(logging.WARNING)
     logging.getLogger("TRADER-V2-001.ExecEngine").setLevel(logging.WARNING)
 
-    log = logging.getLogger("live_v2_dashboard_having_live_limit_entry")
-    log.info("Live dashboard logging configured. Logs directory: %s", log_dir)
-    log.info("Console log (this run): %s", console_log_file)
-
 
 def _resolve_market_data_type(value: str) -> IBMarketDataTypeEnum:
     mapping = {
@@ -354,6 +350,7 @@ def main() -> int:
                 "Cache": "WARNING",
                 "RiskEngine": "WARNING",
                 "DataEngine": "WARNING",
+                "ExecEngine": "DEBUG",   # <- Add this line
             },
         ),
         data_engine=LiveDataEngineConfig(
