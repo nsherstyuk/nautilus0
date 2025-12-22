@@ -19,6 +19,7 @@ Features (10 total):
 10. day_of_week: Day of week
 """
 import logging
+import argparse
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -394,12 +395,29 @@ def main():
     logger.info("="*80)
     logger.info("MTF ML MODEL TRAINING")
     logger.info("="*80)
-    
+ 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--train-start", default="2024-01-01")
+    parser.add_argument("--train-end", default="2025-11-28")
+    parser.add_argument("--model-out", default=str(MODELS_DIR / "ml_model_mtf.pkl"))
+    parser.add_argument("--overwrite", action="store_true")
+    args = parser.parse_args()
+     
     # Configuration
     symbol = "EUR-USD"
-    train_start = "2024-01-01"  # Focus on recent 2 years
-    train_end = "2025-11-28"     # Include ALL 2025 data (including November)
-    
+    train_start = args.train_start
+    train_end = args.train_end
+ 
+    model_path = Path(args.model_out)
+    if not model_path.is_absolute():
+        model_path = PROJECT_ROOT / model_path
+ 
+    if model_path.exists() and not args.overwrite:
+        raise FileExistsError(
+            f"Refusing to overwrite existing model file: {model_path}. "
+            "Pass --overwrite to overwrite."
+        )
+     
     # Step 1: Load 15-minute data
     logger.info("\n--- Loading 15-minute data ---")
     df_15m = load_data(symbol, "15_MINUTE", train_start, train_end)
@@ -438,12 +456,11 @@ def main():
     # Step 8: Train model
     logger.info("\n--- Training model ---")
     model = train_model(X_train, y_train, X_test, y_test, feature_names)
-    
+     
     # Step 9: Save model
-    model_path = MODELS_DIR / "ml_model_mtf.pkl"
     joblib.dump(model, model_path)
     logger.info(f"\nModel saved to: {model_path}")
-    
+     
     # Save feature names
     feature_path = MODELS_DIR / "feature_names_mtf.txt"
     with open(feature_path, 'w') as f:

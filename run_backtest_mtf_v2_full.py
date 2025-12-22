@@ -139,6 +139,8 @@ def simulate_2pos_strategy(df: pd.DataFrame, model, config: dict, log_file=None)
     trades = []
     position = None
     position_size = config['position_size']
+    entry_cooldown_bars = int(config.get('entry_cooldown_bars', 0) or 0)
+    cooldown_remaining_bars = 0
     
     # Get excluded hours by weekday
     excluded_hours_mode = config.get('excluded_hours_mode', 'simple')
@@ -154,6 +156,11 @@ def simulate_2pos_strategy(df: pd.DataFrame, model, config: dict, log_file=None)
     }
     
     for idx, row in df.iterrows():
+        # Entry cooldown (after any trade exit)
+        if position is None and cooldown_remaining_bars > 0:
+            cooldown_remaining_bars -= 1
+            continue
+
         # Manage existing position
         if position is not None:
             current_price = row['close']
@@ -266,6 +273,8 @@ def simulate_2pos_strategy(df: pd.DataFrame, model, config: dict, log_file=None)
                         log_file.write(f"{idx} | TRADE CLOSED {position['side']} TP PnL=${total_pnl:.2f}\n")
                     
                     position = None
+                    if entry_cooldown_bars > 0:
+                        cooldown_remaining_bars = entry_cooldown_bars
                     continue
             
             # Check SL hit (for remaining position) using high/low
@@ -313,6 +322,8 @@ def simulate_2pos_strategy(df: pd.DataFrame, model, config: dict, log_file=None)
                     log_file.write(f"{idx} | TRADE CLOSED {position['side']} {exit_type} PnL=${total_pnl:.2f}\n")
                 
                 position = None
+                if entry_cooldown_bars > 0:
+                    cooldown_remaining_bars = entry_cooldown_bars
                 continue
             
             # Skip new signal evaluation if in position
@@ -459,7 +470,7 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     pivot_pnl = df.pivot_table(values='pnl', index='entry_hour', columns='entry_weekday', aggfunc='sum', fill_value=0)
     pivot_pnl.columns = [weekday_names.get(c, c) for c in pivot_pnl.columns]
     pivot_pnl.index.name = f'hour_{config_timezone}'
-    pivot_pnl.to_csv(output_dir / 'hour_weekday_pnl_matrix.csv')
+    pivot_pnl.to_csv(output_dir / 'hour_weekday_pnl_matrix.csv', float_format='%.1f')
     print(f"Saved: hour_weekday_pnl_matrix.csv")
     
     pivot_trades = df.pivot_table(values='pnl', index='entry_hour', columns='entry_weekday', aggfunc='count', fill_value=0)
@@ -569,6 +580,7 @@ def main():
         'excluded_hours_friday': config.excluded_hours_friday,
         'excluded_hours_saturday': config.excluded_hours_saturday,
         'excluded_hours_sunday': config.excluded_hours_sunday,
+        'entry_cooldown_bars': config.entry_cooldown_bars,
         'backtest_start': config.backtest_start,
         'backtest_end': config.backtest_end,
         # Stall detection

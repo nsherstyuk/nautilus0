@@ -24,6 +24,7 @@ from dataclasses import dataclass
 from decimal import Decimal
 from pathlib import Path
 from typing import Optional, Dict, List
+import os
 import logging
 import numpy as np
 import pandas as pd
@@ -100,6 +101,7 @@ class MLSignalStrategyV2Config(StrategyConfig, kw_only=True):
     # Session filtering
     trade_start_hour: int = 7
     trade_end_hour: int = 20
+    entry_cooldown_bars: int = 0
     
     # Weekday-specific excluded hours
     excluded_hours_mode: str = "simple"  # 'simple' or 'weekday'
@@ -165,6 +167,8 @@ class MLSignalStrategyV2(Strategy):
         # Session
         self.trade_start_hour = config.trade_start_hour
         self.trade_end_hour = config.trade_end_hour
+        self._entry_cooldown_bars = config.entry_cooldown_bars
+        self._cooldown_remaining_bars = 0
         
         # Weekday-specific excluded hours
         self._excluded_hours_mode = config.excluded_hours_mode
@@ -206,6 +210,12 @@ class MLSignalStrategyV2(Strategy):
         self._bars_in_trade = 0
         self._max_profit_atr = 0.0
         self._stall_sl_applied = False
+
+        self._neg_stall_enabled = os.getenv("MTF2_NEG_STALL_ENABLED", "0").strip().lower() in {"1", "true", "yes"}
+        self._neg_stall_check_bars = int(os.getenv("MTF2_NEG_STALL_CHECK_BARS", "8"))
+        self._neg_stall_max_profit_atr = float(os.getenv("MTF2_NEG_STALL_MAX_PROFIT_ATR", "0.0"))
+        self._neg_stall_trigger_loss_atr = float(os.getenv("MTF2_NEG_STALL_TRIGGER_LOSS_ATR", "0.4"))
+        self._neg_stall_triggered = False
         
         # Warmup
         self._warmup_mode = True
@@ -228,6 +238,7 @@ class MLSignalStrategyV2(Strategy):
         self._bars_in_trade = 0
         self._max_profit_atr = 0.0
         self._stall_sl_applied = False
+        self._neg_stall_triggered = False
         
     def _load_model(self):
         """Load ML model."""
@@ -249,7 +260,7 @@ class MLSignalStrategyV2(Strategy):
             return []
         return [int(h.strip()) for h in hours_str.split(',') if h.strip()]
     
-    def _utc_to_est(self, utc_hour: int, utc_weekday: int) -> tuple:
+    def _utc_to_est(self, utc_hour: int, utc_weekday: int, utc_timestamp: Optional[pd.Timestamp] = None) -> tuple:
         """
         Convert UTC hour/weekday to US Eastern time (handles EST/EDT automatically).
         Uses datetime for proper DST handling.
@@ -258,15 +269,22 @@ class MLSignalStrategyV2(Strategy):
         import zoneinfo
         
         try:
-            # Create a UTC datetime for today with the given hour
-            now = datetime.now(timezone.utc)
-            utc_dt = now.replace(hour=utc_hour, minute=0, second=0, microsecond=0)
-            
-            # Adjust weekday if needed (if utc_weekday differs from current)
-            days_diff = utc_weekday - now.weekday()
-            if days_diff != 0:
-                from datetime import timedelta
-                utc_dt = utc_dt + timedelta(days=days_diff)
+            if utc_timestamp is not None:
+                utc_dt = utc_timestamp
+                if isinstance(utc_dt, pd.Timestamp):
+                    utc_dt = utc_dt.to_pydatetime()
+                if utc_dt.tzinfo is None:
+                    utc_dt = utc_dt.replace(tzinfo=timezone.utc)
+            else:
+                # Create a UTC datetime for today with the given hour
+                now = datetime.now(timezone.utc)
+                utc_dt = now.replace(hour=utc_hour, minute=0, second=0, microsecond=0)
+                
+                # Adjust weekday if needed (if utc_weekday differs from current)
+                days_diff = utc_weekday - now.weekday()
+                if days_diff != 0:
+                    from datetime import timedelta
+                    utc_dt = utc_dt + timedelta(days=days_diff)
             
             # Convert to Eastern time (handles DST automatically)
             eastern = zoneinfo.ZoneInfo('America/New_York')
@@ -282,7 +300,7 @@ class MLSignalStrategyV2(Strategy):
                 est_weekday = (utc_weekday - 1) % 7
             return est_hour, est_weekday
     
-    def _is_trading_allowed(self, utc_hour: int, utc_weekday: int) -> bool:
+    def _is_trading_allowed(self, utc_hour: int, utc_weekday: int, bar_time: Optional[pd.Timestamp] = None) -> bool:
         """
         Check if trading is allowed at this UTC hour on this weekday.
         Handles EST timezone conversion if config_timezone='EST'.
@@ -299,7 +317,7 @@ class MLSignalStrategyV2(Strategy):
         if self._excluded_hours_mode == 'weekday':
             if self._config_timezone == 'EST':
                 # Convert UTC to EST for comparison with config
-                est_hour, est_weekday = self._utc_to_est(utc_hour, utc_weekday)
+                est_hour, est_weekday = self._utc_to_est(utc_hour, utc_weekday, bar_time)
                 excluded = self._excluded_hours.get(est_weekday, [])
                 if est_hour in excluded:
                     return False
@@ -316,6 +334,8 @@ class MLSignalStrategyV2(Strategy):
         # NOTE: Do NOT subscribe to bars here - bars are fed directly from ib_insync
         # The ib_bar_streamer calls on_bar() directly, bypassing NautilusTrader's data engine
         # self.subscribe_bars(self.bar_type)  # DISABLED - would cause duplicate bars
+        if os.getenv("MTF2_REPLAY_MODE", "0").strip().lower() in {"1", "true", "yes"}:
+            self.subscribe_bars(self.bar_type)
         _py_logger.info("Strategy started - bars fed directly from ib_insync")
         _py_logger.info(f"Instrument: {self.instrument_id}")
         _py_logger.info(f"Position sizes: POS1={int(self.total_size * self._pos1_fraction)}, POS2={int(self.total_size * self._pos2_fraction)}, POS3={int(self.total_size * self._pos3_fraction)}")
@@ -359,6 +379,8 @@ class MLSignalStrategyV2(Strategy):
             if all(l.is_closed or not l.is_open for l in self._layers.values()):
                 if any(l.is_closed for l in self._layers.values()):
                     self._log_position_state("ALL POSITIONS CLOSED - Trade complete")
+                    if self._entry_cooldown_bars > 0:
+                        self._cooldown_remaining_bars = int(self._entry_cooldown_bars)
                     self._reset_layers()
         except Exception as e:
             _py_logger.error(f"[ERROR] on_order_filled exception: {e}")
@@ -534,40 +556,70 @@ class MLSignalStrategyV2(Strategy):
         Rule: After X bars, if max profit is between min_profit and TP1 level,
         tighten SL to lock in some profit.
         """
-        if not self._stall_detection_enabled:
+        if not self._stall_detection_enabled and not self._neg_stall_enabled:
             return
-        
+
         # Only apply before TP1 is hit
         pos1 = self._layers.get("POS1")
         if not pos1 or not pos1.is_open or pos1.is_closed:
             return
-        
-        # Already applied stall SL
-        if self._stall_sl_applied:
-            return
-        
+
         # Need entry price and ATR
         if not self._entry_price or not self._entry_atr:
             return
-        
+
         # Calculate current profit in ATR terms
         if self._trade_direction == "LONG":
             profit = current_price - self._entry_price
         else:
             profit = self._entry_price - current_price
-        
+
         profit_atr = profit / (self._entry_price * self._entry_atr)
-        
-        # Update max profit tracking
+
+        self._bars_in_trade += 1
         if profit_atr > self._max_profit_atr:
             self._max_profit_atr = profit_atr
-        
-        # Increment bars counter
-        self._bars_in_trade += 1
-        
+
+        if (
+            self._neg_stall_enabled
+            and not self._neg_stall_triggered
+            and self._bars_in_trade >= self._neg_stall_check_bars
+            and self._max_profit_atr <= self._neg_stall_max_profit_atr
+            and profit_atr <= -self._neg_stall_trigger_loss_atr
+        ):
+            self._neg_stall_triggered = True
+            _py_logger.info(
+                f"[NEG_STALL] Trigger: bars={self._bars_in_trade}, max={self._max_profit_atr:.2f} ATR, curr={profit_atr:.2f} ATR -> flatten"
+            )
+
+            for layer in self._layers.values():
+                if layer.is_open and not layer.is_closed:
+                    layer.is_open = False
+                    layer.is_closed = True
+
+            try:
+                self.cancel_all_orders(self.instrument_id)
+            except Exception as e:
+                _py_logger.error(f"[NEG_STALL] Failed cancel_all_orders: {e}")
+
+            try:
+                self.close_all_positions(self.instrument_id, tags=[f"{self._order_id_tag}_NEG_STALL"])
+            except Exception as e:
+                _py_logger.error(f"[NEG_STALL] Failed close_all_positions: {e}")
+
+            return
+
+        if not self._stall_detection_enabled:
+            return
+
+        if self._stall_sl_applied:
+            return
+
         # Check stall condition
-        if (self._bars_in_trade >= self._stall_check_bars and
-            self._stall_min_profit_atr <= self._max_profit_atr < self.pos1_tp_mult):
+        if (
+            self._bars_in_trade >= self._stall_check_bars
+            and self._stall_min_profit_atr <= self._max_profit_atr < self.pos1_tp_mult
+        ):
             
             # Tighten SL to lock in some profit
             sl_distance = self._entry_price * self._entry_atr * self._stall_sl_atr
@@ -661,6 +713,16 @@ class MLSignalStrategyV2(Strategy):
         # Open each position layer
         for layer_name, layer in self._layers.items():
             self._open_layer_position(layer, order_side, entry_price, sl_price, atr_normalized)
+
+    def _quantity_from_units(self, units: int) -> Quantity:
+        instrument = self.cache.instrument(self.instrument_id)
+        if instrument is None:
+            return Quantity.from_int(units)
+
+        precision = int(instrument.size_precision)
+        quant = Decimal("1").scaleb(-precision)
+        value = Decimal(units).quantize(quant)
+        return Quantity.from_str(format(value, "f"))
             
     def _open_layer_position(self, layer: PositionLayer, order_side: OrderSide, 
                              entry_price: float, sl_price: float, atr: float):
@@ -672,8 +734,8 @@ class MLSignalStrategyV2(Strategy):
             layer.is_closed = True  # Mark as closed so it doesn't block trade completion
             _py_logger.info(f"[SKIP] {layer.name}: size=0, skipping (2-position mode)")
             return
-            
-        size = Quantity.from_int(size_int)
+
+        size = self._quantity_from_units(size_int)
         
         # Calculate TP
         tp_distance = entry_price * atr * layer.tp_atr_mult
@@ -768,6 +830,25 @@ class MLSignalStrategyV2(Strategy):
         
         # Stall detection: tighten SL if trade not progressing to TP1
         self._check_stall_detection(float(bar.close))
+
+        atr = self._calculate_atr()
+        prediction = None
+        confidence = None
+        if self.model is not None:
+            features = self._calculate_features()
+            if features is not None:
+                try:
+                    prediction = self.model.predict([features])[0]
+                    confidence = self.model.predict_proba([features])[0].max()
+                except Exception as e:
+                    _py_logger.error(f"[ERROR] Prediction error: {e}")
+
+        atr_text = f"{atr:.5f}" if atr is not None else "NA"
+        conf_text = f"{confidence:.3f}" if confidence is not None else "NA"
+        pred_text = str(prediction) if prediction is not None else "NA"
+        _py_logger.info(
+            f"[BAR_METRICS] {bar_time} close={bar.close} atr={atr_text} pred={pred_text} conf={conf_text} thresh={self.prediction_threshold}"
+        )
             
         # Check if we have any open positions (check both layer state AND cache)
         any_open = any(l.is_open for l in self._layers.values())
@@ -789,6 +870,11 @@ class MLSignalStrategyV2(Strategy):
         elif any_open or has_cache_positions or has_pending_orders:
             _py_logger.info(f"[MONITORING] In trade - layers_open={any_open}, cache_pos={len(positions)}, orders={len(open_orders)}, direction={self._trade_direction}")
             return
+
+        if self._cooldown_remaining_bars > 0:
+            _py_logger.info(f"[FILTERED] Entry cooldown active: remaining_bars={self._cooldown_remaining_bars}")
+            self._cooldown_remaining_bars -= 1
+            return
             
         # Check for new entry signal
         if self.model is None:
@@ -798,8 +884,19 @@ class MLSignalStrategyV2(Strategy):
         # Session filter (with weekday-specific exclusions)
         hour = bar_time.hour
         weekday = bar_time.weekday()
-        if not self._is_trading_allowed(hour, weekday):
-            _py_logger.info(f"[FILTERED] Hour {hour} excluded for weekday {weekday}")
+        if not self._is_trading_allowed(hour, weekday, bar_time):
+            if self._excluded_hours_mode == 'weekday':
+                if self._config_timezone == 'EST':
+                    est_hour, est_weekday = self._utc_to_est(hour, weekday, bar_time)
+                    excluded = self._excluded_hours.get(est_weekday, [])
+                    _py_logger.info(
+                        f"[FILTERED] Excluded hour: utc={hour} weekday={weekday} -> est={est_hour} weekday={est_weekday} excluded={excluded}"
+                    )
+                else:
+                    excluded = self._excluded_hours.get(weekday, [])
+                    _py_logger.info(f"[FILTERED] Excluded hour: utc={hour} weekday={weekday} excluded={excluded}")
+            else:
+                _py_logger.info(f"[FILTERED] Hour {hour} excluded for weekday {weekday}")
             return
             
         # Calculate features and get prediction

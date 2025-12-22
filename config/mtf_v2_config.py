@@ -62,6 +62,7 @@ class MTFV2Config:
     trade_start_hour: int
     trade_end_hour: int
     config_timezone: str  # 'EST' or 'UTC' - timezone for excluded hours in config
+    entry_cooldown_bars: int
     
     # Weekday-specific excluded hours (in config_timezone, converted to UTC internally)
     excluded_hours_mode: str  # 'simple' or 'weekday'
@@ -287,6 +288,7 @@ def load_mtf_v2_config(env_file: Optional[str] = None) -> MTFV2Config:
         trade_start_hour=int(os.getenv("MTF2_TRADE_START_HOUR", "7")),
         trade_end_hour=int(os.getenv("MTF2_TRADE_END_HOUR", "20")),
         config_timezone=os.getenv("MTF2_CONFIG_TIMEZONE", "UTC"),  # 'EST' or 'UTC'
+        entry_cooldown_bars=int(os.getenv("MTF2_ENTRY_COOLDOWN_BARS", "0")),
         
         # Weekday-specific excluded hours
         excluded_hours_mode=os.getenv("MTF2_EXCLUDED_HOURS_MODE", "simple"),
@@ -365,6 +367,7 @@ def print_mtf_v2_config(config: MTFV2Config):
         print(f"    Friday:    {config.excluded_hours_friday} ({tz})")
     print(f"  Prediction Thresh: {config.prediction_threshold}")
     print(f"  ATR Range:         {config.min_atr} - {config.max_atr}")
+    print(f"  Entry Cooldown:    {config.entry_cooldown_bars} bars")
     
     print("\n[Risk Management]")
     num_pos = 2 if two_position_mode else 3

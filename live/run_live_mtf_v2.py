@@ -225,6 +225,7 @@ def main() -> int:
             # Session filters
             "trade_start_hour": live_config.trade_start_hour,
             "trade_end_hour": live_config.trade_end_hour,
+            "entry_cooldown_bars": live_config.entry_cooldown_bars,
             "prediction_threshold": live_config.prediction_threshold,
             "min_atr": live_config.min_atr,
             "max_atr": live_config.max_atr,

@@ -97,6 +97,9 @@ def simulate_2pos_strategy_dynamic_sizing(df, model, config: dict, dyn: dict, lo
 
     base_position_size = int(config["position_size"])
 
+    entry_cooldown_bars = int(config.get("entry_cooldown_bars", 0) or 0)
+    cooldown_remaining_bars = 0
+
     if np.isfinite(dyn.get("starting_equity_usd", float("nan"))):
         equity = float(dyn["starting_equity_usd"])
     else:
@@ -115,6 +118,10 @@ def simulate_2pos_strategy_dynamic_sizing(df, model, config: dict, dyn: dict, lo
     }
 
     for idx, row in df.iterrows():
+        if position is None and cooldown_remaining_bars > 0:
+            cooldown_remaining_bars -= 1
+            continue
+
         if position is not None:
             current_price = row["close"]
             atr_value = position["atr_value"]
@@ -163,6 +170,66 @@ def simulate_2pos_strategy_dynamic_sizing(df, model, config: dict, dyn: dict, lo
                                 log_file.write(
                                     f"{idx} | STALL detected: max={position['max_profit_atr']:.2f} ATR, SL tightened to {stall_sl_atr} ATR\n"
                                 )
+
+            if (
+                config.get("neg_stall_enabled", False)
+                and not position.get("pos1_closed", False)
+                and not position.get("neg_stall_triggered", False)
+            ):
+                neg_stall_check_bars = int(config.get("neg_stall_check_bars", 8))
+                neg_stall_max_profit_atr = float(config.get("neg_stall_max_profit_atr", 0.0))
+                neg_stall_trigger_loss_atr = float(config.get("neg_stall_trigger_loss_atr", 0.4))
+
+                if (
+                    position["bars_in_trade"] >= neg_stall_check_bars
+                    and position["max_profit_atr"] <= neg_stall_max_profit_atr
+                    and profit_atr <= -neg_stall_trigger_loss_atr
+                ):
+                    position["neg_stall_triggered"] = True
+
+                    exit_price = current_price
+                    if position["side"] == "LONG":
+                        remaining_profit = exit_price - position["entry"]
+                    else:
+                        remaining_profit = position["entry"] - exit_price
+
+                    remaining_pnl = remaining_profit * position["size"]
+                    remaining_commission = calculate_commission(position["size"])
+                    total_pnl = position.get("pos1_pnl", 0) + remaining_pnl - remaining_commission
+
+                    equity_before = equity
+                    equity = equity + total_pnl
+
+                    trades.append(
+                        {
+                            "entry_time": position["entry_time"],
+                            "exit_time": idx,
+                            "side": position["side"],
+                            "entry": position["entry"],
+                            "exit": exit_price,
+                            "pnl": total_pnl,
+                            "exit_reason": "NEG_STALL",
+                            "partial_closed": position.get("pos1_closed", False),
+                            "entry_hour": position["entry_hour"],
+                            "entry_weekday": position["entry_weekday"],
+                            "duration_bars": 0,
+                            "entry_month": position["entry_time"].strftime("%Y-%m"),
+                            "position_size": position["initial_size"],
+                            "lots": position.get("lots", None),
+                            "equity_before": equity_before,
+                            "equity_after": equity,
+                        }
+                    )
+
+                    if log_file:
+                        log_file.write(
+                            f"{idx} | NEG_STALL exit: max={position['max_profit_atr']:.2f} ATR, curr={profit_atr:.2f} ATR, PnL=${total_pnl:.2f} | Equity=${equity:.2f}\n"
+                        )
+
+                    position = None
+                    if entry_cooldown_bars > 0:
+                        cooldown_remaining_bars = entry_cooldown_bars
+                    continue
 
             if not position.get("pos1_closed", False):
                 if profit_atr >= config["pos1_tp_atr_mult"]:
@@ -236,6 +303,8 @@ def simulate_2pos_strategy_dynamic_sizing(df, model, config: dict, dyn: dict, lo
                         )
 
                     position = None
+                    if entry_cooldown_bars > 0:
+                        cooldown_remaining_bars = entry_cooldown_bars
                     continue
 
             sl_hit = False
@@ -292,6 +361,8 @@ def simulate_2pos_strategy_dynamic_sizing(df, model, config: dict, dyn: dict, lo
                     )
 
                 position = None
+                if entry_cooldown_bars > 0:
+                    cooldown_remaining_bars = entry_cooldown_bars
                 continue
 
             continue
@@ -379,6 +450,7 @@ def simulate_2pos_strategy_dynamic_sizing(df, model, config: dict, dyn: dict, lo
             "bars_in_trade": 0,
             "max_profit_atr": 0,
             "stall_sl_applied": False,
+            "neg_stall_triggered": False,
             "lots": lots,
             "sizing_meta": sizing_meta,
             "equity_at_entry": equity,
@@ -406,6 +478,11 @@ def main():
     print_mtf_v2_config(config)
 
     dyn = load_dynamic_sizing_config_from_env()
+
+    neg_stall_enabled = _get_bool("MTF2_NEG_STALL_ENABLED", False)
+    neg_stall_check_bars = int(os.getenv("MTF2_NEG_STALL_CHECK_BARS", "8"))
+    neg_stall_max_profit_atr = float(os.getenv("MTF2_NEG_STALL_MAX_PROFIT_ATR", "0.0"))
+    neg_stall_trigger_loss_atr = float(os.getenv("MTF2_NEG_STALL_TRIGGER_LOSS_ATR", "0.4"))
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = PROJECT_ROOT / "backtest_results" / f"MTF_V2_DYN_{timestamp}"
@@ -442,12 +519,17 @@ def main():
         "excluded_hours_friday": config.excluded_hours_friday,
         "excluded_hours_saturday": config.excluded_hours_saturday,
         "excluded_hours_sunday": config.excluded_hours_sunday,
+        "entry_cooldown_bars": config.entry_cooldown_bars,
         "backtest_start": config.backtest_start,
         "backtest_end": config.backtest_end,
         "stall_detection_enabled": config.stall_detection_enabled,
         "stall_check_bars": config.stall_check_bars,
         "stall_min_profit_atr": config.stall_min_profit_atr,
         "stall_sl_atr": config.stall_sl_atr,
+        "neg_stall_enabled": neg_stall_enabled,
+        "neg_stall_check_bars": neg_stall_check_bars,
+        "neg_stall_max_profit_atr": neg_stall_max_profit_atr,
+        "neg_stall_trigger_loss_atr": neg_stall_trigger_loss_atr,
         "initial_balance": config.initial_balance,
     }
 
