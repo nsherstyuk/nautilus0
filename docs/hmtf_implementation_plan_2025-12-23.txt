@@ -1,0 +1,131 @@
+﻿TECHNICAL PLAN: HIERARCHICAL MULTI-TIMEFRAME (15m General -> 5m Soldier)
+Date: 2025-12-23
+Spec source: trading_system_spec.txt
+
+GOAL
+- Implement a live IBKR hierarchical MTF system:
+  - 15m "General" model sets macro regime/permission + 15m ATR
+  - 5m "Soldier" model triggers entries using lagged 15m features
+- Key constraints from spec:
+  - Lagged Master Feature: 5m only sees most recently COMPLETED 15m prediction
+  - Quarter-hour timing: if 15m and 5m bars arrive simultaneously, 15m must update FIRST
+  - Dynamic sizing: get_dynamic_size EXACTLY per spec (1% equity risk)
+  - State machine: IDLE -> HUNTING -> ACTIVE -> COOLDOWN (30 minutes)
+  - Training "secret sauce": XGBoost uses sample_weight=abs(last_15m_prediction)
+
+NON-GOAL (FOR THIS PHASE)
+- Do not modify or replace existing v2 runner(s).
+- Do not fully implement trade logic immediately; wire structure first.
+
+INTEGRATION STRATEGY (KEEP V2 INTACT)
+- Add v3 runner and supporting modules as NEW files so rollback is trivial.
+- Suggested new files:
+  - live/run_live_mtf_v3_hierarchical_dashboard.py
+  - live/hmtf_engine.py
+  - live/hmtf_features.py
+  - live/hmtf_csv_logger.py
+  - config/mtf_v3_config.py
+  - scripts/audit_hmtf_dataset.py
+  - scripts/train_soldier_xgb.py
+
+PHASE 1  DUAL IBKR BAR STREAMS (5m + 15m)
+- Reuse existing live/ib_bar_streamer.py (ib_insync reqHistoricalData keepUpToDate=True).
+- Subscribe to two streams for the same symbol:
+  - 15m bars: bar_size="15 mins"
+  - 5m bars: bar_size="5 mins"
+- Normalize bar-close events into a single stream and enforce ordering:
+  - sort_key = (bar_close_ts, priority)
+  - priority: 15m close before 5m close when timestamps tie (e.g., 10:15:00)
+
+Verification
+- Logs show that for tie timestamps, 15m updates store before 5m triggers.
+
+PHASE 2  LAGGED MASTER FEATURE (NO LOOK-AHEAD)
+- Implement FeatureStore that holds:
+  - last_15m_prediction (confidence)
+  - atr_15m
+  - asof_15m_close
+- Update FeatureStore only when a 15m bar CLOSES.
+- 5m feature builder reads FeatureStore without mutation.
+- Hard gating rule: master.asof_15m_close <= bar5.end_time
+
+Verification
+- Dataset rows show stitched master timestamp changes only on quarter-hour.
+
+PHASE 3  STATE MACHINE (IDLE/HUNTING/ACTIVE/COOLDOWN)
+- Implement an explicit state machine with clear transitions:
+  - IDLE: monitor both streams
+  - HUNTING: enabled only when last_15m_prediction > threshold
+  - ACTIVE: position open (TP/SL, optional early exit if 5m confidence flips)
+  - COOLDOWN: block new entries for 30 minutes after close
+
+Verification
+- Every transition logs timestamp, old state -> new state, reason.
+
+PHASE 4  DYNAMIC POSITION SIZING (EXACT SPEC)
+- Implement EXACT function:
+
+  def get_dynamic_size(account_equity, atr_15m, current_price):
+      risk_dollars = account_equity * 0.01
+      sl_dist_price = atr_15m * 1.4
+      units = int(risk_dollars / sl_dist_price)
+      return max(round(units / 1000) * 1000, 1000)
+
+Verification
+- Log computed units at entry time; validate rounding + min=1000.
+
+PHASE 5  CSV LOGGING FOR TRAINING DATA ("STITCHED" TIMELINE)
+- For each COMPLETED 5m bar, log a single training row containing:
+  - ts_5m_close
+  - ts_master_15m_close
+  - last_15m_prediction
+  - atr_15m
+  - 5m RSI, 5m MACD, 5m BB width
+  - body size vs wick size
+  - any additional IDs needed (symbol, session flags)
+- Output path suggestion:
+  - logs/live_mtf/hmtf_5m_dataset.csv
+
+Verification
+- No missing master values after warmup.
+- Master close timestamp only changes every 15m.
+
+PHASE 6  DATA SUFFICIENCY & QUALITY AUDIT (BEFORE TRAINING)
+- Implement scripts/audit_hmtf_dataset.py to report:
+  - total rows, rows/day, coverage of trading sessions
+  - missing values per column
+  - time gaps in 5m bars
+  - distribution of last_15m_prediction (how often high conviction occurs)
+  - distribution of atr_15m
+  - stitched correctness (master timestamps step at 15m intervals)
+
+Outcome
+- Decide whether dataset is sufficient, or more collection time is needed.
+
+PHASE 7  TRAINING PIPELINE (XGBOOST + SAMPLE WEIGHTING)
+- Implement scripts/train_soldier_xgb.py:
+  - Load stitched CSV
+  - Build label y (binary):
+    - y=1 if +0.6*ATR hit before -1.4*ATR from that 5m bar context
+  - Compute weights:
+    - weights = abs(last_15m_prediction)
+  - Train XGBoost:
+    - model.fit(X_train, y_train, sample_weight=weights_train)
+  - Optimize for precision (threshold tuning and metrics report)
+  - Save artifacts to models/ (model file + feature list)
+
+Verification
+- Confirm weights are passed (min/max/mean printed)
+- Precision/recall/F1 reported; threshold selection documented.
+
+SMOKE CHECKS (FAST)
+- Imports succeed.
+- v3 runner starts, subscribes to 5m+15m.
+- Logs show 15m->5m ordering at quarter-hour.
+- CSV rows appear and look stitched.
+
+NOTES / RISKS
+- IBKR bar completion timing can be quirky; ordering must be enforced centrally.
+- If master model outputs raw scores outside [-1,1], normalize/clip before logging/usage.
+
+END
