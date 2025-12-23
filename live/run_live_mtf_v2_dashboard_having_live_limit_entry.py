@@ -178,13 +178,15 @@ def setup_logging(log_dir: Path, start_time: str) -> None:
     logging.getLogger("nautilus_trader.portfolio").setLevel(logging.WARNING)
     logging.getLogger("nautilus_trader.cache").setLevel(logging.WARNING)
     logging.getLogger("nautilus_trader.common").setLevel(logging.WARNING)
-    logging.getLogger("nautilus_trader.execution").setLevel(logging.WARNING)
+    logging.getLogger("nautilus_trader.execution").setLevel(logging.DEBUG)
     logging.getLogger("nautilus_trader.risk").setLevel(logging.WARNING)
 
     logging.getLogger("TRADER-V2-001.Portfolio").setLevel(logging.WARNING)
     logging.getLogger("TRADER-V2-001.Cache").setLevel(logging.WARNING)
     logging.getLogger("TRADER-V2-001.RiskEngine").setLevel(logging.WARNING)
-    logging.getLogger("TRADER-V2-001.ExecEngine").setLevel(logging.WARNING)
+    logging.getLogger("TRADER-V2-001.ExecEngine").setLevel(logging.DEBUG)
+    logging.getLogger("TRADER-V2-001.DataEngine").setLevel(logging.WARNING)
+    logging.getLogger("orders").setLevel(logging.DEBUG)
 
 
 def _resolve_market_data_type(value: str) -> IBMarketDataTypeEnum:
@@ -350,7 +352,7 @@ def main() -> int:
                 "Cache": "WARNING",
                 "RiskEngine": "WARNING",
                 "DataEngine": "WARNING",
-                "ExecEngine": "DEBUG",   # <- Add this line
+                "ExecEngine": "DEBUG",
             },
         ),
         data_engine=LiveDataEngineConfig(

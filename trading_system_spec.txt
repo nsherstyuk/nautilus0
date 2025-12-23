@@ -1,0 +1,105 @@
+Below is a comprehensive technical specification file. You can copy the content below and save it as `trading_system_spec.txt` to provide to your coding agent.
+
+---
+
+# TECHNICAL SPECIFICATION: HIERARCHICAL MULTI-TIMEFRAME TRADING SYSTEM
+
+## 1. SYSTEM OVERVIEW
+
+The goal is to move from a single 15-minute timeframe strategy to a **Hierarchical Model Architecture**. This system uses a 15-minute "General" model to identify market regimes and a 5-minute "Soldier" model to optimize entry execution.
+
+### Core Objectives:
+
+* **Standardize Risk:** Use Dynamic Position Sizing to cap losses at 1% of equity ($42).
+* **Improve Expectancy:** Use 5-minute triggers to "buy the dip" within a 15-minute trend.
+* **Reduce Noise:** Use the 15-minute prediction as a "Macro Filter" for 5-minute decisions.
+
+---
+
+## 2. DATA ARCHITECTURE & STREAMS
+
+The script must maintain two concurrent data streams via IBKR API:
+
+* **Stream A (15m Bars):** Used for Macro Direction, 15m ATR, and "Master" predictions.
+* **Stream B (5m Bars):** Used for feature engineering the 5m model and triggering entries.
+
+### The "Lagged" Feature Implementation
+
+To prevent **Look-Ahead Bias**, the system must implement a "Lagged Master Feature."
+
+* **Logic:** The 15-minute model runs only when a 15-minute bar closes (e.g., at 10:00, 10:15).
+* **Storage:** The result (Confidence Score) is stored in a global variable `last_15m_prediction`.
+* **Usage:** All 5-minute bars occurring between 10:05 and 10:15 use the *10:00* prediction value as an input feature. The 5-minute model never knows the 15-minute result of the bar it is currently inside.
+
+---
+
+## 3. ML MODEL SPECIFICATIONS (5-MINUTE TRIGGER)
+
+**Algorithm:** XGBoost Classifier (Gradient Boosted Decision Trees).
+
+### Feature Vector for 5m Model:
+
+1. **Macro Permission (Master Feature):** `last_15m_prediction` (Score from -1.0 to 1.0).
+2. **Volatility Context:** Current `15m_ATR`.
+3. **Micro Technicals:** 5m RSI, 5m MACD, 5m Bollinger Band Width.
+4. **Price Action:** Current 5m body size vs. wick size.
+
+### Training Nuances:
+
+* **Target Label (Binary):** 1 if Price hits +0.6 ATR (Profit) before hitting -1.4 ATR (Loss); 0 otherwise.
+* **Sample Weighting:** During training, assign a `sample_weight` to each 5-minute bar equal to the absolute value of the 15-minute confidence score. This forces the model to prioritize learning from "high-conviction" macro environments.
+* **Optimization Goal:** Maximize **Precision** (minimizing False Positives) rather than raw accuracy.
+
+---
+
+## 4. STATE MACHINE LOGIC
+
+The execution engine must cycle through these states:
+
+1. **STATE_IDLE:** Monitoring both 15m and 5m streams.
+2. **STATE_HUNTING:** Triggered when `last_15m_prediction` > [Threshold].
+* *Action:* Script begins evaluating 5-minute bars against the 5m ML model.
+
+
+3. **STATE_ACTIVE:** Trade is executed.
+* *Exit Logic:* Hard SL (1.4 ATR), Hard TP (0.6 ATR).
+* *Logic Stop:* If 5m model flips confidence significantly against the trade, close immediately.
+
+
+4. **STATE_COOLDOWN:** After trade close, wait **30 minutes** before returning to IDLE to prevent over-trading in high-volatility clusters.
+
+---
+
+## 5. DYNAMIC POSITION SIZING (FOREX)
+
+To fix the "Big Loss" problem, the script must calculate lot size dynamically every time a trade is triggered.
+
+**Formula:**
+
+
+**Python implementation logic:**
+
+```python
+def get_dynamic_size(account_equity, atr_15m, current_price):
+    risk_dollars = account_equity * 0.01  # 1% Risk ($42)
+    sl_dist_price = atr_15m * 1.4
+    # Units = Risk / SL Distance in price
+    # For EUR/USD: 
+    units = int(risk_dollars / sl_dist_price)
+    # Round to nearest micro-lot (1,000)
+    return max(round(units / 1000) * 1000, 1000)
+
+```
+
+---
+
+## 6. CODING AGENT INSTRUCTIONS
+
+1. **Phase 1:** Build the IBKR data handler to manage 5m and 15m streams simultaneously with unique `reqId`s.
+2. **Phase 2:** Implement the `last_15m_prediction` lagging logic to ensure the 5m features are correctly synchronized.
+3. **Phase 3:** Create a CSV logging system that records 5m features + the 15m Master Feature for offline training.
+4. **Phase 4:** Integrate the XGBoost Classifier into the `STATE_HUNTING` logic for live execution.
+
+---
+
+Would you like me to generate the **Python training script** now so you can start building the dataset for your 5-minute model?
