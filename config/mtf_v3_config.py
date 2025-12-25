@@ -37,6 +37,7 @@ class MTFV3Config:
 
     # Master permission
     master_prediction_threshold: float
+    master_threshold_mode: str
 
     # State machine
     cooldown_minutes: int
@@ -54,10 +55,14 @@ class MTFV3Config:
     master_model_path: str
     soldier_model_path: str
     feature_list_path: str
+    soldier_model_enabled: bool
 
     # Training knobs
     train_sample_weight_mode: str
     train_optimize_for: str
+
+    # Router buffering (quarter-hour ordering / stitching correctness)
+    router_max_hold_seconds: float
 
 
 def load_mtf_v3_config(env_file: Optional[str] = None) -> MTFV3Config:
@@ -83,6 +88,7 @@ def load_mtf_v3_config(env_file: Optional[str] = None) -> MTFV3Config:
         initial_duration=os.getenv("MTF3_INITIAL_DURATION", "2 D"),
 
         master_prediction_threshold=float(os.getenv("MTF3_MASTER_PREDICTION_THRESHOLD", "0.70")),
+        master_threshold_mode=os.getenv("MTF3_MASTER_THRESHOLD_MODE", "abs"),
 
         cooldown_minutes=int(os.getenv("MTF3_COOLDOWN_MINUTES", "30")),
 
@@ -96,7 +102,10 @@ def load_mtf_v3_config(env_file: Optional[str] = None) -> MTFV3Config:
         master_model_path=os.getenv("MTF3_MASTER_MODEL_PATH", "models/master_15m_model.pkl"),
         soldier_model_path=os.getenv("MTF3_SOLDIER_MODEL_PATH", "models/soldier_5m_xgb.pkl"),
         feature_list_path=os.getenv("MTF3_FEATURE_LIST_PATH", "models/soldier_5m_feature_names.txt"),
+        soldier_model_enabled=os.getenv("MTF3_SOLDIER_MODEL_ENABLED", "False").lower() == "true",
 
         train_sample_weight_mode=os.getenv("MTF3_TRAIN_SAMPLE_WEIGHT_MODE", "abs_master"),
         train_optimize_for=os.getenv("MTF3_TRAIN_OPTIMIZE_FOR", "precision"),
+
+        router_max_hold_seconds=float(os.getenv("MTF3_ROUTER_MAX_HOLD_SECONDS", "420")),
     )

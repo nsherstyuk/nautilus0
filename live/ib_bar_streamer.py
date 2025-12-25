@@ -87,6 +87,16 @@ class IBBarStreamer:
         
         # Register error handler
         self.ib.errorEvent += self._on_error
+
+    @staticmethod
+    def _subscription_key(symbol: str, bar_size: str, what_to_show: str, use_rth: bool) -> str:
+        """Create a stable key for a bar subscription.
+
+        IBKR allows multiple live bar streams per symbol (e.g., 5m + 15m). We must
+        not key subscriptions by symbol alone, otherwise later subscriptions will
+        overwrite earlier ones.
+        """
+        return f"{symbol}|{bar_size}|{what_to_show}|{int(bool(use_rth))}"
         
     def connect(self) -> bool:
         """Connect to TWS/Gateway (synchronous)."""
@@ -171,13 +181,14 @@ class IBBarStreamer:
         
         # Store subscription params before disconnect
         saved_subs = {}
-        for symbol, sub in self._subscriptions.items():
-            saved_subs[symbol] = {
-                'bar_size': sub.bar_size,
-                'what_to_show': sub.what_to_show,
-                'callback': sub.callback,
-                'use_rth': sub.use_rth,
-                'duration': sub.duration,
+        for sub_key, sub in self._subscriptions.items():
+            saved_subs[sub_key] = {
+                "symbol": sub.symbol,
+                "bar_size": sub.bar_size,
+                "what_to_show": sub.what_to_show,
+                "callback": sub.callback,
+                "use_rth": sub.use_rth,
+                "duration": sub.duration,
             }
         logger.info(f"Saved {len(saved_subs)} subscription(s) for restoration")
         
@@ -229,21 +240,21 @@ class IBBarStreamer:
                 time.sleep(2)
                 
                 # Re-establish subscriptions
-                for symbol, params in saved_subs.items():
-                    logger.info(f"Re-subscribing to {symbol}...")
+                for _sub_key, params in saved_subs.items():
+                    logger.info(f"Re-subscribing to {params['symbol']} ({params['bar_size']})...")
                     success = self.subscribe_bars_sync(
-                        symbol=symbol,
-                        bar_size=params['bar_size'],
-                        what_to_show=params['what_to_show'],
-                        callback=params['callback'],
-                        use_rth=params['use_rth'],
-                        duration=params['duration'],
+                        symbol=params["symbol"],
+                        bar_size=params["bar_size"],
+                        what_to_show=params["what_to_show"],
+                        callback=params["callback"],
+                        use_rth=params["use_rth"],
+                        duration=params["duration"],
                         is_resubscribe=True,  # Don't feed historical bars again
                     )
                     if success:
-                        logger.info(f"Successfully re-subscribed to {symbol}")
+                        logger.info(f"Successfully re-subscribed to {params['symbol']} ({params['bar_size']})")
                     else:
-                        logger.error(f"Failed to re-subscribe to {symbol}")
+                        logger.error(f"Failed to re-subscribe to {params['symbol']} ({params['bar_size']})")
                 
                 self._reconnecting = False
                 self._error_count = 0
@@ -404,11 +415,12 @@ class IBBarStreamer:
                 use_rth=use_rth,
                 duration=duration,
             )
-            self._subscriptions[symbol] = subscription
+            sub_key = self._subscription_key(symbol, bar_size, what_to_show, use_rth)
+            self._subscriptions[sub_key] = subscription
             
             # Set up bar update handler
             bars.updateEvent += lambda bars, hasNewBar: self._on_bar_update(
-                symbol, bars, hasNewBar
+                sub_key, bars, hasNewBar
             )
             
             # Feed initial historical bars to callback for warmup (skip on resubscribe)
@@ -429,13 +441,39 @@ class IBBarStreamer:
         except Exception as e:
             logger.error(f"Failed to subscribe to {symbol} bars: {e}")
             return False
+
+    def get_warmup_bars_sync(
+        self,
+        symbol: str,
+        bar_size: str,
+        what_to_show: str = "MIDPOINT",
+        use_rth: bool = False,
+    ) -> List[Bar]:
+        """Return the initially downloaded historical bars (completed bars only) for a subscription.
+
+        This is used by strategies that need to merge-sort warmup bars across multiple
+        timeframes before processing, to avoid lookahead/stitching artifacts.
+
+        Returns:
+            List of NautilusTrader Bar objects, excluding the last (possibly in-progress) bar.
+        """
+        sub_key = self._subscription_key(symbol, bar_size, what_to_show, use_rth)
+        sub = self._subscriptions.get(sub_key)
+        if sub is None or sub.bars is None:
+            return []
+        if len(sub.bars) <= 1:
+            return []
+        out: List[Bar] = []
+        for ib_bar in sub.bars[:-1]:
+            out.append(self._ib_bar_to_nautilus(ib_bar, sub.bar_type))
+        return out
     
-    def _on_bar_update(self, symbol: str, bars: BarDataList, has_new_bar: bool):
+    def _on_bar_update(self, sub_key: str, bars: BarDataList, has_new_bar: bool):
         """Handle bar updates from ib_insync."""
-        if symbol not in self._subscriptions:
+        if sub_key not in self._subscriptions:
             return
         
-        sub = self._subscriptions[symbol]
+        sub = self._subscriptions[sub_key]
         
         if not bars:
             return
@@ -443,13 +481,15 @@ class IBBarStreamer:
         # Check if this is a new bar or update to existing
         if has_new_bar:
             if len(bars) < 2:
-                logger.warning(f"[LIVE BAR] {symbol}: hasNewBar=True but only {len(bars)} bar(s), skipping")
+                logger.warning(
+                    f"[LIVE BAR] {sub.symbol} ({sub.bar_size}): hasNewBar=True but only {len(bars)} bar(s), skipping"
+                )
                 return
             
             completed_bar = bars[-2]
             
             logger.info(
-                f"[LIVE BAR] {symbol}: "
+                f"[LIVE BAR] {sub.symbol} ({sub.bar_size}): "
                 f"time={completed_bar.date}, O={completed_bar.open}, H={completed_bar.high}, "
                 f"L={completed_bar.low}, C={completed_bar.close}"
             )
@@ -483,9 +523,12 @@ class IBBarStreamer:
     def get_subscription_status(self) -> dict:
         """Get status of all subscriptions."""
         status = {}
-        for symbol, sub in self._subscriptions.items():
-            status[symbol] = {
-                "symbol": symbol,
+        for sub_key, sub in self._subscriptions.items():
+            status[sub_key] = {
+                "symbol": sub.symbol,
+                "bar_size": sub.bar_size,
+                "what_to_show": sub.what_to_show,
+                "use_rth": sub.use_rth,
                 "bar_type": str(sub.bar_type),
                 "last_bar_time": sub.last_bar_time.isoformat() if sub.last_bar_time else None,
                 "bars_count": len(sub.bars) if sub.bars else 0,
@@ -533,12 +576,12 @@ class IBBarStreamer:
             return False
         
         # Check if we're receiving bars (for each subscription)
-        for symbol, sub in self._subscriptions.items():
+        for sub_key, sub in self._subscriptions.items():
             if sub.last_bar_received:
                 age = (now - sub.last_bar_received).total_seconds() / 60.0
                 if age > max_bar_age_minutes:
                     logger.warning(
-                        f"[HEALTH CHECK] No bars received for {symbol} in {age:.1f} minutes "
+                        f"[HEALTH CHECK] No bars received for {sub.symbol} ({sub.bar_size}) in {age:.1f} minutes "
                         f"(max={max_bar_age_minutes}) - scheduling reconnect"
                     )
                     self._connected = False
@@ -563,7 +606,7 @@ class IBBarStreamer:
     
     def check_for_new_bars(self):
         """Manually check for new bars (workaround for updateEvent not firing)."""
-        for symbol, sub in self._subscriptions.items():
+        for sub_key, sub in self._subscriptions.items():
             if not sub.bars:
                 continue
             
@@ -573,8 +616,8 @@ class IBBarStreamer:
             completed_bar = sub.bars[-2]
             
             if sub.last_bar_time is None or completed_bar.date > sub.last_bar_time:
-                logger.info(f"[MANUAL CHECK] New completed bar detected for {symbol}!")
-                self._on_bar_update(symbol, sub.bars, has_new_bar=True)
+                logger.info(f"[MANUAL CHECK] New completed bar detected for {sub.symbol} ({sub.bar_size})!")
+                self._on_bar_update(sub_key, sub.bars, has_new_bar=True)
 
 
 async def test_bar_streamer():

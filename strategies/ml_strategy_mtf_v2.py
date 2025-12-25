@@ -313,8 +313,9 @@ class MLSignalStrategyV2(Strategy):
         if not (self.trade_start_hour <= utc_hour < self.trade_end_hour):
             return False
         
-        # Then check weekday-specific exclusions
-        if self._excluded_hours_mode == 'weekday':
+        # Then check excluded hours (if enabled)
+        # Mode options: 'disabled', 'simple', 'weekday'
+        if self._excluded_hours_mode in ('simple', 'weekday'):
             if self._config_timezone == 'EST':
                 # Convert UTC to EST for comparison with config
                 est_hour, est_weekday = self._utc_to_est(utc_hour, utc_weekday, bar_time)
@@ -626,6 +627,11 @@ class MLSignalStrategyV2(Strategy):
             
             if self._trade_direction == "LONG":
                 new_sl = self._entry_price + sl_distance
+                
+                # SAFETY: Cap SL at current price to avoid "Stop > Market" (Phantom Profit)
+                if new_sl > current_price:
+                    new_sl = current_price
+
                 # Only move SL up (more protective), never down
                 current_sl_order = self.cache.order(pos1.sl_order_id) if pos1.sl_order_id else None
                 if current_sl_order and float(current_sl_order.trigger_price) >= new_sl:
@@ -633,6 +639,11 @@ class MLSignalStrategyV2(Strategy):
                     return
             else:
                 new_sl = self._entry_price - sl_distance
+                
+                # SAFETY: Cap SL at current price to avoid "Stop < Market" (Phantom Profit)
+                if new_sl < current_price:
+                    new_sl = current_price
+
                 # Only move SL down (more protective), never up
                 current_sl_order = self.cache.order(pos1.sl_order_id) if pos1.sl_order_id else None
                 if current_sl_order and float(current_sl_order.trigger_price) <= new_sl:

@@ -15,8 +15,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Configuration
-TRAINING_MONTHS = 12  # How many months of data to use
-TRAIN_END_DATE = '2025-10-01'  # Train up to (but not including) this date
+TRAINING_MONTHS = 24  # How many months of data to use
+TRAIN_END_DATE = '2026-01-01'  # Train up to (but not including) this date
 MIN_SAMPLES = 10000  # Minimum samples needed for training
 
 PROJECT_ROOT = Path(__file__).parent
@@ -109,7 +109,8 @@ def calculate_features(df):
     
     # Volume features
     df['volume_sma'] = df['volume'].rolling(20).mean()
-    df['volume_ratio'] = df['volume'] / df['volume_sma']
+    # Handle division by zero if volume is 0
+    df['volume_ratio'] = np.where(df['volume_sma'] > 0, df['volume'] / df['volume_sma'], 0.0)
     
     # Price momentum
     for period in [5, 10, 20]:
@@ -251,7 +252,7 @@ def main():
     print("="*80)
     
     # Calculate training period
-    train_end = pd.Timestamp(TRAIN_END_DATE)
+    train_end = pd.Timestamp(TRAIN_END_DATE).tz_localize('UTC')
     train_start = train_end - pd.DateOffset(months=TRAINING_MONTHS)
     
     print(f"\nTraining period: {train_start.strftime('%Y-%m-%d')} to {train_end.strftime('%Y-%m-%d')}")

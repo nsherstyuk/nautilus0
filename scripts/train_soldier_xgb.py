@@ -57,6 +57,9 @@ def main() -> int:
         "volume",
         "last_15m_prediction",
         "atr_15m",
+        "y",
+        "sample_weight",
+        "direction",
     }
 
     feature_cols = [c for c in fieldnames if c not in drop]
@@ -64,8 +67,8 @@ def main() -> int:
     # Sample weighting per spec: abs(last_15m_prediction)
     weights = [abs(float(r.get("last_15m_prediction", "0") or 0.0)) for r in rows]
 
-    # Placeholder labels: must be replaced with the ATR-first-hit label generation
-    y = [0 for _ in rows]
+    # Use labels from the dataset
+    y = [float(r.get("y", "0") or 0.0) for r in rows]
 
     # Build X
     X = [[float(r.get(c, "nan") or "nan") for c in feature_cols] for r in rows]

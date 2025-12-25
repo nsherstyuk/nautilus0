@@ -1,0 +1,90 @@
+{
+  "created_utc": "2025-12-24T19:04:06.159894+00:00",
+  "dataset_path": "C:\\nautilus0\\logs\\live_mtf\\temp_sweep_dataset_0.8_0.6.csv",
+  "model_out": "C:\\nautilus0\\models\\temp_sweep_model_0.8_0.6.pkl",
+  "feature_list_out": "C:\\nautilus0\\models\\soldier_5m_feature_names.txt",
+  "report_out": "C:\\nautilus0\\reports\\soldier_training_report_20251224_190350.json",
+  "optimize_for": "precision",
+  "val_days": 14,
+  "variants": [
+    {
+      "name": "A_unweighted",
+      "rows_total": 288912,
+      "rows_train": 286063,
+      "rows_val": 2849,
+      "positive_rate_train": 0.4259726004411616,
+      "positive_rate_val": 0.4306774306774307,
+      "threshold_master_abs": null,
+      "use_sample_weight": false,
+      "accuracy": 0.5647595647595648,
+      "precision": 0.4601226993865031,
+      "recall": 0.061124694376528114,
+      "f1": 0.1079136690647482,
+      "roc_auc": 0.544606706682866,
+      "average_precision": 0.45448151109545626,
+      "confusion_matrix": [
+        [
+          1534,
+          88
+        ],
+        [
+          1152,
+          75
+        ]
+      ]
+    },
+    {
+      "name": "B_weight_abs_master",
+      "rows_total": 288912,
+      "rows_train": 286063,
+      "rows_val": 2849,
+      "positive_rate_train": 0.4259726004411616,
+      "positive_rate_val": 0.4306774306774307,
+      "threshold_master_abs": null,
+      "use_sample_weight": true,
+      "accuracy": 0.563004563004563,
+      "precision": 0.45,
+      "recall": 0.06601466992665037,
+      "f1": 0.11513859275053305,
+      "roc_auc": 0.5478661879193687,
+      "average_precision": 0.45536115666469335,
+      "confusion_matrix": [
+        [
+          1523,
+          99
+        ],
+        [
+          1146,
+          81
+        ]
+      ]
+    },
+    {
+      "name": "C_filter_master_abs",
+      "rows_total": 288912,
+      "rows_train": 66620,
+      "rows_val": 818,
+      "positive_rate_train": 0.4222605824076854,
+      "positive_rate_val": 0.4718826405867971,
+      "threshold_master_abs": 0.7,
+      "use_sample_weight": false,
+      "accuracy": 0.5122249388753056,
+      "precision": 0.45185185185185184,
+      "recall": 0.15803108808290156,
+      "f1": 0.23416506717850288,
+      "roc_auc": 0.5315678372673192,
+      "average_precision": 0.47573846646101703,
+      "confusion_matrix": [
+        [
+          358,
+          74
+        ],
+        [
+          325,
+          61
+        ]
+      ]
+    }
+  ],
+  "best_variant": "A_unweighted"
+}

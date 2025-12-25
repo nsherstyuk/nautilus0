@@ -47,7 +47,9 @@ def get_dynamic_size(account_equity, atr_15m, current_price):
     # For EUR/USD:
     units = int(risk_dollars / sl_dist_price)
     # Round to nearest micro-lot (1,000)
-    return max(round(units / 1000) * 1000, 1000)
+    size = max(round(units / 1000) * 1000, 1000)
+    # Cap at 100k units as requested
+    return min(size, 100000)
 
 
 class FeatureStore:
@@ -76,19 +78,46 @@ class TradingStateMachine:
         self.cooldown_until: Optional[datetime] = None
         self.cooldown_minutes = cooldown_minutes
 
-    def maybe_transition_on_master(self, master: MasterSignal, threshold: float, now_utc: datetime) -> None:
+    def maybe_transition_on_master(
+        self,
+        master: MasterSignal,
+        threshold: float,
+        now_utc: datetime,
+        *,
+        threshold_mode: str = "signed",
+    ) -> None:
         if self.state == TradeState.COOLDOWN:
             if self.cooldown_until and now_utc >= self.cooldown_until:
                 self.state = TradeState.IDLE
             else:
                 return
 
-        if self.state == TradeState.IDLE and master.confidence > threshold:
-            logger.info("STATE IDLE -> HUNTING (master_conf=%.4f > %.4f)", master.confidence, threshold)
+        mode = (threshold_mode or "signed").strip().lower()
+        if mode not in {"signed", "abs"}:
+            logger.warning("Unknown threshold_mode=%r; defaulting to 'signed'", threshold_mode)
+            mode = "signed"
+
+        master_val = float(master.confidence)
+        trigger_val = abs(master_val) if mode == "abs" else master_val
+
+        if self.state == TradeState.IDLE and trigger_val > threshold:
+            logger.info(
+                "STATE IDLE -> HUNTING (master_conf=%.4f trigger=%.4f > %.4f mode=%s)",
+                master_val,
+                trigger_val,
+                threshold,
+                mode,
+            )
             self.state = TradeState.HUNTING
 
-        if self.state == TradeState.HUNTING and master.confidence <= threshold:
-            logger.info("STATE HUNTING -> IDLE (master_conf=%.4f <= %.4f)", master.confidence, threshold)
+        if self.state == TradeState.HUNTING and trigger_val <= threshold:
+            logger.info(
+                "STATE HUNTING -> IDLE (master_conf=%.4f trigger=%.4f <= %.4f mode=%s)",
+                master_val,
+                trigger_val,
+                threshold,
+                mode,
+            )
             self.state = TradeState.IDLE
 
     def enter_cooldown(self, now_utc: datetime) -> None:
@@ -125,7 +154,11 @@ class MultiTimeframeEngine:
         master_model: MasterModel,
         soldier_model: SoldierModel,
         master_threshold: float,
+        master_threshold_mode: str = "signed",
         dataset_logger: Optional[TrainingRowLogger] = None,
+        on_soldier_evaluated: Optional[
+            Callable[[BarEvent, MasterSignal, float, Dict[str, float]], None]
+        ] = None,
     ) -> None:
         self.store = store
         self.sync = sync
@@ -133,7 +166,12 @@ class MultiTimeframeEngine:
         self.master_model = master_model
         self.soldier_model = soldier_model
         self.master_threshold = master_threshold
+        self.master_threshold_mode = master_threshold_mode
         self.dataset_logger = dataset_logger
+        self.on_soldier_evaluated = on_soldier_evaluated
+
+        self.last_soldier_score: Optional[float] = None
+        self.last_soldier_features: Optional[Dict[str, float]] = None
 
         self._atr_15m = Atr(period=14)
         self._soldier_ind = make_default_soldier_indicators()
@@ -147,7 +185,12 @@ class MultiTimeframeEngine:
         conf = float(self.master_model.predict(bar, atr_val))
         signal = MasterSignal(asof_15m_close=bar.end_time_utc, confidence=conf, atr_15m=atr_val)
         self.store.update_master(signal)
-        self.sm.maybe_transition_on_master(signal, threshold=self.master_threshold, now_utc=bar.end_time_utc)
+        self.sm.maybe_transition_on_master(
+            signal,
+            threshold=self.master_threshold,
+            now_utc=bar.end_time_utc,
+            threshold_mode=self.master_threshold_mode,
+        )
         logger.info("[MASTER 15m] close=%s conf=%.4f atr15=%.6f state=%s", bar.end_time_utc.isoformat(), conf, atr_val, self.sm.state.name)
 
     def on_5m_close(self, bar: BarEvent) -> None:
@@ -184,6 +227,14 @@ class MultiTimeframeEngine:
         }
 
         score = float(self.soldier_model.predict(features))
+        self.last_soldier_score = score
+        self.last_soldier_features = features
+
+        if self.on_soldier_evaluated is not None:
+            try:
+                self.on_soldier_evaluated(bar, master, score, features)
+            except Exception:
+                logger.exception("on_soldier_evaluated callback failed")
 
         if self.dataset_logger is not None:
             self.dataset_logger.log_row({
@@ -212,11 +263,59 @@ class MultiTimeframeEngine:
 class BarEventRouter:
     """Central ordering queue: if 15m and 5m share the same close timestamp, 15m is processed first."""
 
-    def __init__(self, engine: MultiTimeframeEngine) -> None:
+    def __init__(
+        self,
+        engine: MultiTimeframeEngine,
+        *,
+        max_hold_seconds: float = 10.0,
+        time_basis: str = "wall_clock",
+    ) -> None:
         self.engine = engine
+        self.max_hold_seconds = float(max_hold_seconds)
+        self.time_basis = str(time_basis).strip().lower()
+        if self.time_basis not in {"wall_clock", "event_time"}:
+            logger.warning("Unknown router time_basis=%r; defaulting to wall_clock", self.time_basis)
+            self.time_basis = "wall_clock"
         self._queue: List[Tuple[datetime, int, BarEvent]] = []
+        self._first_seen_5m: Dict[datetime, datetime] = {}
+        self._now_utc: Optional[datetime] = None
+
+    @staticmethod
+    def _floor_to_15m(ts: datetime) -> datetime:
+        # Preserve tzinfo and align to 15-minute boundaries.
+        minute = ts.minute - (ts.minute % 15)
+        return ts.replace(minute=minute, second=0, microsecond=0)
+
+    def _can_dispatch_5m(self, bar: BarEvent) -> bool:
+        """Only dispatch 5m once the expected 15m close for that quarter-hour is available.
+
+        This prevents using a stale master at quarter-hour boundaries when the 5m close
+        arrives before the 15m close event.
+        """
+
+        expected_master_close = self._floor_to_15m(bar.end_time_utc)
+        master = self.engine.store.last_master
+        if master is None:
+            return False
+        # We only consider the master usable if it is at least the expected close.
+        if master.asof_15m_close < expected_master_close:
+            return False
+        # Also never allow lookahead.
+        if master.asof_15m_close > bar.end_time_utc:
+            return False
+        return True
+
+    def _hold_timed_out(self, bar_end: datetime, now_utc: datetime) -> bool:
+        first = self._first_seen_5m.get(bar_end)
+        if first is None:
+            self._first_seen_5m[bar_end] = now_utc
+            return False
+        return (now_utc - first).total_seconds() >= self.max_hold_seconds
 
     def submit(self, bar: BarEvent) -> None:
+        if self.time_basis == "event_time":
+            if self._now_utc is None or bar.end_time_utc > self._now_utc:
+                self._now_utc = bar.end_time_utc
         priority = 0 if bar.timeframe == "15m" else 1
         self._queue.append((bar.end_time_utc, priority, bar))
         self._drain()
@@ -224,10 +323,38 @@ class BarEventRouter:
     def _drain(self) -> None:
         self._queue.sort(key=lambda x: (x[0], x[1]))
         while self._queue:
-            _, _, bar = self._queue.pop(0)
+            end_time, _priority, bar = self._queue[0]
             if bar.timeframe == "15m":
+                self._queue.pop(0)
                 self.engine.on_15m_close(bar)
-            elif bar.timeframe == "5m":
-                self.engine.on_5m_close(bar)
-            else:
-                logger.warning("Unknown timeframe: %s", bar.timeframe)
+                continue
+
+            if bar.timeframe == "5m":
+                now_utc = self._now_utc if self.time_basis == "event_time" else datetime.now(timezone.utc)
+                if now_utc is None:
+                    now_utc = datetime.now(timezone.utc)
+                if self._can_dispatch_5m(bar):
+                    self._queue.pop(0)
+                    self._first_seen_5m.pop(end_time, None)
+                    self.engine.on_5m_close(bar)
+                    continue
+
+                if self._hold_timed_out(end_time, now_utc):
+                    # Fail-safe: allow processing (engine will still enforce no-lookahead).
+                    self._queue.pop(0)
+                    self._first_seen_5m.pop(end_time, None)
+                    logger.warning(
+                        "Router hold timeout (%.1fs): dispatching 5m close=%s with current master_asof=%s (expected=%s)",
+                        self.max_hold_seconds,
+                        bar.end_time_utc.isoformat(),
+                        self.engine.store.last_master.asof_15m_close.isoformat() if self.engine.store.last_master else None,
+                        self._floor_to_15m(bar.end_time_utc).isoformat(),
+                    )
+                    self.engine.on_5m_close(bar)
+                    continue
+
+                # Can't safely process earliest 5m yet; stop draining.
+                return
+
+            logger.warning("Unknown timeframe: %s", bar.timeframe)
+            self._queue.pop(0)

@@ -242,9 +242,9 @@ def main() -> int:
         fill_model_path="nautilus_trader.backtest.models:BestPriceFillModel",
         config_path="nautilus_trader.backtest.config:FillModelConfig",
         config={
-            "prob_fill_on_limit": 1.0,
+            "prob_fill_on_limit": 0.95,  # 95% fill probability (more realistic)
             "prob_fill_on_stop": 1.0,
-            "prob_slippage": 0.0,
+            "prob_slippage": 0.4,  # 40% chance of slippage
             "random_seed": 42,
         },
     )
@@ -272,11 +272,22 @@ def main() -> int:
         bar_adaptive_high_low_ordering=False,
     )
 
-    data_config = BacktestDataConfig(
+    # Strategy bars (15-minute for signals)
+    data_config_15m = BacktestDataConfig(
         catalog_path=str(catalog_path),
         data_cls=Bar,
         instrument_id=catalog_instrument_id,
         bar_spec=bar_spec,
+        start_time=start_ns,
+        end_time=end_ns,
+    )
+    
+    # Execution bars (1-minute for realistic fills)
+    data_config_1m = BacktestDataConfig(
+        catalog_path=str(catalog_path),
+        data_cls=Bar,
+        instrument_id=catalog_instrument_id,
+        bar_spec="1-MINUTE-MID",
         start_time=start_ns,
         end_time=end_ns,
     )
@@ -288,7 +299,7 @@ def main() -> int:
     run_config = BacktestRunConfig(
         engine=engine_config,
         venues=[venue_config],
-        data=[data_config],
+        data=[data_config_15m, data_config_1m],  # Dual timeframe
         raise_exception=True,
         dispose_on_completion=False,
     )
