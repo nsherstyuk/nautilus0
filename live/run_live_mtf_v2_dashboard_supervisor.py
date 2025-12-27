@@ -167,25 +167,81 @@ def _status_age_seconds(path: Path) -> Optional[float]:
     return max(0.0, time.time() - float(mtime))
 
 
-def _spawn_child(cfg: SupervisorConfig) -> subprocess.Popen:
-    if not cfg.child_script.exists():
-        raise FileNotFoundError(str(cfg.child_script))
-
-    args = [sys.executable, "-u", str(cfg.child_script)]
-
-    creationflags = 0
+def _get_git_info() -> Dict[str, str]:
+    """Get git commit and file status information."""
+    import subprocess as sp
+    
+    info = {
+        "commit": "unknown",
+        "branch": "unknown",
+        "dirty": "unknown",
+        "strategy_hash": "unknown",
+        "supervisor_hash": "unknown"
+    }
+    
     try:
-        creationflags = subprocess.CREATE_NEW_PROCESS_GROUP  # type: ignore[attr-defined]
-    except Exception:
-        creationflags = 0
+        # Get current commit
+        result = sp.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True, cwd=Path(__file__).resolve().parent.parent)
+        if result.returncode == 0:
+            info["commit"] = result.stdout.strip()[:8]
+        
+        # Get current branch
+        result = sp.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], capture_output=True, text=True, cwd=Path(__file__).resolve().parent.parent)
+        if result.returncode == 0:
+            info["branch"] = result.stdout.strip()
+        
+        # Check if working directory is dirty
+        result = sp.run(["git", "status", "--porcelain"], capture_output=True, text=True, cwd=Path(__file__).resolve().parent.parent)
+        if result.returncode == 0:
+            info["dirty"] = "dirty" if result.stdout.strip() else "clean"
+        
+        # Get file hashes
+        strategy_file = Path(__file__).resolve().parent.parent / "strategies" / "ml_strategy_mtf_v2.py"
+        supervisor_file = Path(__file__).resolve().parent.parent / "live" / "run_live_mtf_v2_dashboard_supervisor.py"
+        
+        if strategy_file.exists():
+            with open(strategy_file, 'rb') as f:
+                import hashlib
+                info["strategy_hash"] = hashlib.md5(f.read()).hexdigest()[:8]
+        
+        if supervisor_file.exists():
+            with open(supervisor_file, 'rb') as f:
+                import hashlib
+                info["supervisor_hash"] = hashlib.md5(f.read()).hexdigest()[:8]
+                
+    except Exception as e:
+        logger.warning("Failed to get git info: %s", e)
+    
+    return info
 
-    logger.info("Starting child: %s", " ".join(args))
 
-    return subprocess.Popen(
-        args,
-        creationflags=creationflags,
-        env=os.environ.copy(),
+def _spawn_child(cfg: SupervisorConfig) -> subprocess.Popen:
+    """Spawn the child process with proper environment."""
+    env = os.environ.copy()
+    env["PYTHONUNBUFFERED"] = "1"
+    
+    # Add version info to environment for child process
+    git_info = _get_git_info()
+    for key, value in git_info.items():
+        env[f"MTF2_GIT_{key.upper()}"] = value
+    
+    cmd = [sys.executable, cfg.child_script]
+    logger.info("Spawning child: %s", " ".join(cmd))
+    logger.info("Version info: commit=%s, branch=%s, dirty=%s", 
+                git_info["commit"], git_info["branch"], git_info["dirty"])
+    logger.info("File hashes: strategy=%s, supervisor=%s", 
+                git_info["strategy_hash"], git_info["supervisor_hash"])
+    
+    proc = subprocess.Popen(
+        cmd,
+        cwd=Path(__file__).resolve().parent.parent,
+        env=env,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
     )
+    return proc
 
 
 def _graceful_stop_child(proc: subprocess.Popen, grace_sec: int) -> None:

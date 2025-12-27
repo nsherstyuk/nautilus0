@@ -92,9 +92,9 @@ def main():
     # Configuration
     instrument_id_str = "EUR/USD.IDEALPRO"
     venue = Venue("IDEALPRO")
-    start_date = "2025-12-01"
-    end_date = "2025-12-05"  # Just 5 days for testing
-    starting_balance = 4_500.0  # Match replay starting equity
+    start_date = "2024-01-01"  # Match V2 backtest range
+    end_date = "2025-12-30"
+    starting_balance = 50_000.0  # Match V2 initial balance
     
     # Load strategy config from env
     env_config = load_config_from_env()

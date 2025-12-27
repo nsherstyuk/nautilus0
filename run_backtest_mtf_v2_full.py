@@ -489,6 +489,40 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     pivot_wr.to_csv(output_dir / 'hour_weekday_winrate_matrix.csv')
     print(f"Saved: hour_weekday_winrate_matrix.csv")
     
+    # === Calculate Drawdown Metrics ===
+    # Filter out trades with invalid exit times
+    df_valid = df[df['exit_time'].notna()].copy()
+    df_sorted = df_valid.sort_values('exit_time').reset_index(drop=True)
+    df_sorted['cumulative_pnl'] = df_sorted['pnl'].cumsum()
+    df_sorted['running_max'] = df_sorted['cumulative_pnl'].cummax()
+    df_sorted['drawdown'] = df_sorted['cumulative_pnl'] - df_sorted['running_max']
+    
+    max_drawdown = df_sorted['drawdown'].min()
+    max_drawdown_pct = (max_drawdown / df_sorted['running_max'].max() * 100) if df_sorted['running_max'].max() > 0 else 0
+    
+    # Find max drawdown period
+    max_dd_idx = df_sorted['drawdown'].idxmin()
+    max_dd_end = df_sorted.loc[max_dd_idx, 'exit_time']
+    
+    # Find when the peak before drawdown occurred
+    peak_mask = df_sorted.index <= max_dd_idx
+    peak_before_dd = df_sorted.loc[peak_mask, 'running_max'].idxmax()
+    max_dd_start = df_sorted.loc[peak_before_dd, 'exit_time']
+    max_dd_duration_days = (max_dd_end - max_dd_start).days
+    
+    # Calculate average drawdown (only negative values)
+    negative_drawdowns = df_sorted[df_sorted['drawdown'] < 0]['drawdown']
+    avg_drawdown = negative_drawdowns.mean() if len(negative_drawdowns) > 0 else 0
+    
+    # Recovery time (if recovered)
+    recovery_duration_days = None
+    if df_sorted['drawdown'].iloc[-1] == 0:
+        recovery_mask = (df_sorted.index > max_dd_idx) & (df_sorted['drawdown'] == 0)
+        if recovery_mask.any():
+            recovery_idx = df_sorted[recovery_mask].index[0]
+            recovery_time = df_sorted.loc[recovery_idx, 'exit_time']
+            recovery_duration_days = (recovery_time - max_dd_end).days
+    
     # === summary.txt ===
     top_hours = hour_stats.nlargest(5, 'pnl')
     top_weekdays = weekday_stats.nlargest(3, 'pnl')
@@ -502,6 +536,18 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
         f.write(f"Total Trades: {total_trades}\n")
         f.write(f"Total P&L: ${total_pnl:,.2f}\n")
         f.write(f"Win Rate: {win_rate:.1f}%\n\n")
+        
+        f.write("=" * 80 + "\n")
+        f.write("DRAWDOWN ANALYSIS\n")
+        f.write("=" * 80 + "\n")
+        f.write(f"Max Drawdown: ${max_drawdown:,.2f} ({max_drawdown_pct:.1f}%)\n")
+        f.write(f"Max Drawdown Period: {max_dd_start.strftime('%Y-%m-%d')} to {max_dd_end.strftime('%Y-%m-%d')} ({max_dd_duration_days} days)\n")
+        f.write(f"Average Drawdown: ${avg_drawdown:,.2f}\n")
+        if recovery_duration_days is not None:
+            f.write(f"Recovery Time: {recovery_duration_days} days\n")
+        else:
+            f.write(f"Recovery Time: Not yet recovered\n")
+        f.write(f"Current Drawdown: ${df_sorted['drawdown'].iloc[-1]:,.2f}\n\n")
         
         f.write("=" * 80 + "\n")
         f.write(f"TOP 5 HOURS BY P&L ({config_timezone})\n")

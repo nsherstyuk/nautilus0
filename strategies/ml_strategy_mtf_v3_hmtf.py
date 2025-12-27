@@ -488,19 +488,28 @@ class MLSignalStrategyV3(Strategy):
                 # Cancel existing SL and submit new one
                 if self._sl_order_id:
                     try:
-                        order = self.cache.order(self._sl_order_id)
+                        from nautilus_trader.model.identifiers import ClientOrderId
+                        order_id = ClientOrderId(self._sl_order_id)
+                        order = self.cache.order(order_id)
                         if order:
                             self.cancel_order(order)
                     except Exception as e:
                         _py_logger.error(f"[STALL] Failed to cancel SL: {e}")
                 
-                # Submit new SL
+                # Submit new SL with buffer to avoid rejection
                 try:
+                    # Add 1 pip buffer to avoid "in the market" rejection
+                    buffer = 0.00005
+                    if self._trade_direction == "LONG":
+                        new_sl_buffered = new_sl - buffer
+                    else:
+                        new_sl_buffered = new_sl + buffer
+                    
                     sl_order = self.order_factory.stop_market(
                         instrument_id=self.instrument_id,
                         order_side=OrderSide.SELL if self._trade_direction == "LONG" else OrderSide.BUY,
                         quantity=position.quantity,
-                        trigger_price=Price.from_str(f"{new_sl:.5f}"),
+                        trigger_price=Price.from_str(f"{new_sl_buffered:.5f}"),
                         time_in_force=TimeInForce.GTC,
                     )
                     self.submit_order(sl_order)
@@ -788,7 +797,7 @@ class MLSignalStrategyV3(Strategy):
         if order_id == self._entry_order_id:
             _py_logger.info(f"Entry filled @ {event.last_px}")
         elif self._position_open:
-            # SL or TP hit
+            # SL or TP hit - position is closing
             self._position_open = False
             self._entry_order_id = None
             self._sl_order_id = None
@@ -802,10 +811,11 @@ class MLSignalStrategyV3(Strategy):
             self._stall_sl_applied = False
             self._neg_stall_triggered = False
             
-            # Update state machine
-            self.sm.on_exit()
+            # Update state machine - go to cooldown
+            self.sm.state = TradeState.COOLDOWN
+            self._cooldown_end = event.ts_event + (self.config.cooldown_minutes * 60 * 1_000_000_000)
             
-            _py_logger.info(f"Position closed @ {event.last_px}")
+            _py_logger.info(f"Position closed @ {event.last_px}, entering cooldown")
     
     def on_order_rejected(self, event):
         """Handle order rejections."""

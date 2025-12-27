@@ -36,6 +36,23 @@ from patches import apply_ib_connection_patch
 
 apply_ib_connection_patch()
 
+# Log version information from supervisor environment
+import os
+logger = logging.getLogger("live_v2_dashboard")
+git_commit = os.getenv("MTF2_GIT_COMMIT", "unknown")
+git_branch = os.getenv("MTF2_GIT_BRANCH", "unknown")
+git_dirty = os.getenv("MTF2_GIT_DIRTY", "unknown")
+strategy_hash = os.getenv("MTF2_GIT_STRATEGY_HASH", "unknown")
+supervisor_hash = os.getenv("MTF2_GIT_SUPERVISOR_HASH", "unknown")
+
+logger.info("=" * 80)
+logger.info("MTF V2 LIVE TRADING STARTING")
+logger.info("=" * 80)
+logger.info("Git commit: %s (branch: %s, dirty: %s)", git_commit, git_branch, git_dirty)
+logger.info("Strategy file hash: %s", strategy_hash)
+logger.info("Supervisor file hash: %s", supervisor_hash)
+logger.info("=" * 80)
+
 from nautilus_trader.trading.config import StrategyFactory
 from nautilus_trader.adapters.interactive_brokers.config import (
     IBMarketDataTypeEnum,

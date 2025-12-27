@@ -1,0 +1,345 @@
+[1m2025-12-25T22:35:57.064887400Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.064897800Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine:  NAUTILUS TRADER - Automated Algorithmic Trading Platform[0m
+[1m2025-12-25T22:35:57.064898300Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine:  by Nautech Systems Pty Ltd.[0m
+[1m2025-12-25T22:35:57.064899700Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine:  Copyright (C) 2015-2025. All rights reserved.[0m
+[1m2025-12-25T22:35:57.064900000Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.064900200Z[0m [INFO] BACKTESTER-001.BacktestEngine: [0m
+[1m2025-12-25T22:35:57.064900500Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣶⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀[0m
+[1m2025-12-25T22:35:57.064900700Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣰⣾⣿⣿⣿⠀⢸⣿⣿⣿⣿⣶⣶⣤⣀⠀⠀⠀⠀⠀[0m
+[1m2025-12-25T22:35:57.064900900Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠀⠀⠀⠀⢀⣴⡇⢀⣾⣿⣿⣿⣿⣿⠀⣾⣿⣿⣿⣿⣿⣿⣿⠿⠓⠀⠀⠀⠀[0m
+[1m2025-12-25T22:35:57.064901200Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠀⠀⠀⣰⣿⣿⡀⢸⣿⣿⣿⣿⣿⣿⠀⣿⣿⣿⣿⣿⣿⠟⠁⣠⣄⠀⠀⠀⠀[0m
+[1m2025-12-25T22:35:57.064901300Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠀⠀⢠⣿⣿⣿⣇⠀⢿⣿⣿⣿⣿⣿⠀⢻⣿⣿⣿⡿⢃⣠⣾⣿⣿⣧⡀⠀⠀[0m
+[1m2025-12-25T22:35:57.064901500Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠀⠠⣾⣿⣿⣿⣿⣿⣧⠈⠋⢀⣴⣧⠀⣿⡏⢠⡀⢸⣿⣿⣿⣿⣿⣿⣿⡇⠀[0m
+[1m2025-12-25T22:35:57.064901600Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠀⣀⠙⢿⣿⣿⣿⣿⣿⠇⢠⣿⣿⣿⡄⠹⠃⠼⠃⠈⠉⠛⠛⠛⠛⠛⠻⠇⠀[0m
+[1m2025-12-25T22:35:57.064901800Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⢸⡟⢠⣤⠉⠛⠿⢿⣿⠀⢸⣿⡿⠋⣠⣤⣄⠀⣾⣿⣿⣶⣶⣶⣦⡄⠀⠀⠀[0m
+[1m2025-12-25T22:35:57.064902200Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠸⠀⣾⠏⣸⣷⠂⣠⣤⠀⠘⢁⣴⣾⣿⣿⣿⡆⠘⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀[0m
+[1m2025-12-25T22:35:57.064902400Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠀⠀⠛⠀⣿⡟⠀⢻⣿⡄⠸⣿⣿⣿⣿⣿⣿⣿⡀⠘⣿⣿⣿⣿⠟⠀⠀⠀⠀[0m
+[1m2025-12-25T22:35:57.064903900Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠀⠀⠀⠀⣿⠇⠀⠀⢻⡿⠀⠈⠻⣿⣿⣿⣿⣿⡇⠀⢹⣿⠿⠋⠀⠀⠀⠀⠀[0m
+[1m2025-12-25T22:35:57.064904200Z[0m [INFO] BACKTESTER-001.BacktestEngine: ⠀⠀⠀⠀⠀⠀⠋⠀⠀⠀⡘⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠁⠀⠀⠀⠀⠀⠀⠀[0m
+[1m2025-12-25T22:35:57.064904400Z[0m [INFO] BACKTESTER-001.BacktestEngine: [0m
+[1m2025-12-25T22:35:57.064904500Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.064904800Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine:  SYSTEM SPECIFICATION[0m
+[1m2025-12-25T22:35:57.064905000Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.064905600Z[0m [INFO] BACKTESTER-001.BacktestEngine: CPU architecture: 12th Gen Intel(R) Core(TM) i7-12650H[0m
+[1m2025-12-25T22:35:57.064906300Z[0m [INFO] BACKTESTER-001.BacktestEngine: CPU(s): 16 @ 1506 Mhz[0m
+[1m2025-12-25T22:35:57.064906800Z[0m [INFO] BACKTESTER-001.BacktestEngine: OS: kernel-26100 Windows 11 Home[0m
+[1m2025-12-25T22:35:57.112055600Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.112064100Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine:  MEMORY USAGE[0m
+[1m2025-12-25T22:35:57.112064600Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.112070000Z[0m [INFO] BACKTESTER-001.BacktestEngine: RAM-Total: 31.71 GiB[0m
+[1m2025-12-25T22:35:57.112072100Z[0m [INFO] BACKTESTER-001.BacktestEngine: RAM-Used: 14.32 GiB (45.16%)[0m
+[1m2025-12-25T22:35:57.112072700Z[0m [INFO] BACKTESTER-001.BacktestEngine: RAM-Avail: 17.39 GiB (54.84%)[0m
+[1m2025-12-25T22:35:57.112074000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Swap-Total: 25.50 GiB[0m
+[1m2025-12-25T22:35:57.112074600Z[0m [INFO] BACKTESTER-001.BacktestEngine: Swap-Used: 0.00 GiB (0.00%)[0m
+[1m2025-12-25T22:35:57.112078700Z[0m [INFO] BACKTESTER-001.BacktestEngine: Swap-Avail: 25.50 GiB (100.00%)[0m
+[1m2025-12-25T22:35:57.112422400Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.112423400Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine:  IDENTIFIERS[0m
+[1m2025-12-25T22:35:57.112423700Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.112424800Z[0m [INFO] BACKTESTER-001.BacktestEngine: trader_id: BACKTESTER-001[0m
+[1m2025-12-25T22:35:57.112425400Z[0m [INFO] BACKTESTER-001.BacktestEngine: machine_id: Trd[0m
+[1m2025-12-25T22:35:57.112426400Z[0m [INFO] BACKTESTER-001.BacktestEngine: instance_id: 92103ed1-77ae-421a-9ecb-14e2c38248cb[0m
+[1m2025-12-25T22:35:57.112426700Z[0m [INFO] BACKTESTER-001.BacktestEngine: PID: 35056[0m
+[1m2025-12-25T22:35:57.112426900Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.112427100Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine:  VERSIONING[0m
+[1m2025-12-25T22:35:57.112427300Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.112445300Z[0m [INFO] BACKTESTER-001.BacktestEngine: nautilus_trader: 1.221.0[0m
+[1m2025-12-25T22:35:57.112450700Z[0m [INFO] BACKTESTER-001.BacktestEngine: python: 3.13.1[0m
+[1m2025-12-25T22:35:57.112453600Z[0m [INFO] BACKTESTER-001.BacktestEngine: numpy: 2.2.6[0m
+[1m2025-12-25T22:35:57.112456700Z[0m [INFO] BACKTESTER-001.BacktestEngine: pandas: 2.3.3[0m
+[1m2025-12-25T22:35:57.112459500Z[0m [INFO] BACKTESTER-001.BacktestEngine: msgspec: 0.19.0[0m
+[1m2025-12-25T22:35:57.112461500Z[0m [INFO] BACKTESTER-001.BacktestEngine: pyarrow: 22.0.0[0m
+[1m2025-12-25T22:35:57.112463200Z[0m [INFO] BACKTESTER-001.BacktestEngine: pytz: 2025.2[0m
+[1m2025-12-25T22:35:57.112841300Z[0m [INFO] BACKTESTER-001.BacktestEngine: uvloop: Unavailable (failed to import package)[0m
+[1m2025-12-25T22:35:57.112842200Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2025-12-25T22:35:57.113304300Z[0m [INFO] BACKTESTER-001.BacktestEngine: Building system kernel[0m
+[1m2025-12-25T22:35:57.113344000Z[0m [94m[INFO] BACKTESTER-001.MessageBus: config.database=None[0m
+[1m2025-12-25T22:35:57.113344900Z[0m [94m[INFO] BACKTESTER-001.MessageBus: config.encoding='msgpack'[0m
+[1m2025-12-25T22:35:57.113346400Z[0m [94m[INFO] BACKTESTER-001.MessageBus: config.timestamps_as_iso8601=False[0m
+[1m2025-12-25T22:35:57.113347000Z[0m [94m[INFO] BACKTESTER-001.MessageBus: config.buffer_interval_ms=None[0m
+[1m2025-12-25T22:35:57.113347600Z[0m [94m[INFO] BACKTESTER-001.MessageBus: config.autotrim_mins=None[0m
+[1m2025-12-25T22:35:57.113348100Z[0m [94m[INFO] BACKTESTER-001.MessageBus: config.use_trader_prefix=True[0m
+[1m2025-12-25T22:35:57.113348700Z[0m [94m[INFO] BACKTESTER-001.MessageBus: config.use_trader_id=True[0m
+[1m2025-12-25T22:35:57.113350700Z[0m [94m[INFO] BACKTESTER-001.MessageBus: config.use_instance_id=False[0m
+[1m2025-12-25T22:35:57.113352200Z[0m [94m[INFO] BACKTESTER-001.MessageBus: config.streams_prefix='stream'[0m
+[1m2025-12-25T22:35:57.113352600Z[0m [94m[INFO] BACKTESTER-001.MessageBus: config.types_filter=None[0m
+[1m2025-12-25T22:35:57.113402400Z[0m [INFO] BACKTESTER-001.Cache: READY[0m
+[1m2025-12-25T22:35:57.113874700Z[0m [INFO] BACKTESTER-001.DataEngine: READY[0m
+[1m2025-12-25T22:35:57.113954400Z[0m [INFO] BACKTESTER-001.RiskEngine: READY[0m
+[1m2025-12-25T22:35:57.113973300Z[0m [94m[INFO] BACKTESTER-001.RiskEngine: TradingState is ACTIVE[0m
+[1m2025-12-25T22:35:57.114034700Z[0m [INFO] BACKTESTER-001.Throttler-ORDER_SUBMIT_THROTTLER: READY[0m
+[1m2025-12-25T22:35:57.114051800Z[0m [94m[INFO] BACKTESTER-001.RiskEngine: Set MAX_ORDER_SUBMIT_RATE: 100/00:00:01[0m
+[1m2025-12-25T22:35:57.114068800Z[0m [INFO] BACKTESTER-001.Throttler-ORDER_MODIFY_THROTTLER: READY[0m
+[1m2025-12-25T22:35:57.114074400Z[0m [94m[INFO] BACKTESTER-001.RiskEngine: Set MAX_ORDER_MODIFY_RATE: 100/00:00:01[0m
+[1m2025-12-25T22:35:57.114107700Z[0m [INFO] BACKTESTER-001.ExecEngine: READY[0m
+[1m2025-12-25T22:35:57.114129400Z[0m [94m[INFO] BACKTESTER-001.ExecEngine: config.snapshot_orders=False[0m
+[1m2025-12-25T22:35:57.114131400Z[0m [94m[INFO] BACKTESTER-001.ExecEngine: config.snapshot_positions=False[0m
+[1m2025-12-25T22:35:57.114132200Z[0m [94m[INFO] BACKTESTER-001.ExecEngine: config.snapshot_positions_interval_secs=None[0m
+[1m2025-12-25T22:35:57.114157300Z[0m [INFO] BACKTESTER-001.Cache: Cached 0 general objects from database[0m
+[1m2025-12-25T22:35:57.114160600Z[0m [INFO] BACKTESTER-001.Cache: Cached 0 currencies from database[0m
+[1m2025-12-25T22:35:57.114163700Z[0m [INFO] BACKTESTER-001.Cache: Cached 0 instruments from database[0m
+[1m2025-12-25T22:35:57.114166500Z[0m [INFO] BACKTESTER-001.Cache: Cached 0 accounts from database[0m
+[1m2025-12-25T22:35:57.114169400Z[0m [INFO] BACKTESTER-001.Cache: Cached 0 orders from database[0m
+[1m2025-12-25T22:35:57.114172600Z[0m [INFO] BACKTESTER-001.Cache: Cached 0 order lists from database[0m
+[1m2025-12-25T22:35:57.114176500Z[0m [INFO] BACKTESTER-001.Cache: Cached 0 positions from database[0m
+[1m2025-12-25T22:35:57.114186700Z[0m [INFO] BACKTESTER-001.Cache: Checking data integrity[0m
+[1m2025-12-25T22:35:57.114201900Z[0m [92m[INFO] BACKTESTER-001.Cache: Integrity check passed in 11μs[0m
+[1m2025-12-25T22:35:57.114215100Z[0m [INFO] BACKTESTER-001.ExecEngine: Loaded cache in 0ms[0m
+[1m2025-12-25T22:35:57.114246500Z[0m [INFO] BACKTESTER-001.OrderEmulator: READY[0m
+[1m2025-12-25T22:35:57.114284700Z[0m [INFO] BACKTESTER-001.BACKTESTER-001: READY[0m
+[1m2025-12-25T22:35:57.114304600Z[0m [INFO] BACKTESTER-001.BacktestEngine: Initialized in 267ms[0m
+[1m2025-12-25T22:35:57.114384800Z[0m [INFO] BACKTESTER-001.SimulatedExchange(IDEALPRO): OmsType=NETTING[0m
+[1m2025-12-25T22:35:57.114417000Z[0m [INFO] BACKTESTER-001.ExecClient-IDEALPRO: READY[0m
+[1m2025-12-25T22:35:57.114440500Z[0m [INFO] BACKTESTER-001.SimulatedExchange(IDEALPRO): Registered ExecutionClient-IDEALPRO[0m
+[1m2025-12-25T22:35:57.114445400Z[0m [INFO] BACKTESTER-001.ExecEngine: Registered ExecutionClient-IDEALPRO[0m
+[1m2025-12-25T22:35:57.114472200Z[0m [INFO] BACKTESTER-001.DataClient-IDEALPRO: READY[0m
+[1m2025-12-25T22:35:57.114482300Z[0m [INFO] BACKTESTER-001.DataEngine: Registered IDEALPRO[0m
+[1m2025-12-25T22:35:57.114484400Z[0m [INFO] BACKTESTER-001.BacktestEngine: Added SimulatedExchange(id=IDEALPRO, oms_type=NETTING, account_type=MARGIN)[0m
+[1m2025-12-25T22:35:57.114645400Z[0m [INFO] BACKTESTER-001.SimulatedExchange(IDEALPRO): Added instrument EUR/USD.IDEALPRO and created matching engine[0m
+[1m2025-12-25T22:35:57.114647000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Added EUR/USD.IDEALPRO Instrument[0m
+[1m2025-12-25T22:35:57.312478400Z[0m [INFO] BACKTESTER-001.BacktestEngine: Added 147_307 EUR/USD.IDEALPRO-5-MINUTE-MID-EXTERNAL Bar elements[0m
+[1m2025-12-25T22:35:57.359846200Z[0m [INFO] BACKTESTER-001.BacktestEngine: Added 54_830 EUR/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL Bar elements[0m
+[1m2025-12-25T22:35:57.515988100Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: READY[0m
+[1m2025-12-25T22:35:57.516086300Z[0m [INFO] BACKTESTER-001.ExecEngine: Registered OMS.UNSPECIFIED for Strategy MLSignalStrategyV3-000[0m
+[1m2025-12-25T22:35:57.516091300Z[0m [INFO] BACKTESTER-001.BACKTESTER-001: Registered Strategy MLSignalStrategyV3-000[0m
+[1m2025-12-25T22:35:57.516289700Z[0m [INFO] BACKTESTER-001.Portfolio: Updated AccountState(account_id=IDEALPRO-001, account_type=MARGIN, base_currency=USD, is_reported=True, balances=[AccountBalance(total=50_000.00 USD, locked=0.00 USD, free=50_000.00 USD)], margins=[], event_id=3b072d38-066d-413e-96ba-2c6d4bf109a2)[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: STARTING[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.DataClient-IDEALPRO: Connecting...[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.DataClient-IDEALPRO: Connected[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.DataClient-IDEALPRO: RUNNING[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.DataEngine: RUNNING[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.RiskEngine: RUNNING[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.ExecClient-IDEALPRO: Connecting...[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.ExecClient-IDEALPRO: Connected[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.ExecClient-IDEALPRO: RUNNING[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.ExecEngine: RUNNING[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.DataEngine: Connecting all clients...[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.ExecEngine: Connecting all clients...[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.OrderEmulator: No emulated orders to reactivate[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.OrderEmulator: RUNNING[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Initialized 0 open orders[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Initialized 0 open positions[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [94m[INFO] BACKTESTER-001.MLSignalStrategyV3: self.config.oms_type=None[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [94m[INFO] BACKTESTER-001.MLSignalStrategyV3: self.config.external_order_claims=None[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [94m[INFO] BACKTESTER-001.MLSignalStrategyV3: self.config.manage_gtd_expiry=False[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [94m[INFO] BACKTESTER-001.MLSignalStrategyV3: Set ClientOrderIdGenerator client_order_id count to 0[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [94m[INFO] BACKTESTER-001.MLSignalStrategyV3: Set ClientOrderIdGenerator order_list_id count to 0[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: [CMD]--> SubscribeBars(bar_type=EUR/USD.IDEALPRO-5-MINUTE-MID-EXTERNAL, client_id=None, venue=IDEALPRO)[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: [CMD]--> SubscribeBars(bar_type=EUR/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL, client_id=None, venue=IDEALPRO)[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: RUNNING[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BACKTESTER-001: RUNNING[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine:  MEMORY USAGE[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [36m[INFO] BACKTESTER-001.BacktestEngine: =================================================================[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: RAM-Total: 31.71 GiB[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: RAM-Used: 14.41 GiB (45.43%)[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: RAM-Avail: 17.30 GiB (54.57%)[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Swap-Total: 25.50 GiB[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Swap-Used: 0.00 GiB (0.00%)[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Swap-Avail: 25.50 GiB (100.00%)[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m=================================================================[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m SimulatedVenue IDEALPRO[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m=================================================================[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: MarginAccount(id=IDEALPRO-001, type=MARGIN, base=USD)[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Balances starting:[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: 50_000.00 USD[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m=================================================================[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m BACKTEST RUN[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m=================================================================[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Run config ID:  None[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Run ID:         2c35be2c-988b-46cf-90f4-e68ee8f2c3c8[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Run started:    2025-12-25T22:35:57.516165000Z[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Backtest start: 2024-01-02T00:05:00.000000000Z[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Batch start:    2024-01-02T00:05:00.000000000Z[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Batch end:      2025-12-17T05:00:00.000000000Z[0m
+[1m2024-01-02T00:05:00.000000000Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderInitialized(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-1, side=SELL, type=MARKET, quantity=50_000.00, time_in_force=GTC, post_only=False, reduce_only=False, quote_quantity=False, options={}, emulation_trigger=NO_TRIGGER, trigger_instrument_id=None, contingency_type=OTO, order_list_id=OL-20240115-213500-001-000-1, linked_order_ids=['O-20240115-213500-001-000-2', 'O-20240115-213500-001-000-3'], parent_order_id=None, exec_algorithm_id=None, exec_algorithm_params=None, exec_spawn_id=None, tags=['V3_ENTRY'])[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderInitialized(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-2, side=BUY, type=STOP_MARKET, quantity=50_000.00, time_in_force=GTC, post_only=False, reduce_only=True, quote_quantity=False, options={'trigger_price': '1.09544', 'trigger_type': 'DEFAULT', 'expire_time_ns': 0}, emulation_trigger=NO_TRIGGER, trigger_instrument_id=None, contingency_type=OUO, order_list_id=OL-20240115-213500-001-000-1, linked_order_ids=['O-20240115-213500-001-000-3'], parent_order_id=O-20240115-213500-001-000-1, exec_algorithm_id=None, exec_algorithm_params=None, exec_spawn_id=None, tags=['V3_SL'])[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderInitialized(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-3, side=BUY, type=LIMIT, quantity=50_000.00, time_in_force=GTC, post_only=False, reduce_only=True, quote_quantity=False, options={'price': '1.09497', 'display_qty': None, 'expire_time_ns': 0}, emulation_trigger=NO_TRIGGER, trigger_instrument_id=None, contingency_type=OUO, order_list_id=OL-20240115-213500-001-000-1, linked_order_ids=['O-20240115-213500-001-000-2'], parent_order_id=O-20240115-213500-001-000-1, exec_algorithm_id=None, exec_algorithm_params=None, exec_spawn_id=None, tags=['V3_TP'])[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: [CMD]--> [Risk] SubmitOrderList(order_list=OrderList(id=OL-20240115-213500-001-000-1, instrument_id=EUR/USD.IDEALPRO, strategy_id=MLSignalStrategyV3-000, orders=[MarketOrder(SELL 50_000.00 EUR/USD.IDEALPRO MARKET GTC, status=INITIALIZED, client_order_id=O-20240115-213500-001-000-1, venue_order_id=None, position_id=None, contingency_type=OTO, linked_order_ids=[O-20240115-213500-001-000-2, O-20240115-213500-001-000-3], tags=['V3_ENTRY']), StopMarketOrder(BUY 50_000.00 EUR/USD.IDEALPRO STOP_MARKET @ 1.09544[DEFAULT] GTC, status=INITIALIZED, client_order_id=O-20240115-213500-001-000-2, venue_order_id=None, position_id=None, contingency_type=OUO, linked_order_ids=[O-20240115-213500-001-000-3], parent_order_id=O-20240115-213500-001-000-1, tags=['V3_SL']), LimitOrder(BUY 50_000.00 EUR/USD.IDEALPRO LIMIT @ 1.09497 GTC, status=INITIALIZED, client_order_id=O-20240115-213500-001-000-3, venue_order_id=None, position_id=None, contingency_type=OUO, linked_order_ids=[O-20240115-213500-001-000-2], parent_order_id=O-20240115-213500-001-000-1, tags=['V3_TP'])]), position_id=None)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderSubmitted(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-1, account_id=IDEALPRO-001, ts_event=1705354500000000000)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderSubmitted(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-2, account_id=IDEALPRO-001, ts_event=1705354500000000000)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderSubmitted(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-3, account_id=IDEALPRO-001, ts_event=1705354500000000000)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_init=0.00 USD[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO net_position=-0.01[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_maint=0.00 USD[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Updated AccountState(account_id=IDEALPRO-001, account_type=MARGIN, base_currency=USD, is_reported=False, balances=[AccountBalance(total=50_000.00 USD, locked=0.00 USD, free=50_000.00 USD)], margins=[], event_id=ea838f72-cca4-4c2b-918f-0bfb209fb4cf)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderFilled(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-1, venue_order_id=IDEALPRO-1-001, account_id=IDEALPRO-001, trade_id=IDEALPRO-1-2825, position_id=EUR/USD.IDEALPRO-MLSignalStrategyV3-000, order_side=SELL, order_type=MARKET, last_qty=0.01, last_px=1.09511 USD, commission=0.00 USD, liquidity_side=TAKER, ts_event=1705354500000000000)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] PositionOpened(instrument_id=EUR/USD.IDEALPRO, position_id=EUR/USD.IDEALPRO-MLSignalStrategyV3-000, account_id=IDEALPRO-001, opening_order_id=O-20240115-213500-001-000-1, closing_order_id=None, entry=SELL, side=SHORT, signed_qty=-0.01, quantity=0.01, peak_qty=0.01, currency=USD, avg_px_open=1.09511, avg_px_close=0.0, realized_return=0.00000, realized_pnl=0.00 USD, unrealized_pnl=0.00 USD, ts_opened=1705354500000000000, ts_last=1705354500000000000, ts_closed=0, duration_ns=0)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_init=0.00 USD[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Updated AccountState(account_id=IDEALPRO-001, account_type=MARGIN, base_currency=USD, is_reported=False, balances=[AccountBalance(total=50_000.00 USD, locked=0.00 USD, free=50_000.00 USD)], margins=[], event_id=2ad6490c-10dd-4e40-a2be-aed26528adc3)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderAccepted(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-2, venue_order_id=IDEALPRO-1-002, account_id=IDEALPRO-001, ts_event=1705354500000000000)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_init=0.00 USD[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Updated AccountState(account_id=IDEALPRO-001, account_type=MARGIN, base_currency=USD, is_reported=False, balances=[AccountBalance(total=50_000.00 USD, locked=0.00 USD, free=50_000.00 USD)], margins=[], event_id=44c1877c-f35a-417b-8108-79a6a670d712)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderAccepted(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-3, venue_order_id=IDEALPRO-1-003, account_id=IDEALPRO-001, ts_event=1705354500000000000)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_init=0.00 USD[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO net_position=-50000.00[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_maint=164.27 USD[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Updated AccountState(account_id=IDEALPRO-001, account_type=MARGIN, base_currency=USD, is_reported=False, balances=[AccountBalance(total=50_000.00 USD, locked=164.27 USD, free=49_835.73 USD)], margins=[MarginBalance(initial=0.00 USD, maintenance=164.27 USD, instrument_id=EUR/USD.IDEALPRO)], event_id=64f77169-0d10-4597-9bc6-9a1f829e057d)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderFilled(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-1, venue_order_id=IDEALPRO-1-001, account_id=IDEALPRO-001, trade_id=IDEALPRO-1-2826, position_id=EUR/USD.IDEALPRO-MLSignalStrategyV3-000, order_side=SELL, order_type=MARKET, last_qty=49_999.99, last_px=1.09510 USD, commission=0.00 USD, liquidity_side=TAKER, ts_event=1705354500000000000)[0m
+[1m2024-01-15T21:35:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] PositionChanged(instrument_id=EUR/USD.IDEALPRO, position_id=EUR/USD.IDEALPRO-MLSignalStrategyV3-000, account_id=IDEALPRO-001, opening_order_id=O-20240115-213500-001-000-1, closing_order_id=None, entry=SELL, side=SHORT, signed_qty=-50000.0, quantity=50_000.00, peak_qty=50_000.00, currency=USD, avg_px_open=1.095100000002, avg_px_close=0.0, realized_return=0.00000, realized_pnl=0.00 USD, unrealized_pnl=0.00 USD, ts_opened=1705354500000000000, ts_last=1705354500000000000, ts_closed=0, duration_ns=0)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderPendingCancel(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-2, venue_order_id=IDEALPRO-1-002, account_id=IDEALPRO-001, ts_event=1705355400000000000)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: [CMD]--> [Execution] CancelOrder(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-2, venue_order_id=IDEALPRO-1-002)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderInitialized(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-215000-001-000-4, side=BUY, type=STOP_MARKET, quantity=50_000.00, time_in_force=GTC, post_only=False, reduce_only=False, quote_quantity=False, options={'trigger_price': '1.09512', 'trigger_type': 'DEFAULT', 'expire_time_ns': 0}, emulation_trigger=NO_TRIGGER, trigger_instrument_id=None, contingency_type=NO_CONTINGENCY, order_list_id=None, linked_order_ids=None, parent_order_id=None, exec_algorithm_id=None, exec_algorithm_params=None, exec_spawn_id=None, tags=None)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: [CMD]--> [Risk] SubmitOrder(order=StopMarketOrder(BUY 50_000.00 EUR/USD.IDEALPRO STOP_MARKET @ 1.09512[DEFAULT] GTC, status=INITIALIZED, client_order_id=O-20240115-215000-001-000-4, venue_order_id=None, position_id=None, tags=None), position_id=None)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderSubmitted(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-215000-001-000-4, account_id=IDEALPRO-001, ts_event=1705355400000000000)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_init=0.00 USD[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Updated AccountState(account_id=IDEALPRO-001, account_type=MARGIN, base_currency=USD, is_reported=False, balances=[AccountBalance(total=50_000.00 USD, locked=164.27 USD, free=49_835.73 USD)], margins=[MarginBalance(initial=0.00 USD, maintenance=164.27 USD, instrument_id=EUR/USD.IDEALPRO)], event_id=4b01bf6e-fa66-47e3-b2d3-a1bc8a4ab6c0)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderCanceled(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-2, venue_order_id=IDEALPRO-1-002, account_id=IDEALPRO-001, ts_event=1705355400000000000)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_init=0.00 USD[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Updated AccountState(account_id=IDEALPRO-001, account_type=MARGIN, base_currency=USD, is_reported=False, balances=[AccountBalance(total=50_000.00 USD, locked=164.27 USD, free=49_835.73 USD)], margins=[MarginBalance(initial=0.00 USD, maintenance=164.27 USD, instrument_id=EUR/USD.IDEALPRO)], event_id=5c48fa9c-a186-4c40-af0b-56fec12c832e)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderCanceled(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-213500-001-000-3, venue_order_id=IDEALPRO-1-003, account_id=IDEALPRO-001, ts_event=1705355400000000000)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_init=164.27 USD[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Updated AccountState(account_id=IDEALPRO-001, account_type=MARGIN, base_currency=USD, is_reported=False, balances=[AccountBalance(total=50_000.00 USD, locked=328.54 USD, free=49_671.46 USD)], margins=[MarginBalance(initial=164.27 USD, maintenance=164.27 USD, instrument_id=EUR/USD.IDEALPRO)], event_id=2615c160-e6ab-454e-8344-81172a823453)[0m
+[1m2024-01-15T21:50:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderAccepted(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-215000-001-000-4, venue_order_id=IDEALPRO-1-004, account_id=IDEALPRO-001, ts_event=1705355400000000000)[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_init=164.27 USD[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO net_position=-49999.99[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_maint=164.26 USD[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Updated AccountState(account_id=IDEALPRO-001, account_type=MARGIN, base_currency=USD, is_reported=False, balances=[AccountBalance(total=50_000.00 USD, locked=328.53 USD, free=49_671.47 USD)], margins=[MarginBalance(initial=164.27 USD, maintenance=164.26 USD, instrument_id=EUR/USD.IDEALPRO)], event_id=2d1691d4-53e1-468f-9edf-379cb8a423fa)[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderFilled(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-215000-001-000-4, venue_order_id=IDEALPRO-1-004, account_id=IDEALPRO-001, trade_id=IDEALPRO-1-2832, position_id=EUR/USD.IDEALPRO-MLSignalStrategyV3-000, order_side=BUY, order_type=STOP_MARKET, last_qty=0.01, last_px=1.09512 USD, commission=0.00 USD, liquidity_side=TAKER, ts_event=1705356000000000000)[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] PositionChanged(instrument_id=EUR/USD.IDEALPRO, position_id=EUR/USD.IDEALPRO-MLSignalStrategyV3-000, account_id=IDEALPRO-001, opening_order_id=O-20240115-213500-001-000-1, closing_order_id=None, entry=SELL, side=SHORT, signed_qty=-49999.99, quantity=49_999.99, peak_qty=50_000.00, currency=USD, avg_px_open=1.095100000002, avg_px_close=1.09512, realized_return=-0.00002, realized_pnl=0.00 USD, unrealized_pnl=-1.00 USD, ts_opened=1705354500000000000, ts_last=1705356000000000000, ts_closed=0, duration_ns=0)[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_init=0.00 USD[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO net_position=0[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: EUR/USD.IDEALPRO margin_maint=0.00 USD[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.Portfolio: Updated AccountState(account_id=IDEALPRO-001, account_type=MARGIN, base_currency=USD, is_reported=False, balances=[AccountBalance(total=49_998.50 USD, locked=0.00 USD, free=49_998.50 USD)], margins=[], event_id=8d436f48-bb7f-4302-a5f6-d4f530b9855d)[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] OrderFilled(instrument_id=EUR/USD.IDEALPRO, client_order_id=O-20240115-215000-001-000-4, venue_order_id=IDEALPRO-1-004, account_id=IDEALPRO-001, trade_id=IDEALPRO-1-2833, position_id=EUR/USD.IDEALPRO-MLSignalStrategyV3-000, order_side=BUY, order_type=STOP_MARKET, last_qty=49_999.99, last_px=1.09513 USD, commission=0.00 USD, liquidity_side=TAKER, ts_event=1705356000000000000)[0m
+[1m2024-01-15T22:00:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: <--[EVT] PositionClosed(instrument_id=EUR/USD.IDEALPRO, position_id=EUR/USD.IDEALPRO-MLSignalStrategyV3-000, account_id=IDEALPRO-001, opening_order_id=O-20240115-213500-001-000-1, closing_order_id=O-20240115-215000-001-000-4, entry=SELL, side=FLAT, signed_qty=0.0, quantity=0.00, peak_qty=50_000.00, currency=USD, avg_px_open=1.095100000002, avg_px_close=1.0951299999979998, realized_return=-0.00003, realized_pnl=-1.50 USD, unrealized_pnl=0.00 USD, ts_opened=1705354500000000000, ts_last=1705356000000000000, ts_closed=1705356000000000000, duration_ns=1500000000000)[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.MLSignalStrategyV3: STOPPED[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.BACKTESTER-001: STOPPED[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.DataClient-IDEALPRO: Disconnecting...[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.DataClient-IDEALPRO: Disconnected[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.DataClient-IDEALPRO: STOPPED[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.DataEngine: STOPPED[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.RiskEngine: STOPPED[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.ExecClient-IDEALPRO: Disconnecting...[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.ExecClient-IDEALPRO: Disconnected[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.ExecClient-IDEALPRO: STOPPED[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.ExecEngine: STOPPED[0m
+[1m2025-12-17T05:00:00.000000000Z[0m [INFO] BACKTESTER-001.OrderEmulator: STOPPED[0m
+[1m2025-12-25T22:46:34.313100300Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m=================================================================[0m
+[1m2025-12-25T22:46:34.313101900Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m BACKTEST POST-RUN[0m
+[1m2025-12-25T22:46:34.313102600Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m=================================================================[0m
+[1m2025-12-25T22:46:34.313103300Z[0m [INFO] BACKTESTER-001.BacktestEngine: Run config ID:  None[0m
+[1m2025-12-25T22:46:34.313108400Z[0m [INFO] BACKTESTER-001.BacktestEngine: Run ID:         2c35be2c-988b-46cf-90f4-e68ee8f2c3c8[0m
+[1m2025-12-25T22:46:34.313124200Z[0m [INFO] BACKTESTER-001.BacktestEngine: Run started:    2025-12-25T22:35:57.516165000Z[0m
+[1m2025-12-25T22:46:34.313125600Z[0m [INFO] BACKTESTER-001.BacktestEngine: Run finished:   2025-12-25T22:46:34.313043000Z[0m
+[1m2025-12-25T22:46:34.313153200Z[0m [INFO] BACKTESTER-001.BacktestEngine: Elapsed time:   0 days 00:10:36.796878[0m
+[1m2025-12-25T22:46:34.313155500Z[0m [INFO] BACKTESTER-001.BacktestEngine: Backtest start: 2024-01-02T00:05:00.000000000Z[0m
+[1m2025-12-25T22:46:34.313156800Z[0m [INFO] BACKTESTER-001.BacktestEngine: Backtest end:   2025-12-17T05:00:00.000000000Z[0m
+[1m2025-12-25T22:46:34.313165600Z[0m [INFO] BACKTESTER-001.BacktestEngine: Backtest range: 715 days 04:55:00[0m
+[1m2025-12-25T22:46:34.313168600Z[0m [INFO] BACKTESTER-001.BacktestEngine: Iterations: 202_137[0m
+[1m2025-12-25T22:46:34.313172100Z[0m [INFO] BACKTESTER-001.BacktestEngine: Total events: 13[0m
+[1m2025-12-25T22:46:34.313196800Z[0m [INFO] BACKTESTER-001.BacktestEngine: Total orders: 4[0m
+[1m2025-12-25T22:46:34.313207300Z[0m [INFO] BACKTESTER-001.BacktestEngine: Total positions: 1[0m
+[1m2025-12-25T22:46:34.313218900Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m=================================================================[0m
+[1m2025-12-25T22:46:34.313221300Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m SimulatedVenue IDEALPRO[0m
+[1m2025-12-25T22:46:34.313221900Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m=================================================================[0m
+[1m2025-12-25T22:46:34.313235500Z[0m [INFO] BACKTESTER-001.BacktestEngine: MarginAccount(id=IDEALPRO-001, type=MARGIN, base=USD)[0m
+[1m2025-12-25T22:46:34.313236200Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.313237600Z[0m [INFO] BACKTESTER-001.BacktestEngine: Balances starting:[0m
+[1m2025-12-25T22:46:34.313258700Z[0m [INFO] BACKTESTER-001.BacktestEngine: 50_000.00 USD[0m
+[1m2025-12-25T22:46:34.313259600Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.313260100Z[0m [INFO] BACKTESTER-001.BacktestEngine: Balances ending:[0m
+[1m2025-12-25T22:46:34.313268900Z[0m [INFO] BACKTESTER-001.BacktestEngine: 49_998.50 USD[0m
+[1m2025-12-25T22:46:34.313271500Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.313272200Z[0m [INFO] BACKTESTER-001.BacktestEngine: Commissions:[0m
+[1m2025-12-25T22:46:34.313274800Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.313275500Z[0m [INFO] BACKTESTER-001.BacktestEngine: Unrealized PnLs (included in totals):[0m
+[1m2025-12-25T22:46:34.313296500Z[0m [INFO] BACKTESTER-001.BacktestEngine: None[0m
+[1m2025-12-25T22:46:34.313298500Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m=================================================================[0m
+[1m2025-12-25T22:46:34.313299200Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m PORTFOLIO PERFORMANCE[0m
+[1m2025-12-25T22:46:34.313299900Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m=================================================================[0m
+[1m2025-12-25T22:46:34.315183400Z[0m [INFO] BACKTESTER-001.BacktestEngine:  PnL Statistics (EUR)[0m
+[1m2025-12-25T22:46:34.315186700Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.315289200Z[0m [INFO] BACKTESTER-001.BacktestEngine: PnL (total):                    0.0[0m
+[1m2025-12-25T22:46:34.315290600Z[0m [INFO] BACKTESTER-001.BacktestEngine: PnL% (total):                   0.0[0m
+[1m2025-12-25T22:46:34.315291000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Max Winner:                     0.0[0m
+[1m2025-12-25T22:46:34.315291500Z[0m [INFO] BACKTESTER-001.BacktestEngine: Avg Winner:                     0.0[0m
+[1m2025-12-25T22:46:34.315291800Z[0m [INFO] BACKTESTER-001.BacktestEngine: Min Winner:                     0.0[0m
+[1m2025-12-25T22:46:34.315292200Z[0m [INFO] BACKTESTER-001.BacktestEngine: Min Loser:                      0.0[0m
+[1m2025-12-25T22:46:34.315292600Z[0m [INFO] BACKTESTER-001.BacktestEngine: Avg Loser:                      0.0[0m
+[1m2025-12-25T22:46:34.315293000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Max Loser:                      0.0[0m
+[1m2025-12-25T22:46:34.315293400Z[0m [INFO] BACKTESTER-001.BacktestEngine: Expectancy:                     0.0[0m
+[1m2025-12-25T22:46:34.315293700Z[0m [INFO] BACKTESTER-001.BacktestEngine: Win Rate:                       0.0[0m
+[1m2025-12-25T22:46:34.315294500Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.315295400Z[0m [INFO] BACKTESTER-001.BacktestEngine:  PnL Statistics (USD)[0m
+[1m2025-12-25T22:46:34.315295900Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.315368700Z[0m [INFO] BACKTESTER-001.BacktestEngine: PnL (total):                    -1.5[0m
+[1m2025-12-25T22:46:34.315369400Z[0m [INFO] BACKTESTER-001.BacktestEngine: PnL% (total):                   -0.003[0m
+[1m2025-12-25T22:46:34.315369800Z[0m [INFO] BACKTESTER-001.BacktestEngine: Max Winner:                     -1.5[0m
+[1m2025-12-25T22:46:34.315370400Z[0m [INFO] BACKTESTER-001.BacktestEngine: Avg Winner:                     0.0[0m
+[1m2025-12-25T22:46:34.315370800Z[0m [INFO] BACKTESTER-001.BacktestEngine: Min Winner:                     0.0[0m
+[1m2025-12-25T22:46:34.315371200Z[0m [INFO] BACKTESTER-001.BacktestEngine: Min Loser:                      -1.5[0m
+[1m2025-12-25T22:46:34.315371800Z[0m [INFO] BACKTESTER-001.BacktestEngine: Avg Loser:                      -1.5[0m
+[1m2025-12-25T22:46:34.315372100Z[0m [INFO] BACKTESTER-001.BacktestEngine: Max Loser:                      -1.5[0m
+[1m2025-12-25T22:46:34.315372500Z[0m [INFO] BACKTESTER-001.BacktestEngine: Expectancy:                     -1.5[0m
+[1m2025-12-25T22:46:34.315372800Z[0m [INFO] BACKTESTER-001.BacktestEngine: Win Rate:                       0.0[0m
+[1m2025-12-25T22:46:34.315373400Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.315374200Z[0m [INFO] BACKTESTER-001.BacktestEngine:  Returns Statistics[0m
+[1m2025-12-25T22:46:34.315374600Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.315631100Z[0m [INFO] BACKTESTER-001.BacktestEngine: Returns Volatility (252 days):  nan[0m
+[1m2025-12-25T22:46:34.315632200Z[0m [INFO] BACKTESTER-001.BacktestEngine: Average (Return):               -2.7394754816716417e-05[0m
+[1m2025-12-25T22:46:34.315632700Z[0m [INFO] BACKTESTER-001.BacktestEngine: Average Loss (Return):          -2.7394754816716417e-05[0m
+[1m2025-12-25T22:46:34.315633000Z[0m [INFO] BACKTESTER-001.BacktestEngine: Average Win (Return):           nan[0m
+[1m2025-12-25T22:46:34.315633400Z[0m [INFO] BACKTESTER-001.BacktestEngine: Sharpe Ratio (252 days):        nan[0m
+[1m2025-12-25T22:46:34.315633800Z[0m [INFO] BACKTESTER-001.BacktestEngine: Sortino Ratio (252 days):       -15.874507866387544[0m
+[1m2025-12-25T22:46:34.315634200Z[0m [INFO] BACKTESTER-001.BacktestEngine: Profit Factor:                  0.0[0m
+[1m2025-12-25T22:46:34.315634500Z[0m [INFO] BACKTESTER-001.BacktestEngine: Risk Return Ratio:              nan[0m
+[1m2025-12-25T22:46:34.315638100Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.315638700Z[0m [INFO] BACKTESTER-001.BacktestEngine:  General Statistics[0m
+[1m2025-12-25T22:46:34.315639200Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+[1m2025-12-25T22:46:34.315667100Z[0m [INFO] BACKTESTER-001.BacktestEngine: Long Ratio:                     0.0[0m
+[1m2025-12-25T22:46:34.315667800Z[0m [INFO] BACKTESTER-001.BacktestEngine: [36m-----------------------------------------------------------------[0m
+Loading data from catalog: C:/nautilus0/data/historical
+Bar types: EUR/USD.IDEALPRO-5-MINUTE-MID-EXTERNAL, EUR/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL
+Date range: 2024-01-01 to 2025-12-30
+Loaded 147307 5m bars, 54830 15m bars
+
+================================================================================
+HMTF V3 NAUTILUS BACKTEST
+================================================================================
+Instrument: EUR/USD.IDEALPRO
+Period: 2024-01-01 to 2025-12-30
+Starting Balance: $50,000.00
+Master Model: models/ml_model_mtf_backup.pkl
+Soldier Enabled: True
+================================================================================
+
+
+================================================================================
+BACKTEST RESULTS
+================================================================================
+                              total  locked  ... reported info
+2024-01-02 00:05:00+00:00  50000.00    0.00  ...     True   {}
+2024-01-15 21:35:00+00:00  50000.00    0.00  ...    False   {}
+2024-01-15 21:35:00+00:00  50000.00    0.00  ...    False   {}
+2024-01-15 21:35:00+00:00  50000.00    0.00  ...    False   {}
+2024-01-15 21:35:00+00:00  50000.00  164.27  ...    False   {}
+2024-01-15 21:50:00+00:00  50000.00  164.27  ...    False   {}
+2024-01-15 21:50:00+00:00  50000.00  164.27  ...    False   {}
+2024-01-15 21:50:00+00:00  50000.00  328.54  ...    False   {}
+2024-01-15 22:00:00+00:00  50000.00  328.53  ...    False   {}
+2024-01-15 22:00:00+00:00  49998.50    0.00  ...    False   {}
+
+[10 rows x 10 columns]
+
+================================================================================
+ORDER FILLS
+================================================================================
+                                  trader_id  ... trigger_instrument_id
+client_order_id                              ...                      
+O-20240115-213500-001-000-1  BACKTESTER-001  ...                   NaN
+O-20240115-215000-001-000-4  BACKTESTER-001  ...                   NaN
+
+[2 rows x 35 columns]
+
+================================================================================
+POSITIONS
+================================================================================
+                                              trader_id  ... is_snapshot
+position_id                                              ...            
+EUR/USD.IDEALPRO-MLSignalStrategyV3-000  BACKTESTER-001  ...       False
+
+[1 rows x 21 columns]
+
+Results saved to: backtest_results\MTF_V3_NAUTILUS\20251225_174634
