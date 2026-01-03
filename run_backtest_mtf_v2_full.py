@@ -523,6 +523,23 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
             recovery_time = df_sorted.loc[recovery_idx, 'exit_time']
             recovery_duration_days = (recovery_time - max_dd_end).days
     
+    # === Calculate Daily Statistics ===
+    df['exit_date'] = pd.to_datetime(df['exit_time']).dt.date
+    daily_pnl = df.groupby('exit_date')['pnl'].sum()
+    
+    # Get all trading days in the period
+    start_date = pd.to_datetime(config['backtest_start']).date()
+    end_date = pd.to_datetime(config['backtest_end']).date()
+    all_dates = pd.date_range(start=start_date, end=end_date, freq='D')
+    trading_dates = all_dates[all_dates.dayofweek < 5]  # Weekdays only
+    
+    # Calculate statistics
+    zero_trade_days = len([d for d in trading_dates if d.date() not in daily_pnl.index])
+    negative_days = (daily_pnl < 0).sum()
+    positive_days = (daily_pnl > 0).sum()
+    total_trading_days = len(trading_dates)
+    days_with_trades = len(daily_pnl)
+    
     # === summary.txt ===
     top_hours = hour_stats.nlargest(5, 'pnl')
     top_weekdays = weekday_stats.nlargest(3, 'pnl')
@@ -536,6 +553,20 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
         f.write(f"Total Trades: {total_trades}\n")
         f.write(f"Total P&L: ${total_pnl:,.2f}\n")
         f.write(f"Win Rate: {win_rate:.1f}%\n\n")
+        
+        f.write("=" * 80 + "\n")
+        f.write("DAILY STATISTICS\n")
+        f.write("=" * 80 + "\n")
+        f.write(f"Total Trading Days (Weekdays): {total_trading_days}\n")
+        f.write(f"Days with Trades: {days_with_trades}\n")
+        f.write(f"Zero Trade Days: {zero_trade_days} ({zero_trade_days/total_trading_days*100:.1f}%)\n")
+        f.write(f"Positive Days: {positive_days} ({positive_days/days_with_trades*100:.1f}% of trading days)\n")
+        f.write(f"Negative Days: {negative_days} ({negative_days/days_with_trades*100:.1f}% of trading days)\n")
+        if days_with_trades > 0:
+            f.write(f"Average Daily P&L: ${daily_pnl.mean():,.2f}\n")
+            f.write(f"Best Day: ${daily_pnl.max():,.2f}\n")
+            f.write(f"Worst Day: ${daily_pnl.min():,.2f}\n")
+        f.write("\n")
         
         f.write("=" * 80 + "\n")
         f.write("DRAWDOWN ANALYSIS\n")

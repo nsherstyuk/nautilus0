@@ -175,8 +175,8 @@ def main() -> int:
     start_ns = dt_to_unix_nanos(pd.Timestamp(cfg.backtest_start, tz="UTC").to_pydatetime())
     end_ns = dt_to_unix_nanos(pd.Timestamp(cfg.backtest_end, tz="UTC").to_pydatetime())
 
-    slashed_instrument_id = normalize_instrument_id(cfg.symbol, cfg.venue)
-    catalog_instrument_id = slashed_instrument_id
+    # Use the original symbol format for catalog (EURUSD not EUR/USD)
+    catalog_instrument_id = f"{cfg.symbol}.{cfg.venue}"
 
     # Nautilus BacktestDataConfig (when data_cls is Bar) appends "-EXTERNAL" itself when
     # constructing the catalog filter expression. Our env config uses bar specs like
@@ -235,6 +235,10 @@ def main() -> int:
             "stall_check_bars": cfg.stall_check_bars,
             "stall_min_profit_atr": cfg.stall_min_profit_atr,
             "stall_sl_atr": cfg.stall_sl_atr,
+            "meta_filter_mama_enabled": cfg.meta_filter_mama_enabled,
+            "meta_filter_mama_min_diff": cfg.meta_filter_mama_min_diff,
+            "meta_filter_dmi_enabled": cfg.meta_filter_dmi_enabled,
+            "meta_filter_dmi_min_dmp": cfg.meta_filter_dmi_min_dmp,
         },
     )
 

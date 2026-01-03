@@ -246,6 +246,11 @@ def main() -> int:
             "stall_check_bars": live_config.stall_check_bars,
             "stall_min_profit_atr": live_config.stall_min_profit_atr,
             "stall_sl_atr": live_config.stall_sl_atr,
+            # Meta-Filters
+            "meta_filter_mama_enabled": live_config.meta_filter_mama_enabled,
+            "meta_filter_mama_min_diff": live_config.meta_filter_mama_min_diff,
+            "meta_filter_dmi_enabled": live_config.meta_filter_dmi_enabled,
+            "meta_filter_dmi_min_dmp": live_config.meta_filter_dmi_min_dmp,
         },
     )
     

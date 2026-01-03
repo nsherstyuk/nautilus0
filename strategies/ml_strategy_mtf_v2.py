@@ -23,9 +23,11 @@ from collections import deque
 from dataclasses import dataclass
 from decimal import Decimal
 from pathlib import Path
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Any
 import os
 import logging
+import json
+import csv
 import numpy as np
 import pandas as pd
 import pandas_ta as ta
@@ -46,6 +48,10 @@ from nautilus_trader.trading.strategy import Strategy
 _py_logger = logging.getLogger("MLSignalStrategy_V2")
 _py_logger.setLevel(logging.INFO)
 
+FEATURE_NAMES = [
+    "log_ret", "mama_diff", "dmp_30m", "dmn_30m", "stoch_k_30m", "stoch_d_30m",
+    "wma_diff_30m", "atr_15m", "hour", "day_of_week"
+]
 
 @dataclass
 class PositionLayer:
@@ -64,8 +70,12 @@ class PositionLayer:
     is_open: bool = False
     is_closed: bool = False
     entry_price: Optional[float] = None
+    entry_time: Optional[pd.Timestamp] = None
     sl_adjusted_to_be: bool = False  # SL moved to breakeven?
     converted_to_trailing: bool = False
+    
+    # Feature logging
+    entry_features: Optional[Dict[str, Any]] = None
 
 
 class MLSignalStrategyV2Config(StrategyConfig, kw_only=True):
@@ -124,6 +134,12 @@ class MLSignalStrategyV2Config(StrategyConfig, kw_only=True):
     stall_check_bars: int = 6
     stall_min_profit_atr: float = 0.2
     stall_sl_atr: float = 0.2
+    
+    # Meta-Filters (derived from feature analysis)
+    meta_filter_mama_enabled: bool = False
+    meta_filter_mama_min_diff: float = 0.0000  # Filter out negative MAMA diff
+    meta_filter_dmi_enabled: bool = False
+    meta_filter_dmi_min_dmp: float = 0.20      # Filter out low DMI+
     
     # Order identification
     order_id_tag: str = "V2"
@@ -217,13 +233,38 @@ class MLSignalStrategyV2(Strategy):
         self._neg_stall_trigger_loss_atr = float(os.getenv("MTF2_NEG_STALL_TRIGGER_LOSS_ATR", "0.4"))
         self._neg_stall_triggered = False
         
+        # Meta-filters
+        self.meta_filter_mama_enabled = config.meta_filter_mama_enabled
+        self.meta_filter_mama_min_diff = config.meta_filter_mama_min_diff
+        self.meta_filter_dmi_enabled = config.meta_filter_dmi_enabled
+        self.meta_filter_dmi_min_dmp = config.meta_filter_dmi_min_dmp
+        
         # Warmup
         self._warmup_mode = True
         self._min_warmup_bars_15m = 30
-        self._min_warmup_bars_30m = 15
+        self._min_warmup_bars_30m = 25  # Need more for WMA(23) + Stochastic(14)
+        
+        # Feature logging setup
+        self._feature_log_path = Path("backtest_results") / "ml_trade_features.csv"
+        self._init_feature_log()
         
         _py_logger.info("MLSignalStrategyV2 initialized - Three-position bracket approach")
         
+    def _init_feature_log(self):
+        """Initialize feature log file with header."""
+        if not self._feature_log_path.parent.exists():
+            self._feature_log_path.parent.mkdir(parents=True, exist_ok=True)
+            
+        if not self._feature_log_path.exists():
+            with open(self._feature_log_path, 'w', newline='') as f:
+                writer = csv.writer(f)
+                header = [
+                    "trade_id", "entry_time", "direction", "result_type", 
+                    "pnl_currency", "pnl_pips", "duration_bars",
+                    "entry_atr", "prediction_conf"
+                ] + FEATURE_NAMES
+                writer.writerow(header)
+
     def _reset_layers(self):
         """Reset all position layer tracking."""
         self._layers = {
@@ -344,6 +385,45 @@ class MLSignalStrategyV2(Strategy):
         if self._excluded_hours_mode == 'weekday':
             _py_logger.info(f"Weekday-specific hour filtering enabled (config in {self._config_timezone})")
         
+    def _log_trade_feature_row(self, layer: PositionLayer, result_type: str, pnl_currency: float, exit_time_ns: int):
+        """Log trade outcome and entry features to CSV."""
+        if not layer.entry_features:
+            return
+            
+        try:
+            # Calculate duration
+            exit_ts = pd.Timestamp(exit_time_ns, unit='ns', tz='UTC')
+            entry_ts = layer.entry_time
+            duration_bars = 0
+            if entry_ts:
+                diff = exit_ts - entry_ts
+                duration_bars = int(diff.total_seconds() / 900) # 15m bars approx
+            
+            # Row construction
+            row = [
+                f"{layer.name}_{layer.entry_order_id}", # trade_id
+                entry_ts.isoformat() if entry_ts else "",
+                self._trade_direction,
+                result_type,
+                f"{pnl_currency:.2f}",
+                "0", # pnl_pips placeholder
+                duration_bars,
+                f"{layer.entry_features.get('entry_atr', 0):.5f}",
+                f"{layer.entry_features.get('prediction_conf', 0):.3f}"
+            ]
+            
+            # Add features
+            for name in FEATURE_NAMES:
+                row.append(f"{layer.entry_features.get(name, 0):.5f}")
+                
+            # Append to file
+            with open(self._feature_log_path, 'a', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(row)
+                
+        except Exception as e:
+            _py_logger.error(f"Failed to log feature row: {e}")
+
     # =========================================================================
     # ORDER EVENT HANDLERS
     # =========================================================================
@@ -352,6 +432,7 @@ class MLSignalStrategyV2(Strategy):
         """Handle order fills - track position opens and closes."""
         try:
             order_id = str(event.client_order_id)
+            timestamp = event.ts_event
             
             # Check which layer this order belongs to
             for layer_name, layer in self._layers.items():
@@ -368,6 +449,7 @@ class MLSignalStrategyV2(Strategy):
                     pnl = self._calculate_pnl(layer, float(event.last_px))
                     self._log_position_state(f"{layer_name} TP HIT @ {event.last_px} (PnL: ${pnl:.2f})")
                     self._on_layer_tp_hit(layer_name)
+                    self._log_trade_feature_row(layer, "TP", pnl, timestamp)
                     
                 # SL filled (position closed at loss)
                 elif layer.sl_order_id and order_id == str(layer.sl_order_id):
@@ -375,6 +457,7 @@ class MLSignalStrategyV2(Strategy):
                     layer.is_closed = True
                     pnl = self._calculate_pnl(layer, float(event.last_px))
                     self._log_position_state(f"{layer_name} SL HIT @ {event.last_px} (PnL: ${pnl:.2f})")
+                    self._log_trade_feature_row(layer, "SL", pnl, timestamp)
                     
             # Check if all positions closed
             if all(l.is_closed or not l.is_open for l in self._layers.values()):
@@ -623,10 +706,10 @@ class MLSignalStrategyV2(Strategy):
         ):
             
             # Tighten SL to lock in some profit
-            sl_distance = self._entry_price * self._entry_atr * self._stall_sl_atr
+            sl_distance = current_price * self._entry_atr * self._stall_sl_atr
             
             if self._trade_direction == "LONG":
-                new_sl = self._entry_price + sl_distance
+                new_sl = current_price - sl_distance
                 
                 # SAFETY: Cap SL at current price to avoid "Stop > Market" (Phantom Profit)
                 if new_sl > current_price:
@@ -638,12 +721,12 @@ class MLSignalStrategyV2(Strategy):
                     _py_logger.info(f"[STALL] Skip - current SL {current_sl_order.trigger_price} already >= {new_sl:.5f}")
                     return
             else:
-                new_sl = self._entry_price - sl_distance
+                new_sl = current_price + sl_distance
                 
                 # SAFETY: Cap SL at current price to avoid "Stop < Market" (Phantom Profit)
                 if new_sl < current_price:
                     new_sl = current_price
-
+                
                 # Only move SL down (more protective), never up
                 current_sl_order = self.cache.order(pos1.sl_order_id) if pos1.sl_order_id else None
                 if current_sl_order and float(current_sl_order.trigger_price) <= new_sl:
@@ -701,13 +784,20 @@ class MLSignalStrategyV2(Strategy):
     # ENTRY EXECUTION
     # =========================================================================
     
-    def _execute_entry(self, bar: Bar, atr_normalized: float, direction: str):
+    def _execute_entry(self, bar: Bar, atr_normalized: float, direction: str, 
+                       features: np.ndarray, confidence: float):
         """Open all 3 positions with their respective brackets."""
         
         entry_price = float(bar.close)
         self._trade_direction = direction
         self._entry_atr = atr_normalized
         self._entry_price = entry_price
+        entry_time = pd.Timestamp(bar.ts_init, unit='ns', tz='UTC')
+        
+        # Prepare feature dict for logging
+        feature_dict = dict(zip(FEATURE_NAMES, features))
+        feature_dict["entry_atr"] = atr_normalized
+        feature_dict["prediction_conf"] = confidence
         
         # Calculate SL (same for all initially)
         sl_distance = entry_price * atr_normalized * self.sl_atr_mult
@@ -723,6 +813,7 @@ class MLSignalStrategyV2(Strategy):
         
         # Open each position layer
         for layer_name, layer in self._layers.items():
+            layer.entry_features = feature_dict.copy()  # Store features for logging
             self._open_layer_position(layer, order_side, entry_price, sl_price, atr_normalized)
 
     def _quantity_from_units(self, units: int) -> Quantity:
@@ -851,8 +942,12 @@ class MLSignalStrategyV2(Strategy):
                 try:
                     prediction = self.model.predict([features])[0]
                     confidence = self.model.predict_proba([features])[0].max()
+                    _py_logger.debug(f"[DEBUG] Features: {features[:5]}... Predicted: {prediction}, Conf: {confidence:.3f}")
                 except Exception as e:
                     _py_logger.error(f"[ERROR] Prediction error: {e}")
+                    _py_logger.error(f"[ERROR] Features shape: {len(features) if features is not None else 'None'}")
+            else:
+                _py_logger.warning(f"[WARN] Feature calculation returned None")
 
         atr_text = f"{atr:.5f}" if atr is not None else "NA"
         conf_text = f"{confidence:.3f}" if confidence is not None else "NA"
@@ -916,6 +1011,10 @@ class MLSignalStrategyV2(Strategy):
             _py_logger.debug("[SKIP] Feature calculation returned None")
             return
             
+        # Check Meta-Filters (Toxic Regime Avoidance)
+        if not self._check_meta_filters(features):
+            return
+            
         # Get prediction
         prediction = self.model.predict([features])[0]
         confidence = self.model.predict_proba([features])[0].max()
@@ -938,8 +1037,38 @@ class MLSignalStrategyV2(Strategy):
         # Execute entry
         direction = "LONG" if prediction == 1 else "SHORT"
         _py_logger.info(f"[SIGNAL] {direction} - conf={confidence:.3f}, ATR={atr:.5f}")
-        self._execute_entry(bar, atr, direction)
+        self._execute_entry(bar, atr, direction, features, confidence)
         
+    def _check_meta_filters(self, features: np.ndarray) -> bool:
+        """
+        Check additional meta-filters to avoid toxic regimes identified in analysis.
+        Returns True if trade is allowed, False if filtered.
+        """
+        # Parse features from array (order must match _calculate_features)
+        # 0: log_ret, 1: mama_diff, 2: dmp, 3: dmn, 4: stoch_k, 5: stoch_d, 
+        # 6: wma_diff, 7: atr, 8: hour, 9: day_of_week
+        
+        mama_diff = features[1]
+        dmp_30m = features[2]
+        
+        # 1. MAMA Difference Filter (Trend Alignment)
+        if self.meta_filter_mama_enabled:
+            if mama_diff < self.meta_filter_mama_min_diff:
+                _py_logger.info(f"[FILTERED] MAMA Diff {mama_diff:.6f} < {self.meta_filter_mama_min_diff}")
+                return False
+            else:
+                _py_logger.info(f"[META_FILTER] MAMA Diff {mama_diff:.6f} >= {self.meta_filter_mama_min_diff} PASS")
+                
+        # 2. DMI+ Strength Filter (Directional Strength)
+        if self.meta_filter_dmi_enabled:
+            if dmp_30m < self.meta_filter_dmi_min_dmp:
+                _py_logger.info(f"[FILTERED] DMI+ {dmp_30m:.4f} < {self.meta_filter_dmi_min_dmp}")
+                return False
+            else:
+                _py_logger.info(f"[META_FILTER] DMI+ {dmp_30m:.4f} >= {self.meta_filter_dmi_min_dmp} PASS")
+                
+        return True
+
     def _resample_to_30m(self):
         """Resample 15m bars to 30m using pandas."""
         if len(self.bars_buffer_15m) < 2:
@@ -1034,12 +1163,17 @@ class MLSignalStrategyV2(Strategy):
             df_15m['hl2'] = (df_15m['high'] + df_15m['low']) / 2
             
             # 3. Ehlers MAMA using hl2
-            mama_fama = ta.mama(df_15m['hl2'], fast=0.5, slow=0.05)
-            if mama_fama is None:
+            try:
+                mama_fama = ta.mama(df_15m['hl2'], fast=0.5, slow=0.05)
+                if mama_fama is None or len(mama_fama) == 0:
+                    _py_logger.warning(f"[WARN] MAMA calculation failed for {df_15m.index[-1]}")
+                    return None
+                df_15m['mama'] = mama_fama.iloc[:, 0]
+                df_15m['fama'] = mama_fama.iloc[:, 1]
+                df_15m['mama_diff'] = (df_15m['mama'] - df_15m['fama']) / df_15m['close']
+            except Exception as e:
+                _py_logger.error(f"[ERROR] MAMA calculation failed: {e}")
                 return None
-            df_15m['mama'] = mama_fama.iloc[:, 0]
-            df_15m['fama'] = mama_fama.iloc[:, 1]
-            df_15m['mama_diff'] = (df_15m['mama'] - df_15m['fama']) / df_15m['close']
             
             # 4. ATR (15m)
             df_15m['atr'] = ta.atr(df_15m['high'], df_15m['low'], df_15m['close'], length=14) / df_15m['close']
@@ -1050,25 +1184,56 @@ class MLSignalStrategyV2(Strategy):
             
             # === 30m Features ===
             # 1. DMI
-            dmi_30m = ta.adx(df_30m['high'], df_30m['low'], df_30m['close'], length=14)
-            if dmi_30m is None:
+            try:
+                dmi_30m = ta.adx(df_30m['high'], df_30m['low'], df_30m['close'], length=14)
+                if dmi_30m is None or len(dmi_30m) == 0:
+                    _py_logger.warning(f"[WARN] DMI calculation failed for {df_30m.index[-1]}")
+                    return None
+                df_30m['dmp'] = dmi_30m.iloc[:, 1] / 100.0
+                df_30m['dmn'] = dmi_30m.iloc[:, 2] / 100.0
+            except Exception as e:
+                _py_logger.error(f"[ERROR] DMI calculation failed: {e}")
                 return None
-            df_30m['dmp'] = dmi_30m.iloc[:, 1] / 100.0
-            df_30m['dmn'] = dmi_30m.iloc[:, 2] / 100.0
             
             # 2. Stochastic (30m)
-            stoch_30m = ta.stoch(df_30m['high'], df_30m['low'], df_30m['close'], k=14, d=3, smooth_k=3)
-            if stoch_30m is None:
+            try:
+                stoch_30m = ta.stoch(df_30m['high'], df_30m['low'], df_30m['close'], k=14, d=3, smooth_k=3)
+                if stoch_30m is None or len(stoch_30m) == 0:
+                    # Fallback: Use RSI if Stochastic fails
+                    rsi_30m = ta.rsi(df_30m['close'], length=14)
+                    if rsi_30m is not None and len(rsi_30m) > 0:
+                        rsi_val = rsi_30m.iloc[-1] / 100.0  # Convert to 0-1 range
+                        df_30m['stoch_k'] = rsi_val
+                        df_30m['stoch_d'] = rsi_val  # Use same value for both
+                        _py_logger.warning(f"[WARN] Stochastic failed, using RSI fallback for {df_30m.index[-1]}")
+                    else:
+                        _py_logger.warning(f"[WARN] Stochastic and RSI failed for {df_30m.index[-1]}")
+                        return None
+                else:
+                    df_30m['stoch_k'] = stoch_30m.iloc[:, 0] / 100.0
+                    df_30m['stoch_d'] = stoch_30m.iloc[:, 1] / 100.0
+            except Exception as e:
+                _py_logger.error(f"[ERROR] Stochastic calculation failed: {e}")
                 return None
-            df_30m['stoch_k'] = stoch_30m.iloc[:, 0] / 100.0
-            df_30m['stoch_d'] = stoch_30m.iloc[:, 1] / 100.0
             
             # 3. WMA Difference (30m)
-            wma_short = ta.wma(df_30m['close'], length=8)
-            wma_long = ta.wma(df_30m['close'], length=23)
-            if wma_short is not None and wma_long is not None:
-                df_30m['wma_diff'] = 100 * (wma_short - wma_long) / wma_long
-            else:
+            try:
+                wma_short = ta.wma(df_30m['close'], length=8)
+                wma_long = ta.wma(df_30m['close'], length=23)
+                if wma_short is not None and wma_long is not None and len(wma_short) > 0 and len(wma_long) > 0:
+                    df_30m['wma_diff'] = 100 * (wma_short - wma_long) / wma_long
+                else:
+                    # Fallback: Use SMA difference if WMA fails
+                    sma_short = ta.sma(df_30m['close'], length=8)
+                    sma_long = ta.sma(df_30m['close'], length=23)
+                    if sma_short is not None and sma_long is not None and len(sma_short) > 0 and len(sma_long) > 0:
+                        df_30m['wma_diff'] = 100 * (sma_short - sma_long) / sma_long
+                        _py_logger.warning(f"[WARN] WMA failed, using SMA fallback for {df_30m.index[-1]}")
+                    else:
+                        _py_logger.warning(f"[WARN] All MA calculations failed for {df_30m.index[-1]}")
+                        return None
+            except Exception as e:
+                _py_logger.error(f"[ERROR] WMA calculation failed: {e}")
                 return None
             
             # Get latest values
