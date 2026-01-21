@@ -15,6 +15,9 @@ env/
 # *.env
 !.env.example
 
+# Ad-hoc test env artifacts
+.env.mtf_v2_test_Test_*
+
 # Data and logs
 # data/historical/*.csv
 # data/historical/*.parquet

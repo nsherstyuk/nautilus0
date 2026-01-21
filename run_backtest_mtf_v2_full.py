@@ -418,6 +418,10 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     """Generate all report files."""
     output_dir.mkdir(parents=True, exist_ok=True)
     
+    # Always copy .env file, even with 0 trades
+    shutil.copy(PROJECT_ROOT / '.env.mtf_v2', output_dir / '.env.mtf_v2')
+    print(f"Saved: .env.mtf_v2")
+    
     if not trades:
         print("No trades to analyze")
         return
@@ -436,20 +440,34 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     # === performance_by_hour.csv ===
     # Note: Hours are in config timezone (EST or UTC)
     config_tz = config.get('config_timezone', 'UTC').upper()
+
+    # Include all hours, not just those with trades.
+    try:
+        trade_start_hour = int(config.get('trade_start_hour', 0))
+        trade_end_hour = int(config.get('trade_end_hour', 24))
+        if not (0 <= trade_start_hour <= 23 and 1 <= trade_end_hour <= 24 and trade_start_hour < trade_end_hour):
+            raise ValueError("Invalid trade hour range")
+        all_hours = list(range(trade_start_hour, trade_end_hour))
+    except Exception:
+        all_hours = list(range(24))
+
     hour_stats = df.groupby('entry_hour').agg({
         'pnl': ['sum', 'count', lambda x: (x > 0).mean() * 100]
     }).round(2)
     hour_stats.columns = ['pnl', 'trades', 'win_rate']
+    hour_stats = hour_stats.reindex(all_hours, fill_value=0)
     hour_stats.index.name = f'hour_{config_tz}'
     hour_stats.to_csv(output_dir / 'performance_by_hour.csv')
     print(f"Saved: performance_by_hour.csv (hours in {config_tz})")
     
     # === performance_by_weekday.csv ===
     weekday_names = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
+    all_weekdays = list(range(7))
     weekday_stats = df.groupby('entry_weekday').agg({
         'pnl': ['sum', 'count', lambda x: (x > 0).mean() * 100]
     }).round(2)
     weekday_stats.columns = ['pnl', 'trades', 'win_rate']
+    weekday_stats = weekday_stats.reindex(all_weekdays, fill_value=0)
     weekday_stats.index = weekday_stats.index.map(weekday_names)
     weekday_stats.to_csv(output_dir / 'performance_by_weekday.csv')
     print(f"Saved: performance_by_weekday.csv")
@@ -468,12 +486,14 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     print(f"Hour statistics are in {config_timezone} timezone")
     
     pivot_pnl = df.pivot_table(values='pnl', index='entry_hour', columns='entry_weekday', aggfunc='sum', fill_value=0)
+    pivot_pnl = pivot_pnl.reindex(index=all_hours, columns=all_weekdays, fill_value=0)
     pivot_pnl.columns = [weekday_names.get(c, c) for c in pivot_pnl.columns]
     pivot_pnl.index.name = f'hour_{config_timezone}'
     pivot_pnl.to_csv(output_dir / 'hour_weekday_pnl_matrix.csv', float_format='%.1f')
     print(f"Saved: hour_weekday_pnl_matrix.csv")
     
     pivot_trades = df.pivot_table(values='pnl', index='entry_hour', columns='entry_weekday', aggfunc='count', fill_value=0)
+    pivot_trades = pivot_trades.reindex(index=all_hours, columns=all_weekdays, fill_value=0)
     pivot_trades.columns = [weekday_names.get(c, c) for c in pivot_trades.columns]
     pivot_trades.index.name = f'hour_{config_timezone}'
     pivot_trades.to_csv(output_dir / 'hour_weekday_trades_matrix.csv')
@@ -484,6 +504,7 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
         return (x > 0).mean() * 100 if len(x) > 0 else 0
     
     pivot_wr = df.pivot_table(values='pnl', index='entry_hour', columns='entry_weekday', aggfunc=win_rate_agg, fill_value=0)
+    pivot_wr = pivot_wr.reindex(index=all_hours, columns=all_weekdays, fill_value=0)
     pivot_wr.columns = [weekday_names.get(c, c) for c in pivot_wr.columns]
     pivot_wr.index.name = f'hour_{config_timezone}'
     pivot_wr.to_csv(output_dir / 'hour_weekday_winrate_matrix.csv')
@@ -593,10 +614,6 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
             f.write(f"{weekday} - ${row['pnl']:,.2f} ({int(row['trades'])} trades, {row['win_rate']:.1f}% win rate)\n")
     
     print(f"Saved: summary.txt")
-    
-    # === Save config ===
-    shutil.copy(PROJECT_ROOT / '.env.mtf_v2', output_dir / '.env.mtf_v2')
-    print(f"Saved: .env.mtf_v2")
     
     # Print summary
     print("\n" + "=" * 80)

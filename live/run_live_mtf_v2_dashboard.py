@@ -355,14 +355,22 @@ def main() -> int:
             "stall_check_bars": live_config.stall_check_bars,
             "stall_min_profit_atr": live_config.stall_min_profit_atr,
             "stall_sl_atr": live_config.stall_sl_atr,
+            "meta_filter_mama_enabled": live_config.meta_filter_mama_enabled,
+            "meta_filter_mama_min_diff": live_config.meta_filter_mama_min_diff,
+            "meta_filter_dmi_enabled": live_config.meta_filter_dmi_enabled,
+            "meta_filter_dmi_min_dmp": live_config.meta_filter_dmi_min_dmp,
         },
     )
+
+    log_dir = Path("logs/trader_logs")
+    log_dir.mkdir(parents=True, exist_ok=True)
 
     node_config = TradingNodeConfig(
         trader_id="TRADER-V2-001",
         logging=LoggingConfig(
             log_level="INFO",
             log_level_file="DEBUG",
+            log_directory=str(log_dir.resolve()),
             log_component_levels={
                 "Portfolio": "WARNING",
                 "Cache": "WARNING",
@@ -417,7 +425,7 @@ def main() -> int:
     # Pause gating: wrap _execute_entry
     original_execute_entry = getattr(strategy_instance, "_execute_entry", None)
 
-    def _execute_entry_wrapped(bar, atr_normalized, direction):
+    def _execute_entry_wrapped(*args, **kwargs):
         if state.get("paused"):
             msg = "[PAUSE] New entry blocked (paused)"
             logging.getLogger("MLSignalStrategy_V2").info(msg)
@@ -427,7 +435,7 @@ def main() -> int:
             return
         if original_execute_entry is None:
             return
-        return original_execute_entry(bar, atr_normalized, direction)
+        return original_execute_entry(*args, **kwargs)
 
     if original_execute_entry is not None:
         setattr(strategy_instance, "_execute_entry", _execute_entry_wrapped)

@@ -148,9 +148,19 @@ def parse_log_file(log_file, start_date, end_date):
 
 def get_account_info():
     """Get current account info from NautilusTrader logs."""
-    # Find the latest TRADER-V2 log file in project root
     project_root = Path(__file__).parent
-    trader_logs = list(project_root.glob("TRADER-V2-001_*.log"))
+
+    # Prefer logs/trader_logs (configured by live runners), but keep a fallback
+    # to project root for older runs.
+    candidate_dirs = [
+        project_root / "logs" / "trader_logs",
+        project_root,
+    ]
+
+    trader_logs = []
+    for log_dir in candidate_dirs:
+        if log_dir.exists():
+            trader_logs.extend(log_dir.glob("TRADER-V2-001_*.log"))
     
     if not trader_logs:
         return None

@@ -1,22 +1,28 @@
 """
-Live MTF V2 Trading - Three-Position Bracket Approach.
+Live MTF V2 Trading - Entry Confirmed version.
 
-This uses the V2 strategy that opens 3 separate positions instead of partial closes:
-- POS1 (70%): Quick win at 0.9x ATR
-- POS2 (25%): Extended at 1.75x ATR, SL->BE after POS1 TP
-- POS3 (5%):  Runner at 1.75x ATR, converts to trailing after POS2 TP
+This is an additional live runner which keeps the existing live V2 code intact.
 
-Uses ib_insync for bar data and NautilusTrader for execution.
+Key points:
+- Uses MLSignalStrategyV2EntryConfirmed.
+- Subscribes to BOTH 15m bars (signals/features) and 1m bars (entry confirmation).
+- Passes the same filtering/gating configuration used by the entry-confirmed replay backtest:
+  prediction_threshold, session/excluded-hours, ATR min/max, cooldown, and meta-filters.
+- Entry confirmation knobs are controlled by .env.mtf_v2:
+  MTF2_ENTRY_CONFIRM_ENABLED, MTF2_ENTRY_CONFIRM_BARS, MTF2_ENTRY_CONFIRM_THRESHOLD, MTF2_ENTRY_CONFIRM_MAX_WAIT_BARS.
+
+Execution remains via NautilusTrader IBKR adapter; bar streaming uses ib_insync (IBBarStreamer).
 """
+
 from __future__ import annotations
 
 import logging
 import logging.config
+import os
 import signal
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 import yaml
 
@@ -26,16 +32,14 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from patches import apply_ib_connection_patch
+
 apply_ib_connection_patch()
 
-from nautilus_trader.trading.config import StrategyFactory
-from nautilus_trader.adapters.interactive_brokers.common import IB_VENUE
 from nautilus_trader.adapters.interactive_brokers.config import (
     IBMarketDataTypeEnum,
     InteractiveBrokersDataClientConfig,
     InteractiveBrokersExecClientConfig,
     InteractiveBrokersInstrumentProviderConfig,
-    SymbologyMethod,
 )
 from nautilus_trader.adapters.interactive_brokers.factories import (
     InteractiveBrokersLiveDataClientFactory,
@@ -44,29 +48,50 @@ from nautilus_trader.adapters.interactive_brokers.factories import (
 from nautilus_trader.config import (
     ImportableStrategyConfig,
     LiveDataEngineConfig,
-    LiveExecEngineConfig,
     LoggingConfig,
     RoutingConfig,
     TradingNodeConfig,
 )
 from nautilus_trader.live.node import TradingNode
+from nautilus_trader.trading.config import StrategyFactory
 
 from config.ibkr_config import get_ibkr_config
 from config.mtf_v2_config import load_mtf_v2_config, print_mtf_v2_config
 from live.ib_bar_streamer import IBBarStreamer
 
-logger = logging.getLogger("live_v2")
+logger = logging.getLogger("live_v2_entry_confirmed")
 
 
 class PortfolioFilter(logging.Filter):
-    """Filter out noisy Portfolio/Cache/RiskEngine messages from console."""
+    """Filter to suppress noisy portfolio update messages."""
+    
     def filter(self, record):
-        # Block Portfolio AccountState updates - these are extremely noisy
-        if 'Portfolio' in record.name and 'Updated AccountState' in record.getMessage():
+        if "Portfolio" in record.name and "Updated AccountState" in record.getMessage():
             return False
-        # Block other noisy update messages
-        if any(x in record.name for x in ['Cache', 'RiskEngine', 'DataEngine']):
-            if 'Updated' in record.getMessage():
+        if any(x in record.name for x in ["Cache", "RiskEngine", "DataEngine"]):
+            if "Updated" in record.getMessage():
+                return False
+        # Suppress noisy DEBUG logs on console.
+        # Keep these in file logs (log_level_file=DEBUG), but hide from StreamHandlers.
+        if record.levelno == logging.DEBUG:
+            # Hard drop the known spammy Nautilus/IBKR protocol logs.
+            if record.name.startswith("TRADER-V2-EC-001.InteractiveBrokersClient-"):
+                return False
+            if record.name.startswith("TRADER-V2-EC-001.ExecEngine"):
+                return False
+
+            noisy_names = (
+                "InteractiveBrokersClient",
+                "InteractiveBrokersInstrumentProvider",
+                "DataClient-INTERACTIVE_BROKERS",
+                "ExecEngine",
+                "MessageBus",
+            )
+            if any(n in record.name for n in noisy_names):
+                return False
+            # Also drop very chatty protocol strings.
+            msg = record.getMessage()
+            if any(x in msg for x in ["Msg received", "Msg handled", "Msg buffer", "TWS API", "Checking in-flight orders status"]):
                 return False
         return True
 
@@ -87,49 +112,44 @@ def setup_logging(log_dir: Path, start_time: str) -> logging.Logger:
         "trades_file": "trades.log",
         "errors_file": "errors.log",
     }
-    
+
     for handler_name, filename in handler_mappings.items():
         if handler_name in logging_config.get("handlers", {}):
             logging_config["handlers"][handler_name]["filename"] = str(log_dir / filename)
 
     logging.config.dictConfig(logging_config)
-    
-    # Add filter to console handler to block noisy messages
+
+    # Add filter to ALL console stream handlers (stdout/stderr) to block noisy messages.
     for handler in logging.getLogger().handlers:
-        if isinstance(handler, logging.StreamHandler) and handler.stream == sys.stdout:
+        if isinstance(handler, logging.StreamHandler):
             handler.addFilter(PortfolioFilter())
-    
+            # Ensure console stream handlers are not set to DEBUG.
+            if handler.level == logging.DEBUG:
+                handler.setLevel(logging.INFO)
+
     # Add timestamped console log file (unique per run)
-    console_log_file = log_dir / f"console_{start_time}.log"
-    console_handler = logging.FileHandler(console_log_file, mode='w')
+    console_log_file = log_dir / f"console_entry_confirmed_{start_time}.log"
+    console_handler = logging.FileHandler(console_log_file, mode="w")
     console_handler.setLevel(logging.DEBUG)
-    console_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    console_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     console_handler.setFormatter(console_formatter)
-    
-    # Add to root logger to capture ALL output
+
     root_logger = logging.getLogger()
     root_logger.addHandler(console_handler)
-    
-    # Suppress noisy loggers that clutter console output
-    # These still log to files but not to console
+
     logging.getLogger("nautilus_trader.portfolio").setLevel(logging.WARNING)
     logging.getLogger("nautilus_trader.cache").setLevel(logging.WARNING)
     logging.getLogger("nautilus_trader.common").setLevel(logging.WARNING)
     logging.getLogger("nautilus_trader.execution").setLevel(logging.WARNING)
     logging.getLogger("nautilus_trader.risk").setLevel(logging.WARNING)
-    
-    # Suppress trader-specific loggers (these use trader_id prefix)
-    logging.getLogger("TRADER-V2-001.Portfolio").setLevel(logging.WARNING)
-    logging.getLogger("TRADER-V2-001.Cache").setLevel(logging.WARNING)
-    logging.getLogger("TRADER-V2-001.RiskEngine").setLevel(logging.WARNING)
-    logging.getLogger("TRADER-V2-001.ExecEngine").setLevel(logging.WARNING)
-    
-    # Keep ib_insync at INFO for connection monitoring - we need to see disconnects/reconnects
-    # logging.getLogger("ib_insync.wrapper").setLevel(logging.WARNING)
-    # logging.getLogger("ib_insync.client").setLevel(logging.WARNING)
-    
-    log = logging.getLogger("live_v2")
-    log.info("V2 Live logging configured. Logs directory: %s", log_dir)
+    logging.getLogger("nautilus_trader.adapters.interactive_brokers").setLevel(logging.WARNING)
+    # Some Nautilus loggers include trader-id prefixes; set these defensively too.
+    logging.getLogger("TRADER-V2-EC-001.InteractiveBrokersClient-018").setLevel(logging.INFO)
+    logging.getLogger("TRADER-V2-EC-001.InteractiveBrokersClient-019").setLevel(logging.INFO)
+    logging.getLogger("TRADER-V2-EC-001.ExecEngine").setLevel(logging.INFO)
+
+    log = logging.getLogger("live_v2_entry_confirmed")
+    log.info("V2 Entry Confirmed live logging configured. Logs directory: %s", log_dir)
     log.info("Console log (this run): %s", console_log_file)
     log.info("Strategy log: %s", log_dir / "strategy.log")
     return log
@@ -144,25 +164,66 @@ def _resolve_market_data_type(value: str) -> IBMarketDataTypeEnum:
     return mapping.get(value.upper(), IBMarketDataTypeEnum.DELAYED_FROZEN)
 
 
+def _env_bool(name: str, default: bool) -> bool:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def _env_int(name: str, default: int) -> int:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    try:
+        return int(raw)
+    except Exception:
+        return default
+
+
+def _env_float(name: str, default: float) -> float:
+    raw = os.getenv(name)
+    if raw is None:
+        return default
+    try:
+        return float(raw)
+    except Exception:
+        return default
+
+
 def main() -> int:
-    """Entry point for V2 live trading with three-position brackets."""
-    
+    """Entry point for V2 Entry Confirmed live trading."""
+
     # Load V2 configuration
     live_config = load_mtf_v2_config()
-    
+
+    # Entry confirmation env knobs
+    entry_confirmation_enabled = _env_bool("MTF2_ENTRY_CONFIRM_ENABLED", True)
+    entry_confirmation_bars = _env_int("MTF2_ENTRY_CONFIRM_BARS", 2)
+    entry_confirmation_threshold = _env_float("MTF2_ENTRY_CONFIRM_THRESHOLD", 0.2)
+    entry_max_wait_bars = _env_int("MTF2_ENTRY_CONFIRM_MAX_WAIT_BARS", 5)
+
     # Setup logging with timestamp
     start_time = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_dir = Path("logs/live_mtf")  # Use live_mtf directory
+    log_dir = Path("logs/live_mtf")
     setup_logging(log_dir, start_time)
-    
+
     logger.info("=" * 80)
-    logger.info("MTF V2 LIVE TRADING - Three-Position Bracket Strategy")
+    logger.info("MTF V2 LIVE TRADING - ENTRY CONFIRMED VERSION")
     logger.info("=" * 80)
     print_mtf_v2_config(live_config)
-    
-    # Get IBKR config
-    ibkr = get_ibkr_config()
-    
+
+    logger.info(
+        "Entry Confirmation: enabled=%s bars=%s threshold=%s max_wait=%s",
+        entry_confirmation_enabled,
+        entry_confirmation_bars,
+        entry_confirmation_threshold,
+        entry_max_wait_bars,
+    )
+
+    # Get IBKR config (kept for parity with existing runner)
+    _ = get_ibkr_config()
+
     logger.info(
         "IBKR connection: host=%s port=%s client_id=%s account=%s",
         live_config.ib_host,
@@ -170,18 +231,16 @@ def main() -> int:
         live_config.ib_client_id,
         live_config.ib_account,
     )
-    
-    # Build NautilusTrader node (for execution only)
+
     instrument_provider_config = InteractiveBrokersInstrumentProviderConfig(
         load_ids=frozenset([live_config.instrument]),
         min_expiry_days=10,
         build_futures_chain=False,
         build_options_chain=False,
     )
-    
+
     market_data_type = _resolve_market_data_type(live_config.ib_market_data_type)
-    
-    # Data client (needed for instrument loading)
+
     data_client_config = InteractiveBrokersDataClientConfig(
         ibg_host=live_config.ib_host,
         ibg_port=live_config.ib_port,
@@ -190,22 +249,21 @@ def main() -> int:
         market_data_type=market_data_type,
         instrument_provider=instrument_provider_config,
     )
-    
+
     exec_client_config = InteractiveBrokersExecClientConfig(
         ibg_host=live_config.ib_host,
         ibg_port=live_config.ib_port,
-        ibg_client_id=live_config.ib_client_id + 1,  # Different client ID
+        ibg_client_id=live_config.ib_client_id + 1,
         account_id=live_config.ib_account,
         instrument_provider=instrument_provider_config,
         routing=RoutingConfig(default=True),
     )
-    
-    # Build V2 strategy config
+
+    # Strategy config: match entry-confirmed replay backtest wiring
     strategy_config = ImportableStrategyConfig(
-        strategy_path="strategies.ml_strategy_mtf_v2:MLSignalStrategyV2",
-        config_path="strategies.ml_strategy_mtf_v2:MLSignalStrategyV2Config",
+        strategy_path="strategies.ml_strategy_mtf_v2_entry_confirmed:MLSignalStrategyV2EntryConfirmed",
+        config_path="strategies.ml_strategy_mtf_v2_entry_confirmed:MLSignalStrategyV2EntryConfirmedConfig",
         config={
-            "order_id_tag": "V2",
             "instrument_id": live_config.instrument,
             "bar_type": live_config.bar_type,
             "model_path": str(Path(live_config.model_path).resolve()),
@@ -214,60 +272,53 @@ def main() -> int:
             "pos1_fraction": live_config.pos1_fraction,
             "pos2_fraction": live_config.pos2_fraction,
             "pos3_fraction": live_config.pos3_fraction,
-            # Stop loss / Take profit
+            # SL/TP
             "sl_atr_mult": live_config.sl_atr_mult,
             "pos1_tp_atr_mult": live_config.pos1_tp_atr_mult,
             "pos2_tp_atr_mult": live_config.pos2_tp_atr_mult,
             "pos3_tp_atr_mult": live_config.pos3_tp_atr_mult,
-            # Trailing stop for POS3
-            "trailing_activation_atr_mult": live_config.trailing_activation_atr_mult,
             "trailing_distance_atr_mult": live_config.trailing_distance_atr_mult,
-            # Session filters
+            # Filters
+            "prediction_threshold": live_config.prediction_threshold,
             "trade_start_hour": live_config.trade_start_hour,
             "trade_end_hour": live_config.trade_end_hour,
             "entry_cooldown_bars": live_config.entry_cooldown_bars,
-            "prediction_threshold": live_config.prediction_threshold,
             "min_atr": live_config.min_atr,
             "max_atr": live_config.max_atr,
-            # Weekday-specific excluded hours
             "excluded_hours_mode": live_config.excluded_hours_mode,
-            "config_timezone": live_config.config_timezone,  # 'EST' or 'UTC'
-            "excluded_hours_monday": ",".join(map(str, live_config.excluded_hours_monday)),
-            "excluded_hours_tuesday": ",".join(map(str, live_config.excluded_hours_tuesday)),
-            "excluded_hours_wednesday": ",".join(map(str, live_config.excluded_hours_wednesday)),
-            "excluded_hours_thursday": ",".join(map(str, live_config.excluded_hours_thursday)),
-            "excluded_hours_friday": ",".join(map(str, live_config.excluded_hours_friday)),
-            "excluded_hours_saturday": ",".join(map(str, live_config.excluded_hours_saturday)),
-            "excluded_hours_sunday": ",".join(map(str, live_config.excluded_hours_sunday)),
-            # Risk
-            "max_positions": live_config.max_positions,
-            # Stall detection
-            "stall_detection_enabled": live_config.stall_detection_enabled,
-            "stall_check_bars": live_config.stall_check_bars,
-            "stall_min_profit_atr": live_config.stall_min_profit_atr,
-            "stall_sl_atr": live_config.stall_sl_atr,
-            # Meta-Filters
-            "meta_filter_mama_enabled": live_config.meta_filter_mama_enabled,
-            "meta_filter_mama_min_diff": live_config.meta_filter_mama_min_diff,
-            "meta_filter_dmi_enabled": live_config.meta_filter_dmi_enabled,
-            "meta_filter_dmi_min_dmp": live_config.meta_filter_dmi_min_dmp,
+            "config_timezone": live_config.config_timezone,
+            "excluded_hours_monday": live_config.excluded_hours_monday,
+            "excluded_hours_tuesday": live_config.excluded_hours_tuesday,
+            "excluded_hours_wednesday": live_config.excluded_hours_wednesday,
+            "excluded_hours_thursday": live_config.excluded_hours_thursday,
+            "excluded_hours_friday": live_config.excluded_hours_friday,
+            "excluded_hours_saturday": live_config.excluded_hours_saturday,
+            "excluded_hours_sunday": live_config.excluded_hours_sunday,
+            # Entry confirmation
+            "entry_confirmation_enabled": entry_confirmation_enabled,
+            "entry_confirmation_bars": entry_confirmation_bars,
+            "entry_confirmation_threshold": entry_confirmation_threshold,
+            "entry_max_wait_bars": entry_max_wait_bars,
         },
     )
 
     log_dir = Path("logs/trader_logs")
     log_dir.mkdir(parents=True, exist_ok=True)
-    
+
     node_config = TradingNodeConfig(
-        trader_id="TRADER-V2-001",
+        trader_id="TRADER-V2-EC-001",
         logging=LoggingConfig(
-            log_level="INFO",
-            log_level_file="DEBUG",
+            log_level="INFO",  # Console: INFO level (strategy decision logs are INFO)
+            log_level_file="DEBUG",  # File: DEBUG level for full troubleshooting
             log_directory=str(log_dir.resolve()),
             log_component_levels={
-                "Portfolio": "WARNING",  # Suppress noisy AccountState updates
+                "Portfolio": "WARNING",
                 "Cache": "WARNING",
                 "RiskEngine": "WARNING",
                 "DataEngine": "WARNING",
+                "MessageBus": "WARNING",
+                "ExecEngine": "WARNING",
+                "InteractiveBrokersClient": "WARNING",
             },
         ),
         data_engine=LiveDataEngineConfig(
@@ -282,71 +333,50 @@ def main() -> int:
         timeout_portfolio=30.0,
         timeout_disconnection=10.0,
     )
-    
+
     node = TradingNode(config=node_config)
     node.add_data_client_factory("INTERACTIVE_BROKERS", InteractiveBrokersLiveDataClientFactory)
     node.add_exec_client_factory("INTERACTIVE_BROKERS", InteractiveBrokersLiveExecClientFactory)
     node.build()
-    
-    # Apply filter to ALL console handlers after node is built
-    portfolio_filter = PortfolioFilter()
-    for handler in logging.getLogger().handlers:
-        if isinstance(handler, logging.StreamHandler):
-            handler.addFilter(portfolio_filter)
-            logger.info(f"Added PortfolioFilter to handler: {handler}")
-    
-    # Also try setting logger levels (belt and suspenders approach)
-    logging.getLogger("TRADER-V2-001.Portfolio").setLevel(logging.WARNING)
-    logging.getLogger("TRADER-V2-001.Cache").setLevel(logging.WARNING)
-    logging.getLogger("TRADER-V2-001.RiskEngine").setLevel(logging.WARNING)
-    logging.getLogger("TRADER-V2-001.ExecEngine").setLevel(logging.WARNING)
-    logging.getLogger("TRADER-V2-001.DataEngine").setLevel(logging.WARNING)
-    
+
     # Create strategy instance
     strategy_instance = StrategyFactory.create(strategy_config)
     node.trader.add_strategy(strategy_instance)
-    
+
     logger.info("=" * 80)
-    logger.info("V2 STRATEGY - THREE-POSITION BRACKETS")
+    logger.info("V2 ENTRY CONFIRMED STRATEGY")
     logger.info("=" * 80)
-    logger.info(f"Instrument: {live_config.instrument}")
-    logger.info(f"Bar Type: {live_config.bar_type}")
-    logger.info(f"Position Sizes: POS1={live_config.total_position_size * live_config.pos1_fraction:.0f}, "
-                f"POS2={live_config.total_position_size * live_config.pos2_fraction:.0f}, "
-                f"POS3={live_config.total_position_size * live_config.pos3_fraction:.0f}")
-    logger.info(f"TP Targets: POS1={live_config.pos1_tp_atr_mult}x, POS2={live_config.pos2_tp_atr_mult}x, POS3={live_config.pos3_tp_atr_mult}x ATR")
-    logger.info(f"SL: {live_config.sl_atr_mult}x ATR")
+    logger.info("Instrument: %s", live_config.instrument)
+    logger.info("Bar Type (signal): %s", live_config.bar_type)
     logger.info("Bar data: ib_insync (keepUpToDate=True)")
     logger.info("Execution: NautilusTrader IBKR adapter")
     logger.info("=" * 80)
-    
+
     # Create ib_insync bar streamer with different client ID
     bar_streamer = IBBarStreamer(
         host=live_config.ib_host,
         port=live_config.ib_port,
         client_id=live_config.ib_client_id + 2,
     )
-    
-    # Connect bar streamer
+
     logger.info("Connecting ib_insync bar streamer...")
     if not bar_streamer.connect():
         logger.error("Failed to connect bar streamer")
         return 1
-    
+
     # Parse bar size from bar_type (e.g., "EUR/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL")
-    bar_spec = live_config.bar_type.split('-', 1)[1]  # "15-MINUTE-MID-EXTERNAL"
-    parts = bar_spec.split('-')
+    bar_spec = live_config.bar_type.split("-", 1)[1]
+    parts = bar_spec.split("-")
     step = int(parts[0])
     unit = parts[1].upper()
-    
+
     if unit == "MINUTE":
-        bar_size = f"{step} mins" if step > 1 else "1 min"
+        bar_size_15m = f"{step} mins" if step > 1 else "1 min"
     elif unit == "HOUR":
-        bar_size = f"{step} hour" if step == 1 else f"{step} hours"
+        bar_size_15m = f"{step} hour" if step == 1 else f"{step} hours"
     else:
-        bar_size = f"{step} mins"
-    
-    # Determine what_to_show from bar_type
+        bar_size_15m = f"{step} mins"
+
     price_type = parts[2].upper() if len(parts) > 2 else "MID"
     if price_type == "MID":
         what_to_show = "MIDPOINT"
@@ -356,142 +386,138 @@ def main() -> int:
         what_to_show = "ASK"
     else:
         what_to_show = "TRADES"
-    
-    # Subscribe to bars via ib_insync FIRST (before NautilusTrader starts its event loop)
+
     symbol = live_config.symbol
-    logger.info(f"Subscribing to {symbol} {bar_size} bars via ib_insync...")
-    
-    success = bar_streamer.subscribe_bars_sync(
+
+    bar_type_str_15m = live_config.bar_type
+    if unit == "MINUTE":
+        bar_type_str_1m = live_config.bar_type.replace(f"{step}-MINUTE", "1-MINUTE")
+    elif unit == "HOUR":
+        bar_type_str_1m = live_config.bar_type.replace(f"{step}-HOUR", "1-MINUTE")
+    else:
+        bar_type_str_1m = live_config.bar_type.replace(f"{step}-{unit}", "1-MINUTE")
+
+    logger.info("Subscribing to %s %s bars via ib_insync...", symbol, bar_size_15m)
+    ok_15m = bar_streamer.subscribe_bars_sync(
         symbol=symbol,
-        bar_size=bar_size,
+        bar_size=bar_size_15m,
         what_to_show=what_to_show,
-        callback=strategy_instance.on_bar,  # Feed bars directly to strategy
+        callback=strategy_instance.on_bar,
         use_rth=False,
-        duration="2 D",  # Get 2 days of history for warmup
+        duration="2 D",
+        bar_type_str=bar_type_str_15m,
     )
-    
-    if not success:
-        logger.error("Failed to subscribe to bars")
+
+    logger.info("Subscribing to %s 1 min bars via ib_insync...", symbol)
+    ok_1m = bar_streamer.subscribe_bars_sync(
+        symbol=symbol,
+        bar_size="1 min",
+        what_to_show=what_to_show,
+        callback=strategy_instance.on_bar,
+        use_rth=False,
+        duration="2 D",
+        bar_type_str=bar_type_str_1m,
+    )
+
+    if not ok_15m or not ok_1m:
+        logger.error("Failed to subscribe to required bar streams (15m=%s, 1m=%s)", ok_15m, ok_1m)
         bar_streamer.disconnect()
         return 1
-    
-    logger.info("Bar subscription active - historical bars delivered for warmup")
+
+    logger.info("Bar subscriptions active (15m + 1m) - historical bars delivered for warmup")
     logger.info("Starting NautilusTrader node...")
-    
-    # Run both ib_insync and NautilusTrader together
-    return_code = 0
+
     import threading
     import time
-    
+
+    return_code = 0
+
+    def _handle_signal(_sig, _frame):
+        raise KeyboardInterrupt
+
+    signal.signal(signal.SIGINT, _handle_signal)
+
     try:
-        # Start NautilusTrader node in a separate thread
         node_thread = threading.Thread(target=node.run, daemon=True)
         node_thread.start()
         logger.info("NautilusTrader node started in background thread")
-        
-        # Wait for instrument to load (strategy will buffer bars during this time)
+
         logger.info("Waiting for instrument to load into cache...")
-        for i in range(15):  # Wait up to 15 seconds
+        for i in range(15):
             time.sleep(1)
             instrument = strategy_instance.cache.instrument(strategy_instance.instrument_id)
             if instrument:
-                logger.info(f"Instrument loaded after {i+1}s: {instrument.id}")
+                logger.info("Instrument loaded after %ss: %s", i + 1, instrument.id)
                 break
         else:
             logger.warning("Instrument still not loaded after 15s - strategy will wait for it")
-        
-        # Run main loop - ib_insync processes events via background thread
-        logger.info("V2 Live trading active. Press Ctrl+C to stop.")
-        
-        # Enable auto-reconnect for bar streamer
+
+        logger.info("V2 Entry Confirmed live trading active. Press Ctrl+C to stop.")
+
         bar_streamer._running = True
-        
-        # Keep main thread alive - ib_insync handles events in background
-        # Health check runs every 60 seconds to detect stale connections
-        health_check_interval = 60  # seconds
-        status_report_interval = 1800  # 30 minutes
+
+        health_check_interval = 60
+        status_report_interval = 1800
         last_health_check = time.time()
         last_status_report = time.time()
-        
-        logger.info(f"Health check enabled: every {health_check_interval}s, max bar age 20 mins")
-        logger.info(f"Status report: every {status_report_interval//60} minutes")
-        
+
+        logger.info("Health check enabled: every %ss, max bar age 20 mins", health_check_interval)
+        logger.info("Status report: every %s minutes", status_report_interval // 60)
+
         while True:
-            time.sleep(1)  # Check every second
-            
-            # Check if reconnection is needed (execute in main thread!)
+            time.sleep(1)
+
             if bar_streamer.needs_reconnect():
                 logger.info("Executing reconnection from main thread...")
                 bar_streamer._reconnect()
                 continue
-            
-            # Skip other checks if currently reconnecting
+
             if bar_streamer.is_reconnecting():
                 continue
-            
+
             now = time.time()
-            
-            # Periodic status report (every 30 minutes)
+
             if now - last_status_report >= status_report_interval:
                 last_status_report = now
                 try:
-                    # Get portfolio state from node
                     portfolio = node.trader.portfolio
                     account = portfolio.account(node.trader.account_ids[0]) if node.trader.account_ids else None
-                    
                     if account:
                         logger.info("=" * 60)
                         logger.info("STATUS REPORT")
-                        logger.info(f"Account Balance: {account.balance_total()}")
-                        logger.info(f"Unrealized PnL: {account.unrealized_pnl()}")
-                        logger.info(f"Open Positions: {len(portfolio.positions_open())}")
-                        
-                        # Bar streaming status
+                        logger.info("Account Balance: %s", account.balance_total())
+                        logger.info("Unrealized PnL: %s", account.unrealized_pnl())
+                        logger.info("Open Positions: %s", len(portfolio.positions_open()))
                         bar_age = bar_streamer.get_last_bar_age_seconds()
                         if bar_age is not None:
-                            logger.info(f"Last bar received: {bar_age:.0f}s ago")
-                        logger.info(f"IB Connected: {bar_streamer.is_connected()}")
+                            logger.info("Last bar received: %ss ago", int(bar_age))
+                        logger.info("IB Connected: %s", bar_streamer.is_connected())
                         logger.info("=" * 60)
                 except Exception as e:
-                    logger.warning(f"Could not generate status report: {e}")
-            
-            # Periodic health check (ib_insync handles event processing internally)
+                    logger.warning("Could not generate status report: %s", e)
+
             if now - last_health_check >= health_check_interval:
                 last_health_check = now
-                
-                # Check connection health and trigger reconnect if needed
                 healthy = bar_streamer.check_health(max_bar_age_minutes=20)
-                
                 if not healthy:
                     logger.warning("Health check failed - reconnection scheduled")
-                else:
-                    # Log bar age for monitoring
-                    bar_age = bar_streamer.get_last_bar_age_seconds()
-                    if bar_age is not None:
-                        logger.debug(f"Health OK - last bar {bar_age:.0f}s ago")
-            
+
     except KeyboardInterrupt:
         logger.warning("KeyboardInterrupt received")
     except Exception as exc:
-        logger.exception("V2 Live trading error: %s", exc)
+        logger.exception("V2 Entry Confirmed live trading error: %s", exc)
         return_code = 1
     finally:
-        logger.info("Shutting down V2...")
+        logger.info("Shutting down V2 Entry Confirmed...")
         bar_streamer.disconnect()
-        
         try:
             node.dispose()
         except Exception as e:
-            logger.warning(f"Error disposing node: {e}")
-        
-        logger.info("V2 Live trading system stopped.")
-    
+            logger.warning("Error disposing node: %s", e)
+        logger.info("V2 Entry Confirmed live trading system stopped.")
+
     return return_code
 
 
 if __name__ == "__main__":
-    try:
-        exit_code = main()
-    except KeyboardInterrupt:
-        exit_code = 0
-    sys.exit(exit_code)
+    sys.exit(main())

@@ -342,11 +342,15 @@ def main() -> int:
         },
     )
 
+    log_dir = Path("logs/trader_logs")
+    log_dir.mkdir(parents=True, exist_ok=True)
+
     node_config = TradingNodeConfig(
         trader_id="TRADER-V2-001",
         logging=LoggingConfig(
             log_level="INFO",
             log_level_file="DEBUG",
+            log_directory=str(log_dir.resolve()),
             log_component_levels={
                 "Portfolio": "WARNING",
                 "Cache": "WARNING",

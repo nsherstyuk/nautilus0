@@ -28,7 +28,7 @@ from nautilus_trader.model.data import Bar
 
 from config.mtf_v2_config import load_mtf_v2_config, print_mtf_v2_config
 from run_backtest_mtf_v2_full import generate_reports, utc_to_est
-from utils.instruments import normalize_instrument_id, parse_fx_symbol
+from utils.instruments import instrument_id_to_catalog_format, normalize_instrument_id, parse_fx_symbol
 
 
 _MONEY_RE = re.compile(r"(-?\d+(?:\.\d+)?)")
@@ -175,8 +175,12 @@ def main() -> int:
     start_ns = dt_to_unix_nanos(pd.Timestamp(cfg.backtest_start, tz="UTC").to_pydatetime())
     end_ns = dt_to_unix_nanos(pd.Timestamp(cfg.backtest_end, tz="UTC").to_pydatetime())
 
-    # Use the original symbol format for catalog (EURUSD not EUR/USD)
-    catalog_instrument_id = f"{cfg.symbol}.{cfg.venue}"
+    # Nautilus instrument IDs for FX retain the slash (e.g., EUR/USD.IDEALPRO), but
+    # the Parquet catalog filesystem stores FX datasets without the slash (EURUSD.IDEALPRO).
+    # Use the catalog format ONLY for BacktestDataConfig lookup, and keep the slashed
+    # format for the strategy + venue instrument.
+    strategy_instrument_id = f"{cfg.symbol}.{cfg.venue}"
+    catalog_instrument_id = instrument_id_to_catalog_format(strategy_instrument_id)
 
     # Nautilus BacktestDataConfig (when data_cls is Bar) appends "-EXTERNAL" itself when
     # constructing the catalog filter expression. Our env config uses bar specs like
@@ -184,7 +188,8 @@ def main() -> int:
     bar_spec = cfg.bar_spec
     if isinstance(bar_spec, str) and bar_spec.upper().endswith("-EXTERNAL"):
         bar_spec = bar_spec[: -len("-EXTERNAL")]
-    catalog_bar_type = f"{catalog_instrument_id}-{bar_spec}-EXTERNAL"
+    # Strategy bar type must match the instrument ID used by the venue (slashed for FX).
+    strategy_bar_type = f"{strategy_instrument_id}-{bar_spec}-EXTERNAL"
 
     catalog_path = Path("data") / "historical"
 
@@ -192,7 +197,7 @@ def main() -> int:
         "Replay config: catalog_path=%s instrument_id=%s bar_type=%s start=%s end=%s",
         str(catalog_path),
         catalog_instrument_id,
-        catalog_bar_type,
+        strategy_bar_type,
         cfg.backtest_start,
         cfg.backtest_end,
     )
@@ -202,8 +207,8 @@ def main() -> int:
         config_path="strategies.ml_strategy_mtf_v2:MLSignalStrategyV2Config",
         config={
             "order_id_tag": "V2",
-            "instrument_id": catalog_instrument_id,
-            "bar_type": catalog_bar_type,
+            "instrument_id": strategy_instrument_id,
+            "bar_type": strategy_bar_type,
             "model_path": str((PROJECT_ROOT / cfg.model_path).resolve()),
             "total_position_size": cfg.total_position_size,
             "pos1_fraction": cfg.pos1_fraction,

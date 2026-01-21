@@ -33,6 +33,8 @@ import pandas as pd
 import pandas_ta as ta
 import joblib
 
+from strategies.feature_engineering_v2_rf40 import latest_rf40_row
+
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.core.data import Data
 from nautilus_trader.model.data import Bar, BarType, QuoteTick
@@ -49,8 +51,8 @@ _py_logger = logging.getLogger("MLSignalStrategy_V2")
 _py_logger.setLevel(logging.INFO)
 
 FEATURE_NAMES = [
-    "log_ret", "mama_diff", "dmp_30m", "dmn_30m", "stoch_k_30m", "stoch_d_30m",
-    "wma_diff_30m", "atr_15m", "hour", "day_of_week"
+    "log_ret", "mama_diff", "adx", "dmp", "dmn", "stoch_k", "stoch_d",
+    "atr", "hour", "day_of_week"
 ]
 
 @dataclass
@@ -206,6 +208,9 @@ class MLSignalStrategyV2(Strategy):
         # Model
         self.model = None
         self._load_model()
+
+        # Meta values (computed alongside features)
+        self._latest_meta: Dict[str, Optional[float]] = {"mama_diff": None, "dmp_30m": None}
         
         # Position layers state
         self._layers: Dict[str, PositionLayer] = {}
@@ -262,7 +267,7 @@ class MLSignalStrategyV2(Strategy):
                     "trade_id", "entry_time", "direction", "result_type", 
                     "pnl_currency", "pnl_pips", "duration_bars",
                     "entry_atr", "prediction_conf"
-                ] + FEATURE_NAMES
+                ] + self._current_feature_names()
                 writer.writerow(header)
 
     def _reset_layers(self):
@@ -290,9 +295,29 @@ class MLSignalStrategyV2(Strategy):
                 model_path = project_root / model_path
             self.model = joblib.load(model_path)
             _py_logger.info(f"Model loaded from {model_path}")
+            if hasattr(self.model, "feature_names_in_"):
+                _py_logger.info(f"Model features: {list(self.model.feature_names_in_)}")
         except Exception as e:
             _py_logger.error(f"Failed to load model: {e}")
             self.model = None
+
+    def _using_rf40_model(self) -> bool:
+        if self.model is None:
+            return False
+        if hasattr(self.model, "feature_names_in_"):
+            names = list(self.model.feature_names_in_)
+            return len(names) == 40 and "returns" in names and "is_overlap" in names
+        if hasattr(self.model, "n_features_in_"):
+            try:
+                return int(self.model.n_features_in_) == 40
+            except Exception:
+                return False
+        return False
+
+    def _current_feature_names(self) -> list:
+        if self.model is not None and hasattr(self.model, "feature_names_in_"):
+            return list(self.model.feature_names_in_)
+        return FEATURE_NAMES
             
     @staticmethod
     def _parse_hours(hours_str: str) -> list:
@@ -795,7 +820,7 @@ class MLSignalStrategyV2(Strategy):
         entry_time = pd.Timestamp(bar.ts_init, unit='ns', tz='UTC')
         
         # Prepare feature dict for logging
-        feature_dict = dict(zip(FEATURE_NAMES, features))
+        feature_dict = dict(zip(self._current_feature_names(), features))
         feature_dict["entry_atr"] = atr_normalized
         feature_dict["prediction_conf"] = confidence
         
@@ -1044,15 +1069,14 @@ class MLSignalStrategyV2(Strategy):
         Check additional meta-filters to avoid toxic regimes identified in analysis.
         Returns True if trade is allowed, False if filtered.
         """
-        # Parse features from array (order must match _calculate_features)
-        # 0: log_ret, 1: mama_diff, 2: dmp, 3: dmn, 4: stoch_k, 5: stoch_d, 
-        # 6: wma_diff, 7: atr, 8: hour, 9: day_of_week
-        
-        mama_diff = features[1]
-        dmp_30m = features[2]
+        mama_diff = self._latest_meta.get("mama_diff")
+        dmp_30m = self._latest_meta.get("dmp_30m")
         
         # 1. MAMA Difference Filter (Trend Alignment)
         if self.meta_filter_mama_enabled:
+            if mama_diff is None:
+                _py_logger.info("[FILTERED] MAMA Diff unavailable")
+                return False
             if mama_diff < self.meta_filter_mama_min_diff:
                 _py_logger.info(f"[FILTERED] MAMA Diff {mama_diff:.6f} < {self.meta_filter_mama_min_diff}")
                 return False
@@ -1061,6 +1085,9 @@ class MLSignalStrategyV2(Strategy):
                 
         # 2. DMI+ Strength Filter (Directional Strength)
         if self.meta_filter_dmi_enabled:
+            if dmp_30m is None:
+                _py_logger.info("[FILTERED] DMI+ unavailable")
+                return False
             if dmp_30m < self.meta_filter_dmi_min_dmp:
                 _py_logger.info(f"[FILTERED] DMI+ {dmp_30m:.4f} < {self.meta_filter_dmi_min_dmp}")
                 return False
@@ -1118,11 +1145,11 @@ class MLSignalStrategyV2(Strategy):
         Features (10 total):
         1. log_ret (15m)
         2. mama_diff (15m, hl2 source)
-        3. dmp_30m
-        4. dmn_30m
-        5. stoch_k_30m
-        6. stoch_d_30m
-        7. wma_diff_30m
+        3. adx
+        4. dmp
+        5. dmn
+        6. stoch_k
+        7. stoch_d
         8. atr (15m)
         9. hour
         10. day_of_week
@@ -1134,9 +1161,11 @@ class MLSignalStrategyV2(Strategy):
             
         # Create 15m DataFrame
         data_15m = {
-            'close': [float(b.close) for b in self.bars_buffer_15m],
+            'open': [float(b.open) for b in self.bars_buffer_15m],
             'high': [float(b.high) for b in self.bars_buffer_15m],
             'low': [float(b.low) for b in self.bars_buffer_15m],
+            'close': [float(b.close) for b in self.bars_buffer_15m],
+            'volume': [float(getattr(b, 'volume', 0.0)) for b in self.bars_buffer_15m],
             'timestamp': [pd.Timestamp(b.ts_init, unit='ns', tz='UTC') for b in self.bars_buffer_15m]
         }
         df_15m = pd.DataFrame(data_15m)
@@ -1155,25 +1184,40 @@ class MLSignalStrategyV2(Strategy):
         df_30m = df_30m.loc[~df_30m.index.duplicated(keep='first')]  # Remove duplicate timestamps
         
         try:
+            # Compute meta values (used by filters regardless of model features)
+            df_15m['hl2'] = (df_15m['high'] + df_15m['low']) / 2
+            mama_fama = ta.mama(df_15m['hl2'], fast=0.5, slow=0.05)
+            if mama_fama is None or len(mama_fama) == 0:
+                self._latest_meta["mama_diff"] = None
+            else:
+                mama = mama_fama.iloc[:, 0]
+                fama = mama_fama.iloc[:, 1]
+                mama_diff = (mama - fama) / df_15m['close']
+                self._latest_meta["mama_diff"] = float(mama_diff.iloc[-1])
+
+            dmi_30m = ta.adx(df_30m['high'], df_30m['low'], df_30m['close'], length=14)
+            if dmi_30m is None or len(dmi_30m) == 0:
+                self._latest_meta["dmp_30m"] = None
+            else:
+                self._latest_meta["dmp_30m"] = float((dmi_30m.iloc[:, 1] / 100.0).iloc[-1])
+
+            # If using the 40-feature RF backup model, generate that exact feature vector.
+            if self._using_rf40_model():
+                row = latest_rf40_row(df_15m[["open", "high", "low", "close", "volume"]])
+                if row is None:
+                    return None
+                features = row.to_numpy(dtype=np.float64)[0]
+                return features
+
             # === 15m Features ===
             # 1. Log Returns
             df_15m['log_ret'] = np.log(df_15m['close'] / df_15m['close'].shift(1)) * 100
             
-            # 2. HL2 (LazyBear MAMA source)
-            df_15m['hl2'] = (df_15m['high'] + df_15m['low']) / 2
-            
-            # 3. Ehlers MAMA using hl2
-            try:
-                mama_fama = ta.mama(df_15m['hl2'], fast=0.5, slow=0.05)
-                if mama_fama is None or len(mama_fama) == 0:
-                    _py_logger.warning(f"[WARN] MAMA calculation failed for {df_15m.index[-1]}")
-                    return None
-                df_15m['mama'] = mama_fama.iloc[:, 0]
-                df_15m['fama'] = mama_fama.iloc[:, 1]
-                df_15m['mama_diff'] = (df_15m['mama'] - df_15m['fama']) / df_15m['close']
-            except Exception as e:
-                _py_logger.error(f"[ERROR] MAMA calculation failed: {e}")
+            # 2. Use precomputed MAMA diff
+            if self._latest_meta.get("mama_diff") is None:
+                _py_logger.warning(f"[WARN] MAMA calculation failed for {df_15m.index[-1]}")
                 return None
+            df_15m['mama_diff'] = self._latest_meta["mama_diff"]
             
             # 4. ATR (15m)
             df_15m['atr'] = ta.atr(df_15m['high'], df_15m['low'], df_15m['close'], length=14) / df_15m['close']
@@ -1184,16 +1228,12 @@ class MLSignalStrategyV2(Strategy):
             
             # === 30m Features ===
             # 1. DMI
-            try:
-                dmi_30m = ta.adx(df_30m['high'], df_30m['low'], df_30m['close'], length=14)
-                if dmi_30m is None or len(dmi_30m) == 0:
-                    _py_logger.warning(f"[WARN] DMI calculation failed for {df_30m.index[-1]}")
-                    return None
-                df_30m['dmp'] = dmi_30m.iloc[:, 1] / 100.0
-                df_30m['dmn'] = dmi_30m.iloc[:, 2] / 100.0
-            except Exception as e:
-                _py_logger.error(f"[ERROR] DMI calculation failed: {e}")
+            if dmi_30m is None or len(dmi_30m) == 0:
+                _py_logger.warning(f"[WARN] DMI calculation failed for {df_30m.index[-1]}")
                 return None
+            df_30m['adx'] = dmi_30m.iloc[:, 0] / 100.0
+            df_30m['dmp'] = dmi_30m.iloc[:, 1] / 100.0
+            df_30m['dmn'] = dmi_30m.iloc[:, 2] / 100.0
             
             # 2. Stochastic (30m)
             try:
@@ -1216,26 +1256,6 @@ class MLSignalStrategyV2(Strategy):
                 _py_logger.error(f"[ERROR] Stochastic calculation failed: {e}")
                 return None
             
-            # 3. WMA Difference (30m)
-            try:
-                wma_short = ta.wma(df_30m['close'], length=8)
-                wma_long = ta.wma(df_30m['close'], length=23)
-                if wma_short is not None and wma_long is not None and len(wma_short) > 0 and len(wma_long) > 0:
-                    df_30m['wma_diff'] = 100 * (wma_short - wma_long) / wma_long
-                else:
-                    # Fallback: Use SMA difference if WMA fails
-                    sma_short = ta.sma(df_30m['close'], length=8)
-                    sma_long = ta.sma(df_30m['close'], length=23)
-                    if sma_short is not None and sma_long is not None and len(sma_short) > 0 and len(sma_long) > 0:
-                        df_30m['wma_diff'] = 100 * (sma_short - sma_long) / sma_long
-                        _py_logger.warning(f"[WARN] WMA failed, using SMA fallback for {df_30m.index[-1]}")
-                    else:
-                        _py_logger.warning(f"[WARN] All MA calculations failed for {df_30m.index[-1]}")
-                        return None
-            except Exception as e:
-                _py_logger.error(f"[ERROR] WMA calculation failed: {e}")
-                return None
-            
             # Get latest values
             latest_15m = df_15m.iloc[-1]
             latest_30m = df_30m.iloc[-1]
@@ -1244,11 +1264,11 @@ class MLSignalStrategyV2(Strategy):
             features = np.array([
                 latest_15m['log_ret'],
                 latest_15m['mama_diff'],
+                latest_30m['adx'],
                 latest_30m['dmp'],
                 latest_30m['dmn'],
                 latest_30m['stoch_k'],
                 latest_30m['stoch_d'],
-                latest_30m['wma_diff'],
                 latest_15m['atr'],
                 latest_15m['hour'],
                 latest_15m['day_of_week']
@@ -1257,7 +1277,10 @@ class MLSignalStrategyV2(Strategy):
             # Check for NaNs
             if np.isnan(features).any():
                 return None
-                
+
+            # Update meta state from 10-feature schema
+            self._latest_meta["mama_diff"] = float(features[0][1])
+            self._latest_meta["dmp_30m"] = float(features[0][3])
             return features[0]
             
         except Exception as e:
