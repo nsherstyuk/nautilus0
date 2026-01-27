@@ -19,6 +19,12 @@ TRAINING_MONTHS = 24  # How many months of data to use
 TRAIN_END_DATE = '2026-01-01'  # Train up to (but not including) this date
 MIN_SAMPLES = 10000  # Minimum samples needed for training
 
+# Profit threshold for labeling (based on 2025 data analysis)
+# 0.0007 = 0.07% = ~7 pips for EUR/USD
+# Analysis showed: 33.9% positive class, 22.8 signals/day
+# Previous: 0.0015 (0.15% / 16.5 pips) - only 10.8% positive class
+PROFIT_THRESHOLD = 0.0007
+
 PROJECT_ROOT = Path(__file__).parent
 
 def load_data_from_catalog(start_date, end_date):
@@ -273,7 +279,7 @@ def main():
     
     # Create labels
     print("\n" + "-"*80)
-    df = create_labels(df)
+    df = create_labels(df, forward_periods=4, profit_threshold=PROFIT_THRESHOLD)
     
     # Train model
     print("\n" + "-"*80)

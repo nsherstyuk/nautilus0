@@ -55,6 +55,14 @@ class MTFV2Config:
     stall_min_profit_atr: float
     stall_sl_atr: float
     
+    # Meta-Filters (Toxic Regime Avoidance)
+    meta_filter_mama_enabled: bool
+    meta_filter_mama_min_diff: float
+    meta_filter_dmi_enabled: bool
+    meta_filter_dmi_min_dmp: float
+    meta_filter_dmi_check_absolute: bool
+    meta_filter_dmi_min_divergence: float
+    
     # Prediction
     prediction_threshold: float
     
@@ -65,7 +73,7 @@ class MTFV2Config:
     entry_cooldown_bars: int
     
     # Weekday-specific excluded hours (in config_timezone, converted to UTC internally)
-    excluded_hours_mode: str  # 'simple' or 'weekday'
+    excluded_hours_mode: str  # 'disabled', 'simple', or 'weekday'
     excluded_hours_monday: list
     excluded_hours_tuesday: list
     excluded_hours_wednesday: list
@@ -86,6 +94,13 @@ class MTFV2Config:
     backtest_start: str
     backtest_end: str
     initial_balance: float
+    
+    # Seasonal Hour×Weekday Exclusions
+    seasonal_hour_exclusions_enabled: bool
+    djf_excluded_hour_weekday_pairs: list  # [(hour, weekday), ...]
+    mam_excluded_hour_weekday_pairs: list
+    jja_excluded_hour_weekday_pairs: list
+    son_excluded_hour_weekday_pairs: list
     
     # Convenience properties for live runner compatibility
     @property
@@ -201,6 +216,10 @@ class MTFV2Config:
             utc_hour: Hour in UTC (0-23) - from bar timestamp
             utc_weekday: Weekday in UTC (0=Monday, 6=Sunday)
         """
+        # 'disabled' means no time-based filtering at all
+        if str(self.excluded_hours_mode).lower() == 'disabled':
+            return True
+
         # First check basic hour range (always in UTC)
         if not (self.trade_start_hour <= utc_hour < self.trade_end_hour):
             return False
@@ -213,10 +232,62 @@ class MTFV2Config:
 
 
 def _parse_hours(hours_str: str) -> list:
-    """Parse comma-separated hours string to list of ints."""
+    """Parse comma-separated hours string into list of integers."""
     if not hours_str:
         return []
-    return [int(h.strip()) for h in hours_str.split(',') if h.strip()]
+
+    # Support inline comments in .env values, e.g. "0,1,2  # note"
+    hours_clean = str(hours_str).split('#', 1)[0].strip()
+    if not hours_clean:
+        return []
+
+    return [int(h.strip()) for h in hours_clean.split(',') if h.strip()]
+
+
+def _parse_hour_weekday_pairs(pairs_str: str) -> list:
+    """
+    Parse comma-separated hour-weekday pairs into list of (hour, weekday) tuples.
+    
+    Format: "16-1,16-3,16-5,14-3,14-5"
+    Where hour=0-23, weekday=1-7 (1=Mon, 7=Sun)
+    
+    Returns:
+        List of (hour, weekday) tuples, e.g., [(16, 1), (16, 3), ...]
+    """
+    if not pairs_str:
+        return []
+    
+    # Support inline comments
+    pairs_clean = str(pairs_str).split('#', 1)[0].strip()
+    if not pairs_clean:
+        return []
+    
+    result = []
+    for pair_str in pairs_clean.split(','):
+        pair_str = pair_str.strip()
+        if not pair_str:
+            continue
+        
+        try:
+            hour_str, weekday_str = pair_str.split('-')
+            hour = int(hour_str.strip())
+            weekday = int(weekday_str.strip())
+            
+            if 0 <= hour <= 23 and 1 <= weekday <= 7:
+                result.append((hour, weekday))
+            else:
+                print(f"Warning: Invalid hour-weekday pair '{pair_str}' (hour 0-23, weekday 1-7)")
+        except (ValueError, AttributeError) as e:
+            print(f"Warning: Failed to parse hour-weekday pair '{pair_str}': {e}")
+    
+    return result
+
+
+def _parse_env_str(value: Optional[str], default: str) -> str:
+    """Parse a string env var, stripping whitespace and inline comments."""
+    if value is None:
+        return default
+    return str(value).split('#', 1)[0].strip() or default
 
 
 def load_mtf_v2_config(env_file: Optional[str] = None) -> MTFV2Config:
@@ -281,17 +352,26 @@ def load_mtf_v2_config(env_file: Optional[str] = None) -> MTFV2Config:
         stall_min_profit_atr=float(os.getenv("MTF2_STALL_MIN_PROFIT_ATR", "0.2")),
         stall_sl_atr=float(os.getenv("MTF2_STALL_SL_ATR", "0.2")),
         
+        # Meta-Filters
+        meta_filter_mama_enabled=os.getenv("MTF2_META_FILTER_MAMA_ENABLED", "False").lower() == "true",
+        meta_filter_mama_min_diff=float(os.getenv("MTF2_META_FILTER_MAMA_MIN_DIFF", "0.0")),
+        meta_filter_dmi_enabled=os.getenv("MTF2_META_FILTER_DMI_ENABLED", "False").lower() == "true",
+        meta_filter_dmi_min_dmp=float(os.getenv("MTF2_META_FILTER_DMI_MIN_DMP", "0.0")),
+        meta_filter_dmi_check_absolute=os.getenv("MTF2_META_FILTER_DMI_CHECK_ABSOLUTE", "True").lower() == "true",
+        meta_filter_dmi_min_divergence=float(os.getenv("MTF2_META_FILTER_DMI_MIN_DIVERGENCE", "0.0")),
+        
         # Prediction
         prediction_threshold=float(os.getenv("MTF2_PREDICTION_THRESHOLD", "0.55")),
         
         # Session
         trade_start_hour=int(os.getenv("MTF2_TRADE_START_HOUR", "7")),
         trade_end_hour=int(os.getenv("MTF2_TRADE_END_HOUR", "20")),
-        config_timezone=os.getenv("MTF2_CONFIG_TIMEZONE", "UTC"),  # 'EST' or 'UTC'
+        config_timezone=_parse_env_str(os.getenv("MTF2_CONFIG_TIMEZONE"), "UTC"),
+        # 'EST' or 'UTC'
         entry_cooldown_bars=int(os.getenv("MTF2_ENTRY_COOLDOWN_BARS", "0")),
         
         # Weekday-specific excluded hours
-        excluded_hours_mode=os.getenv("MTF2_EXCLUDED_HOURS_MODE", "simple"),
+        excluded_hours_mode=_parse_env_str(os.getenv("MTF2_EXCLUDED_HOURS_MODE"), "simple"),
         excluded_hours_monday=_parse_hours(os.getenv("MTF2_EXCLUDED_HOURS_MONDAY", "")),
         excluded_hours_tuesday=_parse_hours(os.getenv("MTF2_EXCLUDED_HOURS_TUESDAY", "")),
         excluded_hours_wednesday=_parse_hours(os.getenv("MTF2_EXCLUDED_HOURS_WEDNESDAY", "")),
@@ -312,6 +392,13 @@ def load_mtf_v2_config(env_file: Optional[str] = None) -> MTFV2Config:
         backtest_start=os.getenv("MTF2_BACKTEST_START", "2024-01-01"),
         backtest_end=os.getenv("MTF2_BACKTEST_END", "2025-12-30"),
         initial_balance=float(os.getenv("MTF2_INITIAL_BALANCE", "50000")),
+        
+        # Seasonal Hour×Weekday Exclusions
+        seasonal_hour_exclusions_enabled=os.getenv("MTF2_SEASONAL_HOUR_EXCLUSIONS_ENABLED", "False").lower() == "true",
+        djf_excluded_hour_weekday_pairs=_parse_hour_weekday_pairs(os.getenv("MTF2_DJF_EXCLUDED_HOUR_WEEKDAY_PAIRS", "")),
+        mam_excluded_hour_weekday_pairs=_parse_hour_weekday_pairs(os.getenv("MTF2_MAM_EXCLUDED_HOUR_WEEKDAY_PAIRS", "")),
+        jja_excluded_hour_weekday_pairs=_parse_hour_weekday_pairs(os.getenv("MTF2_JJA_EXCLUDED_HOUR_WEEKDAY_PAIRS", "")),
+        son_excluded_hour_weekday_pairs=_parse_hour_weekday_pairs(os.getenv("MTF2_SON_EXCLUDED_HOUR_WEEKDAY_PAIRS", "")),
     )
 
 

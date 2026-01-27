@@ -1099,8 +1099,7 @@ async def main() -> int:
         config = get_ibkr_config()
         
         # Override client ID to avoid conflict with live trading (which uses client_id from .env)
-        # Use a different client ID for data ingestion
-        config.client_id = 99  # Different from live trading client ID (17) and any other processes
+        # Use a different client ID for data ingestion if needed, but respect .env if set differently
         logger.info(f"Loaded IBKR config: {config.host}:{config.port} (client_id={config.client_id}) [INGESTION]")
         
         # Read data parameters from environment

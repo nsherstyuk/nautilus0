@@ -48,6 +48,7 @@ class BarSubscription:
     callback: Callable
     last_bar_time: Optional[datetime] = None
     last_bar_received: Optional[datetime] = None  # Wall clock time of last bar
+    bar_type_str: Optional[str] = None
     # Store params for re-subscription
     bar_size: str = "15 mins"
     what_to_show: str = "MIDPOINT"
@@ -184,6 +185,7 @@ class IBBarStreamer:
         for sub_key, sub in self._subscriptions.items():
             saved_subs[sub_key] = {
                 "symbol": sub.symbol,
+                "bar_type_str": sub.bar_type_str,
                 "bar_size": sub.bar_size,
                 "what_to_show": sub.what_to_show,
                 "callback": sub.callback,
@@ -250,6 +252,7 @@ class IBBarStreamer:
                         use_rth=params["use_rth"],
                         duration=params["duration"],
                         is_resubscribe=True,  # Don't feed historical bars again
+                        bar_type_str=params.get("bar_type_str"),
                     )
                     if success:
                         logger.info(f"Successfully re-subscribed to {params['symbol']} ({params['bar_size']})")
@@ -334,6 +337,7 @@ class IBBarStreamer:
         use_rth: bool = False,
         duration: str = "2 D",
         is_resubscribe: bool = False,
+        bar_type_str: Optional[str] = None,
     ) -> bool:
         """
         Subscribe to live bar updates (synchronous version for use with ib_insync).
@@ -346,6 +350,7 @@ class IBBarStreamer:
             use_rth: Use regular trading hours only
             duration: How much historical data to request initially
             is_resubscribe: If True, skip feeding historical bars (used during reconnect)
+            bar_type_str: Optional BarType string to guarantee exact matching with StrategyConfig
             
         Returns:
             True if subscription successful
@@ -357,36 +362,42 @@ class IBBarStreamer:
             self.ib.qualifyContracts(contract)
             logger.info(f"Qualified contract: {contract}")
             
-            # Create bar type for NautilusTrader
-            # Parse bar_size like "15 mins" -> 15, MINUTE
-            parts = bar_size.split()
-            step = int(parts[0])
-            unit = parts[1].upper()
-            
-            if unit in ("MIN", "MINS", "MINUTE", "MINUTES"):
-                aggregation = BarAggregation.MINUTE
-            elif unit in ("HOUR", "HOURS"):
-                aggregation = BarAggregation.HOUR
-            elif unit in ("DAY", "DAYS"):
-                aggregation = BarAggregation.DAY
+            # Create BarType for NautilusTrader.
+            # IMPORTANT: if the caller provides `bar_type_str`, use it to guarantee exact
+            # matching with StrategyConfig (avoids bar_type mismatch filtering in Strategy.on_bar).
+            if bar_type_str:
+                bar_type = BarType.from_str(bar_type_str)
             else:
-                aggregation = BarAggregation.MINUTE
-            
-            # Determine price type
-            if what_to_show == "MIDPOINT":
-                price_type = PriceType.MID
-            elif what_to_show == "BID":
-                price_type = PriceType.BID
-            elif what_to_show == "ASK":
-                price_type = PriceType.ASK
-            else:
-                price_type = PriceType.LAST
-            
-            # Create venue from symbol
-            venue = Venue("IDEALPRO") if "/" in symbol else Venue("SMART")
-            instrument_id = InstrumentId(Symbol(symbol), venue)
-            bar_spec = BarSpecification(step, aggregation, price_type)
-            bar_type = BarType(instrument_id, bar_spec, aggregation_source=1)  # EXTERNAL (1=EXTERNAL, 2=INTERNAL)
+                # Fallback: derive BarType from IB subscription params.
+                # Parse bar_size like "15 mins" -> 15, MINUTE
+                parts = bar_size.split()
+                step = int(parts[0])
+                unit = parts[1].upper()
+                
+                if unit in ("MIN", "MINS", "MINUTE", "MINUTES"):
+                    aggregation = BarAggregation.MINUTE
+                elif unit in ("HOUR", "HOURS"):
+                    aggregation = BarAggregation.HOUR
+                elif unit in ("DAY", "DAYS"):
+                    aggregation = BarAggregation.DAY
+                else:
+                    aggregation = BarAggregation.MINUTE
+                
+                # Determine price type
+                if what_to_show == "MIDPOINT":
+                    price_type = PriceType.MID
+                elif what_to_show == "BID":
+                    price_type = PriceType.BID
+                elif what_to_show == "ASK":
+                    price_type = PriceType.ASK
+                else:
+                    price_type = PriceType.LAST
+                
+                # Create venue from symbol
+                venue = Venue("IDEALPRO") if "/" in symbol else Venue("SMART")
+                instrument_id = InstrumentId(Symbol(symbol), venue)
+                bar_spec = BarSpecification(step, aggregation, price_type)
+                bar_type = BarType(instrument_id, bar_spec, aggregation_source=1)  # EXTERNAL (1=EXTERNAL, 2=INTERNAL)
             
             # Request historical data with keepUpToDate=True
             bars = self.ib.reqHistoricalData(
@@ -410,6 +421,7 @@ class IBBarStreamer:
                 callback=callback,
                 last_bar_time=(bars[-2].date if bars and len(bars) >= 2 else (bars[-1].date if bars else None)),
                 last_bar_received=datetime.now() if bars else None,  # Initialize wall clock time
+                bar_type_str=bar_type_str,
                 bar_size=bar_size,
                 what_to_show=what_to_show,
                 use_rth=use_rth,

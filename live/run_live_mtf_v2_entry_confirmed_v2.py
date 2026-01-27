@@ -203,6 +203,11 @@ def main() -> int:
     entry_confirmation_threshold = _env_float("MTF2_ENTRY_CONFIRM_THRESHOLD", 0.2)
     entry_max_wait_bars = _env_int("MTF2_ENTRY_CONFIRM_MAX_WAIT_BARS", 5)
 
+    # Optional: confidence-tiered SL
+    confidence_sl_enabled = _env_bool("MTF2_CONF_SL_ENABLED", False)
+    confidence_sl_tiers = (os.getenv("MTF2_CONF_SL_TIERS") or "").strip()
+    confidence_sl_interpolate = _env_bool("MTF2_CONF_SL_INTERPOLATE", False)
+
     # Setup logging with timestamp
     start_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_dir = Path("logs/live_mtf")
@@ -219,6 +224,13 @@ def main() -> int:
         entry_confirmation_bars,
         entry_confirmation_threshold,
         entry_max_wait_bars,
+    )
+
+    logger.info(
+        "Confidence SL: enabled=%s tiers=%s interpolate=%s",
+        confidence_sl_enabled,
+        confidence_sl_tiers if confidence_sl_tiers else "<empty>",
+        confidence_sl_interpolate,
     )
 
     # Get IBKR config (kept for parity with existing runner)
@@ -299,6 +311,10 @@ def main() -> int:
             "entry_confirmation_bars": entry_confirmation_bars,
             "entry_confirmation_threshold": entry_confirmation_threshold,
             "entry_max_wait_bars": entry_max_wait_bars,
+            # Confidence-tiered SL
+            "confidence_sl_enabled": confidence_sl_enabled,
+            "confidence_sl_tiers": confidence_sl_tiers,
+            "confidence_sl_interpolate": confidence_sl_interpolate,
         },
     )
 

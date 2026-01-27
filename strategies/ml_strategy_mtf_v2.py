@@ -965,8 +965,9 @@ class MLSignalStrategyV2(Strategy):
             features = self._calculate_features()
             if features is not None:
                 try:
-                    prediction = self.model.predict([features])[0]
-                    confidence = self.model.predict_proba([features])[0].max()
+                    pred, proba = self._predict_with_feature_names(features)
+                    prediction = pred
+                    confidence = float(np.max(proba)) if proba is not None else None
                     _py_logger.debug(f"[DEBUG] Features: {features[:5]}... Predicted: {prediction}, Conf: {confidence:.3f}")
                 except Exception as e:
                     _py_logger.error(f"[ERROR] Prediction error: {e}")
@@ -1041,8 +1042,8 @@ class MLSignalStrategyV2(Strategy):
             return
             
         # Get prediction
-        prediction = self.model.predict([features])[0]
-        confidence = self.model.predict_proba([features])[0].max()
+        prediction, prediction_proba = self._predict_with_feature_names(features)
+        confidence = float(np.max(prediction_proba)) if prediction_proba is not None else None
         
         _py_logger.info(f"[PREDICTION] pred={prediction}, conf={confidence:.3f}, thresh={self.prediction_threshold}")
         
@@ -1063,6 +1064,26 @@ class MLSignalStrategyV2(Strategy):
         direction = "LONG" if prediction == 1 else "SHORT"
         _py_logger.info(f"[SIGNAL] {direction} - conf={confidence:.3f}, ATR={atr:.5f}")
         self._execute_entry(bar, atr, direction, features, confidence)
+
+    def _predict_with_feature_names(self, features: np.ndarray):
+        """Predict using model feature names when available (avoids sklearn warnings)."""
+        if self.model is None:
+            return None, None
+
+        if hasattr(self.model, "feature_names_in_"):
+            names = list(self.model.feature_names_in_)
+            try:
+                X = pd.DataFrame([features], columns=names)
+                pred = self.model.predict(X)[0]
+                proba = self.model.predict_proba(X)[0]
+                return pred, proba
+            except Exception:
+                # Fallback to legacy numpy input.
+                pass
+
+        pred = self.model.predict([features])[0]
+        proba = self.model.predict_proba([features])[0]
+        return pred, proba
         
     def _check_meta_filters(self, features: np.ndarray) -> bool:
         """

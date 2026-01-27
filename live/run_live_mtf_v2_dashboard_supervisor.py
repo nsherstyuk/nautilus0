@@ -123,6 +123,11 @@ class SupervisorConfig:
     stale_max_status_age_sec: int
     stale_consecutive_fail_checks: int
 
+    # Backoff
+    max_short_restarts: int
+    extended_delay_sec: int
+    stability_reset_sec: int
+
 
 def _load_config() -> SupervisorConfig:
     project_root = Path(__file__).resolve().parent.parent
@@ -140,6 +145,9 @@ def _load_config() -> SupervisorConfig:
         stale_max_bar_age_sec=_env_int("MTF2_SUPERVISOR_STALE_MAX_BAR_AGE_SEC", 25 * 60),
         stale_max_status_age_sec=_env_int("MTF2_SUPERVISOR_STALE_MAX_STATUS_AGE_SEC", 90),
         stale_consecutive_fail_checks=_env_int("MTF2_SUPERVISOR_STALE_CONSEC_FAILS", 3),
+        max_short_restarts=_env_int("MTF2_SUPERVISOR_MAX_SHORT_RESTARTS", 3),
+        extended_delay_sec=_env_int("MTF2_SUPERVISOR_EXTENDED_DELAY_SEC", 1800),
+        stability_reset_sec=_env_int("MTF2_SUPERVISOR_STABILITY_RESET_SEC", 1800),
     )
     return cfg
 
@@ -225,21 +233,27 @@ def _spawn_child(cfg: SupervisorConfig) -> subprocess.Popen:
     for key, value in git_info.items():
         env[f"MTF2_GIT_{key.upper()}"] = value
     
-    cmd = [sys.executable, cfg.child_script]
+    cmd = [sys.executable, str(cfg.child_script)]
     logger.info("Spawning child: %s", " ".join(cmd))
     logger.info("Version info: commit=%s, branch=%s, dirty=%s", 
                 git_info["commit"], git_info["branch"], git_info["dirty"])
     logger.info("File hashes: strategy=%s, supervisor=%s", 
                 git_info["strategy_hash"], git_info["supervisor_hash"])
     
+    kwargs = {}
+    if sys.platform == "win32":
+        kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+
     proc = subprocess.Popen(
         cmd,
         cwd=Path(__file__).resolve().parent.parent,
         env=env,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
+        # Inherit stdout/stderr so output shows in console and doesn't block
+        stdout=None,
+        stderr=None,
         text=True,
         bufsize=1,
+        **kwargs
     )
     return proc
 
@@ -300,6 +314,7 @@ def main() -> int:
     proc: Optional[subprocess.Popen] = None
     last_start_ts = 0.0
     stale_fail_count = 0
+    consecutive_short_runs = 0
 
     logger.info(
         "Supervisor active. Child=%s daily_enabled=%s stop=%02d:%02d restart=%02d:%02d stale_enabled=%s",
@@ -326,7 +341,7 @@ def main() -> int:
                         cfg.daily_restart_hhmm[0],
                         cfg.daily_restart_hhmm[1],
                     )
-                    _graceful_stop_child(proc, grace_sec=30)
+                    _graceful_stop_child(proc, grace_sec=60)
                     proc = None
 
                 sleep_sec = _seconds_until_next_local(cfg.daily_restart_hhmm)
@@ -337,8 +352,24 @@ def main() -> int:
             # Start child if needed
             if proc is None or proc.poll() is not None:
                 if proc is not None and proc.poll() is not None:
-                    logger.warning("Child exited with code %s. Restarting after %ss...", proc.returncode, cfg.restart_delay_sec)
-                    time.sleep(max(1, cfg.restart_delay_sec))
+                    # Check for short run streak
+                    uptime = time.time() - last_start_ts
+                    if uptime < float(cfg.stability_reset_sec):
+                        consecutive_short_runs += 1
+                    else:
+                        consecutive_short_runs = 1
+
+                    delay = cfg.restart_delay_sec
+                    if consecutive_short_runs >= cfg.max_short_restarts:
+                        delay = cfg.extended_delay_sec
+                        logger.warning(
+                            "Max short restarts reached (%d). Engaging extended backoff for %ds...",
+                            consecutive_short_runs, delay
+                        )
+                        consecutive_short_runs = 0
+
+                    logger.warning("Child exited with code %s. Restarting after %ss...", proc.returncode, delay)
+                    time.sleep(max(1, delay))
 
                 proc = _spawn_child(cfg)
                 last_start_ts = time.time()
@@ -390,15 +421,31 @@ def main() -> int:
                         stale_fail_count = 0
 
                     if stale_fail_count >= int(cfg.stale_consecutive_fail_checks):
+                        # Check for short run streak
+                        uptime = time.time() - last_start_ts
+                        if uptime < float(cfg.stability_reset_sec):
+                            consecutive_short_runs += 1
+                        else:
+                            consecutive_short_runs = 1
+
+                        delay = cfg.restart_delay_sec
+                        if consecutive_short_runs >= cfg.max_short_restarts:
+                            delay = cfg.extended_delay_sec
+                            logger.warning(
+                                "Max short restarts reached (%d). Engaging extended backoff for %ds...",
+                                consecutive_short_runs, delay
+                            )
+                            consecutive_short_runs = 0
+
                         logger.warning(
                             "Restarting child due to repeated unhealthy status (%s). Stopping child...",
                             reason,
                         )
-                        _graceful_stop_child(proc, grace_sec=30)
+                        _graceful_stop_child(proc, grace_sec=60)
                         proc = None
                         stale_fail_count = 0
-                        logger.info("Waiting %ss before restart...", cfg.restart_delay_sec)
-                        time.sleep(max(1, cfg.restart_delay_sec))
+                        logger.info("Waiting %ss before restart...", delay)
+                        time.sleep(max(1, delay))
                         continue
 
             time.sleep(float(cfg.check_interval_sec))
@@ -408,7 +455,7 @@ def main() -> int:
         return 0
     finally:
         if proc is not None and proc.poll() is None:
-            _graceful_stop_child(proc, grace_sec=30)
+            _graceful_stop_child(proc, grace_sec=60)
 
     return 0
 

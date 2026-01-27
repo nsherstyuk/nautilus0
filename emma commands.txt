@@ -1,0 +1,14 @@
+
+python data/ingest_historical.py
+
+python live/run_live_mtf_v2_dashboard_supervisor.py
+
+python live\run_live_mtf_v2_entry_confirmed_v2_supervisor_failsafe.py 
+
+python live/run_live_mtf_v2_entry_confirmed_v2.py
+
+cd c:\nautilus0
+python run_backtest_mtf_v2_entry_confirmed.py
+
+python run_backtest_mtf_v2_replay.py
+

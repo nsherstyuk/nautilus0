@@ -134,6 +134,23 @@ class MLSignalStrategyV2EntryConfirmedConfig(StrategyConfig, kw_only=True):
     entry_confirmation_threshold: float = 0.2  # Minimum favorable movement in ATR units
     entry_max_wait_bars: int = 5  # Maximum bars to wait for confirmation before discarding signal
 
+    # Optional: confidence-tiered SL (no behavior change unless enabled)
+    # Format: "min_conf:sl_atr_mult,min_conf:sl_atr_mult" e.g. "0.85:1.25,0.90:1.35"
+    # Rule: choose the sl_atr_mult for the highest min_conf <= confidence.
+    confidence_sl_enabled: bool = False
+    confidence_sl_tiers: str = ""
+    # If True, linearly interpolate SL multiplier between adjacent tier points.
+    # If False, use step-function tiers (current behavior).
+    confidence_sl_interpolate: bool = False
+    
+    # Seasonal hour×weekday exclusions (EST timezone)
+    # Format: list of (hour, weekday) tuples where hour=0-23, weekday=1-7 (1=Mon, 7=Sun)
+    seasonal_hour_exclusions_enabled: bool = False
+    djf_excluded_hour_weekday_pairs: list = []
+    mam_excluded_hour_weekday_pairs: list = []
+    jja_excluded_hour_weekday_pairs: list = []
+    son_excluded_hour_weekday_pairs: list = []
+
 class PendingSignal:
     """Stores a pending signal waiting for entry confirmation."""
     
@@ -207,6 +224,19 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
         self.entry_confirmation_bars = config.entry_confirmation_bars
         self.entry_confirmation_threshold = config.entry_confirmation_threshold
         self.entry_max_wait_bars = config.entry_max_wait_bars
+
+        # Confidence-tiered SL
+        self._confidence_sl_enabled = bool(getattr(config, "confidence_sl_enabled", False))
+        self._confidence_sl_tiers_raw = str(getattr(config, "confidence_sl_tiers", "") or "").strip()
+        self._confidence_sl_tiers = self._parse_confidence_sl_tiers(self._confidence_sl_tiers_raw)
+        self._confidence_sl_interpolate = bool(getattr(config, "confidence_sl_interpolate", False))
+        
+        # Seasonal hour×weekday exclusions
+        self._seasonal_hour_exclusions_enabled = bool(getattr(config, "seasonal_hour_exclusions_enabled", False))
+        self._djf_excluded_hour_weekday_pairs = self._parse_hour_weekday_pairs(getattr(config, "djf_excluded_hour_weekday_pairs", []))
+        self._mam_excluded_hour_weekday_pairs = self._parse_hour_weekday_pairs(getattr(config, "mam_excluded_hour_weekday_pairs", []))
+        self._jja_excluded_hour_weekday_pairs = self._parse_hour_weekday_pairs(getattr(config, "jja_excluded_hour_weekday_pairs", []))
+        self._son_excluded_hour_weekday_pairs = self._parse_hour_weekday_pairs(getattr(config, "son_excluded_hour_weekday_pairs", []))
         
         # Strategy state
         self.instrument: Optional[Instrument] = None
@@ -245,6 +275,87 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
         _py_logger.info("MLSignalStrategy V2 Entry Confirmed initialized")
         _py_logger.info(f"Entry confirmation: {'ENABLED' if self.entry_confirmation_enabled else 'DISABLED'}")
         _py_logger.info(f"Confirmation bars: {self.entry_confirmation_bars}, threshold: {self.entry_confirmation_threshold} ATR")
+        if self._confidence_sl_enabled:
+            _py_logger.info(
+                "Confidence SL: ENABLED tiers=%s interpolate=%s",
+                self._confidence_sl_tiers_raw if self._confidence_sl_tiers_raw else "<empty>",
+                self._confidence_sl_interpolate,
+            )
+        else:
+            _py_logger.info("Confidence SL: DISABLED")
+
+    @staticmethod
+    def _parse_confidence_sl_tiers(tiers_str: str) -> List[Tuple[float, float]]:
+        """Parse confidence SL tiers string into sorted (min_conf, sl_mult) pairs."""
+        tiers: List[Tuple[float, float]] = []
+        raw = str(tiers_str or "").strip()
+        if not raw:
+            return tiers
+
+        for part in raw.split(","):
+            item = part.strip()
+            if not item:
+                continue
+            if ":" not in item:
+                continue
+            left, right = item.split(":", 1)
+            try:
+                min_conf = float(left.strip())
+                sl_mult = float(right.strip())
+            except Exception:
+                continue
+            if not (0.0 <= min_conf <= 1.0):
+                continue
+            if sl_mult <= 0.0:
+                continue
+            tiers.append((min_conf, sl_mult))
+
+        tiers.sort(key=lambda x: x[0])
+        return tiers
+
+    def _sl_mult_for_confidence(self, confidence: float, base_sl_mult: float) -> float:
+        if not self._confidence_sl_enabled:
+            return base_sl_mult
+        if not self._confidence_sl_tiers:
+            return base_sl_mult
+
+        confidence = float(confidence)
+        base_sl_mult = float(base_sl_mult)
+
+        # Below lowest tier: keep base SL (preserves current semantics)
+        if confidence < float(self._confidence_sl_tiers[0][0]):
+            chosen = base_sl_mult
+        # At/above highest tier: use highest tier value
+        elif confidence >= float(self._confidence_sl_tiers[-1][0]):
+            chosen = float(self._confidence_sl_tiers[-1][1])
+        # Between tiers
+        else:
+            if not self._confidence_sl_interpolate:
+                chosen = base_sl_mult
+                for min_conf, sl_mult in self._confidence_sl_tiers:
+                    if confidence >= float(min_conf):
+                        chosen = float(sl_mult)
+                    else:
+                        break
+            else:
+                chosen = base_sl_mult
+                for i in range(len(self._confidence_sl_tiers) - 1):
+                    c0, s0 = self._confidence_sl_tiers[i]
+                    c1, s1 = self._confidence_sl_tiers[i + 1]
+                    c0f = float(c0)
+                    c1f = float(c1)
+                    if c1f <= c0f:
+                        continue
+                    if c0f <= confidence <= c1f:
+                        t = (confidence - c0f) / (c1f - c0f)
+                        chosen = float(s0) + t * (float(s1) - float(s0))
+                        break
+
+        # Round to a friendly decimal format (e.g. 0.95 not 0.95745632)
+        chosen = round(float(chosen), 2)
+
+        # Safety clamp (prevents accidental nonsense config)
+        return float(min(max(chosen, 0.05), 10.0))
 
     def _init_position_layers(self):
         """Initialize position layer configuration."""
@@ -307,18 +418,29 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
 
     def on_start(self):
         """Initialize strategy."""
-        # Subscribe to both 15m (signal) and 1m (confirmation) bars
-        os.environ["MTF2_REPLAY_MODE"] = "1"  # Force replay mode for backtest
-        
-        # Subscribe to 15m bars for signals
-        self.subscribe_bars(self.bar_type)
-        
-        # Subscribe to 1m bars for confirmation
+        # NOTE:
+        # - In replay/backtest mode, bars are delivered via Nautilus' data engine and we must subscribe.
+        # - In live mode, bars are fed directly from ib_insync (see live runner) and subscribing would
+        #   cause duplicate bars if a Nautilus data client is also connected.
+        is_replay = os.getenv("MTF2_REPLAY_MODE", "0").strip().lower() in {"1", "true", "yes"}
+
         bar_type_str = str(self.bar_type)
         one_min_bar_type_str = bar_type_str.replace("15-MINUTE", "1-MINUTE")
         self.one_min_bar_type = BarType.from_str(one_min_bar_type_str)
-        self.subscribe_bars(self.one_min_bar_type)
-        _py_logger.info(f"Subscribed to {self.bar_type} and {self.one_min_bar_type}")
+
+        if is_replay:
+            # Subscribe to 15m bars for signals
+            self.subscribe_bars(self.bar_type)
+
+            # Subscribe to 1m bars for confirmation
+            self.subscribe_bars(self.one_min_bar_type)
+            _py_logger.info(f"Subscribed to {self.bar_type} and {self.one_min_bar_type} (replay mode)")
+        else:
+            _py_logger.info(
+                "Live mode: expecting bars fed directly via ib_insync for %s and %s",
+                self.bar_type,
+                self.one_min_bar_type,
+            )
         
         # Get instrument
         self.instrument = self.cache.instrument(self.instrument_id)
@@ -389,8 +511,9 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
         features = self._calculate_features() if warmup_ok else None
         if features is not None:
             try:
-                prediction = int(self.model.predict([features])[0])
-                prediction_proba = self.model.predict_proba([features])[0]
+                pred, proba = self._predict_with_feature_names(features)
+                prediction = int(pred) if pred is not None else None
+                prediction_proba = proba
                 confidence = float(max(prediction_proba))
                 mama_diff = self._latest_meta.get("mama_diff")
                 dmp_30m = self._latest_meta.get("dmp_30m")
@@ -481,9 +604,9 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
         if signal is None:
             _py_logger.debug(f"[BAR] No signal generated for {bar_time}")
             return
-        
+
         direction, features, prediction, prediction_proba, dynamic_params, entry_atr = signal
-        
+
         if self.entry_confirmation_enabled:
             # Store as pending signal and wait for confirmation
             self.pending_signal = PendingSignal(
@@ -493,14 +616,41 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
                 prediction=prediction,
                 prediction_proba=prediction_proba,
                 dynamic_params=dynamic_params,
-                entry_atr=entry_atr
+                entry_atr=entry_atr,
             )
             _py_logger.info(f"Signal generated: {direction}, waiting for entry confirmation...")
         else:
             # Enter immediately (original behavior)
             _py_logger.info(f"[BAR] Executing {direction} signal immediately (confirmation disabled)")
-            self._execute_signal(bar, direction, features, prediction, 
-                               prediction_proba, dynamic_params, entry_atr)
+            self._execute_signal(
+                bar,
+                direction,
+                features,
+                prediction,
+                prediction_proba,
+                dynamic_params,
+                entry_atr,
+            )
+
+    def _predict_with_feature_names(self, features: np.ndarray):
+        """Predict using model feature names when available (avoids sklearn warnings)."""
+        if self.model is None:
+            return None, None
+
+        if hasattr(self.model, "feature_names_in_"):
+            names = list(self.model.feature_names_in_)
+            try:
+                X = pd.DataFrame([features], columns=names)
+                pred = self.model.predict(X)[0]
+                proba = self.model.predict_proba(X)[0]
+                return pred, proba
+            except Exception:
+                # Fallback to legacy numpy input.
+                pass
+
+        pred = self.model.predict([features])[0]
+        proba = self.model.predict_proba([features])[0]
+        return pred, proba
 
     def _calculate_features(self) -> Optional[np.ndarray]:
         """Calculate MTF features using pandas-ta.
@@ -829,14 +979,58 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
             return [int(h) for h in hours_str]
         return [int(h.strip()) for h in str(hours_str).split(',') if h.strip()]
 
+    def _parse_hour_weekday_pairs(self, pairs_val):
+        """
+        Parse hour-weekday pairs from config.
+        Accepts either a list of (hour, weekday) tuples or a string like "16-1,16-3,14-5".
+        
+        Returns:
+            List of (hour, weekday) tuples
+        """
+        if not pairs_val:
+            return []
+        
+        if isinstance(pairs_val, list):
+            # Already parsed or is a list of tuples
+            result = []
+            for item in pairs_val:
+                if isinstance(item, (list, tuple)) and len(item) == 2:
+                    result.append((int(item[0]), int(item[1])))
+                elif isinstance(item, str) and '-' in item:
+                    # String format "16-1"
+                    h, w = item.split('-', 1)
+                    result.append((int(h.strip()), int(w.strip())))
+            return result
+        
+        if isinstance(pairs_val, str):
+            # Parse string format "16-1,16-3,14-5"
+            result = []
+            for pair_str in pairs_val.split(','):
+                pair_str = pair_str.strip()
+                if not pair_str:
+                    continue
+                if '-' in pair_str:
+                    h, w = pair_str.split('-', 1)
+                    result.append((int(h.strip()), int(w.strip())))
+            return result
+        
+        return []
+
     def _is_trading_allowed(self, utc_hour: int, utc_weekday: int, bar_time: Optional[pd.Timestamp] = None) -> bool:
         """Check if trading is allowed at this UTC hour on this weekday."""
+        # Mode options: 'disabled', 'simple', 'weekday'
+        # - 'disabled': no time-based filtering at all
+        # - 'simple': only enforce trade_start_hour/trade_end_hour
+        # - 'weekday': enforce trade_start_hour/trade_end_hour + weekday-specific excluded hours
+        if str(self._excluded_hours_mode).lower() == 'disabled':
+            # Still check seasonal exclusions if enabled
+            if self._seasonal_hour_exclusions_enabled:
+                return self._check_seasonal_hour_weekday_allowed(utc_hour, utc_weekday, bar_time)
+            return True
+
         if not (self.trade_start_hour <= utc_hour < self.trade_end_hour):
             return False
 
-        # Mode options: 'disabled', 'simple', 'weekday'
-        # 'simple' mode: no hour exclusions, only check trade_start_hour/trade_end_hour
-        # 'weekday' mode: apply weekday-specific excluded hours
         if self._excluded_hours_mode == 'weekday':
             if self._config_timezone == 'EST':
                 est_hour, est_weekday = self._utc_to_est(utc_hour, utc_weekday, bar_time)
@@ -847,6 +1041,11 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
                 excluded = self._excluded_hours.get(utc_weekday, [])
                 if utc_hour in excluded:
                     return False
+
+        # Finally check seasonal hour×weekday exclusions
+        if self._seasonal_hour_exclusions_enabled:
+            if not self._check_seasonal_hour_weekday_allowed(utc_hour, utc_weekday, bar_time):
+                return False
 
         return True
 
@@ -891,6 +1090,54 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
         except Exception as e:
             _py_logger.warning(f"Timezone conversion error: {e}, returning UTC values")
             return utc_hour, utc_weekday
+
+    def _check_seasonal_hour_weekday_allowed(self, utc_hour: int, utc_weekday: int, bar_time: Optional[pd.Timestamp] = None) -> bool:
+        """
+        Check if trading is allowed based on seasonal hour×weekday exclusions.
+        Always operates in EST timezone (hour×weekday pairs are defined in EST).
+        
+        Args:
+            utc_hour: Hour in UTC (0-23)
+            utc_weekday: Weekday in UTC (0=Monday, 6=Sunday)
+            bar_time: Optional timestamp for precise timezone conversion
+            
+        Returns:
+            True if allowed, False if excluded
+        """
+        # Convert UTC to EST
+        est_hour, est_weekday = self._utc_to_est(utc_hour, utc_weekday, bar_time)
+        
+        # Convert Python weekday (0=Mon, 6=Sun) to ISO format (1=Mon, 7=Sun) for config consistency
+        est_weekday_iso = est_weekday + 1
+        
+        # Determine season from bar_time or current date
+        if bar_time is not None:
+            month = bar_time.month
+        else:
+            from datetime import datetime
+            month = datetime.now().month
+        
+        # DJF = Dec, Jan, Feb (12, 1, 2)
+        # MAM = Mar, Apr, May (3, 4, 5)
+        # JJA = Jun, Jul, Aug (6, 7, 8)
+        # SON = Sep, Oct, Nov (9, 10, 11)
+        if month in [12, 1, 2]:
+            excluded_pairs = self._djf_excluded_hour_weekday_pairs
+        elif month in [3, 4, 5]:
+            excluded_pairs = self._mam_excluded_hour_weekday_pairs
+        elif month in [6, 7, 8]:
+            excluded_pairs = self._jja_excluded_hour_weekday_pairs
+        elif month in [9, 10, 11]:
+            excluded_pairs = self._son_excluded_hour_weekday_pairs
+        else:
+            excluded_pairs = []
+        
+        # Check if this (hour, weekday) pair is excluded
+        for ex_hour, ex_weekday in excluded_pairs:
+            if est_hour == ex_hour and est_weekday_iso == ex_weekday:
+                return False
+        
+        return True
 
     def _log_signal(self, entry_time: pd.Timestamp, prediction: int, 
                    prediction_proba: np.ndarray, dynamic_params: Dict[str, float]) -> None:
@@ -949,13 +1196,28 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
                 'pos2_tp_atr_mult': float(self.pos2_tp_atr_mult),
             }
 
+            # Optional: adjust SL multiplier based on confidence tiers
+            dynamic_params['sl_atr_mult'] = self._sl_mult_for_confidence(
+                float(confidence),
+                float(dynamic_params['sl_atr_mult']),
+            )
+
             # Compute ATR using the same normalized ATR method as classic V2
             atr_normalized = self._calculate_atr_normalized()
             if atr_normalized is None:
                 return None
             entry_atr = float(atr_normalized) * float(bar.close)
             
-            _py_logger.info(f"[SIGNAL] Generated {direction} signal at {bar_time}, confidence: {confidence:.3f}")
+            _py_logger.info(
+                f"[SIGNAL] Generated {direction} signal at {bar_time}, confidence: {confidence:.3f}"
+            )
+            if self._confidence_sl_enabled:
+                _py_logger.info(
+                    "[CONF_SL] conf=%.3f sl_atr_mult=%.2f base_sl_atr_mult=%.2f",
+                    float(confidence),
+                    float(dynamic_params['sl_atr_mult']),
+                    float(self.sl_atr_mult),
+                )
             return direction, features, prediction, prediction_proba, dynamic_params, entry_atr
         except Exception as e:
             _py_logger.error(f"Error generating signal: {e}")

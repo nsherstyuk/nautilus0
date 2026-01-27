@@ -88,12 +88,18 @@ def run_v2_entry_confirmed_backtest(
         Tuple of (backtest_results, results_directory_path)
     """
     
-    load_dotenv(PROJECT_ROOT / ".env.mtf_v2", override=True)
+    # Allow shell env vars to override .env values (useful for quick experiments)
+    load_dotenv(PROJECT_ROOT / ".env.mtf_v2", override=False)
 
     entry_confirmation_enabled = _env_bool("MTF2_ENTRY_CONFIRM_ENABLED", True)
     entry_confirmation_bars = _env_int("MTF2_ENTRY_CONFIRM_BARS", 2)
     entry_confirmation_threshold = _env_float("MTF2_ENTRY_CONFIRM_THRESHOLD", 0.2)
     entry_max_wait_bars = _env_int("MTF2_ENTRY_CONFIRM_MAX_WAIT_BARS", 5)
+
+    # Optional: confidence-tiered SL
+    confidence_sl_enabled = _env_bool("MTF2_CONF_SL_ENABLED", False)
+    confidence_sl_tiers = (os.getenv("MTF2_CONF_SL_TIERS") or "").strip()
+    confidence_sl_interpolate = _env_bool("MTF2_CONF_SL_INTERPOLATE", False)
 
     print("=" * 80)
     print("MTF V2 REPLAY BACKTEST - ENTRY CONFIRMED VERSION")
@@ -106,6 +112,11 @@ def run_v2_entry_confirmed_backtest(
         f"bars={entry_confirmation_bars} "
         f"threshold={entry_confirmation_threshold} "
         f"max_wait={entry_max_wait_bars}"
+    )
+    print(
+        f"Confidence SL: enabled={confidence_sl_enabled} "
+        f"tiers='{confidence_sl_tiers}' "
+        f"interpolate={confidence_sl_interpolate}"
     )
     print()
     
@@ -207,6 +218,10 @@ def run_v2_entry_confirmed_backtest(
             "entry_confirmation_bars": entry_confirmation_bars,
             "entry_confirmation_threshold": entry_confirmation_threshold,
             "entry_max_wait_bars": entry_max_wait_bars,
+            # Confidence-tiered SL
+            "confidence_sl_enabled": confidence_sl_enabled,
+            "confidence_sl_tiers": confidence_sl_tiers,
+            "confidence_sl_interpolate": confidence_sl_interpolate,
         },
     )
     

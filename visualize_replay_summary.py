@@ -243,20 +243,22 @@ def create_summary_chart(trades: pd.DataFrame, metrics: dict, output_file: str, 
         height=1400,
         template='plotly_dark',
         showlegend=True,
-        annotations=[
-            dict(
-                text=annotations_text,
-                xref="paper", yref="paper",
-                x=1.02, y=0.98,
-                xanchor="left", yanchor="top",
-                showarrow=False,
-                font=dict(size=11, family="Courier New, monospace"),
-                bgcolor="rgba(0,0,0,0.7)",
-                bordercolor="white",
-                borderwidth=1,
-                borderpad=10,
-            )
-        ]
+        # Metrics box commented out to avoid covering plot
+        # Uncomment the annotations section below to show metrics box
+        # annotations=[
+        #     dict(
+        #         text=annotations_text,
+        #         xref="paper", yref="paper",
+        #         x=1.02, y=0.98,
+        #         xanchor="left", yanchor="top",
+        #         showarrow=False,
+        #         font=dict(size=11, family="Courier New, monospace"),
+        #         bgcolor="rgba(0,0,0,0.7)",
+        #         bordercolor="white",
+        #         borderwidth=1,
+        #         borderpad=10,
+        #     )
+        # ]
     )
     
     # Update axes labels

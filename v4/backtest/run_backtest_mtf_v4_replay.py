@@ -21,7 +21,7 @@ from nautilus_trader.backtest.engine import BacktestEngine, BacktestEngineConfig
 from nautilus_trader.backtest.modules import FXRolloverInterestModule
 from nautilus_trader.config import BacktestVenueConfig, BacktestDataConfig
 from nautilus_trader.model.currencies import USD
-from nautilus_trader.model.data import BarType
+from nautilus_trader.model.data import BarType, BarSpecification
 from nautilus_trader.model.enums import BarAggregation, PriceType
 from nautilus_trader.model.identifiers import InstrumentId, Venue
 from nautilus_trader.model.objects import Money
@@ -29,7 +29,8 @@ from nautilus_trader.persistence.catalog import ParquetDataCatalog
 from nautilus_trader.test_kit.providers import TestInstrumentProvider
 
 # Import V4 components
-sys.path.append(str(Path(__file__).parent.parent))
+v4_path = Path(__file__).parent.parent
+sys.path.append(str(v4_path))
 from strategies.ml_strategy_mtf_v4 import MLSignalStrategyV4
 from config.mtf_v4_config import load_mtf_v4_config
 
@@ -92,7 +93,7 @@ def run_v4_backtest():
     engine_config = BacktestEngineConfig(
         trader_id="BACKTESTER-V4",
         venue_configs=[BacktestVenueConfig(name="IDEALPRO", oms_type="HEDGING", account_type="MARGIN", base_currency=USD)],
-        data_configs=[BacktestDataCatalog(
+        data_configs=[BacktestDataConfig(
             catalog_path=str(data_dir),
             instrument_id=instrument.id,
             start_time=v4_config.backtest_start,

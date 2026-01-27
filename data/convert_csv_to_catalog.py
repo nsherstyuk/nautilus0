@@ -44,6 +44,10 @@ def convert_csv_to_catalog(
     df = pd.read_csv(csv_path)
     df['timestamp'] = pd.to_datetime(df['timestamp'], utc=True)
     
+    # Sort and deduplicate to ensure valid Parquet writing
+    df = df.sort_values('timestamp')
+    df = df.drop_duplicates(subset=['timestamp'])
+    
     print(f"Loaded {len(df)} bars")
     print(f"Date range: {df['timestamp'].min()} to {df['timestamp'].max()}")
     
@@ -81,7 +85,8 @@ def convert_csv_to_catalog(
             high=Price.from_str(f"{row['high']:.5f}"),
             low=Price.from_str(f"{row['low']:.5f}"),
             close=Price.from_str(f"{row['close']:.5f}"),
-            volume=Quantity.from_int(int(row['volume'])),
+            # Ensure volume has precision 2 to match instrument definition (EUR/USD typically precision 2)
+            volume=Quantity.from_str(f"{int(row['volume']):.2f}"),
             ts_event=int(row['timestamp'].value),
             ts_init=int(row['timestamp'].value)
         )
@@ -107,7 +112,7 @@ def main():
     
     # Paths
     historical_dir = PROJECT_ROOT / "data" / "historical"
-    catalog_dir = PROJECT_ROOT / "data" / "catalog"
+    catalog_dir = PROJECT_ROOT / "data" / "historical"
     
     # Create catalog directory
     catalog_dir.mkdir(exist_ok=True)
@@ -116,32 +121,37 @@ def main():
     print("CSV TO CATALOG CONVERTER")
     print("="*80)
     
-    # Convert EUR/USD 15-minute data
-    csv_file = historical_dir / "EUR-USD_EUR_USD_IDEALPRO_15_MINUTE_MID_EXTERNAL.csv"
+    # Define files to convert
+    files_to_convert = [
+        ("EUR-USD_EUR_USD_IDEALPRO_1_MINUTE_MID_EXTERNAL.csv", "1-MINUTE-MID-EXTERNAL"),
+        ("EUR-USD_EUR_USD_IDEALPRO_5_MINUTE_MID_EXTERNAL.csv", "5-MINUTE-MID-EXTERNAL"),
+        ("EUR-USD_EUR_USD_IDEALPRO_15_MINUTE_MID_EXTERNAL.csv", "15-MINUTE-MID-EXTERNAL"),
+    ]
     
-    if not csv_file.exists():
-        print(f"❌ CSV file not found: {csv_file}")
-        return
-    
-    try:
-        convert_csv_to_catalog(
-            csv_path=csv_file,
-            instrument_id="EUR/USD.IDEALPRO",
-            bar_spec_str="15-MINUTE-MID-EXTERNAL",
-            catalog_path=catalog_dir
-        )
+    for filename, bar_spec in files_to_convert:
+        csv_file = historical_dir / filename
         
-        print("="*80)
-        print("✅ ALL CONVERSIONS COMPLETE")
-        print("="*80)
-        print(f"\nCatalog location: {catalog_dir}")
-        print("Ready for backtesting!")
-        
-    except Exception as e:
-        print(f"\n❌ Error during conversion: {e}")
-        import traceback
-        traceback.print_exc()
-        return 1
+        if not csv_file.exists():
+            print(f"❌ CSV file not found: {csv_file}")
+            continue
+            
+        try:
+            convert_csv_to_catalog(
+                csv_path=csv_file,
+                instrument_id="EUR/USD.IDEALPRO",
+                bar_spec_str=bar_spec,
+                catalog_path=catalog_dir
+            )
+        except Exception as e:
+            print(f"\n❌ Error converting {filename}: {e}")
+            import traceback
+            traceback.print_exc()
+            
+    print("="*80)
+    print("✅ ALL CONVERSIONS COMPLETE")
+    print("="*80)
+    print(f"\nCatalog location: {catalog_dir}")
+    print("Ready for backtesting!")
     
     return 0
 

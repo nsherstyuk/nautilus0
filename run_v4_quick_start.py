@@ -44,7 +44,8 @@ def run_v4_backtest():
     print("\nRunning V4 backtest...")
     
     # Change to project root
-    os.chdir(Path(__file__).parent.parent.parent)
+    project_root = Path(__file__).parent
+    os.chdir(project_root)
     
     # Set environment
     os.environ["V4_CONFIG_PATH"] = str(Path("v4/.env.mtf_v4").absolute())
@@ -52,7 +53,7 @@ def run_v4_backtest():
     # Run backtest
     import subprocess
     result = subprocess.run([
-        sys.executable, "v4/backtest/run_backtest_mtf_v4_replay.py"
+        sys.executable, str(Path(__file__).parent / "v4" / "backtest" / "run_backtest_mtf_v4_replay.py")
     ], capture_output=True, text=True)
     
     if result.returncode == 0:
