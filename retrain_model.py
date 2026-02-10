@@ -7,16 +7,18 @@ Target: Predict profitable trading opportunities on EUR/USD 15-minute bars
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 from sklearn.model_selection import TimeSeriesSplit, cross_val_score
 from sklearn.metrics import classification_report, confusion_matrix
 from joblib import dump
 import warnings
 warnings.filterwarnings('ignore')
 
+from strategies.feature_engineering_v3 import compute_v3_features, FEATURE_COLUMNS_V3
+
 # Configuration
 TRAINING_MONTHS = 24  # How many months of data to use
-TRAIN_END_DATE = '2026-01-01'  # Train up to (but not including) this date
+TRAIN_END_DATE = '2026-02-09'  # Train up to (but not including) this date
 MIN_SAMPLES = 10000  # Minimum samples needed for training
 
 # Profit threshold for labeling (based on 2025 data analysis)
@@ -63,110 +65,63 @@ def load_data_from_catalog(start_date, end_date):
     return df
 
 def calculate_features(df):
-    """Calculate technical indicators and features (same as backtest)."""
-    print("Calculating features...")
+    """Calculate V3 features with directional predictive power."""
+    print("Calculating V3 features...")
     
-    # Price changes
-    df['returns'] = df['close'].pct_change()
-    df['log_returns'] = np.log(df['close'] / df['close'].shift(1))
+    ohlcv = df[["open", "high", "low", "close", "volume"]].copy()
+    feats = compute_v3_features(ohlcv)
     
-    # Moving averages
-    for period in [10, 20, 50]:
-        df[f'sma_{period}'] = df['close'].rolling(period).mean()
-        df[f'price_to_sma_{period}'] = df['close'] / df[f'sma_{period}']
-    
-    # Exponential moving averages
-    for period in [12, 26]:
-        df[f'ema_{period}'] = df['close'].ewm(span=period).mean()
-    
-    # MACD
-    df['macd'] = df['ema_12'] - df['ema_26']
-    df['macd_signal'] = df['macd'].ewm(span=9).mean()
-    df['macd_diff'] = df['macd'] - df['macd_signal']
-    
-    # RSI
-    delta = df['close'].diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
-    rs = gain / loss
-    df['rsi'] = 100 - (100 / (1 + rs))
-    
-    # Bollinger Bands
-    df['bb_middle'] = df['close'].rolling(20).mean()
-    bb_std = df['close'].rolling(20).std()
-    df['bb_upper'] = df['bb_middle'] + (bb_std * 2)
-    df['bb_lower'] = df['bb_middle'] - (bb_std * 2)
-    df['bb_width'] = (df['bb_upper'] - df['bb_lower']) / df['bb_middle']
-    df['bb_position'] = (df['close'] - df['bb_lower']) / (df['bb_upper'] - df['bb_lower'])
-    
-    # ATR (Average True Range)
-    df['tr'] = np.maximum(
-        df['high'] - df['low'],
-        np.maximum(
-            abs(df['high'] - df['close'].shift(1)),
-            abs(df['low'] - df['close'].shift(1))
-        )
-    )
-    df['atr'] = df['tr'].rolling(14).mean()
-    df['atr_pct'] = df['atr'] / df['close']
-    
-    # Volatility
-    df['volatility'] = df['returns'].rolling(20).std()
-    
-    # Volume features
-    df['volume_sma'] = df['volume'].rolling(20).mean()
-    # Handle division by zero if volume is 0
-    df['volume_ratio'] = np.where(df['volume_sma'] > 0, df['volume'] / df['volume_sma'], 0.0)
-    
-    # Price momentum
-    for period in [5, 10, 20]:
-        df[f'momentum_{period}'] = df['close'] - df['close'].shift(period)
-        df[f'roc_{period}'] = df['close'].pct_change(period)
-    
-    # Candle patterns
-    df['body'] = abs(df['close'] - df['open'])
-    df['upper_shadow'] = df['high'] - np.maximum(df['open'], df['close'])
-    df['lower_shadow'] = np.minimum(df['open'], df['close']) - df['low']
-    df['body_to_range'] = df['body'] / (df['high'] - df['low'])
-    
-    # Time features
-    df['hour'] = df.index.hour
-    df['day_of_week'] = df.index.dayofweek
-    df['is_london_session'] = ((df['hour'] >= 8) & (df['hour'] < 16)).astype(int)
-    df['is_ny_session'] = ((df['hour'] >= 13) & (df['hour'] < 21)).astype(int)
-    df['is_overlap'] = ((df['hour'] >= 13) & (df['hour'] < 16)).astype(int)
+    # Merge features back with OHLCV (needed for labeling)
+    result = df[["open", "high", "low", "close", "volume"]].copy()
+    for col in feats.columns:
+        result[col] = feats[col]
     
     # Drop NaN values
-    df = df.dropna()
+    result = result.dropna()
     
-    print(f"Features calculated. {len(df):,} bars remaining after dropna")
+    print(f"V3 features calculated: {len(FEATURE_COLUMNS_V3)} features, {len(result):,} bars remaining after dropna")
     
-    return df
+    return result
 
 def create_labels(df, forward_periods=4, profit_threshold=0.0015):
     """
-    Create labels for classification.
+    Symmetric directional labeling.
     
-    Label = 1 (BUY) if price goes up by profit_threshold within forward_periods
-    Label = 0 (SELL/HOLD) otherwise
+    Label = 1 (LONG) if forward upside > forward downside
+    Label = 0 (SHORT) if forward downside > forward upside
+    Ties are dropped.
+    
+    profit_threshold is unused but kept for API compatibility.
     """
-    print(f"Creating labels (forward_periods={forward_periods}, threshold={profit_threshold})...")
+    print(f"Creating directional labels (forward_periods={forward_periods})...")
     
     df = df.copy()
     
-    # Calculate forward returns
+    # Calculate forward price extremes
     df['forward_high'] = df['high'].rolling(forward_periods).max().shift(-forward_periods)
     df['forward_low'] = df['low'].rolling(forward_periods).min().shift(-forward_periods)
     
-    # Label: 1 if profitable long opportunity, 0 otherwise
-    df['label'] = ((df['forward_high'] - df['close']) / df['close'] >= profit_threshold).astype(int)
-    
     # Remove rows where we can't calculate forward returns
-    df = df.dropna(subset=['forward_high', 'forward_low', 'label'])
+    df = df.dropna(subset=['forward_high', 'forward_low'])
     
-    print(f"Labels created. Class distribution:")
+    # Symmetric directional: which way does price move more?
+    upside = df['forward_high'] - df['close']
+    downside = df['close'] - df['forward_low']
+    
+    # Label = 1 if upside > downside (LONG), 0 if downside > upside (SHORT)
+    df['label'] = (upside > downside).astype(int)
+    
+    # Drop exact ties
+    ties = upside == downside
+    n_ties = ties.sum()
+    df = df[~ties].copy()
+    
+    print(f"Labels created (symmetric directional). Class distribution:")
     print(df['label'].value_counts())
-    print(f"Positive class: {df['label'].sum() / len(df) * 100:.1f}%")
+    print(f"LONG class: {df['label'].sum() / len(df) * 100:.1f}%")
+    print(f"SHORT class: {(1 - df['label']).sum() / len(df) * 100:.1f}%")
+    if n_ties > 0:
+        print(f"Dropped {n_ties} tied bars")
     
     return df
 
@@ -194,19 +149,24 @@ def train_model(df):
     print(f"Val:   {len(X_val):,} samples ({df.index[split_idx]} to {df.index[-1]})")
     
     # Train model
-    print("\nTraining Random Forest...")
-    model = RandomForestClassifier(
-        n_estimators=100,
-        max_depth=10,
-        min_samples_split=50,
-        min_samples_leaf=20,
-        max_features='sqrt',
+    print("\nTraining XGBoost...")
+    model = XGBClassifier(
+        n_estimators=300,
+        max_depth=6,
+        learning_rate=0.05,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        reg_alpha=0.1,       # L1 regularization
+        reg_lambda=1.0,      # L2 regularization
+        min_child_weight=20,
+        gamma=0.1,           # Min loss reduction for split
         random_state=42,
         n_jobs=-1,
-        class_weight='balanced'
+        eval_metric='logloss',
+        early_stopping_rounds=30,
     )
     
-    model.fit(X_train, y_train)
+    model.fit(X_train, y_train, eval_set=[(X_val, y_val)], verbose=False)
     
     # Evaluate
     print("\n" + "="*80)
@@ -224,7 +184,7 @@ def train_model(df):
     y_pred_proba = model.predict_proba(X_val)[:, 1]
     
     print("\nClassification Report (Validation):")
-    print(classification_report(y_val, y_pred, target_names=['HOLD', 'BUY']))
+    print(classification_report(y_val, y_pred, target_names=['SHORT', 'LONG']))
     
     print("\nConfusion Matrix:")
     print(confusion_matrix(y_val, y_pred))
@@ -290,18 +250,11 @@ def main():
     print("SAVING MODEL")
     print("="*80)
     
-    model_path = PROJECT_ROOT / "models" / "ml_model_mtf.pkl"
+    model_path = PROJECT_ROOT / "models" / "ml_model_mtf_v3_xgb.pkl"
     model_path.parent.mkdir(exist_ok=True)
     
-    # Backup old model
-    if model_path.exists():
-        backup_path = PROJECT_ROOT / "models" / "ml_model_mtf_backup.pkl"
-        import shutil
-        shutil.copy(model_path, backup_path)
-        print(f"✅ Old model backed up to: {backup_path}")
-    
     dump(model, model_path)
-    print(f"✅ New model saved to: {model_path}")
+    print(f"New V3 model saved to: {model_path}")
     
     # Save feature list for reference
     feature_list_path = PROJECT_ROOT / "models" / "feature_list.txt"

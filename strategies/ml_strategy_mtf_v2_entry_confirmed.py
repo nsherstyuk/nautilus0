@@ -27,6 +27,7 @@ import zoneinfo
 import pandas_ta as ta
 
 from strategies.feature_engineering_v2_rf40 import latest_rf40_row
+from strategies.feature_engineering_v3 import latest_v3_row, FEATURE_COLUMNS_V3
 
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.core.data import Data
@@ -107,6 +108,8 @@ class MLSignalStrategyV2EntryConfirmedConfig(StrategyConfig, kw_only=True):
 
     # Prediction settings
     prediction_threshold: float = 0.55
+    prediction_threshold_long: float = 0.0   # 0 = use prediction_threshold
+    prediction_threshold_short: float = 0.0  # 0 = use prediction_threshold
 
     # Session filtering (used for verification parity when entry confirmation is disabled)
     trade_start_hour: int = 7
@@ -199,6 +202,8 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
 
         # Prediction
         self.prediction_threshold = config.prediction_threshold
+        self._threshold_long = float(getattr(config, 'prediction_threshold_long', 0) or 0)
+        self._threshold_short = float(getattr(config, 'prediction_threshold_short', 0) or 0)
 
         # V2 parity gates (Option A): only enforced when entry confirmation is disabled
         self.trade_start_hour = config.trade_start_hour
@@ -265,9 +270,10 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
         self._atr_window = 14  # 14-period ATR
         
         # Initialize bar buffers
-        self.bars_buffer_15m = deque(maxlen=100)
+        # V3 model needs ~500+ bars for 4H resampled features; safe for RF40 too
+        self.bars_buffer_15m = deque(maxlen=700)
         self.bars_buffer_30m = deque(maxlen=50)
-        self._min_warmup_bars_15m = 50
+        self._min_warmup_bars_15m = 500
         self._min_warmup_bars_30m = 25
         self._atr_values = deque(maxlen=14)
         self._atr_window = 14
@@ -397,6 +403,19 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
         except Exception as e:
             _py_logger.error(f"Failed to load ML model: {e}")
             raise
+
+    def _using_v3_model(self) -> bool:
+        if self.model is None:
+            return False
+        if hasattr(self.model, "feature_names_in_"):
+            names = list(self.model.feature_names_in_)
+            return len(names) == 50 and "returns_1" in names and "trend_alignment" in names
+        if hasattr(self.model, "n_features_in_"):
+            try:
+                return int(self.model.n_features_in_) == 50
+            except Exception:
+                return False
+        return False
 
     def _using_rf40_model(self) -> bool:
         if self.model is None:
@@ -588,8 +607,16 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
         # Confidence filter (still blocks trading, but values are logged above)
         if confidence is None:
             return
-        if confidence < self.prediction_threshold:
-            _py_logger.info(f"[FILTERED] Confidence {confidence:.3f} < {self.prediction_threshold}")
+        # Determine direction-aware threshold
+        direction = "LONG" if prediction == 1 else "SHORT"
+        effective_threshold = self.prediction_threshold
+        if direction == "LONG" and self._threshold_long > 0:
+            effective_threshold = self._threshold_long
+        elif direction == "SHORT" and self._threshold_short > 0:
+            effective_threshold = self._threshold_short
+
+        if confidence < effective_threshold:
+            _py_logger.info(f"[FILTERED] Confidence {confidence:.3f} < {effective_threshold} ({direction})")
             return
 
         # Generate trading signal
@@ -701,6 +728,15 @@ class MLSignalStrategyV2EntryConfirmed(Strategy):
                 self._latest_meta["dmp_30m"] = None
             else:
                 self._latest_meta["dmp_30m"] = float((dmi_30m.iloc[:, 1] / 100.0).iloc[-1])
+
+            # If using the V3 50-feature model, generate that feature vector.
+            if self._using_v3_model():
+                v3_input = df_15m[["open", "high", "low", "close", "volume"]]
+                row = latest_v3_row(v3_input)
+                if row is None:
+                    return None
+                features = row.to_numpy(dtype=np.float64)[0]
+                return features
 
             # If using the 40-feature RF backup model, generate that exact feature vector.
             if self._using_rf40_model():

@@ -28,6 +28,7 @@ from live.hmtf_engine import (
 from live.ib_bar_streamer import IBBarStreamer
 from live.master_mtf_v2_model import MtfV2SklearnMasterModel
 from live.soldier_xgb_model import XgbSoldierModel, load_feature_list
+from utils.run_metadata import log_and_write_run_metadata
 
 logger = logging.getLogger("live_mtf_v3_hierarchical")
 
@@ -68,6 +69,16 @@ async def main_async() -> int:
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
+
+    run_id = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    log_and_write_run_metadata(
+        logger,
+        output_dir=PROJECT_ROOT / "logs" / "live_mtf",
+        run_kind="live",
+        run_id=run_id,
+        entrypoint=__file__,
+        extra={"logger": "live_mtf_v3_hierarchical", "env_file": ".env.mtf_v3"},
     )
 
     logger.info(

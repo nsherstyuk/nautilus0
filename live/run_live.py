@@ -6,6 +6,7 @@ import logging
 import logging.config
 import signal
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Tuple
 
@@ -47,6 +48,7 @@ from nautilus_trader.live.node import TradingNode
 from config.ibkr_config import get_ibkr_config
 from config.live_config import LiveConfig, get_live_config, validate_live_config
 from live.historical_backfill import calculate_required_bars, calculate_required_duration_hours, backfill_historical_data, feed_historical_bars_to_strategy
+from utils.run_metadata import log_and_write_run_metadata
 
 
 def setup_logging(log_dir: Path) -> logging.Logger:
@@ -75,6 +77,16 @@ def setup_logging(log_dir: Path) -> logging.Logger:
     logger = logging.getLogger("live")
     logger.info("Live logging configured. Logs directory: %s", log_dir)
     logger.info("Log files initialized: %s", ", ".join(handler_mappings.values()))
+
+    run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_and_write_run_metadata(
+        logger,
+        output_dir=log_dir,
+        run_kind="live",
+        run_id=run_id,
+        entrypoint=__file__,
+        extra={"logger": "live", "log_dir": str(log_dir)},
+    )
     return logger
 
 

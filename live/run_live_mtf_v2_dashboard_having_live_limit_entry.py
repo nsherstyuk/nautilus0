@@ -188,6 +188,21 @@ def setup_logging(log_dir: Path, start_time: str) -> None:
     logging.getLogger("TRADER-V2-001.DataEngine").setLevel(logging.WARNING)
     logging.getLogger("orders").setLevel(logging.DEBUG)
 
+    log = logging.getLogger("live_v2_dashboard_having_live_limit_entry")
+    log.info("Live dashboard logging configured. Logs directory: %s", log_dir)
+    log.info("Console log (this run): %s", console_log_file)
+
+    from utils.run_metadata import log_and_write_run_metadata
+
+    log_and_write_run_metadata(
+        log,
+        output_dir=log_dir,
+        run_kind="live",
+        run_id=start_time,
+        entrypoint=__file__,
+        extra={"logger": "live_v2_dashboard_having_live_limit_entry", "log_dir": str(log_dir)},
+    )
+
 
 def _resolve_market_data_type(value: str) -> IBMarketDataTypeEnum:
     mapping = {

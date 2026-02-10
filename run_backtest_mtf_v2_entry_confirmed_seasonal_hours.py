@@ -36,6 +36,7 @@ sys.path.append(str(PROJECT_ROOT / "config"))
 
 from config.mtf_v2_config import load_mtf_v2_config
 from utils.instruments import instrument_id_to_catalog_format, normalize_instrument_id, parse_fx_symbol
+from utils.run_metadata import log_and_write_run_metadata
 
 from run_backtest_mtf_v2_full import generate_reports
 from run_backtest_mtf_v2_replay import _build_trades_from_positions, _setup_logging
@@ -141,6 +142,23 @@ def run_v2_entry_confirmed_seasonal_backtest(
     run_folder = PROJECT_ROOT / "backtest_results" / run_folder_name
     run_folder.mkdir(parents=True, exist_ok=True)
     logger.info(f"Results folder: {run_folder}")
+    
+    # Stamp run metadata
+    log_and_write_run_metadata(
+        logger,
+        output_dir=run_folder,
+        run_kind="backtest",
+        run_id=timestamp,
+        entrypoint=__file__,
+        extra={
+            "output_dir": str(run_folder),
+            "env_file": ".env.mtf_v2",
+            "symbol": symbol,
+            "venue": venue,
+            "backtest_start": start_date,
+            "backtest_end": end_date,
+        },
+    )
     
     # Save .env snapshot
     if env_path.exists():

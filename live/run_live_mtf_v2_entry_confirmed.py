@@ -50,6 +50,23 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Best-effort: stamp code version for this run.
+try:
+    from utils.run_metadata import log_and_write_run_metadata
+
+    _run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+    _default_log_dir = PROJECT_ROOT / "logs" / "live_mtf"
+    log_and_write_run_metadata(
+        logger,
+        output_dir=_default_log_dir,
+        run_kind="live",
+        run_id=_run_id,
+        entrypoint=__file__,
+        extra={"logger": __name__, "log_dir": str(_default_log_dir)},
+    )
+except Exception:
+    pass
+
 class LiveTradingNodeV2EntryConfirmed:
     """
     Live trading node for V2 strategy with entry confirmation.

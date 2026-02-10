@@ -29,6 +29,7 @@ from nautilus_trader.model.data import Bar
 from config.mtf_v2_config import load_mtf_v2_config, print_mtf_v2_config
 from run_backtest_mtf_v2_full import generate_reports, utc_to_est
 from utils.instruments import instrument_id_to_catalog_format, normalize_instrument_id, parse_fx_symbol
+from utils.run_metadata import log_and_write_run_metadata
 
 
 _MONEY_RE = re.compile(r"(-?\d+(?:\.\d+)?)")
@@ -169,6 +170,24 @@ def main() -> int:
         os.getenv("MTF2_NEG_STALL_CHECK_BARS"),
         os.getenv("MTF2_NEG_STALL_MAX_PROFIT_ATR"),
         os.getenv("MTF2_NEG_STALL_TRIGGER_LOSS_ATR"),
+    )
+
+    log_and_write_run_metadata(
+        logger,
+        output_dir=output_dir,
+        run_kind="replay",
+        run_id=timestamp,
+        entrypoint=__file__,
+        extra={
+            "logger": "mtf_v2_replay",
+            "output_dir": str(output_dir),
+            "env_file": ".env.mtf_v2",
+            "symbol": cfg.symbol,
+            "venue": cfg.venue,
+            "bar_spec": cfg.bar_spec,
+            "backtest_start": cfg.backtest_start,
+            "backtest_end": cfg.backtest_end,
+        },
     )
     print_mtf_v2_config(cfg)
 

@@ -17,6 +17,7 @@ import logging
 import logging.config
 import signal
 import sys
+from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
@@ -56,6 +57,7 @@ from nautilus_trader.live.node import TradingNode
 from config.ibkr_config import get_ibkr_config
 from config.mtf_config import load_mtf_config, validate_mtf_config, print_mtf_config
 from live.ib_bar_streamer import IBBarStreamer
+from utils.run_metadata import log_and_write_run_metadata
 
 logger = logging.getLogger("live")
 
@@ -96,6 +98,16 @@ def setup_logging(log_dir: Path) -> logging.Logger:
     log = logging.getLogger("live")
     log.info("Live logging configured. Logs directory: %s", log_dir)
     log.info("Console output will be saved to: %s", log_dir / "console_output.log")
+
+    run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_and_write_run_metadata(
+        log,
+        output_dir=log_dir,
+        run_kind="live",
+        run_id=run_id,
+        entrypoint=__file__,
+        extra={"logger": "live", "log_dir": str(log_dir)},
+    )
     return log
 
 

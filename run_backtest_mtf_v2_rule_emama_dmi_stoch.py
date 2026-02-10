@@ -17,6 +17,7 @@ from config.mtf_v2_config import load_mtf_v2_config, print_mtf_v2_config
 from run_backtest_mtf_v2_full import generate_reports
 from run_backtest_mtf_v2_replay import _build_trades_from_positions, _setup_logging
 from utils.instruments import instrument_id_to_catalog_format, parse_fx_symbol
+from utils.run_metadata import log_and_write_run_metadata
 
 from nautilus_trader.backtest.config import (
     BacktestDataConfig,
@@ -39,6 +40,24 @@ def main() -> int:
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = PROJECT_ROOT / "backtest_results" / f"MTF_V2_RULE_EMAMA_DMI_STOCH_{timestamp}"
+    
+    # Stamp run metadata
+    log_and_write_run_metadata(
+        None,  # No logger yet
+        output_dir=output_dir,
+        run_kind="backtest",
+        run_id=timestamp,
+        entrypoint=__file__,
+        extra={
+            "output_dir": str(output_dir),
+            "env_file": ".env.mtf_v2",
+            "symbol": cfg.symbol,
+            "venue": cfg.venue,
+            "backtest_start": cfg.backtest_start,
+            "backtest_end": cfg.backtest_end,
+        },
+    )
+    
     _setup_logging(output_dir)
 
     logger = logging.getLogger("mtf_v2_rule_emama")

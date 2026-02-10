@@ -27,6 +27,7 @@ from utils.instruments import instrument_id_to_catalog_format, normalize_instrum
 
 from run_backtest_mtf_v2_full import generate_reports
 from run_backtest_mtf_v2_replay import _build_trades_from_positions, _setup_logging
+from utils.run_metadata import log_and_write_run_metadata
 
 from nautilus_trader.core.datetime import dt_to_unix_nanos
 from nautilus_trader.model.data import Bar
@@ -144,9 +145,10 @@ def run_v2_entry_confirmed_backtest(
     if not model_path.exists():
         raise FileNotFoundError(f"Model not found at {model_path}")
     
-    # Calculate warmup period (same as live trading: 5 days to ensure 50+ bars)
-    # Strategy needs 50 bars (15m) = 12.5 hours, but we add buffer for weekends
-    warmup_days = 5
+    # Calculate warmup period
+    # V3 model needs 500+ bars (15m) for 4H resampled features + SMA20
+    # 500 bars * 15min = 125 hours ~= 5.2 trading days, plus weekends = 10 calendar days
+    warmup_days = 10
     
     # Actual trading start/end dates
     trading_start = pd.Timestamp(config.backtest_start, tz="UTC")
@@ -199,6 +201,8 @@ def run_v2_entry_confirmed_backtest(
             "pos3_tp_atr_mult": config.pos3_tp_atr_mult,
             "trailing_distance_atr_mult": config.trailing_distance_atr_mult,
             "prediction_threshold": config.prediction_threshold,
+            "prediction_threshold_long": config.prediction_threshold_long,
+            "prediction_threshold_short": config.prediction_threshold_short,
             "trade_start_hour": config.trade_start_hour,
             "trade_end_hour": config.trade_end_hour,
             "entry_cooldown_bars": config.entry_cooldown_bars,
@@ -288,9 +292,9 @@ def run_v2_entry_confirmed_backtest(
         fills_report = fills_df.reset_index() if "client_order_id" not in fills_df.columns else fills_df
 
         output_dir.mkdir(parents=True, exist_ok=True)
-        orders_report.to_csv(output_dir / "orders.csv", index=False)
-        fills_report.to_csv(output_dir / "fills.csv", index=False)
-        positions_df.to_csv(output_dir / "positions.csv", index=False)
+        orders_report.to_csv(output_dir / f"orders_{timestamp}.csv", index=False)
+        fills_report.to_csv(output_dir / f"fills_{timestamp}.csv", index=False)
+        positions_df.to_csv(output_dir / f"positions_{timestamp}.csv", index=False)
 
         try:
             order_tags_by_client_id = {}
@@ -308,17 +312,17 @@ def run_v2_entry_confirmed_backtest(
                 "trade_start_hour": config.trade_start_hour,
                 "trade_end_hour": config.trade_end_hour,
             }
-            generate_reports(trades, output_dir, report_config)
+            generate_reports(trades, output_dir, report_config, timestamp)
 
             replay_log_path = output_dir / "replay.log"
             if replay_log_path.exists():
-                shutil.copy(replay_log_path, output_dir / "strategy_decisions.log")
+                shutil.copy(replay_log_path, output_dir / f"strategy_decisions_{timestamp}.log")
         except Exception as e:
             logger.error(f"Failed to generate full report pack: {e}")
 
         # generate_reports(...) writes the detailed summary.txt. Only write a fallback
         # if the report pack failed to generate the summary.
-        summary_path = output_dir / "summary.txt"
+        summary_path = output_dir / f"summary_{timestamp}.txt"
         if not summary_path.exists():
             with open(summary_path, "w", encoding="utf-8") as f:
                 f.write("Entry Confirmed V2 Backtest Results\n")
@@ -360,6 +364,26 @@ def main():
     """Main function."""
     # Load configuration
     config = load_mtf_v2_config()
+    
+    # Stamp run metadata
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_dir = PROJECT_ROOT / "backtest_results" / f"MTF_V2_ENTRY_CONFIRMED_{timestamp}"
+    log_and_write_run_metadata(
+        logger,
+        output_dir=output_dir,
+        run_kind="backtest",
+        run_id=timestamp,
+        entrypoint=__file__,
+        extra={
+            "logger": __name__,
+            "output_dir": str(output_dir),
+            "env_file": ".env.mtf_v2",
+            "symbol": config.symbol,
+            "venue": config.venue,
+            "backtest_start": config.backtest_start,
+            "backtest_end": config.backtest_end,
+        },
+    )
     
     # Run backtest
     result, results_dir = run_v2_entry_confirmed_backtest(

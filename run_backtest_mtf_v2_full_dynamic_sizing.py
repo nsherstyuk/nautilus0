@@ -18,6 +18,7 @@ from run_backtest_mtf_v2_full import (
     calculate_commission,
     utc_to_est,
 )
+from utils.run_metadata import log_and_write_run_metadata
 
 
 def _get_bool(env_name: str, default: bool = False) -> bool:
@@ -487,6 +488,23 @@ def main():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = PROJECT_ROOT / "backtest_results" / f"MTF_V2_DYN_{timestamp}"
     output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Stamp run metadata
+    log_and_write_run_metadata(
+        None,  # No logger yet
+        output_dir=output_dir,
+        run_kind="backtest",
+        run_id=timestamp,
+        entrypoint=__file__,
+        extra={
+            "output_dir": str(output_dir),
+            "env_file": ".env.mtf_v2",
+            "symbol": config.symbol,
+            "venue": config.venue,
+            "backtest_start": config.backtest_start,
+            "backtest_end": config.backtest_end,
+        },
+    )
 
     print("\nLoading model...")
     model = load(PROJECT_ROOT / config.model_path)

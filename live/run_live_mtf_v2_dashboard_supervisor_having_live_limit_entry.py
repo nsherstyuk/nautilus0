@@ -136,6 +136,23 @@ def _setup_logging() -> None:
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
+    try:
+        from utils.run_metadata import log_and_write_run_metadata
+
+        project_root = Path(__file__).resolve().parent.parent
+        log_dir = project_root / "logs" / "live_mtf"
+        run_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+        log_and_write_run_metadata(
+            logger,
+            output_dir=log_dir,
+            run_kind="live",
+            run_id=run_id,
+            entrypoint=__file__,
+            extra={"logger": "live_v2_dashboard_supervisor_having_live_limit_entry"},
+        )
+    except Exception:
+        pass
+
 
 def _read_json(path: Path) -> Optional[Dict[str, Any]]:
     try:

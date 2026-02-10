@@ -28,6 +28,7 @@ from joblib import load
 from nautilus_trader.persistence.catalog import ParquetDataCatalog
 
 from config.mtf_v2_config import load_mtf_v2_config, print_mtf_v2_config
+from utils.run_metadata import log_and_write_run_metadata
 
 
 def load_and_prepare_data(start_date: str, end_date: str) -> pd.DataFrame:
@@ -414,13 +415,14 @@ def simulate_2pos_strategy(df: pd.DataFrame, model, config: dict, log_file=None)
     return trades
 
 
-def generate_reports(trades: list, output_dir: Path, config: dict):
+def generate_reports(trades: list, output_dir: Path, config: dict, timestamp: str = ""):
     """Generate all report files."""
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Always copy .env file, even with 0 trades
-    shutil.copy(PROJECT_ROOT / '.env.mtf_v2', output_dir / '.env.mtf_v2')
-    print(f"Saved: .env.mtf_v2")
+    timestamp_suffix = f"_{timestamp}" if timestamp else ""
+    shutil.copy(PROJECT_ROOT / '.env.mtf_v2', output_dir / f'.env.mtf_v2{timestamp_suffix}')
+    print(f"Saved: .env.mtf_v2{timestamp_suffix}")
     
     if not trades:
         print("No trades to analyze")
@@ -429,8 +431,8 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     df = pd.DataFrame(trades)
     
     # === trades.csv ===
-    df.to_csv(output_dir / 'trades.csv', index=False)
-    print(f"Saved: trades.csv ({len(df)} trades)")
+    df.to_csv(output_dir / f'trades{timestamp_suffix}.csv', index=False)
+    print(f"Saved: trades{timestamp_suffix}.csv ({len(df)} trades)")
     
     # === Basic stats ===
     total_pnl = df['pnl'].sum()
@@ -457,8 +459,8 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     hour_stats.columns = ['pnl', 'trades', 'win_rate']
     hour_stats = hour_stats.reindex(all_hours, fill_value=0)
     hour_stats.index.name = f'hour_{config_tz}'
-    hour_stats.to_csv(output_dir / 'performance_by_hour.csv')
-    print(f"Saved: performance_by_hour.csv (hours in {config_tz})")
+    hour_stats.to_csv(output_dir / f'performance_by_hour{timestamp_suffix}.csv')
+    print(f"Saved: performance_by_hour{timestamp_suffix}.csv (hours in {config_tz})")
     
     # === performance_by_weekday.csv ===
     weekday_names = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
@@ -469,16 +471,16 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     weekday_stats.columns = ['pnl', 'trades', 'win_rate']
     weekday_stats = weekday_stats.reindex(all_weekdays, fill_value=0)
     weekday_stats.index = weekday_stats.index.map(weekday_names)
-    weekday_stats.to_csv(output_dir / 'performance_by_weekday.csv')
-    print(f"Saved: performance_by_weekday.csv")
+    weekday_stats.to_csv(output_dir / f'performance_by_weekday{timestamp_suffix}.csv')
+    print(f"Saved: performance_by_weekday{timestamp_suffix}.csv")
     
     # === performance_by_month.csv ===
     month_stats = df.groupby('entry_month').agg({
         'pnl': ['sum', 'count', lambda x: (x > 0).mean() * 100]
     }).round(2)
     month_stats.columns = ['pnl', 'trades', 'win_rate']
-    month_stats.to_csv(output_dir / 'performance_by_month.csv')
-    print(f"Saved: performance_by_month.csv")
+    month_stats.to_csv(output_dir / f'performance_by_month{timestamp_suffix}.csv')
+    print(f"Saved: performance_by_month{timestamp_suffix}.csv")
     
     # === hour_weekday matrices ===
     # Note: Hours are in config timezone (EST or UTC)
@@ -489,15 +491,15 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     pivot_pnl = pivot_pnl.reindex(index=all_hours, columns=all_weekdays, fill_value=0)
     pivot_pnl.columns = [weekday_names.get(c, c) for c in pivot_pnl.columns]
     pivot_pnl.index.name = f'hour_{config_timezone}'
-    pivot_pnl.to_csv(output_dir / 'hour_weekday_pnl_matrix.csv', float_format='%.1f')
-    print(f"Saved: hour_weekday_pnl_matrix.csv")
+    pivot_pnl.to_csv(output_dir / f'hour_weekday_pnl_matrix{timestamp_suffix}.csv', float_format='%.1f')
+    print(f"Saved: hour_weekday_pnl_matrix{timestamp_suffix}.csv")
     
     pivot_trades = df.pivot_table(values='pnl', index='entry_hour', columns='entry_weekday', aggfunc='count', fill_value=0)
     pivot_trades = pivot_trades.reindex(index=all_hours, columns=all_weekdays, fill_value=0)
     pivot_trades.columns = [weekday_names.get(c, c) for c in pivot_trades.columns]
     pivot_trades.index.name = f'hour_{config_timezone}'
-    pivot_trades.to_csv(output_dir / 'hour_weekday_trades_matrix.csv')
-    print(f"Saved: hour_weekday_trades_matrix.csv")
+    pivot_trades.to_csv(output_dir / f'hour_weekday_trades_matrix{timestamp_suffix}.csv')
+    print(f"Saved: hour_weekday_trades_matrix{timestamp_suffix}.csv")
     
     # Win rate matrix
     def win_rate_agg(x):
@@ -507,8 +509,35 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     pivot_wr = pivot_wr.reindex(index=all_hours, columns=all_weekdays, fill_value=0)
     pivot_wr.columns = [weekday_names.get(c, c) for c in pivot_wr.columns]
     pivot_wr.index.name = f'hour_{config_timezone}'
-    pivot_wr.to_csv(output_dir / 'hour_weekday_winrate_matrix.csv')
-    print(f"Saved: hour_weekday_winrate_matrix.csv")
+    pivot_wr.to_csv(output_dir / f'hour_weekday_winrate_matrix{timestamp_suffix}.csv')
+    print(f"Saved: hour_weekday_winrate_matrix{timestamp_suffix}.csv")
+    
+    # === Signal-based matrices (if signal_hour/signal_weekday are available) ===
+    if 'signal_hour' in df.columns and 'signal_weekday' in df.columns:
+        print(f"\nGenerating signal-based matrices (based on signal generation time)...")
+        
+        pivot_pnl_signal = df.pivot_table(values='pnl', index='signal_hour', columns='signal_weekday', aggfunc='sum', fill_value=0)
+        pivot_pnl_signal = pivot_pnl_signal.reindex(index=all_hours, columns=all_weekdays, fill_value=0)
+        pivot_pnl_signal.columns = [weekday_names.get(c, c) for c in pivot_pnl_signal.columns]
+        pivot_pnl_signal.index.name = f'hour_{config_timezone}'
+        pivot_pnl_signal.to_csv(output_dir / f'hour_weekday_pnl_matrix_by_signal{timestamp_suffix}.csv', float_format='%.1f')
+        print(f"Saved: hour_weekday_pnl_matrix_by_signal{timestamp_suffix}.csv")
+        
+        pivot_trades_signal = df.pivot_table(values='pnl', index='signal_hour', columns='signal_weekday', aggfunc='count', fill_value=0)
+        pivot_trades_signal = pivot_trades_signal.reindex(index=all_hours, columns=all_weekdays, fill_value=0)
+        pivot_trades_signal.columns = [weekday_names.get(c, c) for c in pivot_trades_signal.columns]
+        pivot_trades_signal.index.name = f'hour_{config_timezone}'
+        pivot_trades_signal.to_csv(output_dir / f'hour_weekday_trades_matrix_by_signal{timestamp_suffix}.csv')
+        print(f"Saved: hour_weekday_trades_matrix_by_signal{timestamp_suffix}.csv")
+        
+        pivot_wr_signal = df.pivot_table(values='pnl', index='signal_hour', columns='signal_weekday', aggfunc=win_rate_agg, fill_value=0)
+        pivot_wr_signal = pivot_wr_signal.reindex(index=all_hours, columns=all_weekdays, fill_value=0)
+        pivot_wr_signal.columns = [weekday_names.get(c, c) for c in pivot_wr_signal.columns]
+        pivot_wr_signal.index.name = f'hour_{config_timezone}'
+        pivot_wr_signal.to_csv(output_dir / f'hour_weekday_winrate_matrix_by_signal{timestamp_suffix}.csv')
+        print(f"Saved: hour_weekday_winrate_matrix_by_signal{timestamp_suffix}.csv")
+        print(f"\nSignal-based matrices show P&L/winrate by signal GENERATION time (not execution time)")
+        print(f"Use these matrices to determine which hours to exclude for optimal results")
     
     # === Calculate Drawdown Metrics ===
     # Filter out trades with invalid exit times
@@ -565,7 +594,24 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
     top_hours = hour_stats.nlargest(5, 'pnl')
     top_weekdays = weekday_stats.nlargest(3, 'pnl')
     
-    with open(output_dir / 'summary.txt', 'w') as f:
+    # Check if signal-based data is available
+    has_signal_data = 'signal_hour' in df.columns and 'signal_weekday' in df.columns
+    
+    if has_signal_data:
+        signal_hour_stats = df.groupby('signal_hour').agg({
+            'pnl': ['sum', 'count', lambda x: (x > 0).mean() * 100]
+        }).round(2)
+        signal_hour_stats.columns = ['pnl', 'trades', 'win_rate']
+        top_signal_hours = signal_hour_stats.nlargest(5, 'pnl')
+        
+        signal_weekday_stats = df.groupby('signal_weekday').agg({
+            'pnl': ['sum', 'count', lambda x: (x > 0).mean() * 100]
+        }).round(2)
+        signal_weekday_stats.columns = ['pnl', 'trades', 'win_rate']
+        signal_weekday_stats.index = signal_weekday_stats.index.map(weekday_names)
+        top_signal_weekdays = signal_weekday_stats.nlargest(3, 'pnl')
+    
+    with open(output_dir / f'summary{timestamp_suffix}.txt', 'w') as f:
         f.write("=" * 80 + "\n")
         f.write("MTF V2 STRATEGY - DETAILED BACKTEST REPORT\n")
         f.write("=" * 80 + "\n\n")
@@ -602,18 +648,46 @@ def generate_reports(trades: list, output_dir: Path, config: dict):
         f.write(f"Current Drawdown: ${df_sorted['drawdown'].iloc[-1]:,.2f}\n\n")
         
         f.write("=" * 80 + "\n")
-        f.write(f"TOP 5 HOURS BY P&L ({config_timezone})\n")
+        f.write(f"TOP 5 HOURS BY P&L - EXECUTION TIME ({config_timezone})\n")
         f.write("=" * 80 + "\n")
+        f.write("(When trades were executed)\n")
         for hour, row in top_hours.iterrows():
             f.write(f"{hour:02d}:00 {config_timezone} - ${row['pnl']:,.2f} ({int(row['trades'])} trades, {row['win_rate']:.1f}% win rate)\n")
         
+        if has_signal_data:
+            f.write("\n" + "=" * 80 + "\n")
+            f.write(f"TOP 5 HOURS BY P&L - SIGNAL GENERATION TIME ({config_timezone})\n")
+            f.write("=" * 80 + "\n")
+            f.write("(When signals were generated - USE THIS for hour exclusion decisions)\n")
+            for hour, row in top_signal_hours.iterrows():
+                f.write(f"{hour:02d}:00 {config_timezone} - ${row['pnl']:,.2f} ({int(row['trades'])} trades, {row['win_rate']:.1f}% win rate)\n")
+        
         f.write("\n" + "=" * 80 + "\n")
-        f.write("TOP 3 WEEKDAYS BY P&L\n")
+        f.write("TOP 3 WEEKDAYS BY P&L - EXECUTION TIME\n")
         f.write("=" * 80 + "\n")
+        f.write("(When trades were executed)\n")
         for weekday, row in top_weekdays.iterrows():
             f.write(f"{weekday} - ${row['pnl']:,.2f} ({int(row['trades'])} trades, {row['win_rate']:.1f}% win rate)\n")
+        
+        if has_signal_data:
+            f.write("\n" + "=" * 80 + "\n")
+            f.write("TOP 3 WEEKDAYS BY P&L - SIGNAL GENERATION TIME\n")
+            f.write("=" * 80 + "\n")
+            f.write("(When signals were generated - USE THIS for weekday exclusion decisions)\n")
+            for weekday, row in top_signal_weekdays.iterrows():
+                f.write(f"{weekday} - ${row['pnl']:,.2f} ({int(row['trades'])} trades, {row['win_rate']:.1f}% win rate)\n")
+        
+        if has_signal_data:
+            f.write("\n" + "=" * 80 + "\n")
+            f.write("IMPORTANT NOTE\n")
+            f.write("=" * 80 + "\n")
+            f.write("This backtest includes SIGNAL GENERATION TIME tracking.\n")
+            f.write("- Use SIGNAL GENERATION TIME statistics for hour/weekday exclusion decisions\n")
+            f.write("- Execution time statistics show when trades actually occurred\n")
+            f.write("- Signal-based matrices: *_by_signal.csv files\n")
+            f.write("- Execution-based matrices: standard hour_weekday_*.csv files\n")
     
-    print(f"Saved: summary.txt")
+    print(f"Saved: summary{timestamp_suffix}.txt")
     
     # Print summary
     print("\n" + "=" * 80)
@@ -639,6 +713,23 @@ def main():
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = PROJECT_ROOT / "backtest_results" / f"MTF_V2_{timestamp}"
     output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Stamp run metadata
+    log_and_write_run_metadata(
+        None,  # No logger yet
+        output_dir=output_dir,
+        run_kind="backtest",
+        run_id=timestamp,
+        entrypoint=__file__,
+        extra={
+            "output_dir": str(output_dir),
+            "env_file": ".env.mtf_v2",
+            "symbol": config.symbol,
+            "venue": config.venue,
+            "backtest_start": config.backtest_start,
+            "backtest_end": config.backtest_end,
+        },
+    )
     
     # Load model
     print("\nLoading model...")
@@ -697,7 +788,7 @@ def main():
     
     # Generate reports
     print("\nGenerating reports...")
-    generate_reports(trades, output_dir, sim_config)
+    generate_reports(trades, output_dir, sim_config, timestamp)
     
     print("\n" + "=" * 80)
     print(f"BACKTEST COMPLETE - Results saved to: {output_dir}")

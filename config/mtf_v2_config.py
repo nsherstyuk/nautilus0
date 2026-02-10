@@ -65,6 +65,8 @@ class MTFV2Config:
     
     # Prediction
     prediction_threshold: float
+    prediction_threshold_long: float   # Per-direction: LONG threshold (0 = use prediction_threshold)
+    prediction_threshold_short: float  # Per-direction: SHORT threshold (0 = use prediction_threshold)
     
     # Session
     trade_start_hour: int
@@ -101,6 +103,10 @@ class MTFV2Config:
     mam_excluded_hour_weekday_pairs: list
     jja_excluded_hour_weekday_pairs: list
     son_excluded_hour_weekday_pairs: list
+    
+    # Holiday Period Exclusions
+    holiday_exclusions_enabled: bool
+    holiday_exclusions: list  # [(start_datetime, end_datetime), ...]
     
     # Convenience properties for live runner compatibility
     @property
@@ -283,6 +289,52 @@ def _parse_hour_weekday_pairs(pairs_str: str) -> list:
     return result
 
 
+def _parse_holiday_exclusions(exclusions_str: str) -> list:
+    """
+    Parse comma-separated holiday exclusion periods into list of (start, end) datetime tuples.
+    
+    Format: "2026-01-02T00:00:00Z,2026-01-13T23:59:59Z,2026-12-25T00:00:00Z,2026-12-26T23:59:59Z"
+    Where each pair is start_datetime,end_datetime in ISO format
+    
+    Returns:
+        List of (start_datetime, end_datetime) tuples
+    """
+    from datetime import datetime
+    
+    if not exclusions_str:
+        return []
+    
+    # Support inline comments
+    exclusions_clean = str(exclusions_str).split('#', 1)[0].strip()
+    if not exclusions_clean:
+        return []
+    
+    result = []
+    pairs = exclusions_clean.split(',')
+    
+    for i in range(0, len(pairs), 2):
+        if i + 1 >= len(pairs):
+            print(f"Warning: Incomplete holiday exclusion pair at index {i}")
+            break
+            
+        start_str = pairs[i].strip()
+        end_str = pairs[i + 1].strip()
+        
+        try:
+            start_dt = datetime.fromisoformat(start_str.replace('Z', '+00:00'))
+            end_dt = datetime.fromisoformat(end_str.replace('Z', '+00:00'))
+            
+            if start_dt >= end_dt:
+                print(f"Warning: Holiday exclusion start >= end: {start_str} >= {end_str}")
+                continue
+                
+            result.append((start_dt, end_dt))
+        except (ValueError, AttributeError) as e:
+            print(f"Warning: Failed to parse holiday exclusion '{start_str},{end_str}': {e}")
+    
+    return result
+
+
 def _parse_env_str(value: Optional[str], default: str) -> str:
     """Parse a string env var, stripping whitespace and inline comments."""
     if value is None:
@@ -362,6 +414,8 @@ def load_mtf_v2_config(env_file: Optional[str] = None) -> MTFV2Config:
         
         # Prediction
         prediction_threshold=float(os.getenv("MTF2_PREDICTION_THRESHOLD", "0.55")),
+        prediction_threshold_long=float(os.getenv("MTF2_PREDICTION_THRESHOLD_LONG", "0")),
+        prediction_threshold_short=float(os.getenv("MTF2_PREDICTION_THRESHOLD_SHORT", "0")),
         
         # Session
         trade_start_hour=int(os.getenv("MTF2_TRADE_START_HOUR", "7")),
@@ -399,6 +453,10 @@ def load_mtf_v2_config(env_file: Optional[str] = None) -> MTFV2Config:
         mam_excluded_hour_weekday_pairs=_parse_hour_weekday_pairs(os.getenv("MTF2_MAM_EXCLUDED_HOUR_WEEKDAY_PAIRS", "")),
         jja_excluded_hour_weekday_pairs=_parse_hour_weekday_pairs(os.getenv("MTF2_JJA_EXCLUDED_HOUR_WEEKDAY_PAIRS", "")),
         son_excluded_hour_weekday_pairs=_parse_hour_weekday_pairs(os.getenv("MTF2_SON_EXCLUDED_HOUR_WEEKDAY_PAIRS", "")),
+        
+        # Holiday Period Exclusions
+        holiday_exclusions_enabled=os.getenv("MTF2_HOLIDAY_EXCLUSIONS_ENABLED", "False").lower() == "true",
+        holiday_exclusions=_parse_holiday_exclusions(os.getenv("MTF2_HOLIDAY_EXCLUSIONS", "")),
     )
 
 

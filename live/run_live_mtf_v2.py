@@ -54,6 +54,7 @@ from nautilus_trader.live.node import TradingNode
 from config.ibkr_config import get_ibkr_config
 from config.mtf_v2_config import load_mtf_v2_config, print_mtf_v2_config
 from live.ib_bar_streamer import IBBarStreamer
+from utils.run_metadata import log_and_write_run_metadata
 
 logger = logging.getLogger("live_v2")
 
@@ -132,6 +133,15 @@ def setup_logging(log_dir: Path, start_time: str) -> logging.Logger:
     log.info("V2 Live logging configured. Logs directory: %s", log_dir)
     log.info("Console log (this run): %s", console_log_file)
     log.info("Strategy log: %s", log_dir / "strategy.log")
+
+    log_and_write_run_metadata(
+        log,
+        output_dir=log_dir,
+        run_kind="live",
+        run_id=start_time,
+        entrypoint=__file__,
+        extra={"logger": "live_v2", "log_dir": str(log_dir)},
+    )
     return log
 
 

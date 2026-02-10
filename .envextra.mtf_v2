@@ -1,0 +1,110 @@
+# MTF V2 Config Profile: AGGRESSIVE
+# 2 negative patterns excluded + all 13 positive patterns boosted at 1.5x
+# Maximum sizing increase for proven profitable patterns - higher risk/reward
+
+# IBKR Connection
+MTF2_IBKR_HOST=127.0.0.1
+MTF2_IBKR_PORT=7497
+MTF2_IBKR_CLIENT_ID=18
+MTF2_IBKR_ACCOUNT=DU1558484
+MTF2_IBKR_GATEWAY=False
+
+# Instrument
+MTF2_INSTRUMENT=EUR/USD.IDEALPRO
+MTF2_BAR_TYPE=EUR/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL
+
+# Model
+MTF2_MODEL_PATH=models/ml_model_mtf_backup.pkl
+
+# Backtest Settings
+MTF2_BACKTEST_START=2024-01-01
+MTF2_BACKTEST_END=2026-01-31
+MTF2_INITIAL_BALANCE=50000
+
+# Position Sizing (2-position split)
+MTF2_TOTAL_POSITION_SIZE=100000
+MTF2_POS1_FRACTION=0.85
+MTF2_POS2_FRACTION=0.15
+MTF2_POS3_FRACTION=0.00
+
+# Stop Loss
+MTF2_SL_ATR_MULT=1.2
+
+# Take Profit
+MTF2_POS1_TP_ATR_MULT=0.6
+MTF2_POS2_TP_ATR_MULT=1.5
+MTF2_POS3_TP_ATR_MULT=1.5
+
+# Trailing Stop
+MTF2_TRAILING_ACTIVATION_ATR_MULT=0.6
+MTF2_TRAILING_DISTANCE_ATR_MULT=0.4
+
+# Confidence-tiered SL (disabled)
+MTF2_CONFIDENCE_SL_ENABLED=False
+
+# Stall Detection (disabled)
+MTF2_STALL_DETECTION_ENABLED=False
+
+# Meta-Filters (disabled)
+MTF2_META_FILTER_MAMA_ENABLED=False
+MTF2_META_FILTER_DMI_ENABLED=False
+
+# Prediction
+MTF2_PREDICTION_THRESHOLD=0.55
+
+# Session
+MTF2_TRADE_START_HOUR=7
+MTF2_TRADE_END_HOUR=20
+MTF2_CONFIG_TIMEZONE=UTC
+MTF2_ENTRY_COOLDOWN_BARS=0
+MTF2_EXCLUDED_HOURS_MODE=simple
+
+# ATR Limits
+MTF2_MIN_ATR=0.0003
+MTF2_MAX_ATR=0.005
+
+# Risk Management
+MTF2_MAX_POSITIONS=2
+MTF2_ENFORCE_POSITION_LIMIT=True
+
+# Seasonal Hour×Weekday Exclusions (DISABLED - deprecated)
+MTF2_SEASONAL_HOUR_EXCLUSIONS_ENABLED=False
+
+# Month-based Hour×Weekday Patterns
+MTF2_MONTH_EXCLUSIONS_ENABLED=True
+MTF2_MONTH_BOOSTING_ENABLED=True
+MTF2_POSITIVE_PATTERN_SIZE_MULTIPLIER=1.5
+
+# Month-specific excluded pairs (hour-weekday in 0-6 format: 0=Mon, 6=Sun)
+MTF2_MONTH_10_EXCLUDED_HOUR_WEEKDAY_PAIRS=4-4  # October: 4am Friday
+MTF2_MONTH_11_EXCLUDED_HOUR_WEEKDAY_PAIRS=20-3 # November: 8pm Thursday
+
+# Month-specific boosted pairs (ALL 13 positive patterns from analysis)
+# Format: hour-weekday where hour=0-23 (EST), weekday=0-6 (0=Mon, 6=Sun)
+
+# 1. April hour 4 Thursday: 6 trades, 100% WR, +$178.92
+# 2. April hour 20 Sunday: 9 trades, 100% WR, +$134.06
+# 3. April hour 9 Thursday: 5 trades, 80% WR, +$90.99
+# 4. April hour 1 Monday: 8 trades, 100% WR, +$87.26
+MTF2_MONTH_04_BOOSTED_HOUR_WEEKDAY_PAIRS=4-3,20-6,9-3,1-0
+
+# 5. November hour 3 Wednesday: 12 trades, 91.7% WR, +$173.96
+# 6. November hour 10 Thursday: 7 trades, 85.7% WR, +$56.38
+MTF2_MONTH_11_BOOSTED_HOUR_WEEKDAY_PAIRS=3-2,10-3
+
+# 7. August hour 10 Friday: 8 trades, 87.5% WR, +$124.69
+# 8. August hour 8 Monday: 5 trades, 100% WR, +$99.44
+MTF2_MONTH_08_BOOSTED_HOUR_WEEKDAY_PAIRS=10-4,8-0
+
+# 9. June hour 10 Wednesday: 6 trades, 100% WR, +$120.26
+MTF2_MONTH_06_BOOSTED_HOUR_WEEKDAY_PAIRS=10-2
+
+# 10. May hour 9 Thursday: 5 trades, 100% WR, +$108.88
+# 11. May hour 11 Monday: 5 trades, 100% WR, +$66.73
+MTF2_MONTH_05_BOOSTED_HOUR_WEEKDAY_PAIRS=9-3,11-0
+
+# 12. March hour 6 Friday: 5 trades, 100% WR, +$66.56
+MTF2_MONTH_03_BOOSTED_HOUR_WEEKDAY_PAIRS=6-4
+
+# 13. July hour 11 Monday: 5 trades, 100% WR, +$61.65
+MTF2_MONTH_07_BOOSTED_HOUR_WEEKDAY_PAIRS=11-0
