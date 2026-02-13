@@ -104,6 +104,11 @@ class MTFV2Config:
     jja_excluded_hour_weekday_pairs: list
     son_excluded_hour_weekday_pairs: list
     
+    # HTF (4H) Confirmation Model
+    htf_model_path: str
+    htf_confirmation_mode: str  # 'disabled', 'agree', 'soft'
+    htf_min_confidence: float
+    
     # Holiday Period Exclusions
     holiday_exclusions_enabled: bool
     holiday_exclusions: list  # [(start_datetime, end_datetime), ...]
@@ -453,6 +458,11 @@ def load_mtf_v2_config(env_file: Optional[str] = None) -> MTFV2Config:
         mam_excluded_hour_weekday_pairs=_parse_hour_weekday_pairs(os.getenv("MTF2_MAM_EXCLUDED_HOUR_WEEKDAY_PAIRS", "")),
         jja_excluded_hour_weekday_pairs=_parse_hour_weekday_pairs(os.getenv("MTF2_JJA_EXCLUDED_HOUR_WEEKDAY_PAIRS", "")),
         son_excluded_hour_weekday_pairs=_parse_hour_weekday_pairs(os.getenv("MTF2_SON_EXCLUDED_HOUR_WEEKDAY_PAIRS", "")),
+        
+        # HTF (4H) Confirmation Model
+        htf_model_path=os.getenv("MTF2_HTF_MODEL_PATH", ""),
+        htf_confirmation_mode=os.getenv("MTF2_HTF_CONFIRMATION_MODE", "disabled"),
+        htf_min_confidence=float(os.getenv("MTF2_HTF_MIN_CONFIDENCE", "0.55")),
         
         # Holiday Period Exclusions
         holiday_exclusions_enabled=os.getenv("MTF2_HOLIDAY_EXCLUSIONS_ENABLED", "False").lower() == "true",

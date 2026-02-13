@@ -354,6 +354,10 @@ def main() -> int:
             "confidence_sl_enabled": confidence_sl_enabled,
             "confidence_sl_tiers": confidence_sl_tiers,
             "confidence_sl_interpolate": confidence_sl_interpolate,
+            # HTF 4H confirmation
+            "htf_model_path": str(Path(live_config.htf_model_path).resolve()) if live_config.htf_model_path else "",
+            "htf_confirmation_mode": live_config.htf_confirmation_mode,
+            "htf_min_confidence": live_config.htf_min_confidence,
         },
     )
 
@@ -462,7 +466,7 @@ def main() -> int:
         what_to_show=what_to_show,
         callback=strategy_instance.on_bar,
         use_rth=False,
-        duration="8 D",
+        duration="20 D",
         bar_type_str=bar_type_str_15m,
     )
 

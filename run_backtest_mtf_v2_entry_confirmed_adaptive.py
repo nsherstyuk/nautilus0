@@ -295,8 +295,10 @@ def run_v2_entry_confirmed_adaptive_backtest(
     if not model_path.exists():
         raise FileNotFoundError(f"Model not found at {model_path}")
     
-    # Calculate warmup period (same as live trading: 5 days to ensure 50+ bars)
-    warmup_days = 5
+    # Calculate warmup period: V3 model needs 500+ 15m bars, HTF needs 1600+ unique for 4H resampling
+    # Backtest delivers each bar twice → need 3400 buffer entries → ~1700 unique 15m bars
+    # 1700 / ~96 bars per day = ~18 trading days; use 25 for safety
+    warmup_days = 25
     
     # Actual trading start/end dates
     trading_start = pd.Timestamp(start_date, tz="UTC")
@@ -348,7 +350,9 @@ def run_v2_entry_confirmed_adaptive_backtest(
             "pos2_tp_atr_mult": config.pos2_tp_atr_mult,
             "pos3_tp_atr_mult": config.pos3_tp_atr_mult,
             "trailing_distance_atr_mult": config.trailing_distance_atr_mult,
-            "prediction_threshold": config.prediction_threshold,  # Use .env value
+            "prediction_threshold": config.prediction_threshold,
+            "prediction_threshold_long": config.prediction_threshold_long,
+            "prediction_threshold_short": config.prediction_threshold_short,
             "trade_start_hour": config.trade_start_hour,
             "trade_end_hour": config.trade_end_hour,
             "entry_cooldown_bars": config.entry_cooldown_bars,
@@ -378,6 +382,17 @@ def run_v2_entry_confirmed_adaptive_backtest(
             "confidence_sl_enabled": confidence_sl_enabled,
             "confidence_sl_tiers": confidence_sl_tiers,
             "confidence_sl_interpolate": confidence_sl_interpolate,
+            # HTF 4H confirmation
+            "htf_model_path": str(Path(config.htf_model_path).resolve()) if config.htf_model_path else "",
+            "htf_confirmation_mode": config.htf_confirmation_mode,
+            "htf_min_confidence": config.htf_min_confidence,
+            # Cross-pair USD strength filter
+            "xpair_confirmation_mode": os.getenv("MTF2_XPAIR_MODE", "disabled"),
+            "xpair_gbpusd_bar_type": os.getenv("MTF2_XPAIR_GBPUSD_BAR_TYPE", ""),
+            "xpair_usdchf_bar_type": os.getenv("MTF2_XPAIR_USDCHF_BAR_TYPE", ""),
+            "xpair_lookback_bars": int(os.getenv("MTF2_XPAIR_LOOKBACK_BARS", "4")),
+            "xpair_ema_period": int(os.getenv("MTF2_XPAIR_EMA_PERIOD", "8")),
+            "xpair_strength_threshold": float(os.getenv("MTF2_XPAIR_STRENGTH_THRESHOLD", "0.0003")),
         },
     )
     
@@ -413,6 +428,32 @@ def run_v2_entry_confirmed_adaptive_backtest(
         end_time=end_ns,
     )
     
+    # Cross-pair data configs (GBP/USD and USD/CHF 15m for USD strength filter)
+    xpair_data_configs = []
+    xpair_mode = os.getenv("MTF2_XPAIR_MODE", "disabled")
+    if xpair_mode != "disabled":
+        print(f"Cross-pair USD filter: mode={xpair_mode}")
+        xpair_data_configs.append(
+            BacktestDataConfig(
+                catalog_path=str(data_dir),
+                data_cls=Bar,
+                instrument_id="GBPUSD.IDEALPRO",
+                bar_spec=bar_spec,
+                start_time=start_ns,
+                end_time=end_ns,
+            )
+        )
+        xpair_data_configs.append(
+            BacktestDataConfig(
+                catalog_path=str(data_dir),
+                data_cls=Bar,
+                instrument_id="USDCHF.IDEALPRO",
+                bar_spec=bar_spec,
+                start_time=start_ns,
+                end_time=end_ns,
+            )
+        )
+
     # Configure engine
     engine_config = BacktestEngineConfig(
         strategies=[strategy_config],
@@ -422,7 +463,7 @@ def run_v2_entry_confirmed_adaptive_backtest(
     run_config = BacktestRunConfig(
         engine=engine_config,
         venues=[venue_config],
-        data=[data_config_15m, data_config_1m],
+        data=[data_config_15m, data_config_1m] + xpair_data_configs,
         raise_exception=True,
         dispose_on_completion=False,
     )

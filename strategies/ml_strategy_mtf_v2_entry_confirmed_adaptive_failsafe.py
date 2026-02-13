@@ -37,6 +37,7 @@ import pandas_ta as ta
 
 from strategies.feature_engineering_v2_rf40 import latest_rf40_row
 from strategies.feature_engineering_v3 import latest_v3_row, FEATURE_COLUMNS_V3
+from strategies.feature_engineering_4h import compute_4h_features, FEATURE_COLUMNS_4H
 
 from nautilus_trader.config import StrategyConfig
 from nautilus_trader.core.data import Data
@@ -171,6 +172,24 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveConfig(StrategyConfig, kw_only=Tru
     jja_excluded_hour_weekday_pairs: list = []
     son_excluded_hour_weekday_pairs: list = []
 
+    # HTF (Higher Timeframe) 4H confirmation model
+    # When enabled, the 15m signal must agree with the 4H model's directional prediction.
+    # Modes: 'disabled' | 'agree' (strict: must agree) | 'soft' (only filter if HTF confident)
+    htf_model_path: str = ""
+    htf_confirmation_mode: str = "disabled"  # 'disabled', 'agree', 'soft'
+    htf_min_confidence: float = 0.55  # Min HTF confidence to act as filter
+
+    # Cross-pair USD strength confirmation filter
+    # Uses GBP/USD and USD/CHF to derive a USD strength signal.
+    # Blocks trades that disagree with the cross-pair USD consensus.
+    # Modes: 'disabled' | 'agree' (must agree) | 'soft' (only block strong disagreement)
+    xpair_confirmation_mode: str = "disabled"  # 'disabled', 'agree', 'soft'
+    xpair_gbpusd_bar_type: str = ""  # e.g. GBP/USD.IDEALPRO-15-MINUTE-MID-EXTERNAL
+    xpair_usdchf_bar_type: str = ""  # e.g. USD/CHF.IDEALPRO-15-MINUTE-MID-EXTERNAL
+    xpair_lookback_bars: int = 4  # Number of 15m bars for return calculation (4 = 1 hour)
+    xpair_ema_period: int = 8  # EMA smoothing period for USD strength signal
+    xpair_strength_threshold: float = 0.0003  # Min USD strength magnitude to trigger filter
+
 class PendingSignal:
     """Stores a pending signal waiting for entry confirmation."""
     
@@ -292,19 +311,51 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         self._meta_filter_params = {}
         
         # Initialize bar buffers
-        # V3 model needs ~500+ bars for 4H resampled features; safe for RF40 too
-        self.bars_buffer_15m = deque(maxlen=700)
+        # V3 model needs ~500+ bars; HTF 4H needs 1600+ unique 15m bars → ~100 4H bars
+        # Backtest delivers each 15m bar twice (dual subscription), so buffer=3400
+        self.bars_buffer_15m = deque(maxlen=3400)
         self.bars_buffer_30m = deque(maxlen=50)
         self._min_warmup_bars_15m = 500
         self._min_warmup_bars_30m = 25
         self._atr_values = deque(maxlen=14)
         self._atr_window = 14
 
+        # HTF (4H) confirmation model
+        self._htf_model = None
+        self._htf_confirmation_mode = str(getattr(config, 'htf_confirmation_mode', 'disabled')).lower()
+        self._htf_min_confidence = float(getattr(config, 'htf_min_confidence', 0.55))
+        self._htf_model_path = str(getattr(config, 'htf_model_path', '') or '')
+        self._htf_last_direction = None   # Cached: 'LONG', 'SHORT', or None
+        self._htf_last_confidence = 0.0   # Cached confidence
+        self._htf_last_bar_time = None    # Timestamp of last 4H prediction
+        self._htf_bars_buffer_4h = deque(maxlen=200)  # 4H bars resampled from 15m
+        self._htf_min_warmup_4h = 100     # Need ~100 4H bars for features
+
+        # Cross-pair USD strength filter
+        self._xpair_mode = str(getattr(config, 'xpair_confirmation_mode', 'disabled')).lower()
+        self._xpair_gbpusd_bar_type_str = str(getattr(config, 'xpair_gbpusd_bar_type', '') or '')
+        self._xpair_usdchf_bar_type_str = str(getattr(config, 'xpair_usdchf_bar_type', '') or '')
+        self._xpair_lookback = int(getattr(config, 'xpair_lookback_bars', 4))
+        self._xpair_ema_period = int(getattr(config, 'xpair_ema_period', 8))
+        self._xpair_threshold = float(getattr(config, 'xpair_strength_threshold', 0.0003))
+        self._xpair_gbpusd_bar_type = None
+        self._xpair_usdchf_bar_type = None
+        if self._xpair_mode != 'disabled' and self._xpair_gbpusd_bar_type_str and self._xpair_usdchf_bar_type_str:
+            self._xpair_gbpusd_bar_type = BarType.from_str(self._xpair_gbpusd_bar_type_str)
+            self._xpair_usdchf_bar_type = BarType.from_str(self._xpair_usdchf_bar_type_str)
+        self._xpair_gbpusd_closes = deque(maxlen=200)
+        self._xpair_usdchf_closes = deque(maxlen=200)
+        self._xpair_usd_strength_ema = None  # Smoothed USD strength
+        self._xpair_ema_alpha = 2.0 / (self._xpair_ema_period + 1)
+
         # Initialize position layers
         self._init_position_layers()
         
         # Load model
         self._load_model()
+        
+        # Load HTF model if configured
+        self._load_htf_model()
 
         _py_logger.info("MLSignalStrategy V2 Entry Confirmed ADAPTIVE + FAIL-SAFE initialized")
         _py_logger.info(f"Entry confirmation: {'ENABLED' if self.entry_confirmation_enabled else 'DISABLED'}")
@@ -322,6 +373,21 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             )
         else:
             _py_logger.info("Confidence SL: DISABLED")
+        _py_logger.info(
+            "HTF 4H confirmation: mode=%s path=%s min_conf=%s",
+            self._htf_confirmation_mode,
+            self._htf_model_path or '<none>',
+            self._htf_min_confidence,
+        )
+        _py_logger.info(
+            "Cross-pair USD filter: mode=%s gbpusd=%s usdchf=%s lookback=%d ema=%d thresh=%s",
+            self._xpair_mode,
+            self._xpair_gbpusd_bar_type_str or '<none>',
+            self._xpair_usdchf_bar_type_str or '<none>',
+            self._xpair_lookback,
+            self._xpair_ema_period,
+            self._xpair_threshold,
+        )
 
     @staticmethod
     def _parse_confidence_sl_tiers(tiers_str: str) -> List[Tuple[float, float]]:
@@ -437,6 +503,255 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             _py_logger.error(f"Failed to load ML model: {e}")
             raise
 
+    def _load_htf_model(self):
+        """Load the HTF (4H) confirmation model if configured."""
+        if self._htf_confirmation_mode == 'disabled' or not self._htf_model_path:
+            _py_logger.info("HTF 4H confirmation model: DISABLED")
+            return
+        try:
+            self._htf_model = joblib.load(self._htf_model_path)
+            _py_logger.info(f"Loaded HTF 4H model from {self._htf_model_path}")
+            if hasattr(self._htf_model, 'feature_names_in_'):
+                _py_logger.info(f"HTF model features: {len(self._htf_model.feature_names_in_)} features")
+        except Exception as e:
+            _py_logger.error(f"Failed to load HTF model: {e}")
+            _py_logger.warning("HTF confirmation will be DISABLED due to load failure")
+            self._htf_confirmation_mode = 'disabled'
+
+    def _update_htf_prediction(self, bar_time_utc):
+        """Update the cached 4H prediction when a new 4H boundary is crossed.
+        
+        Called on every 15m bar. Resamples the 15m buffer to 4H bars,
+        computes features, and runs the HTF model.
+        """
+        if self._htf_model is None or self._htf_confirmation_mode == 'disabled':
+            return
+
+        # Only recompute at 4H boundaries (hours 0, 4, 8, 12, 16, 20)
+        if hasattr(bar_time_utc, 'hour'):
+            hour = bar_time_utc.hour
+            minute = bar_time_utc.minute if hasattr(bar_time_utc, 'minute') else 0
+        else:
+            return
+
+        # Check if we're at a 4H boundary (within 15 min tolerance)
+        is_4h_boundary = (hour % 4 == 0) and (minute < 15)
+        
+        # Also recompute if we've never computed before
+        if not is_4h_boundary and self._htf_last_bar_time is not None:
+            return
+
+        # Need enough 15m bars to resample to 4H
+        n_15m = len(self.bars_buffer_15m)
+        # Backtest delivers each bar twice; need ~1600 unique 15m bars for ~100 4H bars
+        min_15m_for_htf = 1600  # After dedup: ~100 4H bars for reliable features
+        if n_15m < min_15m_for_htf:
+            return
+
+        try:
+            # Build 15m DataFrame from buffer
+            records = []
+            for b in self.bars_buffer_15m:
+                ts = pd.Timestamp(b.ts_event, unit='ns', tz='UTC')
+                records.append({
+                    'open': float(b.open),
+                    'high': float(b.high),
+                    'low': float(b.low),
+                    'close': float(b.close),
+                    'volume': float(b.volume),
+                    'timestamp': ts,
+                })
+            df_15m = pd.DataFrame(records).set_index('timestamp').sort_index()
+            
+            # Deduplicate: keep last value for each timestamp
+            df_15m = df_15m[~df_15m.index.duplicated(keep='last')]
+
+            # Resample to 4H
+            df_4h = df_15m.resample("4h").agg({
+                'open': 'first',
+                'high': 'max',
+                'low': 'min',
+                'close': 'last',
+                'volume': 'sum',
+            }).dropna()
+
+            _py_logger.info(f"[HTF_4H_DEBUG] 15m_unique={len(df_15m)}, 4h_bars={len(df_4h)}, boundary={is_4h_boundary}")
+
+            if len(df_4h) < 40:
+                _py_logger.info(f"[HTF_4H_DEBUG] Not enough 4H bars: {len(df_4h)} < 40")
+                return
+
+            # Compute 4H features
+            feats = compute_4h_features(df_4h)
+            row = feats.iloc[[-1]].astype(float)
+            values = row.to_numpy(dtype=float)
+            nan_cols = [c for c, v in zip(row.columns, values[0]) if not np.isfinite(v)]
+            if not np.isfinite(values).all():
+                _py_logger.info(f"[HTF_4H_DEBUG] NaN in features: {nan_cols[:5]}")
+                return
+
+            # Predict with HTF model
+            if hasattr(self._htf_model, 'feature_names_in_'):
+                names = list(self._htf_model.feature_names_in_)
+                X = pd.DataFrame(row.values, columns=names)
+            else:
+                X = row
+
+            pred = self._htf_model.predict(X)[0]
+            proba = self._htf_model.predict_proba(X)[0]
+
+            # pred=1 means LONG/bullish, pred=0 means SHORT/bearish
+            htf_direction = "LONG" if pred == 1 else "SHORT"
+            htf_confidence = float(proba[1]) if pred == 1 else float(proba[0])
+
+            self._htf_last_direction = htf_direction
+            self._htf_last_confidence = htf_confidence
+            self._htf_last_bar_time = bar_time_utc
+
+            _py_logger.info(
+                f"[HTF_4H] Prediction updated: {htf_direction} (conf={htf_confidence:.3f}) "
+                f"at {bar_time_utc} from {len(df_4h)} 4H bars"
+            )
+
+        except Exception as e:
+            _py_logger.warning(f"[HTF_4H] Prediction failed: {e}")
+
+    def _htf_confirms_direction(self, direction: str) -> bool:
+        """Check if the HTF 4H model confirms the given trade direction.
+        
+        Returns True if:
+        - HTF confirmation is disabled
+        - HTF model not loaded or no prediction yet
+        - Mode is 'agree' and HTF direction matches with sufficient confidence
+        - Mode is 'soft' and HTF is either neutral or agrees
+        """
+        if self._htf_confirmation_mode == 'disabled' or self._htf_model is None:
+            return True
+
+        if self._htf_last_direction is None:
+            # No prediction yet (warmup) — allow trades
+            _py_logger.info("[HTF_4H] No prediction yet (warmup), allowing trade")
+            return True
+
+        htf_dir = self._htf_last_direction
+        htf_conf = self._htf_last_confidence
+
+        if self._htf_confirmation_mode == 'agree':
+            # Strict: HTF must agree on direction with min confidence
+            if htf_dir == direction and htf_conf >= self._htf_min_confidence:
+                _py_logger.info(
+                    f"[HTF_4H] CONFIRMED: {direction} agrees with HTF {htf_dir} (conf={htf_conf:.3f})"
+                )
+                return True
+            else:
+                _py_logger.info(
+                    f"[HTF_4H] REJECTED: {direction} vs HTF {htf_dir} (conf={htf_conf:.3f}, "
+                    f"min={self._htf_min_confidence})"
+                )
+                return False
+
+        elif self._htf_confirmation_mode == 'soft':
+            # Soft: only reject if HTF confidently disagrees
+            if htf_dir != direction and htf_conf >= self._htf_min_confidence:
+                _py_logger.info(
+                    f"[HTF_4H] SOFT REJECT: {direction} vs HTF {htf_dir} (conf={htf_conf:.3f})"
+                )
+                return False
+            else:
+                _py_logger.info(
+                    f"[HTF_4H] SOFT PASS: {direction}, HTF={htf_dir} (conf={htf_conf:.3f})"
+                )
+                return True
+
+        return True
+
+    def _update_xpair_usd_strength(self):
+        """Recompute the smoothed USD strength signal from cross-pair returns.
+
+        USD strength = -gbpusd_return + usdchf_return
+        Positive = USD strengthening (bearish EUR/USD)
+        Negative = USD weakening (bullish EUR/USD)
+        """
+        n = self._xpair_lookback
+        if len(self._xpair_gbpusd_closes) < n + 1 or len(self._xpair_usdchf_closes) < n + 1:
+            return  # Not enough data yet
+
+        gbp_ret = (self._xpair_gbpusd_closes[-1] - self._xpair_gbpusd_closes[-1 - n]) / self._xpair_gbpusd_closes[-1 - n]
+        chf_ret = (self._xpair_usdchf_closes[-1] - self._xpair_usdchf_closes[-1 - n]) / self._xpair_usdchf_closes[-1 - n]
+
+        # USD strength: GBP/USD falling + USD/CHF rising = USD strong
+        raw_strength = -gbp_ret + chf_ret
+
+        # EMA smoothing
+        if self._xpair_usd_strength_ema is None:
+            self._xpair_usd_strength_ema = raw_strength
+        else:
+            alpha = self._xpair_ema_alpha
+            self._xpair_usd_strength_ema = alpha * raw_strength + (1 - alpha) * self._xpair_usd_strength_ema
+
+    def _xpair_confirms_direction(self, direction: str) -> bool:
+        """Check if cross-pair USD strength confirms the given trade direction.
+
+        Returns True if:
+        - Cross-pair filter is disabled
+        - Not enough cross-pair data yet (warmup)
+        - Mode is 'agree' and USD strength agrees with direction
+        - Mode is 'soft' and USD strength does not strongly disagree
+        """
+        if self._xpair_mode == 'disabled':
+            return True
+
+        if self._xpair_usd_strength_ema is None:
+            _py_logger.info("[XPAIR] No USD strength data yet (warmup), allowing trade")
+            return True
+
+        strength = self._xpair_usd_strength_ema
+        thresh = self._xpair_threshold
+
+        # USD strong (positive) -> bearish EUR/USD -> favors SHORT
+        # USD weak (negative) -> bullish EUR/USD -> favors LONG
+        if self._xpair_mode == 'agree':
+            if direction == "LONG" and strength < -thresh:
+                _py_logger.info(
+                    f"[XPAIR] CONFIRMED: LONG, USD weak (strength={strength:.6f}, thresh={thresh})"
+                )
+                return True
+            elif direction == "SHORT" and strength > thresh:
+                _py_logger.info(
+                    f"[XPAIR] CONFIRMED: SHORT, USD strong (strength={strength:.6f}, thresh={thresh})"
+                )
+                return True
+            elif abs(strength) < thresh:
+                _py_logger.info(
+                    f"[XPAIR] NEUTRAL: {direction}, USD neutral (strength={strength:.6f}, thresh={thresh})"
+                )
+                return False
+            else:
+                _py_logger.info(
+                    f"[XPAIR] REJECTED: {direction} vs USD strength={strength:.6f} (thresh={thresh})"
+                )
+                return False
+
+        elif self._xpair_mode == 'soft':
+            # Only reject if USD strength strongly contradicts the direction
+            if direction == "LONG" and strength > thresh:
+                _py_logger.info(
+                    f"[XPAIR] SOFT REJECT: LONG but USD strong (strength={strength:.6f}, thresh={thresh})"
+                )
+                return False
+            elif direction == "SHORT" and strength < -thresh:
+                _py_logger.info(
+                    f"[XPAIR] SOFT REJECT: SHORT but USD weak (strength={strength:.6f}, thresh={thresh})"
+                )
+                return False
+            else:
+                _py_logger.info(
+                    f"[XPAIR] SOFT PASS: {direction}, USD strength={strength:.6f} (thresh={thresh})"
+                )
+                return True
+
+        return True
+
     def _using_v3_model(self) -> bool:
         if self.model is None:
             return False
@@ -487,6 +802,14 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             # Subscribe to 1m bars for confirmation
             self.subscribe_bars(self.one_min_bar_type)
             _py_logger.info(f"Subscribed to {self.bar_type} and {self.one_min_bar_type} (replay mode)")
+
+            # Subscribe to cross-pair bar types for USD strength filter
+            if self._xpair_gbpusd_bar_type is not None:
+                self.subscribe_bars(self._xpair_gbpusd_bar_type)
+                _py_logger.info(f"Subscribed to cross-pair: {self._xpair_gbpusd_bar_type}")
+            if self._xpair_usdchf_bar_type is not None:
+                self.subscribe_bars(self._xpair_usdchf_bar_type)
+                _py_logger.info(f"Subscribed to cross-pair: {self._xpair_usdchf_bar_type}")
         else:
             _py_logger.info(
                 "Live mode: expecting bars fed directly via ib_insync for %s and %s",
@@ -528,6 +851,16 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
                 self._maybe_check_position_protection()
             return
 
+        # Route cross-pair bars to USD strength buffers
+        if self._xpair_gbpusd_bar_type is not None and bar.bar_type == self._xpair_gbpusd_bar_type:
+            self._xpair_gbpusd_closes.append(float(bar.close))
+            self._update_xpair_usd_strength()
+            return
+        if self._xpair_usdchf_bar_type is not None and bar.bar_type == self._xpair_usdchf_bar_type:
+            self._xpair_usdchf_closes.append(float(bar.close))
+            self._update_xpair_usd_strength()
+            return
+
         # Only 15m bars drive signal generation and feature updates
         if bar.bar_type != self.bar_type:
             return
@@ -546,6 +879,9 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
 
         # Update ATR
         self._update_atr(bar)
+
+        # Update HTF 4H prediction (only recomputes at 4H boundaries)
+        self._update_htf_prediction(bar_time)
 
         _py_logger.info(
             f"[BAR] {bar_time} close={float(bar.close):.5f} 15m={len(self.bars_buffer_15m)} 30m={len(self.bars_buffer_30m)}"
@@ -594,11 +930,24 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         dmp_text = f"{dmp_30m:.4f}" if dmp_30m is not None else "NA"
         meta_text = "NA" if meta_ok is None else ("PASS" if meta_ok else "FAIL")
 
+        htf_text = "disabled"
+        if self._htf_confirmation_mode != 'disabled' and self._htf_last_direction is not None:
+            htf_text = f"{self._htf_last_direction}({self._htf_last_confidence:.2f})"
+        elif self._htf_confirmation_mode != 'disabled':
+            htf_text = "warmup"
+
+        xpair_text = "disabled"
+        if self._xpair_mode != 'disabled' and self._xpair_usd_strength_ema is not None:
+            xpair_text = f"{self._xpair_usd_strength_ema:.6f}"
+        elif self._xpair_mode != 'disabled':
+            xpair_text = "warmup"
+
         _py_logger.info(
             f"[BAR_METRICS] {bar_time} close={float(bar.close):.5f} atr={atr_text} "
             f"pred={pred_text} conf={conf_text} thresh={self.prediction_threshold} "
             f"mama_diff={mama_text} dmi_plus={dmp_text} meta={meta_text} "
-            f"excluded={excluded} warmup15={len(self.bars_buffer_15m)}/{self._min_warmup_bars_15m} "
+            f"excluded={excluded} htf4h={htf_text} xpair_usd={xpair_text} "
+            f"warmup15={len(self.bars_buffer_15m)}/{self._min_warmup_bars_15m} "
             f"warmup30={len(self.bars_buffer_30m)}/{self._min_warmup_bars_30m}"
         )
 
@@ -658,6 +1007,16 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
 
         if confidence < effective_threshold:
             _py_logger.info(f"[FILTERED] Confidence {confidence:.3f} < {effective_threshold} ({direction})")
+            return
+
+        # HTF 4H confirmation filter
+        if not self._htf_confirms_direction(direction):
+            _py_logger.info(f"[FILTERED] HTF 4H confirmation rejected {direction}")
+            return
+
+        # Cross-pair USD strength confirmation filter
+        if not self._xpair_confirms_direction(direction):
+            _py_logger.info(f"[FILTERED] Cross-pair USD strength rejected {direction}")
             return
 
         # Generate trading signal
