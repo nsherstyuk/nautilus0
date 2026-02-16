@@ -107,6 +107,9 @@ class SupervisorConfig:
     check_interval_sec: float
     restart_delay_sec: int
     min_uptime_before_restart_sec: int
+    max_short_restarts: int
+    extended_delay_sec: int
+    stability_reset_sec: int
     daily_enabled: bool
     daily_stop_hhmm: Tuple[int, int]
     daily_restart_hhmm: Tuple[int, int]
@@ -214,12 +217,18 @@ def load_config() -> SupervisorConfig:
     check_interval_sec = float(_env_int("MTF2_SUPERVISOR_CHECK_INTERVAL_SEC", 10))
     restart_delay_sec = _env_int("MTF2_SUPERVISOR_RESTART_DELAY_SEC", 120)
     min_uptime_before_restart_sec = _env_int("MTF2_SUPERVISOR_MIN_UPTIME_SEC", 180)
+    max_short_restarts = _env_int("MTF2_SUPERVISOR_MAX_SHORT_RESTARTS", 3)
+    extended_delay_sec = _env_int("MTF2_SUPERVISOR_EXTENDED_DELAY_SEC", 1800)
+    stability_reset_sec = _env_int("MTF2_SUPERVISOR_STABILITY_RESET_SEC", 1800)
 
     return SupervisorConfig(
         child_script=child_script,
         check_interval_sec=check_interval_sec,
         restart_delay_sec=restart_delay_sec,
         min_uptime_before_restart_sec=min_uptime_before_restart_sec,
+        max_short_restarts=max_short_restarts,
+        extended_delay_sec=extended_delay_sec,
+        stability_reset_sec=stability_reset_sec,
         daily_enabled=daily_enabled,
         daily_stop_hhmm=daily_stop_hhmm,
         daily_restart_hhmm=daily_restart_hhmm,
@@ -236,15 +245,24 @@ def main() -> int:
                 cfg.daily_enabled, cfg.daily_stop_hhmm, cfg.daily_restart_hhmm)
     logger.info("Check interval: %ss, restart delay: %ss, min uptime: %ss",
                 cfg.check_interval_sec, cfg.restart_delay_sec, cfg.min_uptime_before_restart_sec)
+    logger.info(
+        "Persistent failure backoff: max_short_restarts=%s extended_delay=%ss stability_reset=%ss",
+        cfg.max_short_restarts,
+        cfg.extended_delay_sec,
+        cfg.stability_reset_sec,
+    )
 
     child = ChildProcess(cfg)
+    short_restart_count = 0
+    stable_since: Optional[float] = None
 
-    def _handle_sigint(_sig, _frame):
-        logger.info("SIGINT received - shutting down supervisor")
+    def _handle_shutdown(_sig, _frame):
+        logger.info("Shutdown signal received - shutting down supervisor")
         child.stop()
         raise SystemExit(0)
 
-    signal.signal(signal.SIGINT, _handle_sigint)
+    signal.signal(signal.SIGINT, _handle_shutdown)
+    signal.signal(signal.SIGTERM, _handle_shutdown)
 
     child.start()
 
@@ -261,16 +279,48 @@ def main() -> int:
             time.sleep(max(1, sleep_sec))
             logger.info("Restart window reached - starting child")
             child.start()
+            short_restart_count = 0
+            stable_since = None
             continue
 
         if not child.is_running():
-            logger.warning("Child exited. Restarting in %ss", cfg.restart_delay_sec)
-            time.sleep(cfg.restart_delay_sec)
+            uptime = child.uptime_sec()
+            if uptime < cfg.min_uptime_before_restart_sec:
+                short_restart_count += 1
+                logger.warning(
+                    "Child exited after short uptime (%ss). short_restart_count=%s/%s",
+                    uptime,
+                    short_restart_count,
+                    cfg.max_short_restarts,
+                )
+            else:
+                short_restart_count = 0
+
+            delay = cfg.restart_delay_sec
+            if cfg.max_short_restarts > 0 and short_restart_count >= cfg.max_short_restarts:
+                delay = cfg.extended_delay_sec
+                logger.warning(
+                    "Applying extended restart delay due to repeated short exits: %ss",
+                    delay,
+                )
+
+            logger.warning("Child exited. Restarting in %ss", delay)
+            time.sleep(delay)
             child.start()
+            stable_since = None
             continue
 
         if child.uptime_sec() < cfg.min_uptime_before_restart_sec:
+            stable_since = None
             continue
+
+        # If child has stayed up long enough, clear short-restart backoff state.
+        if stable_since is None:
+            stable_since = time.time()
+
+        if short_restart_count > 0 and (time.time() - stable_since) >= cfg.stability_reset_sec:
+            logger.info("Stability window reached - resetting short restart counter")
+            short_restart_count = 0
 
 
 if __name__ == "__main__":

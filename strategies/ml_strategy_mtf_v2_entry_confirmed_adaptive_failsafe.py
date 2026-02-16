@@ -352,6 +352,9 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         # In replay mode this guard is disabled.
         self._is_replay_mode = os.getenv("MTF2_REPLAY_MODE", "0").strip().lower() in {"1", "true", "yes"}
         self._live_signal_max_age_sec = int(os.getenv("MTF2_LIVE_SIGNAL_MAX_AGE_SEC", "1200"))  # default 20 minutes
+        self._failsafe_flatten_untracked = os.getenv("MTF2_FAILSAFE_FLATTEN_UNTRACKED", "False").strip().lower() in {"1", "true", "yes", "y", "on"}
+        self._failsafe_untracked_max_fails = int(os.getenv("MTF2_FAILSAFE_UNTRACKED_MAX_FAILS", "3"))
+        self._failsafe_untracked_failed_checks = 0
 
         # Initialize position layers
         self._init_position_layers()
@@ -397,6 +400,11 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             _py_logger.info(
                 "Live signal freshness guard: ENABLED (max_age=%ss)",
                 self._live_signal_max_age_sec,
+            )
+            _py_logger.info(
+                "Untracked-position fail-safe: flatten=%s max_fails=%s",
+                self._failsafe_flatten_untracked,
+                self._failsafe_untracked_max_fails,
             )
 
     def _is_live_signal_fresh(self, signal_time_utc: pd.Timestamp) -> bool:
@@ -882,7 +890,7 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
                 self._check_entry_confirmation(bar)
 
             # FAIL-SAFE: check protection frequently while positions are open
-            if len(self.active_positions) > 0:
+            if len(self.active_positions) > 0 or self._has_open_positions_cache():
                 self._maybe_check_position_protection()
             return
 
@@ -903,7 +911,7 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         bar_time = pd.Timestamp(bar.ts_init, unit='ns', tz='UTC')
 
         # FAIL-SAFE: Check position protection (rate-limited)
-        if len(self.active_positions) > 0:
+        if len(self.active_positions) > 0 or self._has_open_positions_cache():
             self._maybe_check_position_protection()
 
         # Add to 15m buffer
@@ -1973,7 +1981,61 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         if (now_ns - int(self._last_protection_check_ns)) < int(self._protection_check_interval_ns):
             return
         self._last_protection_check_ns = now_ns
-        self._check_position_protection()
+        if len(self.active_positions) > 0:
+            self._check_position_protection()
+        else:
+            self._check_untracked_position_safety()
+
+    def _has_open_positions_cache(self) -> bool:
+        """Best-effort check for open positions in cache."""
+        try:
+            open_positions = list(self.cache.positions_open(instrument_id=self.instrument_id))
+            return len(open_positions) > 0
+        except Exception:
+            return False
+
+    def _check_untracked_position_safety(self) -> None:
+        """Check safety for positions that exist in cache but are not tracked in `active_positions`.
+
+        This can happen right after process restart when in-memory tracking is empty.
+        """
+        open_positions = list(self.cache.positions_open(instrument_id=self.instrument_id))
+        if not open_positions:
+            self._failsafe_untracked_failed_checks = 0
+            return
+
+        if len(self.active_positions) > 0:
+            self._failsafe_untracked_failed_checks = 0
+            return
+
+        open_orders = list(self.cache.orders_open(instrument_id=self.instrument_id))
+        has_any_sl = any(isinstance(o, StopMarketOrder) for o in open_orders)
+        has_any_tp = any(isinstance(o, LimitOrder) for o in open_orders)
+
+        if has_any_sl and has_any_tp:
+            if self._failsafe_untracked_failed_checks > 0:
+                _py_logger.info(
+                    "[UNTRACKED_POSITION] Protection recovered (SL+TP present). Resetting fail counter."
+                )
+            self._failsafe_untracked_failed_checks = 0
+            return
+
+        self._failsafe_untracked_failed_checks += 1
+        _py_logger.warning(
+            "[UNTRACKED_POSITION] Open position(s) detected but protection incomplete "
+            "(SL=%s TP=%s) check=%s/%s",
+            has_any_sl,
+            has_any_tp,
+            self._failsafe_untracked_failed_checks,
+            self._failsafe_untracked_max_fails,
+        )
+
+        if self._failsafe_flatten_untracked and self._failsafe_untracked_failed_checks >= self._failsafe_untracked_max_fails:
+            _py_logger.error(
+                "[UNTRACKED_POSITION] Triggering emergency flatten for untracked open position(s)"
+            )
+            self.flatten_all_positions(self.instrument_id)
+            self._failsafe_untracked_failed_checks = 0
 
     def _is_position_protected(self, layer_name: str, pos_info: Dict) -> bool:
         """Verify position has active SL and TP orders."""
