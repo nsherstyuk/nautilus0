@@ -348,6 +348,11 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         self._xpair_usd_strength_ema = None  # Smoothed USD strength
         self._xpair_ema_alpha = 2.0 / (self._xpair_ema_period + 1)
 
+        # Live startup guard: block stale/backfill-driven entries after process start.
+        # In replay mode this guard is disabled.
+        self._is_replay_mode = os.getenv("MTF2_REPLAY_MODE", "0").strip().lower() in {"1", "true", "yes"}
+        self._live_signal_max_age_sec = int(os.getenv("MTF2_LIVE_SIGNAL_MAX_AGE_SEC", "1200"))  # default 20 minutes
+
         # Initialize position layers
         self._init_position_layers()
         
@@ -388,6 +393,36 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             self._xpair_ema_period,
             self._xpair_threshold,
         )
+        if not self._is_replay_mode:
+            _py_logger.info(
+                "Live signal freshness guard: ENABLED (max_age=%ss)",
+                self._live_signal_max_age_sec,
+            )
+
+    def _is_live_signal_fresh(self, signal_time_utc: pd.Timestamp) -> bool:
+        """Return True if a signal timestamp is fresh enough for live execution.
+
+        Prevents stale startup/backfill bars from generating real entries in live mode.
+        """
+        if self._is_replay_mode:
+            return True
+
+        try:
+            ts = pd.Timestamp(signal_time_utc)
+            if ts.tzinfo is None:
+                ts = ts.tz_localize("UTC")
+            else:
+                ts = ts.tz_convert("UTC")
+
+            now_utc = pd.Timestamp.now(tz="UTC")
+            age_sec = float((now_utc - ts).total_seconds())
+
+            # Reject very old signals and clearly future timestamps.
+            if age_sec < -120:
+                return False
+            return age_sec <= float(self._live_signal_max_age_sec)
+        except Exception:
+            return False
 
     @staticmethod
     def _parse_confidence_sl_tiers(tiers_str: str) -> List[Tuple[float, float]]:
@@ -887,6 +922,14 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             f"[BAR] {bar_time} close={float(bar.close):.5f} 15m={len(self.bars_buffer_15m)} 30m={len(self.bars_buffer_30m)}"
         )
 
+        # Live-only freshness guard: ignore stale historical bars during startup catch-up.
+        if not self._is_live_signal_fresh(bar_time):
+            _py_logger.info(
+                "[STARTUP_GUARD] Skipping stale bar for signal generation: bar_time=%s",
+                bar_time,
+            )
+            return
+
         # --- Always compute/log bar metrics when possible (even if filtered later) ---
         atr_normalized = self._calculate_atr_normalized()
         atr_text = f"{atr_normalized:.5f}" if atr_normalized is not None else "NA"
@@ -1240,12 +1283,25 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
                     self.volume = 0
                     self.ts_init = ts
 
-            bar_30m = SimpleBar(row['open'], row['high'], row['low'], row['close'], int(idx.value))
+            # Convert pandas Timestamp to nanoseconds safely
+            ts_ns = int(idx.timestamp() * 1_000_000_000) if hasattr(idx, 'timestamp') else int(idx.value)
+            bar_30m = SimpleBar(row['open'], row['high'], row['low'], row['close'], ts_ns)
             self.bars_buffer_30m.append(bar_30m)
 
     def _check_entry_confirmation(self, current_bar: Bar):
         """Check if pending signal should be confirmed for entry using 1m bars with adaptive logic."""
         if self.pending_signal is None:
+            return
+
+        # Live-only freshness guard: do not confirm stale pending signals.
+        signal_time = pd.Timestamp(self.pending_signal.signal_generation_time, unit='ns', tz='UTC')
+        if not self._is_live_signal_fresh(signal_time):
+            _py_logger.info(
+                "[STARTUP_GUARD] Dropping stale pending signal: direction=%s signal_time=%s",
+                self.pending_signal.direction,
+                signal_time,
+            )
+            self.pending_signal = None
             return
         
         # Only check confirmation on 1m bars

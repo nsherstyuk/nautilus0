@@ -43,8 +43,8 @@ DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sun
 DAY_NUM_TO_NAME = {0: "Monday", 1: "Tuesday", 2: "Wednesday", 3: "Thursday",
                    4: "Friday", 5: "Saturday", 6: "Sunday"}
 
-DEFAULT_MIN_WINRATE = 68.0
-DEFAULT_MIN_TRADES_TO_EXCLUDE = 1  # Need at least 1 trade to make a judgment
+DEFAULT_MIN_WINRATE = 65.0
+DEFAULT_MIN_TRADES_TO_EXCLUDE = 5
 
 
 def find_latest_backtest_dir() -> Optional[Path]:
@@ -126,11 +126,13 @@ def analyze_exclusions(
     min_trades_to_exclude: int = DEFAULT_MIN_TRADES_TO_EXCLUDE,
 ) -> Dict[str, List[int]]:
     """Determine which hour/weekday slots to exclude.
-    
-    KEEP a slot if: WR >= min_winrate AND PnL > 0
-    EXCLUDE a slot if: it has trades but fails the criteria
-    LEAVE OPEN: slots with zero trades (no data to judge)
-    Saturday: always fully excluded.
+
+    Exclude slot if and only if ALL are true:
+      - trades >= min_trades_to_exclude
+      - WR < min_winrate
+      - PnL <= 0
+
+    Otherwise keep/open the slot.
     """
     exclude = {d: [] for d in DAYS}
     keep = {d: [] for d in DAYS}
@@ -149,18 +151,15 @@ def analyze_exclusions(
             if t == 0:
                 continue
 
-            if w >= min_winrate and p > 0:
+            should_exclude = (t >= min_trades_to_exclude) and (w < min_winrate) and (p <= 0)
+            if should_exclude:
+                exclude[d].append(h)
+                exc_pnl += p
+                exc_trades += t
+            else:
                 keep[d].append(h)
                 kept_pnl += p
                 kept_trades += t
-            else:
-                if t >= min_trades_to_exclude:
-                    exclude[d].append(h)
-                    exc_pnl += p
-                    exc_trades += t
-
-    # Saturday: always exclude all hours
-    exclude["Saturday"] = list(range(24))
 
     return {
         "exclude": exclude,
@@ -180,7 +179,7 @@ def print_analysis(result: Dict, pnl: Dict, trades: Dict, wr: Dict, min_winrate:
     print("=" * 70)
     print("WEEKLY HOUR EXCLUSION OPTIMIZATION REPORT")
     print(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"Criteria: WR >= {min_winrate}% AND PnL > 0")
+    print(f"Criteria: EXCLUDE when WR < {min_winrate}% AND PnL <= 0 AND trades >= {DEFAULT_MIN_TRADES_TO_EXCLUDE}")
     print("=" * 70)
 
     print(f"\nKept:     {result['kept_trades']} trades, PnL=${result['kept_pnl']:.2f}")
@@ -197,7 +196,7 @@ def print_analysis(result: Dict, pnl: Dict, trades: Dict, wr: Dict, min_winrate:
                 continue
             p = pnl[h][d]
             w = wr[h][d]
-            if w >= min_winrate and p > 0:
+            if h in keep[d]:
                 print(f"{h:>4} | {d:>10} | {t:>6} | ${p:>6.1f} | {w:>5.1f}%")
 
     print("\n--- EXCLUDED SLOTS ---")
@@ -210,16 +209,14 @@ def print_analysis(result: Dict, pnl: Dict, trades: Dict, wr: Dict, min_winrate:
                 continue
             p = pnl[h][d]
             w = wr[h][d]
-            if not (w >= min_winrate and p > 0):
+            if h in exclude[d]:
                 print(f"{h:>4} | {d:>10} | {t:>6} | ${p:>6.1f} | {w:>5.1f}%")
 
     print("\n--- EXCLUSIONS PER WEEKDAY ---")
     for d in DAYS:
         k = sorted(keep[d])
         e = sorted(exclude[d])
-        if d == "Saturday":
-            print(f"  {d}: ALL EXCLUDED")
-        elif e:
+        if e:
             print(f"  {d}: KEEP {k} | EXCLUDE {e}")
         else:
             print(f"  {d}: KEEP {k} | No exclusions")
@@ -276,7 +273,7 @@ def update_env_file(result: Dict, env_file: Path = ENV_FILE, backup: bool = True
 
     # Update criteria comment
     criteria_pattern = r"# Exclude slots with .*"
-    new_criteria = f"# Exclude slots with WR < {DEFAULT_MIN_WINRATE}% or PnL <= 0"
+    new_criteria = f"# Exclude slots with trades >= {DEFAULT_MIN_TRADES_TO_EXCLUDE} AND WR < {DEFAULT_MIN_WINRATE}% AND PnL <= 0"
     if re.search(criteria_pattern, content):
         content = re.sub(criteria_pattern, new_criteria, content, count=1)
 
