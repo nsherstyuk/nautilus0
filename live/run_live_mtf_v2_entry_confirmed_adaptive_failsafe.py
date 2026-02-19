@@ -221,6 +221,11 @@ def main() -> int:
     confidence_sl_tiers = (os.getenv("MTF2_CONF_SL_TIERS") or "").strip()
     confidence_sl_interpolate = _env_bool("MTF2_CONF_SL_INTERPOLATE", False)
 
+    # Optional: save live bars for replay parity
+    live_bar_log_enabled = _env_bool("MTF2_LIVE_BAR_LOG_ENABLED", False)
+    live_bar_log_path = (os.getenv("MTF2_LIVE_BAR_LOG_PATH") or "logs/live_mtf/live_bars.csv").strip()
+    live_bar_log_include_warmup = _env_bool("MTF2_LIVE_BAR_LOG_INCLUDE_WARMUP", True)
+
     # Setup logging with timestamp
     start_time = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_dir = Path("logs/live_mtf")
@@ -261,6 +266,12 @@ def main() -> int:
         confidence_sl_enabled,
         confidence_sl_tiers if confidence_sl_tiers else "<empty>",
         confidence_sl_interpolate,
+    )
+    logger.info(
+        "Live bar CSV logging: enabled=%s path=%s include_warmup=%s",
+        live_bar_log_enabled,
+        live_bar_log_path,
+        live_bar_log_include_warmup,
     )
 
     # Get IBKR config
@@ -419,6 +430,9 @@ def main() -> int:
         host=live_config.ib_host,
         port=live_config.ib_port,
         client_id=live_config.ib_client_id + 2,
+        live_bar_log_enabled=live_bar_log_enabled,
+        live_bar_log_path=live_bar_log_path,
+        live_bar_log_include_warmup=live_bar_log_include_warmup,
     )
 
     logger.info("Connecting ib_insync bar streamer...")

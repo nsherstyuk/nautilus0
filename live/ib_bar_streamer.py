@@ -17,10 +17,11 @@ from __future__ import annotations
 
 import asyncio
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from typing import Callable, Optional, List
 from dataclasses import dataclass
+from pathlib import Path
 
 # Allow nested event loops (needed when reconnecting within NautilusTrader's event loop)
 try:
@@ -35,6 +36,8 @@ from nautilus_trader.model.data import Bar, BarType, BarSpecification
 from nautilus_trader.model.enums import BarAggregation, PriceType
 from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
 from nautilus_trader.model.objects import Price, Quantity
+
+from live.live_bar_csv_logger import LiveBarCsvLogger
 
 logger = logging.getLogger(__name__)
 
@@ -70,6 +73,9 @@ class IBBarStreamer:
         client_id: int = 20,
         reconnect_attempts: int = 10,
         reconnect_delay: float = 5.0,
+        live_bar_log_enabled: bool = False,
+        live_bar_log_path: Optional[str] = None,
+        live_bar_log_include_warmup: bool = True,
     ):
         self.host = host
         self.port = port
@@ -85,6 +91,14 @@ class IBBarStreamer:
         self._error_count = 0
         self._last_error_time: Optional[datetime] = None
         self._reconnect_requested = False  # Flag for main loop to trigger reconnect
+        self._live_bar_log_enabled = bool(live_bar_log_enabled)
+        self._live_bar_log_include_warmup = bool(live_bar_log_include_warmup)
+        self._live_bar_logger: Optional[LiveBarCsvLogger] = None
+
+        if self._live_bar_log_enabled:
+            log_path = Path(live_bar_log_path) if live_bar_log_path else Path("logs/live_mtf/live_bars.csv")
+            self._live_bar_logger = LiveBarCsvLogger(path=log_path)
+            logger.info("Live bar CSV logging enabled: %s", log_path)
         
         # Register error handler
         self.ib.errorEvent += self._on_error
@@ -327,6 +341,38 @@ class IBBarStreamer:
             ts_event=ts_event,
             ts_init=ts_init,
         )
+
+    def _log_csv_bar(self, sub_key: str, sub: BarSubscription, ib_bar: BarData, is_warmup: bool) -> None:
+        """Persist a bar row for replay parity when enabled."""
+        if self._live_bar_logger is None:
+            return
+        try:
+            bar_time = ib_bar.date
+            if getattr(bar_time, "tzinfo", None) is None:
+                bar_time = bar_time.replace(tzinfo=timezone.utc)
+            else:
+                bar_time = bar_time.astimezone(timezone.utc)
+
+            self._live_bar_logger.log_row(
+                {
+                    "time_utc": bar_time.isoformat(),
+                    "received_at_utc": self._live_bar_logger.utc_now_iso(),
+                    "symbol": sub.symbol,
+                    "bar_size": sub.bar_size,
+                    "what_to_show": sub.what_to_show,
+                    "use_rth": int(bool(sub.use_rth)),
+                    "source": "ib_insync",
+                    "is_warmup": int(bool(is_warmup)),
+                    "open": ib_bar.open,
+                    "high": ib_bar.high,
+                    "low": ib_bar.low,
+                    "close": ib_bar.close,
+                    "volume": ib_bar.volume,
+                    "subscription_key": sub_key,
+                }
+            )
+        except Exception as exc:
+            logger.warning("Failed to persist live bar CSV row: %s", exc)
     
     def subscribe_bars_sync(
         self,
@@ -439,6 +485,8 @@ class IBBarStreamer:
             if callback and bars and not is_resubscribe:
                 logger.info(f"Feeding {len(bars)} historical bars for warmup...")
                 for ib_bar in bars[:-1]:
+                    if self._live_bar_log_include_warmup:
+                        self._log_csv_bar(sub_key=sub_key, sub=subscription, ib_bar=ib_bar, is_warmup=True)
                     nautilus_bar = self._ib_bar_to_nautilus(ib_bar, bar_type)
                     try:
                         callback(nautilus_bar)
@@ -509,6 +557,8 @@ class IBBarStreamer:
             # Update last bar time
             sub.last_bar_time = completed_bar.date
             sub.last_bar_received = datetime.now()  # Wall clock time
+
+            self._log_csv_bar(sub_key=sub_key, sub=sub, ib_bar=completed_bar, is_warmup=False)
             
             # Convert and send to callback
             if sub.callback:
