@@ -542,19 +542,35 @@ def main() -> int:
             if now - last_status_report >= status_report_interval:
                 last_status_report = now
                 try:
-                    portfolio = node.trader.portfolio
-                    account = portfolio.account(node.trader.account_ids[0]) if node.trader.account_ids else None
+                    portfolio = getattr(node, "portfolio", None)
+                    trader = getattr(node, "trader", None)
+                    account_ids = getattr(trader, "account_ids", []) if trader is not None else []
+                    account = portfolio.account(account_ids[0]) if (portfolio is not None and account_ids) else None
+
+                    logger.info("=" * 60)
+                    logger.info("STATUS REPORT")
                     if account:
-                        logger.info("=" * 60)
-                        logger.info("STATUS REPORT")
                         logger.info("Account Balance: %s", account.balance_total())
                         logger.info("Unrealized PnL: %s", account.unrealized_pnl())
-                        logger.info("Open Positions: %s", len(portfolio.positions_open()))
-                        bar_age = bar_streamer.get_last_bar_age_seconds()
-                        if bar_age is not None:
-                            logger.info("Last bar received: %ss ago", int(bar_age))
-                        logger.info("IB Connected: %s", bar_streamer.is_connected())
-                        logger.info("=" * 60)
+                    else:
+                        logger.info("Account summary: unavailable (non-fatal)")
+
+                    open_positions_count = None
+                    if portfolio is not None and hasattr(portfolio, "positions_open"):
+                        open_positions_count = len(portfolio.positions_open())
+                    elif hasattr(node, "cache") and hasattr(node.cache, "positions_open"):
+                        open_positions_count = len(list(node.cache.positions_open()))
+
+                    if open_positions_count is not None:
+                        logger.info("Open Positions: %s", open_positions_count)
+                    else:
+                        logger.info("Open Positions: unavailable (portfolio/cache API not exposed)")
+
+                    bar_age = bar_streamer.get_last_bar_age_seconds()
+                    if bar_age is not None:
+                        logger.info("Last bar received: %ss ago", int(bar_age))
+                    logger.info("IB Connected: %s", bar_streamer.is_connected())
+                    logger.info("=" * 60)
                 except Exception as e:
                     logger.warning("Could not generate status report: %s", e)
 

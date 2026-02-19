@@ -77,6 +77,18 @@ loggers:
     level: DEBUG
     handlers: [console, live_file, strategy_file]
     propagate: false
+  MLSignalStrategy_V2_EntryConfirmedAdaptive:  # Exact logger used by adaptive fail-safe strategy
+    level: DEBUG
+    handlers: [console, live_file, strategy_file]
+    propagate: false
+  live_v2_adaptive_failsafe:  # Live runner logger
+    level: DEBUG
+    handlers: [console, live_file]
+    propagate: false
+  live_v2_adaptive_failsafe_supervisor:  # Supervisor logger
+    level: DEBUG
+    handlers: [console, live_file]
+    propagate: false
   orders:  # Order lifecycle events logger
     level: DEBUG
     handlers: [console, orders_file, live_file]

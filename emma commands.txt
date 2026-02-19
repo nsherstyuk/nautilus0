@@ -7,6 +7,10 @@ python live\run_live_mtf_v2_entry_confirmed_v2_supervisor_failsafe.py
 
 python live/run_live_mtf_v2_entry_confirmed_v2.py
 
+*********************************
+C:\nautilus0\.venv\Scripts\python.exe C:\nautilus0\live\run_live_mtf_v2_entry_confirmed_adaptive_failsafe_supervisor.py
+*************************************
+
 cd c:\nautilus0
 python run_backtest_mtf_v2_entry_confirmed.py
 
