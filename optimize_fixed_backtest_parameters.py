@@ -69,7 +69,9 @@ def run_single_backtest(params):
         # Disable parity debug for optimization speed
         "MTF2_DMI_PARITY_DEBUG": "0",
         # Ensure we are using the fixed logic
-        "MTF2_Use_Fixed_Idempotency": "1" 
+        "MTF2_Use_Fixed_Idempotency": "1",
+        # Use the newly trained V3 model
+        "MTF2_MODEL_PATH": "models/ml_model_mtf_v3_xgb.pkl"
     }
     
     # Save original env

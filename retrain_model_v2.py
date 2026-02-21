@@ -62,6 +62,13 @@ def load_data_from_catalog(start_date, end_date):
     })
     
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ns', utc=True)
+    
+    # DEDUPLICATE: Drop duplicate timestamps (keep last)
+    original_len = len(df)
+    df = df.drop_duplicates(subset=['timestamp'], keep='last')
+    if len(df) < original_len:
+        print(f"Dropped {original_len - len(df)} duplicate bars.")
+        
     df = df.set_index('timestamp').sort_index()
     
     # Filter date range

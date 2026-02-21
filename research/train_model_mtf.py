@@ -133,6 +133,13 @@ def load_data(
     }
     
     df = pd.DataFrame(data)
+    
+    # DEDUPLICATE: Drop duplicate timestamps (keep last)
+    original_len = len(df)
+    df = df.drop_duplicates(subset=['timestamp'], keep='last')
+    if len(df) < original_len:
+        logger.info(f"Dropped {original_len - len(df)} duplicate bars.")
+        
     df.set_index('timestamp', inplace=True)
     df.sort_index(inplace=True)
     
