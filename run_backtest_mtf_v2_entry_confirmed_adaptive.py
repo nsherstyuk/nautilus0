@@ -177,6 +177,18 @@ def _build_trades_from_positions_with_signal_time(
     return trades
 
 
+def _safe_report_df(report_obj: object) -> pd.DataFrame:
+    """Normalize Nautilus report objects to DataFrame."""
+    if isinstance(report_obj, pd.DataFrame):
+        return report_obj
+    if report_obj is None:
+        return pd.DataFrame()
+    try:
+        return pd.DataFrame(report_obj)
+    except Exception:
+        return pd.DataFrame()
+
+
 def _env_bool(name: str, default: bool) -> bool:
     raw = os.getenv(name)
     if raw is None:
@@ -475,15 +487,28 @@ def run_v2_entry_confirmed_adaptive_backtest(
     try:
         result = node.run()
         engine = node.get_engine(run_config.id)
-        orders_df = engine.trader.generate_orders_report()
-        fills_df = engine.trader.generate_fills_report()
-        positions_df = engine.trader.generate_positions_report()
+        try:
+            orders_df = _safe_report_df(engine.trader.generate_orders_report())
+        except Exception as e:
+            logger.warning("Failed to generate orders report (continuing): %s", e)
+            orders_df = pd.DataFrame()
+        try:
+            fills_df = _safe_report_df(engine.trader.generate_fills_report())
+        except Exception as e:
+            logger.warning("Failed to generate fills report (continuing): %s", e)
+            fills_df = pd.DataFrame()
+        try:
+            positions_df = _safe_report_df(engine.trader.generate_positions_report())
+        except Exception as e:
+            logger.warning("Failed to generate positions report (continuing): %s", e)
+            positions_df = pd.DataFrame()
         orders_report = orders_df.reset_index() if "client_order_id" not in orders_df.columns else orders_df
         fills_report = fills_df.reset_index() if "client_order_id" not in fills_df.columns else fills_df
         output_dir.mkdir(parents=True, exist_ok=True)
         orders_report.to_csv(output_dir / f"orders_{timestamp}.csv", index=False)
         fills_report.to_csv(output_dir / f"fills_{timestamp}.csv", index=False)
         positions_df.to_csv(output_dir / f"positions_{timestamp}.csv", index=False)
+        trades: list[dict] = []
         try:
             order_tags_by_client_id = orders_df["tags"].to_dict() if "tags" in orders_df.columns else {}
             order_linked_ids_by_client_id = orders_df["linked_order_ids"].to_dict() if "linked_order_ids" in orders_df.columns else {}

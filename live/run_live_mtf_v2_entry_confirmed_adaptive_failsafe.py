@@ -22,6 +22,7 @@ from __future__ import annotations
 import logging
 import logging.config
 import os
+import platform
 import signal
 import sys
 from datetime import datetime
@@ -196,6 +197,15 @@ def _env_float(name: str, default: float) -> float:
         return default
 
 
+def _default_live_bar_dir() -> str:
+    """Return an external (non-repo-root) default directory for long-term live bar storage."""
+    if platform.system().lower().startswith("win"):
+        base = os.getenv("LOCALAPPDATA") or os.getenv("APPDATA")
+        if base:
+            return str(Path(base) / "nautilus0" / "live_bars")
+    return str(Path.home() / ".local" / "share" / "nautilus0" / "live_bars")
+
+
 def main() -> int:
     """Entry point for V2 ADAPTIVE FAIL-SAFE live trading."""
 
@@ -223,8 +233,13 @@ def main() -> int:
 
     # Optional: save live bars for replay parity
     live_bar_log_enabled = _env_bool("MTF2_LIVE_BAR_LOG_ENABLED", False)
-    live_bar_log_path = (os.getenv("MTF2_LIVE_BAR_LOG_PATH") or "logs/live_mtf/live_bars.csv").strip()
+    _legacy_live_bar_log_path = (os.getenv("MTF2_LIVE_BAR_LOG_PATH") or "").strip()
+    live_bar_log_dir = (os.getenv("MTF2_LIVE_BAR_LOG_DIR") or _default_live_bar_dir()).strip()
+    if _legacy_live_bar_log_path:
+        live_bar_log_dir = str(Path(_legacy_live_bar_log_path).parent or Path(_legacy_live_bar_log_path))
     live_bar_log_include_warmup = _env_bool("MTF2_LIVE_BAR_LOG_INCLUDE_WARMUP", True)
+    live_bar_log_partition_daily = _env_bool("MTF2_LIVE_BAR_LOG_PARTITION_DAILY", True)
+    live_bar_log_max_file_mb = _env_int("MTF2_LIVE_BAR_LOG_MAX_FILE_MB", 128)
 
     # Setup logging with timestamp
     start_time = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -268,10 +283,12 @@ def main() -> int:
         confidence_sl_interpolate,
     )
     logger.info(
-        "Live bar CSV logging: enabled=%s path=%s include_warmup=%s",
+        "Live bar CSV logging: enabled=%s dir=%s include_warmup=%s partition_daily=%s max_file_mb=%s",
         live_bar_log_enabled,
-        live_bar_log_path,
+        live_bar_log_dir,
         live_bar_log_include_warmup,
+        live_bar_log_partition_daily,
+        live_bar_log_max_file_mb,
     )
 
     # Get IBKR config
@@ -431,8 +448,10 @@ def main() -> int:
         port=live_config.ib_port,
         client_id=live_config.ib_client_id + 2,
         live_bar_log_enabled=live_bar_log_enabled,
-        live_bar_log_path=live_bar_log_path,
+        live_bar_log_dir=live_bar_log_dir,
         live_bar_log_include_warmup=live_bar_log_include_warmup,
+        live_bar_log_partition_daily=live_bar_log_partition_daily,
+        live_bar_log_max_file_mb=live_bar_log_max_file_mb,
     )
 
     logger.info("Connecting ib_insync bar streamer...")
@@ -540,6 +559,42 @@ def main() -> int:
         logger.info("Health check enabled: every %ss, max bar age 20 mins", health_check_interval)
         logger.info("Status report: every %s minutes", status_report_interval // 60)
 
+        def _latest_mark_price() -> float | None:
+            """Best-effort current mark from streamed bars (prefer 1m, fallback 15m)."""
+            try:
+                subscriptions = getattr(bar_streamer, "_subscriptions", {}) or {}
+
+                one_min_sub = None
+                fifteen_min_sub = None
+                for sub in subscriptions.values():
+                    sub_size = str(getattr(sub, "bar_size", "")).strip().lower()
+                    if sub_size == "1 min":
+                        one_min_sub = sub
+                    elif sub_size == "15 mins":
+                        fifteen_min_sub = sub
+
+                preferred = one_min_sub or fifteen_min_sub
+                if preferred is not None and getattr(preferred, "bars", None):
+                    bars = preferred.bars
+                    if len(bars) >= 1:
+                        return float(bars[-1].close)
+
+                bars_15m = getattr(strategy_instance, "bars_buffer_15m", None)
+                if bars_15m and len(bars_15m) >= 1:
+                    return float(bars_15m[-1].close)
+            except Exception:
+                return None
+
+            return None
+
+        def _estimate_unrealized_pnl(direction: str, entry_price: float, mark_price: float, size: float) -> float:
+            direction_text = str(direction).upper()
+            if direction_text in ("BUY", "LONG"):
+                return (mark_price - entry_price) * size
+            if direction_text in ("SELL", "SHORT"):
+                return (entry_price - mark_price) * size
+            return 0.0
+
         while True:
             time.sleep(1)
 
@@ -580,11 +635,86 @@ def main() -> int:
                     else:
                         logger.info("Open Positions: unavailable (portfolio/cache API not exposed)")
 
+                    tracked_positions = getattr(strategy_instance, "active_positions", {}) or {}
+                    if tracked_positions:
+                        mark_price = _latest_mark_price()
+                        logger.info("Tracked Position Details (%s):", len(tracked_positions))
+                        for layer_name in sorted(tracked_positions.keys()):
+                            info = tracked_positions.get(layer_name) or {}
+                            direction = str(info.get("direction", "?")).upper()
+                            entry_price = float(info.get("entry_price", 0.0) or 0.0)
+                            sl_price = float(info.get("sl_price", 0.0) or 0.0)
+                            tp_price = float(info.get("tp_price", 0.0) or 0.0)
+                            size = float(info.get("size", 0.0) or 0.0)
+                            sl_order_id = info.get("sl_order_id")
+                            tp_order_id = info.get("tp_order_id")
+
+                            if mark_price is not None and size > 0 and entry_price > 0:
+                                unrealized = _estimate_unrealized_pnl(
+                                    direction=direction,
+                                    entry_price=entry_price,
+                                    mark_price=mark_price,
+                                    size=size,
+                                )
+                                logger.info(
+                                    "  %s: side=%s size=%.0f entry=%.5f mark=%.5f SL=%.5f (id=%s) TP=%.5f (id=%s) unrealized_pnl=%.2f",
+                                    layer_name,
+                                    direction,
+                                    size,
+                                    entry_price,
+                                    mark_price,
+                                    sl_price,
+                                    sl_order_id,
+                                    tp_price,
+                                    tp_order_id,
+                                    unrealized,
+                                )
+                            else:
+                                logger.info(
+                                    "  %s: side=%s size=%.0f entry=%.5f mark=unavailable SL=%.5f (id=%s) TP=%.5f (id=%s) unrealized_pnl=unavailable",
+                                    layer_name,
+                                    direction,
+                                    size,
+                                    entry_price,
+                                    sl_price,
+                                    sl_order_id,
+                                    tp_price,
+                                    tp_order_id,
+                                )
+                    elif open_positions_count and int(open_positions_count) > 0:
+                        logger.info("Tracked Position Details: unavailable (strategy active_positions not populated)")
+
                     bar_age = bar_streamer.get_last_bar_age_seconds()
                     if bar_age is not None:
                         logger.info("Last bar received: %ss ago", int(bar_age))
                     logger.info("IB Connected: %s", bar_streamer.is_connected())
                     logger.info("=" * 60)
+
+                    # --- Account snapshot ---
+                    try:
+                        import csv as _csv
+                        from datetime import timezone as _tz
+                        _snap_path = Path(os.getenv("MTF2_ACCOUNT_SNAPSHOT_PATH", "logs/live_mtf/account_snapshots.csv"))
+                        _snap_path.parent.mkdir(parents=True, exist_ok=True)
+                        _snap_cols = ["timestamp_utc", "balance_total", "unrealized_pnl", "open_positions", "mark_price"]
+                        _write_header = not _snap_path.exists() or _snap_path.stat().st_size == 0
+                        with _snap_path.open("a", newline="", encoding="utf-8") as _sf:
+                            _sw = _csv.DictWriter(_sf, fieldnames=_snap_cols)
+                            if _write_header:
+                                _sw.writeheader()
+                            _bal = str(account.balance_total()) if account else ""
+                            _upnl = str(account.unrealized_pnl()) if account else ""
+                            _mp = _latest_mark_price()
+                            _sw.writerow({
+                                "timestamp_utc": datetime.now(tz=_tz.utc).isoformat(),
+                                "balance_total": _bal,
+                                "unrealized_pnl": _upnl,
+                                "open_positions": open_positions_count if open_positions_count is not None else "",
+                                "mark_price": f"{_mp:.5f}" if _mp is not None else "",
+                            })
+                    except Exception as _se:
+                        logger.debug("Account snapshot write failed (non-fatal): %s", _se)
+
                 except Exception as e:
                     logger.warning("Could not generate status report: %s", e)
 

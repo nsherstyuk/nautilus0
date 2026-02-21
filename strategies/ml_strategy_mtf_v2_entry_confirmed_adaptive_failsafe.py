@@ -315,10 +315,30 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         # Backtest delivers each 15m bar twice (dual subscription), so buffer=3400
         self.bars_buffer_15m = deque(maxlen=3400)
         self.bars_buffer_30m = deque(maxlen=50)
+        self._agg_30m_bucket_start_ns: Optional[int] = None
+        self._agg_30m_open: Optional[float] = None
+        self._agg_30m_high: Optional[float] = None
+        self._agg_30m_low: Optional[float] = None
+        self._agg_30m_close: Optional[float] = None
         self._min_warmup_bars_15m = 500
         self._min_warmup_bars_30m = 25
         self._atr_values = deque(maxlen=14)
         self._atr_window = 14
+        self._dmi_parity_debug = os.getenv("MTF2_DMI_PARITY_DEBUG", "0").strip().lower() in {"1", "true", "yes", "y", "on"}
+        
+        # Parity diagnostic: bar delivery tracking
+        self._bar_delivery_count = {}  # {timestamp: count}
+        self._processed_bars = set()  # Set of timestamps already fully processed
+        self._parity_snapshot_exported = False
+        self._parity_snapshot_timestamp = None  # Set via env MTF2_PARITY_SNAPSHOT_TS
+        snapshot_ts_str = os.getenv("MTF2_PARITY_SNAPSHOT_TS", "").strip()
+        if snapshot_ts_str:
+            try:
+                from datetime import datetime, timezone
+                self._parity_snapshot_timestamp = datetime.fromisoformat(snapshot_ts_str)
+                _py_logger.info(f"[PARITY_DEBUG] Snapshot export enabled at {self._parity_snapshot_timestamp}")
+            except Exception as e:
+                _py_logger.warning(f"[PARITY_DEBUG] Invalid snapshot timestamp '{snapshot_ts_str}': {e}")
 
         # HTF (4H) confirmation model
         self._htf_model = None
@@ -364,6 +384,12 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         
         # Load HTF model if configured
         self._load_htf_model()
+
+        # Trade journal (initialised in on_start once instrument is known)
+        self._trade_journal = None
+        # Double-bar dedup: NautilusTrader delivers each bar twice in backtest
+        # mode (dual subscription).  In live mode timestamps always differ.
+        self._last_processed_bar_ts: int = 0
 
         _py_logger.info("MLSignalStrategy V2 Entry Confirmed ADAPTIVE + FAIL-SAFE initialized")
         _py_logger.info(f"Entry confirmation: {'ENABLED' if self.entry_confirmation_enabled else 'DISABLED'}")
@@ -882,6 +908,15 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             _py_logger.info(f"  MAMA filter: enabled={self._meta_filter_params['mama_enabled']}, min_diff={self._meta_filter_params['mama_min_diff']}")
             _py_logger.info(f"  DMI filter: enabled={self._meta_filter_params['dmi_enabled']}, min_dmp={self._meta_filter_params['dmi_min_dmp']}")
 
+        # --- Trade journal ---
+        try:
+            from live.trade_journal import TradeJournal
+            _journal_path = os.getenv("MTF2_TRADE_JOURNAL_PATH", "logs/live_mtf/trade_journal.csv")
+            self._trade_journal = TradeJournal(path=_journal_path)
+            _py_logger.info("Trade journal: %s", _journal_path)
+        except Exception as _journal_err:
+            _py_logger.warning("Trade journal init failed (non-fatal): %s", _journal_err)
+
     def on_bar(self, bar: Bar):
         """Handle incoming bar data."""
         # Route 1m bars to entry confirmation logic
@@ -909,6 +944,50 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             return
         
         bar_time = pd.Timestamp(bar.ts_init, unit='ns', tz='UTC')
+        
+        # Parity diagnostic: Track bar delivery count
+        if bar.ts_event not in self._bar_delivery_count:
+            self._bar_delivery_count[bar.ts_event] = 0
+        self._bar_delivery_count[bar.ts_event] += 1
+        delivery_count = self._bar_delivery_count[bar.ts_event]
+        
+        if delivery_count > 1:
+            _py_logger.info(
+                f"[BAR_DELIVERY] {bar_time} delivered {delivery_count} times (ts_event={bar.ts_event})"
+            )
+        
+        # IDEMPOTENCY FIX: Skip bars we've already fully processed
+        # NautilusTrader delivers bars multiple times in backtest (61% 2x, 38% 3x+)
+        # This causes non-idempotent calculations (MAMA, DMI) to diverge from live
+        
+        # DEBUG: Log idempotency check state
+        is_already_processed = bar.ts_event in self._processed_bars
+        _py_logger.info(
+            f"[IDEMPOTENT_CHECK] bar={bar_time} ts_event={bar.ts_event} "
+            f"already_processed={is_already_processed} processed_count={len(self._processed_bars)}"
+        )
+        
+        if is_already_processed:
+            _py_logger.info(
+                f"[IDEMPOTENT] Skipping already-processed bar at {bar_time} "
+                f"(delivery #{delivery_count}, ts_event={bar.ts_event})"
+            )
+            return
+        
+        # Mark this bar as processed (do this BEFORE any calculation that might raise)
+        self._processed_bars.add(bar.ts_event)
+        _py_logger.info(
+            f"[IDEMPOTENT_ADD] Added bar to processed set: {bar_time} ts_event={bar.ts_event} "
+            f"new_count={len(self._processed_bars)}"
+        )
+
+        # Dedup guard: NautilusTrader delivers each bar twice in backtest mode
+        # (dual subscription).  In live mode this is a no-op.
+        # NOTE: This is now redundant with the idempotency check above, but kept for safety
+        if bar.ts_event == self._last_processed_bar_ts:
+            _py_logger.debug("[DEDUP] Skipping duplicate 15m bar at %s", bar_time)
+            return
+        self._last_processed_bar_ts = bar.ts_event
 
         # FAIL-SAFE: Check position protection (rate-limited)
         if len(self.active_positions) > 0 or self._has_open_positions_cache():
@@ -918,7 +997,7 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         self.bars_buffer_15m.append(bar)
 
         # Create 30m bars from 15m data
-        self._resample_to_30m()
+        self._resample_to_30m(bar)
 
         # Update ATR
         self._update_atr(bar)
@@ -974,6 +1053,13 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
                 prediction = None
                 confidence = None
                 meta_ok = None
+        
+        # Parity diagnostic: Export feature snapshot at specified timestamp
+        if (self._parity_snapshot_timestamp is not None 
+            and not self._parity_snapshot_exported
+            and bar_time >= self._parity_snapshot_timestamp):
+            self._export_feature_snapshot(bar_time)
+            self._parity_snapshot_exported = True
 
         pred_text = str(prediction) if prediction is not None else "NA"
         conf_text = f"{confidence:.3f}" if confidence is not None else "NA"
@@ -1099,9 +1185,23 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
                 confidence=confidence,
             )
             _py_logger.info(f"Signal generated: {direction} (confidence={confidence:.3f}), waiting for entry confirmation...")
+            self._journal_event(
+                "SIGNAL", bar=bar, side=direction, confidence=confidence,
+                atr=entry_atr,
+                mama_diff=self._latest_meta.get("mama_diff"),
+                dmi_plus=self._latest_meta.get("dmp_30m"),
+                meta_pass=meta_ok,
+            )
         else:
             # Enter immediately (original behavior)
             _py_logger.info(f"[BAR] Executing {direction} signal immediately (confirmation disabled)")
+            self._journal_event(
+                "SIGNAL", bar=bar, side=direction, confidence=confidence,
+                atr=entry_atr,
+                mama_diff=self._latest_meta.get("mama_diff"),
+                dmi_plus=self._latest_meta.get("dmp_30m"),
+                meta_pass=meta_ok,
+            )
             self._execute_signal(
                 bar,
                 direction,
@@ -1148,17 +1248,18 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             'low': [float(b.low) for b in self.bars_buffer_15m],
             'close': [float(b.close) for b in self.bars_buffer_15m],
             'volume': [float(getattr(b, 'volume', 0.0)) for b in self.bars_buffer_15m],
-            'timestamp': [pd.Timestamp(b.ts_init, unit='ns', tz='UTC') for b in self.bars_buffer_15m],
+            'timestamp': [pd.Timestamp(b.ts_event, unit='ns', tz='UTC') for b in self.bars_buffer_15m],
         }
         df_15m = pd.DataFrame(data_15m)
         df_15m.set_index('timestamp', inplace=True)
-        df_15m = df_15m.loc[~df_15m.index.duplicated(keep='first')]
+        df_15m = df_15m.loc[~df_15m.index.duplicated(keep='last')]
 
         data_30m = {
+            'open': [float(b.open) for b in self.bars_buffer_30m],
             'close': [float(b.close) for b in self.bars_buffer_30m],
             'high': [float(b.high) for b in self.bars_buffer_30m],
             'low': [float(b.low) for b in self.bars_buffer_30m],
-            'timestamp': [pd.Timestamp(b.ts_init, unit='ns', tz='UTC') for b in self.bars_buffer_30m],
+            'timestamp': [pd.Timestamp(b.ts_event, unit='ns', tz='UTC') for b in self.bars_buffer_30m],
         }
         df_30m = pd.DataFrame(data_30m)
         df_30m.set_index('timestamp', inplace=True)
@@ -1181,9 +1282,19 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
                 self._latest_meta["dmp_30m"] = None
             else:
                 self._latest_meta["dmp_30m"] = float((dmi_30m.iloc[:, 1] / 100.0).iloc[-1])
+                self._log_dmi_parity_snapshot(df_30m, float(self._latest_meta["dmp_30m"]))
+                
+                # Add DMI columns to df_30m for par ity diagnostics
+                df_30m['adx'] = dmi_30m.iloc[:, 0] / 100.0
+                df_30m['dmp'] = dmi_30m.iloc[:, 1] / 100.0
+                df_30m['dmn'] = dmi_30m.iloc[:, 2] / 100.0
 
             # If using the V3 50-feature model, generate that feature vector.
             if self._using_v3_model():
+                # Store DataFrames for parity diagnostics (df_15m has OHLC + MAMA, df_30m has OHLC)
+                self.features_15m = df_15m.copy()
+                self.features_30m = df_30m.copy()
+                
                 row = latest_v3_row(df_15m[["open", "high", "low", "close", "volume"]])
                 if row is None:
                     return None
@@ -1192,6 +1303,10 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
 
             # If using the 40-feature RF backup model, generate that exact feature vector.
             if self._using_rf40_model():
+                # Store DataFrames for parity diagnostics (df_15m has OHLC + MAMA, df_30m has OHLC)
+                self.features_15m = df_15m.copy()
+                self.features_30m = df_30m.copy()
+                
                 row = latest_rf40_row(df_15m[["open", "high", "low", "close", "volume"]])
                 if row is None:
                     return None
@@ -1230,6 +1345,10 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
 
             latest_15m = df_15m.iloc[-1]
             latest_30m = df_30m.iloc[-1]
+            
+            # Store for parity diagnostics (after features calculated)
+            self.features_15m = df_15m.copy()
+            self.features_30m = df_30m.copy()
 
             features = np.array([
                 latest_15m['log_ret'],
@@ -1255,46 +1374,130 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             _py_logger.error(f"[ERROR] Feature calculation failed: {e}")
             return None
     
-    def _resample_to_30m(self):
-        """Resample 15m bars to 30m using pandas."""
-        if len(self.bars_buffer_15m) < 2:
+    def _resample_to_30m(self, bar: Bar):
+        """Incrementally aggregate 15m bars into deterministic 30m bars.
+
+        Uses ts_event (bar open time) for bucket assignment so live and backtest
+        consume the exact same time convention without full-history re-resampling.
+        """
+        bar_time = pd.Timestamp(bar.ts_event, unit='ns', tz='UTC')
+        bucket_start = bar_time.floor('30min')
+        bucket_start_ns = int(bucket_start.value)
+
+        bar_open = float(bar.open)
+        bar_high = float(bar.high)
+        bar_low = float(bar.low)
+        bar_close = float(bar.close)
+
+        class SimpleBar:
+            def __init__(self, o, h, l, c, ts_event_ns):
+                self.open = o
+                self.high = h
+                self.low = l
+                self.close = c
+                self.volume = 0
+                self.ts_event = ts_event_ns
+                self.ts_init = ts_event_ns
+
+        # First aggregate bucket
+        if self._agg_30m_bucket_start_ns is None:
+            self._agg_30m_bucket_start_ns = bucket_start_ns
+            self._agg_30m_open = bar_open
+            self._agg_30m_high = bar_high
+            self._agg_30m_low = bar_low
+            self._agg_30m_close = bar_close
             return
 
-        data = {
-            'timestamp': [pd.Timestamp(b.ts_init, unit='ns', tz='UTC') for b in self.bars_buffer_15m],
-            'open': [float(b.open) for b in self.bars_buffer_15m],
-            'high': [float(b.high) for b in self.bars_buffer_15m],
-            'low': [float(b.low) for b in self.bars_buffer_15m],
-            'close': [float(b.close) for b in self.bars_buffer_15m],
-            'volume': [float(b.volume) for b in self.bars_buffer_15m],
-        }
+        # Ignore out-of-order old bars to keep aggregation deterministic
+        if bucket_start_ns < self._agg_30m_bucket_start_ns:
+            _py_logger.debug(
+                "[30M_AGG] Ignoring out-of-order 15m bar ts_event=%s bucket=%s current_bucket=%s",
+                bar_time,
+                bucket_start_ns,
+                self._agg_30m_bucket_start_ns,
+            )
+            return
 
-        df = pd.DataFrame(data)
-        df.set_index('timestamp', inplace=True)
+        # Same 30m bucket: update running OHLC
+        if bucket_start_ns == self._agg_30m_bucket_start_ns:
+            self._agg_30m_high = max(float(self._agg_30m_high), bar_high)
+            self._agg_30m_low = min(float(self._agg_30m_low), bar_low)
+            self._agg_30m_close = bar_close
+            return
 
-        df_30m = df.resample('30min').agg({
-            'open': 'first',
-            'high': 'max',
-            'low': 'min',
-            'close': 'last',
-            'volume': 'sum'
-        }).dropna()
+        # New bucket: finalize previous bucket and start new one
+        finalized_bar = SimpleBar(
+            float(self._agg_30m_open),
+            float(self._agg_30m_high),
+            float(self._agg_30m_low),
+            float(self._agg_30m_close),
+            int(self._agg_30m_bucket_start_ns),
+        )
+        self.bars_buffer_30m.append(finalized_bar)
 
-        self.bars_buffer_30m.clear()
-        for idx, row in df_30m.iterrows():
-            class SimpleBar:
-                def __init__(self, o, h, l, c, ts):
-                    self.open = o
-                    self.high = h
-                    self.low = l
-                    self.close = c
-                    self.volume = 0
-                    self.ts_init = ts
+        self._agg_30m_bucket_start_ns = bucket_start_ns
+        self._agg_30m_open = bar_open
+        self._agg_30m_high = bar_high
+        self._agg_30m_low = bar_low
+        self._agg_30m_close = bar_close
 
-            # Convert pandas Timestamp to nanoseconds safely
-            ts_ns = int(idx.timestamp() * 1_000_000_000) if hasattr(idx, 'timestamp') else int(idx.value)
-            bar_30m = SimpleBar(row['open'], row['high'], row['low'], row['close'], ts_ns)
-            self.bars_buffer_30m.append(bar_30m)
+    def _log_dmi_parity_snapshot(self, df_30m: pd.DataFrame, dmi_plus: float) -> None:
+        """Emit a compact per-bar DMI parity snapshot for live/replay diffing."""
+        if not self._dmi_parity_debug:
+            return
+        try:
+            if len(df_30m) < 14:
+                return
+            tail = df_30m[['open', 'high', 'low', 'close']].tail(14)
+            bars_compact = ";".join(
+                f"{idx.isoformat()}|{row['open']:.5f}|{row['high']:.5f}|{row['low']:.5f}|{row['close']:.5f}"
+                for idx, row in tail.iterrows()
+            )
+            _py_logger.info(
+                "[DMI_PARITY] t=%s dmi_plus=%.6f bars14=%s",
+                tail.index[-1].isoformat(),
+                float(dmi_plus),
+                bars_compact,
+            )
+        except Exception as e:
+            _py_logger.debug("[DMI_PARITY] snapshot logging failed: %s", e)
+
+    def _export_feature_snapshot(self, bar_time: pd.Timestamp) -> None:
+        """Export features_15m and features_30m DataFrames as CSV for parity analysis."""
+        try:
+            import os
+            from pathlib import Path
+            
+            # Create snapshots directory
+            snapshot_dir = Path("parity_snapshots")
+            snapshot_dir.mkdir(exist_ok=True)
+            
+            # Generate filename with timestamp
+            ts_str = bar_time.strftime("%Y%m%d_%H%M%S")
+            mode_str = "replay" if self._is_replay_mode else "live"
+            
+            # Export features_15m
+            if hasattr(self, 'features_15m') and self.features_15m is not None and len(self.features_15m) > 0:
+                path_15m = snapshot_dir / f"features_15m_{mode_str}_{ts_str}.csv"
+                self.features_15m.to_csv(path_15m)
+                _py_logger.info(f"[PARITY_SNAPSHOT] Exported features_15m to {path_15m} (rows={len(self.features_15m)})")
+            
+            # Export features_30m
+            if hasattr(self, 'features_30m') and self.features_30m is not None and len(self.features_30m) > 0:
+                path_30m = snapshot_dir / f"features_30m_{mode_str}_{ts_str}.csv"
+                self.features_30m.to_csv(path_30m)
+                _py_logger.info(f"[PARITY_SNAPSHOT] Exported features_30m to {path_30m} (rows={len(self.features_30m)})")
+            
+            # Export bar delivery counts
+            delivery_path = snapshot_dir / f"bar_delivery_{mode_str}_{ts_str}.csv"
+            with open(delivery_path, 'w') as f:
+                f.write("timestamp_ns,delivery_count\n")
+                for ts_ns, count in sorted(self._bar_delivery_count.items()):
+                    f.write(f"{ts_ns},{count}\n")
+            _py_logger.info(f"[PARITY_SNAPSHOT] Exported bar delivery counts to {delivery_path} (bars={len(self._bar_delivery_count)})")
+            
+        except Exception as e:
+            _py_logger.error(f"[PARITY_SNAPSHOT] Failed to export: {e}", exc_info=True)
 
     def _check_entry_confirmation(self, current_bar: Bar):
         """Check if pending signal should be confirmed for entry using 1m bars with adaptive logic."""
@@ -1321,6 +1524,14 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         # Check if we've waited too long
         if self.pending_signal.bars_waited > self.entry_max_wait_bars:
             _py_logger.info(f"Signal expired after {self.pending_signal.bars_waited} 1m bars")
+            self._journal_event(
+                "CONFIRM_FAIL",
+                bar=self.pending_signal.entry_bar,
+                side=self.pending_signal.direction,
+                confidence=self.pending_signal.confidence,
+                atr=self.pending_signal.entry_atr,
+                exit_reason=f"expired_{self.pending_signal.bars_waited}_bars",
+            )
             self.pending_signal = None
             return
         
@@ -1368,6 +1579,14 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         if self.pending_signal.bars_waited >= required_bars:
             if is_favorable:
                 _py_logger.info(f"Entry confirmed after {self.pending_signal.bars_waited} 1m bars (movement: {price_change:+.2f} ATR)")
+                self._journal_event(
+                    "CONFIRM_PASS",
+                    bar=self.pending_signal.entry_bar,
+                    side=self.pending_signal.direction,
+                    confidence=self.pending_signal.confidence,
+                    atr=self.pending_signal.entry_atr,
+                    close_px=float(current_bar.close),
+                )
 
                 # Option B safety: re-check we are still allowed to enter (flat + not cooling down)
                 positions_open = list(self.cache.positions_open(instrument_id=self.instrument_id))
@@ -1509,8 +1728,29 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
                 matched_layer = layer_name
 
         if matched_layer is not None:
+            _closed_info = self.active_positions.get(matched_layer, {})
             del self.active_positions[matched_layer]
             _py_logger.info(f"Position {matched_layer} closed")
+            try:
+                _pnl = float(position.realized_pnl.as_double()) if hasattr(position, "realized_pnl") and position.realized_pnl is not None else None
+                _entry_px = float(_closed_info.get("entry_price") or 0) or None
+                _exit_px = float(position.avg_px_close) if hasattr(position, "avg_px_close") and position.avg_px_close else None
+                _qty = float(_closed_info.get("size") or 0) or None
+                _closed_bars = int(_closed_info.get("entry_atr", 0) * 0)  # placeholder: 0
+                self._journal_event(
+                    "POSITION_CLOSE",
+                    layer=matched_layer,
+                    side=str(_closed_info.get("direction", "")),
+                    atr=float(_closed_info.get("entry_atr") or 0) or None,
+                    entry_px=_entry_px,
+                    exit_px=_exit_px,
+                    sl_px=float(_closed_info.get("sl_price") or 0) or None,
+                    tp_px=float(_closed_info.get("tp_price") or 0) or None,
+                    quantity=_qty,
+                    pnl_usd=_pnl,
+                )
+            except Exception as _je:
+                _py_logger.debug("[JOURNAL] position_close log error: %s", _je)
 
         # Option B: apply cooldown after trade completion
         if len(self.active_positions) == 0 and self._entry_cooldown_bars > 0:
@@ -1715,6 +1955,29 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
 
     def on_stop(self):
         """Strategy cleanup."""
+        # Log bar delivery statistics
+        if self._bar_delivery_count:
+            total_bars = len(self._bar_delivery_count)
+            single_delivery = sum(1 for count in self._bar_delivery_count.values() if count == 1)
+            double_delivery = sum(1 for count in self._bar_delivery_count.values() if count == 2)
+            triple_plus = sum(1 for count in self._bar_delivery_count.values() if count >= 3)
+            
+            _py_logger.info("[BAR_DELIVERY_SUMMARY] Total unique bars: %d", total_bars)
+            _py_logger.info("[BAR_DELIVERY_SUMMARY] Single delivery: %d (%.1f%%)", 
+                          single_delivery, 100.0 * single_delivery / total_bars if total_bars > 0 else 0)
+            _py_logger.info("[BAR_DELIVERY_SUMMARY] Double delivery: %d (%.1f%%)", 
+                          double_delivery, 100.0 * double_delivery / total_bars if total_bars > 0 else 0)
+            _py_logger.info("[BAR_DELIVERY_SUMMARY] Triple+ delivery: %d (%.1f%%)", 
+                          triple_plus, 100.0 * triple_plus / total_bars if total_bars > 0 else 0)
+            
+            # Log a few examples of multi-delivery bars
+            multi_deliveries = [(ts, count) for ts, count in self._bar_delivery_count.items() if count > 1]
+            if multi_deliveries:
+                _py_logger.info("[BAR_DELIVERY_SUMMARY] Example multi-deliveries (first 5):")
+                for ts_ns, count in sorted(multi_deliveries)[:5]:
+                    bar_time = pd.Timestamp(ts_ns, unit='ns', tz='UTC')
+                    _py_logger.info(f"  {bar_time}: {count} deliveries")
+        
         _py_logger.info("Strategy stopped")
 
     def _generate_signal(
@@ -1853,6 +2116,72 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         value = Decimal(units).quantize(quant)
         return Quantity.from_str(format(value, "f"))
 
+    def _journal_event(
+        self,
+        event_type: str,
+        *,
+        bar=None,
+        layer: str = "",
+        side: str = "",
+        confidence=None,
+        threshold=None,
+        atr=None,
+        close_px=None,
+        mama_diff=None,
+        dmi_plus=None,
+        meta_pass=None,
+        sl_px=None,
+        tp_px=None,
+        entry_px=None,
+        exit_px=None,
+        quantity=None,
+        exit_reason: str = "",
+        pnl_usd=None,
+        duration_bars=None,
+        order_id: str = "",
+    ) -> None:
+        """Write one event row to the trade journal.  No-op if journal is not initialised."""
+        if self._trade_journal is None:
+            return
+        _bar_time = ""
+        if bar is not None:
+            try:
+                _bar_time = str(pd.Timestamp(bar.ts_init, unit='ns', tz='UTC'))
+            except Exception:
+                pass
+        _close = close_px
+        if _close is None and bar is not None:
+            try:
+                _close = float(bar.close)
+            except Exception:
+                pass
+        row = {
+            "event_type": event_type,
+            "bar_time": _bar_time,
+            "layer": layer,
+            "side": side,
+            "confidence": confidence,
+            "threshold": threshold,
+            "atr": atr,
+            "close_px": _close,
+            "mama_diff": mama_diff,
+            "dmi_plus": dmi_plus,
+            "meta_pass": meta_pass,
+            "sl_px": sl_px,
+            "tp_px": tp_px,
+            "entry_px": entry_px,
+            "exit_px": exit_px,
+            "quantity": quantity,
+            "exit_reason": exit_reason,
+            "pnl_usd": pnl_usd,
+            "duration_bars": duration_bars,
+            "order_id": order_id,
+        }
+        try:
+            self._trade_journal.log(row)
+        except Exception as _e:
+            _py_logger.warning("[JOURNAL] write failed: %s", _e)
+
     def _create_positions(self, bar: Bar, direction: str, sl_price: float, 
                          tp1_price: float, tp2_price: float, features: List[float],
                          prediction: int, prediction_proba: np.ndarray,
@@ -1935,6 +2264,18 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
             
             _py_logger.info(f"[SUBMIT] {layer_name}: {direction} {size} units @ MARKET, SL={sl_price:.5f}, TP={tp_price:.5f}")
             _py_logger.info(f"[ORDER_IDS] {layer_name} Entry={entry_order_id}, SL={sl_order_id}, TP={tp_order_id}")
+            self._journal_event(
+                "ORDER_SUBMIT",
+                bar=bar,
+                layer=layer_name,
+                side=direction,
+                atr=float(entry_atr),
+                sl_px=float(sl_price),
+                tp_px=float(tp_price),
+                entry_px=float(entry_price),
+                quantity=float(size_int),
+                order_id=str(entry_order_id) if entry_order_id else "",
+            )
             
             # Verify bracket orders are in cache
             try:
@@ -1990,9 +2331,29 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         """Best-effort check for open positions in cache."""
         try:
             open_positions = list(self.cache.positions_open(instrument_id=self.instrument_id))
-            return len(open_positions) > 0
+            real_open_positions = [p for p in open_positions if self._position_has_nonzero_qty(p)]
+            return len(real_open_positions) > 0
         except Exception:
             return False
+
+    @staticmethod
+    def _position_has_nonzero_qty(position: object) -> bool:
+        """Return True only for positions with meaningful non-zero quantity.
+
+        Some restart/reconnect sequences can briefly expose stale/flat position
+        objects through cache APIs; those should not trigger untracked-position
+        failsafe warnings.
+        """
+        try:
+            qty = getattr(position, "quantity", None)
+            if qty is None:
+                return True
+
+            qty_float = float(qty)
+            return abs(qty_float) > 1e-9
+        except Exception:
+            # If we cannot parse quantity, keep previous conservative behavior.
+            return True
 
     def _check_untracked_position_safety(self) -> None:
         """Check safety for positions that exist in cache but are not tracked in `active_positions`.
@@ -2000,6 +2361,7 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         This can happen right after process restart when in-memory tracking is empty.
         """
         open_positions = list(self.cache.positions_open(instrument_id=self.instrument_id))
+        open_positions = [p for p in open_positions if self._position_has_nonzero_qty(p)]
         if not open_positions:
             self._failsafe_untracked_failed_checks = 0
             return

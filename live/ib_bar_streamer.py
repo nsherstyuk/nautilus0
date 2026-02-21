@@ -74,8 +74,10 @@ class IBBarStreamer:
         reconnect_attempts: int = 10,
         reconnect_delay: float = 5.0,
         live_bar_log_enabled: bool = False,
-        live_bar_log_path: Optional[str] = None,
+        live_bar_log_dir: Optional[str] = None,
         live_bar_log_include_warmup: bool = True,
+        live_bar_log_partition_daily: bool = True,
+        live_bar_log_max_file_mb: int = 128,
     ):
         self.host = host
         self.port = port
@@ -96,9 +98,18 @@ class IBBarStreamer:
         self._live_bar_logger: Optional[LiveBarCsvLogger] = None
 
         if self._live_bar_log_enabled:
-            log_path = Path(live_bar_log_path) if live_bar_log_path else Path("logs/live_mtf/live_bars.csv")
-            self._live_bar_logger = LiveBarCsvLogger(path=log_path)
-            logger.info("Live bar CSV logging enabled: %s", log_path)
+            log_dir = Path(live_bar_log_dir) if live_bar_log_dir else Path("logs/live_mtf/live_bars")
+            self._live_bar_logger = LiveBarCsvLogger(
+                base_dir=log_dir,
+                partition_daily=bool(live_bar_log_partition_daily),
+                max_file_mb=int(live_bar_log_max_file_mb),
+            )
+            logger.info(
+                "Live bar CSV logging enabled: dir=%s partition_daily=%s max_file_mb=%s",
+                log_dir,
+                bool(live_bar_log_partition_daily),
+                int(live_bar_log_max_file_mb),
+            )
         
         # Register error handler
         self.ib.errorEvent += self._on_error
@@ -327,9 +338,25 @@ class IBBarStreamer:
         bar_type: BarType,
     ) -> Bar:
         """Convert ib_insync BarData to NautilusTrader Bar."""
-        # Convert datetime to nanoseconds
-        ts_event = int(ib_bar.date.timestamp() * 1_000_000_000)
-        ts_init = ts_event  # Use bar's actual time for proper resampling
+        # IB's intraday bar `date` is bar-open time for keepUpToDate bars.
+        # Nautilus strategy code in this repo uses `ts_init` as bar-close time,
+        # so compute ts_init = ts_event + bar_interval to match replay/catalog semantics.
+        bar_time = ib_bar.date
+        if getattr(bar_time, "tzinfo", None) is None:
+            bar_time = bar_time.replace(tzinfo=timezone.utc)
+        else:
+            bar_time = bar_time.astimezone(timezone.utc)
+
+        ts_event = int(bar_time.timestamp() * 1_000_000_000)
+
+        interval_seconds = 0.0
+        try:
+            interval_seconds = float(bar_type.spec.timedelta.total_seconds())
+        except Exception:
+            interval_seconds = 0.0
+
+        interval_nanos = int(interval_seconds * 1_000_000_000)
+        ts_init = ts_event + interval_nanos if interval_nanos > 0 else ts_event
         
         return Bar(
             bar_type=bar_type,
