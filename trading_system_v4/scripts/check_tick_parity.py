@@ -1,163 +1,263 @@
 """
-check_tick_parity.py — Broker Tick Parity Analysis
+check_tick_parity.py — Multi-Session Broker Tick Parity Calibration
 
-Compares the tick density of Dukascopy (our training data) vs IBKR (our live execution data).
-Because IBKR conflates quotes (e.g., 250ms snapshots for standard feeds), 1,000 ticks on 
-Dukascopy might equal 300 ticks on IBKR. 
+Measures the IBKR/Dukascopy tick ratio across four session windows per day
+and accumulates results in parity_snapshots/session_parity.json.
 
-If we train on 1,000-Tick Bars from Dukascopy, we must execute on N-Tick Bars on IBKR 
-where N = 1000 * (IBKR_Ticks / Dukascopy_Ticks).
+After 5+ days of measurements, run_live_tick.py automatically uses
+session-aware bar sizes instead of a single hardcoded constant.
+
+Session windows measured (UTC):
+  asian         01:00–02:00
+  london_open   08:00–09:00
+  london_ny     14:00–15:00   ← original single-sample window
+  ny_afternoon  20:00–21:00
 
 Usage:
-  python -m trading_system_v4.scripts.check_tick_parity
+  # Measure all 4 sessions for a given date (requires IB Gateway on port 4002)
+  python -m trading_system_v4.scripts.check_tick_parity --date 2026-02-18
+
+  # Show summary of accumulated measurements without connecting to IBKR
+  python -m trading_system_v4.scripts.check_tick_parity --summary
 """
+import argparse
 import asyncio
+import json
+import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-import pandas as pd
 from ib_insync import IB, Forex, util
 from tick_vault import download_range, read_tick_data
 
-# ── Configuration ─────────────────────────────────────────────────────────────
+# ── Config ─────────────────────────────────────────────────────────────────────
 SYMBOL = "EURUSD"
-# Pick a recent, highly active day (e.g., a Tuesday or Wednesday)
-# IBKR historical ticks are only available for the last 6 months.
-TARGET_DATE = datetime(2026, 2, 18, tzinfo=timezone.utc) 
+DUKA_TICKS_PER_TRAINING_BAR = 1_000   # what the model was trained on
 
-def get_ibkr_ticks(target_date: datetime) -> int:
-    """
-    Connects to IBKR and downloads exactly 1 hour of tick data during the 
-    London/NY overlap (14:00 - 15:00 UTC) to measure peak tick density.
-    """
-    # Use util.startLoop() for ib_insync in an existing asyncio loop
-    util.startLoop()
-    ib = IB()
-    try:
-        # Connect to TWS/Gateway (adjust port if using Gateway: 4001/4002)
-        ib.connect('127.0.0.1', 4002, clientId=99)
-    except Exception as e:
-        print(f"[ERROR] Could not connect to IBKR: {e}")
-        print("Please ensure TWS or IB Gateway is running and API is enabled.")
-        return -1
+ROOT         = Path(__file__).resolve().parents[2]
+SNAPSHOT_DIR = ROOT / "parity_snapshots"
+PARITY_FILE  = SNAPSHOT_DIR / "session_parity.json"
+SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
 
+# Each entry: (session_label, start_hour_utc, end_hour_utc)
+SESSION_WINDOWS = [
+    ("asian",        1,  2),
+    ("london_open",  8,  9),
+    ("london_ny",   14, 15),   # originally measured single window
+    ("ny_afternoon", 20, 21),
+]
+
+
+# ── IBKR tick fetch ────────────────────────────────────────────────────────────
+def _fetch_ibkr_ticks(ib: IB, start_utc: datetime, end_utc: datetime) -> int:
     contract = Forex(SYMBOL)
     ib.qualifyContracts(contract)
 
-    # We sample 1 hour of the most active time of day (14:00 to 15:00 UTC)
-    start_time = target_date.replace(hour=14, minute=0, second=0)
-    end_time = target_date.replace(hour=15, minute=0, second=0)
-    
-    print(f"Fetching IBKR ticks for {SYMBOL} from {start_time} to {end_time}...")
-    
     all_ticks = []
-    current_end = end_time
-    
-    # IBKR limits historical ticks to 1000 per request. We must paginate backwards.
-    while current_end > start_time:
+    current_end = end_utc
+
+    while current_end > start_utc:
+        end_str = current_end.strftime("%Y%m%d %H:%M:%S UTC")
         try:
-            # Format datetime for IBKR (YYYYMMDD HH:MM:SS UTC)
-            end_str = current_end.strftime('%Y%m%d %H:%M:%S UTC')
-            
             ticks = ib.reqHistoricalTicks(
                 contract,
-                startDateTime='',
+                startDateTime="",
                 endDateTime=end_str,
                 numberOfTicks=1000,
-                whatToShow='BID_ASK',
+                whatToShow="BID_ASK",
                 useRth=False,
-                ignoreSize=False
+                ignoreSize=False,
             )
-            
-            if not ticks:
-                print(f"  [WARN] IBKR returned empty tick list for end_time: {end_str}")
-                break
-                
-            all_ticks.extend(ticks)
-            
-            # The oldest tick in this batch becomes the end_time for the next request
-            oldest_tick_time = ticks[0].time
-            print(f"  Fetched {len(ticks)} ticks. Oldest tick: {oldest_tick_time}")
-            
-            # If we haven't moved backwards (e.g., exactly 1000 ticks in 1 millisecond), break to avoid infinite loop
-            if oldest_tick_time >= current_end:
-                break
-                
-            current_end = oldest_tick_time
-            
-            # Respect IBKR pacing (max 60 requests / 10 mins)
-            ib.sleep(1) 
-            
         except Exception as e:
-            print(f"  [WARN] IBKR Pagination Error: {e}")
+            print(f"    [WARN] IBKR error: {e}")
             break
 
-    ib.disconnect()
-    
-    # Filter out ticks that fell before our exact start_time due to the 1000-tick chunking
-    valid_ticks = [t for t in all_ticks if t.time >= start_time]
-    
-    print(f"  -> IBKR returned {len(valid_ticks):,} ticks for the 1-hour window.")
-    return len(valid_ticks)
+        if not ticks:
+            break
+
+        all_ticks.extend(ticks)
+        oldest = ticks[0].time
+        if oldest >= current_end:
+            break
+        current_end = oldest
+        ib.sleep(1)   # IBKR pacing: max 60 req/10 min
+
+    valid = [t for t in all_ticks if t.time >= start_utc]
+    return len(valid)
 
 
-async def get_dukascopy_ticks(target_date: datetime) -> int:
-    """
-    Downloads the exact same 1-hour window from Dukascopy using tick-vault.
-    """
-    # tick-vault expects naive datetimes for its API, but they represent UTC
-    start_time = target_date.replace(hour=14, minute=0, second=0, tzinfo=None)
-    end_time = target_date.replace(hour=15, minute=0, second=0, tzinfo=None)
-    
-    print(f"Fetching Dukascopy ticks for {SYMBOL} from {start_time} to {end_time}...")
-    
-    await download_range(symbol=SYMBOL, start=start_time, end=end_time)
-    df = read_tick_data(symbol=SYMBOL, start=start_time, end=end_time)
-    
+# ── Dukascopy tick fetch ───────────────────────────────────────────────────────
+async def _fetch_duka_ticks(start_utc: datetime, end_utc: datetime) -> int:
+    # tick_vault expects naive UTC datetimes
+    start = start_utc.replace(tzinfo=None)
+    end   = end_utc.replace(tzinfo=None)
+    await download_range(symbol=SYMBOL, start=start, end=end)
+    df = read_tick_data(symbol=SYMBOL, start=start, end=end)
     if df is None or df.empty:
-        print("  [ERROR] Dukascopy returned 0 ticks.")
-        return -1
-        
-    print(f"  -> Dukascopy returned {len(df):,} ticks for the 1-hour window.")
+        return 0
     return len(df)
 
 
-async def main():
-    print("=" * 60)
-    print("BROKER TICK PARITY ANALYSIS")
-    print("=" * 60)
-    
-    # 1. Get Dukascopy Ticks
-    duka_count = await get_dukascopy_ticks(TARGET_DATE)
-    
-    # 2. Get IBKR Ticks
-    ibkr_count = get_ibkr_ticks(TARGET_DATE)
-    
-    if duka_count <= 0 or ibkr_count <= 0:
-        print("\n[ABORT] Could not fetch data from both sources.")
+# ── Persistence ────────────────────────────────────────────────────────────────
+def _load_parity_db() -> dict:
+    """Load existing measurements. Structure: {session: [ratio, ratio, ...]}"""
+    if PARITY_FILE.exists():
+        with open(PARITY_FILE) as f:
+            return json.load(f)
+    return {s: [] for s, *_ in SESSION_WINDOWS}
+
+
+def _save_parity_db(db: dict) -> None:
+    with open(PARITY_FILE, "w") as f:
+        json.dump(db, f, indent=2)
+
+
+def _append_measurement(session: str, ratio: float) -> None:
+    db = _load_parity_db()
+    if session not in db:
+        db[session] = []
+    db[session].append(round(ratio, 4))
+    _save_parity_db(db)
+    print(f"    Saved to {PARITY_FILE}")
+
+
+# ── Summary / public API ───────────────────────────────────────────────────────
+def print_summary() -> None:
+    db = _load_parity_db()
+
+    print("\n" + "=" * 65)
+    print("PARITY CALIBRATION SUMMARY")
+    print(f"  File: {PARITY_FILE}")
+    print("=" * 65)
+    print(f"  {'Session':<18} {'Samples':>7}  {'Mean ratio':>10}  "
+          f"{'Min':>7}  {'Max':>7}  {'IBKR bar size':>13}")
+    print("  " + "-" * 63)
+
+    overall_ratios = []
+    for session, _, _ in SESSION_WINDOWS:
+        ratios = db.get(session, [])
+        if not ratios:
+            print(f"  {session:<18} {'0':>7}  {'—':>10}")
+            continue
+        mean_r  = sum(ratios) / len(ratios)
+        ibkr_sz = round(DUKA_TICKS_PER_TRAINING_BAR * mean_r)
+        overall_ratios.extend(ratios)
+        print(f"  {session:<18} {len(ratios):>7}  {mean_r:>10.4f}  "
+              f"{min(ratios):>7.4f}  {max(ratios):>7.4f}  {ibkr_sz:>13,}")
+
+    if overall_ratios:
+        overall = sum(overall_ratios) / len(overall_ratios)
+        overall_sz = round(DUKA_TICKS_PER_TRAINING_BAR * overall)
+        print("  " + "-" * 63)
+        print(f"  {'OVERALL':<18} {len(overall_ratios):>7}  {overall:>10.4f}  "
+              f"{'':>7}  {'':>7}  {overall_sz:>13,}")
+
+    sample_counts = [len(db.get(s, [])) for s, *_ in SESSION_WINDOWS]
+    min_samples   = min(sample_counts) if sample_counts else 0
+    print("=" * 65)
+
+    if min_samples < 5:
+        needed = 5 - min_samples
+        print(f"\n  [!] Need {needed} more day(s) of measurements before "
+              f"session-aware sizing is reliable.")
+        print(f"  Run:  python -m trading_system_v4.scripts.check_tick_parity "
+              f"--date YYYY-MM-DD")
+    else:
+        print(f"\n  [OK] >=5 samples per session. "
+              f"run_live_tick.py will use session-aware bar sizes.")
+    print()
+
+
+def build_session_ratios() -> dict[str, int]:
+    """
+    Return {session: ibkr_ticks_per_bar} from accumulated measurements.
+    Falls back to the original single measurement (7854) if data is insufficient
+    (< 3 samples for a given session).
+    Imported by run_live_tick.py at startup.
+    """
+    FALLBACK = 7_854
+    db = _load_parity_db()
+    result = {}
+    for session, _, _ in SESSION_WINDOWS:
+        ratios = db.get(session, [])
+        if len(ratios) >= 3:
+            mean_r = sum(ratios) / len(ratios)
+            result[session] = round(DUKA_TICKS_PER_TRAINING_BAR * mean_r)
+        else:
+            result[session] = FALLBACK
+    return result
+
+
+# ── Main ───────────────────────────────────────────────────────────────────────
+async def measure_day(target_date: datetime) -> None:
+    print(f"\n{'='*65}")
+    print(f"PARITY MEASUREMENT  {SYMBOL}  {target_date.strftime('%Y-%m-%d')}")
+    print(f"{'='*65}")
+
+    util.startLoop()
+    ib = IB()
+    try:
+        ib.connect("127.0.0.1", 4002, clientId=99)
+    except Exception as e:
+        print(f"[ERROR] Cannot connect to IBKR: {e}")
+        print("Ensure IB Gateway is running on port 4002 (paper account).")
         return
-        
-    # 3. Calculate Parity Ratio
-    ratio = ibkr_count / duka_count
-    
-    print("\n" + "=" * 60)
-    print("RESULTS:")
-    print(f"  Dukascopy Ticks (1 Hour): {duka_count:,}")
-    print(f"  IBKR Ticks (1 Hour):      {ibkr_count:,}")
-    print(f"  Tick Compression Ratio:   {ratio:.4f} (IBKR has {ratio*100:.1f}% of Dukascopy's ticks)")
-    
-    # 4. Recommendation
-    target_training_bar = 1000
-    live_execution_bar = int(target_training_bar * ratio)
-    
-    print("\nRECOMMENDATION:")
-    print(f"  If you train your ML model on {target_training_bar}-Tick Bars from Dukascopy,")
-    print(f"  you MUST execute live using {live_execution_bar}-Tick Bars on IBKR.")
-    print("  Otherwise, the volatility and momentum features will be severely distorted.")
-    print("=" * 60)
+
+    print("Connected to IBKR.\n")
+
+    for session, h_start, h_end in SESSION_WINDOWS:
+        start_utc = target_date.replace(
+            hour=h_start, minute=0, second=0, microsecond=0, tzinfo=timezone.utc)
+        end_utc = target_date.replace(
+            hour=h_end, minute=0, second=0, microsecond=0, tzinfo=timezone.utc)
+
+        if start_utc > datetime.now(tz=timezone.utc):
+            print(f"  [{session}] {h_start:02d}:00-{h_end:02d}:00 UTC  SKIPPED (future)")
+            continue
+
+        print(f"  [{session}] {h_start:02d}:00-{h_end:02d}:00 UTC")
+
+        duka_count = await _fetch_duka_ticks(start_utc, end_utc)
+        ibkr_count = _fetch_ibkr_ticks(ib, start_utc, end_utc)
+
+        if duka_count <= 0 or ibkr_count <= 0:
+            print(f"    [SKIP] duka={duka_count}  ibkr={ibkr_count}  "
+                  f"(no data for this window)")
+            continue
+
+        ratio     = ibkr_count / duka_count
+        ibkr_size = round(DUKA_TICKS_PER_TRAINING_BAR * ratio)
+        print(f"    Dukascopy: {duka_count:,}  IBKR: {ibkr_count:,}  "
+              f"ratio={ratio:.4f}  IBKR bar size={ibkr_size:,}")
+        _append_measurement(session, ratio)
+
+    ib.disconnect()
+    print("\nDisconnected from IBKR.")
+    print_summary()
+
 
 if __name__ == "__main__":
-    import os
-    if os.name == 'nt':
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    asyncio.run(main())
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--date", default=None,
+        help="Date to measure (YYYY-MM-DD). Defaults to most recent weekday.",
+    )
+    parser.add_argument(
+        "--summary", action="store_true",
+        help="Print accumulated summary without connecting to IBKR.",
+    )
+    args = parser.parse_args()
+
+    if args.summary:
+        print_summary()
+    else:
+        if args.date:
+            target = datetime.strptime(args.date, "%Y-%m-%d")
+        else:
+            target = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+            while target.weekday() >= 5:
+                target -= timedelta(days=1)
+
+        if os.name == "nt":
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        asyncio.run(measure_day(target))

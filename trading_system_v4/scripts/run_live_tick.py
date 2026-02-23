@@ -4,12 +4,13 @@ run_live_tick.py — Live Tick-Bar Trading System (Meta-Labeling Architecture)
 Full live execution loop built on 1000-tick bars + EMA-crossover meta-labeling.
 
 Pipeline:
-  IBKR  →  LiveTickAggregator (7,854-tick bars*)  →  LiveFeatureBuilder
+  IBKR  →  LiveTickAggregator (session-aware N-tick bars)  →  LiveFeatureBuilder
         →  EMA crossover detection  →  V4ModelInference (meta_model_ema_eurusd)
         →  ExecutionEngine
 
-  *7,854-tick bars calibrated from Dukascopy/IBKR parity check (2026-02-18).
-   Dukascopy 1000-tick ≈ IBKR 7,854-tick for equivalent information content.
+  Bar size is loaded from parity_snapshots/session_parity.json (accumulated
+  multi-session calibration).  Falls back to 7,854 until 3+ measurements exist.
+  Run check_tick_parity.py --date YYYY-MM-DD for 5 trading days to calibrate.
 
 Configuration (env vars, all optional):
 
@@ -46,6 +47,7 @@ from trading_system_v4.execution.live_feature_builder import LiveFeatureBuilder
 from trading_system_v4.execution.execution_engine import ExecutionEngine
 from trading_system_v4.model.model_inference import V4ModelInference
 from trading_system_v4.monitoring.logger import setup_logger
+from trading_system_v4.scripts.check_tick_parity import build_session_ratios
 
 
 # ── trade simulation parameters (must match meta_labeling_ema.py) ─────────────
@@ -54,9 +56,48 @@ _SL_ATR = 1.0
 _SPREAD_EST = 0.00010   # 1 pip
 
 
-# ── IBKR-calibrated tick bar size ─────────────────────────────────────────────
-# Dukascopy 1000-tick ≈ IBKR 7854-tick (parity check 2026-02-18, 1 hour sample)
-_DEFAULT_TICKS_PER_BAR = 7_854
+# ── Session-aware IBKR tick bar size ──────────────────────────────────────────
+# Maps current UTC hour → session label → calibrated IBKR ticks/bar.
+# Falls back to 7,854 (single-sample measurement 2026-02-18) until
+# parity_snapshots/session_parity.json has >=3 samples per session.
+_FALLBACK_TICKS_PER_BAR = 7_854
+
+# UTC hour ranges → session label (matches SESSION_WINDOWS in check_tick_parity)
+_SESSION_HOUR_MAP: list[tuple[int, int, str]] = [
+    (0,  7,  "asian"),
+    (7,  13, "london_open"),
+    (13, 18, "london_ny"),
+    (18, 24, "ny_afternoon"),
+]
+
+
+def _current_session() -> str:
+    """Return session label for the current UTC hour."""
+    from datetime import datetime, timezone
+    h = datetime.now(tz=timezone.utc).hour
+    for start, end, label in _SESSION_HOUR_MAP:
+        if start <= h < end:
+            return label
+    return "london_ny"   # should never reach here
+
+
+def _resolve_ticks_per_bar(env_override: str | None) -> tuple[int, str]:
+    """
+    Returns (ticks_per_bar, source_description).
+    Priority: env var TICK_BAR_SIZE > session_parity.json > fallback 7854.
+    """
+    if env_override:
+        return int(env_override), f"env override"
+
+    session = _current_session()
+    try:
+        ratios = build_session_ratios()
+        bar_size = ratios.get(session, _FALLBACK_TICKS_PER_BAR)
+        if bar_size == _FALLBACK_TICKS_PER_BAR:
+            return bar_size, f"fallback (session={session}, <3 parity samples)"
+        return bar_size, f"parity calibration (session={session})"
+    except Exception:
+        return _FALLBACK_TICKS_PER_BAR, "fallback (parity file unreadable)"
 
 
 # ── helpers ───────────────────────────────────────────────────────────────────
@@ -167,13 +208,16 @@ def main(dry_run: bool = False) -> None:
     currency      = os.getenv("TICK_CURRENCY", "USD")
     exchange      = os.getenv("TICK_EXCHANGE", "IDEALPRO")
     model_stem    = os.getenv("TICK_MODEL_STEM", "meta_model_ema_eurusd")
-    ticks_per_bar = int(os.getenv("TICK_BAR_SIZE", str(_DEFAULT_TICKS_PER_BAR)))
     model_dir     = _PROJECT_ROOT / "trading_system_v4" / "model"
+
+    ticks_per_bar, bar_size_source = _resolve_ticks_per_bar(
+        os.getenv("TICK_BAR_SIZE")
+    )
 
     logger.info(
         f"Starting run_live_tick  symbol={symbol}/{currency}  "
-        f"ticks_per_bar={ticks_per_bar}  model={model_stem}  "
-        f"dry_run={dry_run}"
+        f"ticks_per_bar={ticks_per_bar} ({bar_size_source})  "
+        f"model={model_stem}  dry_run={dry_run}"
     )
 
     # ── load model ────────────────────────────────────────────────────────────
