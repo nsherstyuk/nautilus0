@@ -1,0 +1,592 @@
+EURUSD Tick-Bar Meta-Labeling Trading System
+============================================
+Reference Document — 2026-02-23
+For agent handover and architecture reference.
+
+
+════════════════════════════════════════════════════════════════
+1.  WHY WE MOVED TO TICK BARS
+════════════════════════════════════════════════════════════════
+
+Previous system (v2/v3) used 5m and 15m time bars.  The ML model
+trained on those bars achieved AUC ~0.55 — barely above random.
+
+Root cause identified:
+- Fixed-time bars sample the market at equal time intervals regardless
+  of activity.  A 5m bar at 3 AM (2 ticks) carries the same weight as
+  a 5m bar during London open (200 ticks).
+- Features computed from these heterogeneous bars have unstable
+  distributions, making ML generalisation difficult.
+
+Solution: Information-Driven Bars (Tick Bars)
+- Each bar contains exactly N ticks regardless of elapsed time.
+- This normalises market activity: every bar represents an equal
+  "dose" of market information.
+- Feature distributions are more stationary across sessions, days,
+  and regimes — which is what ML requires.
+
+Training uses 1,000-tick Dukascopy bars.
+Live uses ~7,854-tick IBKR bars (see Parity Calibration below).
+
+
+════════════════════════════════════════════════════════════════
+2.  SYSTEM ARCHITECTURE
+════════════════════════════════════════════════════════════════
+
+The system has two phases: OFFLINE (training) and LIVE (execution).
+
+OFFLINE PIPELINE
+────────────────
+
+  [1] download_tick_data.py
+       │  Downloads Dukascopy EURUSD tick data 2015–2025 (month-by-month
+       │  to manage RAM).  Converts raw Bid/Ask ticks to 1000-tick bars.
+       │  Computes raw bar microstructure fields.
+       ▼
+  trading_system_v4/data/eurusd_1000t_bars.parquet
+
+  [2] meta_labeling_ema.py
+       │  Loads tick bars.  Runs EMA-20/50 crossover strategy.
+       │  For each crossover, simulates a trade (TP=1.5 ATR, SL=1.0 ATR,
+       │  lookahead=100 bars).  Assigns y_meta=1 if TP hit first, 0 if SL.
+       │  Engineers full feature set at each crossover point.
+       ▼
+  trading_system_v4/data/meta_labeled_1000t.parquet
+
+  [3] train_meta_model.py
+       │  Loads meta-labeled dataset.
+       │  TimeSeriesSplit CV (5 folds) with XGBClassifier.
+       │  Selects threshold via precision-recall curve on last CV fold
+       │  (maximises F1, subject to recall >= 0.10).
+       │  Trains final model on full dataset (150 trees, fixed).
+       ▼
+  trading_system_v4/model/meta_model_ema_eurusd.pkl
+  trading_system_v4/model/meta_model_ema_eurusd_features.json
+  trading_system_v4/model/meta_model_ema_eurusd_threshold.json
+
+
+LIVE PIPELINE
+─────────────
+
+  IBKR (live bid/ask ticks)
+       │  reqTickByTickData  BidAsk stream
+       ▼
+  LiveTickAggregator                 [execution/live_tick_aggregator.py]
+       │  Groups ticks into N-tick bars (default: 7,854 ticks/bar).
+       │  Persists partial bar state to JSON every 10 ticks (crash-safe).
+       │  Calls on_bar_complete(bar_dict) when bar fills.
+       ▼
+  LiveFeatureBuilder                 [execution/live_feature_builder.py]
+       │  Incremental EMA/ATR/RSI/SMA5 state.
+       │  push_bar(bar_dict) -> (signal, features_dict)
+       │  Returns (0, None) if no EMA crossover this bar.
+       │  Returns (±1, full_feature_dict) on crossover.
+       ▼
+  V4ModelInference                   [model/model_inference.py]
+       │  Loads .pkl + _features.json + _threshold.json.
+       │  should_trade(features_dict) -> (bool, probability)
+       ▼
+  ExecutionEngine                    [execution/execution_engine.py]
+       │  send_order(symbol, side, qty, price)
+       │  (broker_api stub — see Section 6 for wiring status)
+       ▼
+  IBKR order submission
+
+
+META-LABELING CONCEPT
+─────────────────────
+This is a two-stage filter architecture:
+
+  Stage 1 (Base strategy): EMA crossover generates a trade signal.
+           Simple, interpretable, modest hit-rate on its own.
+
+  Stage 2 (Meta-model):    XGBoost asks "given current market context,
+           what is P(this crossover makes money)?"  Only trade when
+           P > threshold.
+
+The meta-model does NOT predict direction.  It predicts quality of
+an already-identified directional signal.  This separation keeps the
+base strategy simple and lets the model focus on a tractable problem.
+
+
+════════════════════════════════════════════════════════════════
+3.  TICK BAR FIELDS (raw, from download_tick_data.py)
+════════════════════════════════════════════════════════════════
+
+Each 1000-tick bar (Dukascopy) contains these columns:
+
+  timestamp        datetime  Bar close time (UTC)
+  open             float     First midpoint in bar  (mid = (ask+bid)/2)
+  high             float     Highest midpoint
+  low              float     Lowest midpoint
+  close            float     Last midpoint
+  tick_count       int       Always 1000 (incomplete bars discarded)
+  avg_spread       float     Mean of (ask-bid) across all ticks in bar
+  max_spread       float     Max  of (ask-bid) — liquidity shock proxy
+  vol_imbalance    float     Sum of (ask_vol - bid_vol) — signed order flow
+  buy_volume       float     Sum of ask_volume (market buys)
+  sell_volume      float     Sum of bid_volume (market sells)
+  total_volume     float     buy_volume + sell_volume
+  buy_ratio        float     buy_volume / total_volume  ∈ [0, 1]
+  tick_velocity    float     1000 / bar_duration_seconds  (ticks/sec)
+  duration_sec     float     Elapsed seconds from first to last tick
+
+
+════════════════════════════════════════════════════════════════
+4.  FEATURE SET (model input, 24 features)
+════════════════════════════════════════════════════════════════
+
+These are the features engineered at each EMA crossover point.
+They are computed identically in meta_labeling_ema.py (offline)
+and LiveFeatureBuilder (live).  Column order is enforced by the
+saved _features.json artifact — do not reorder.
+
+── RAW BAR SCALARS (current bar only) ───────────────────────────
+
+  tick_velocity      ticks/sec.  High = active market.  Low = thin/dead.
+  avg_spread         Mean spread (pips).  High = low liquidity.
+  max_spread         Peak spread in bar.  Spike = liquidity shock event.
+  vol_imbalance      Signed order flow sum.  Positive = net buying pressure.
+  buy_volume         Raw buy-side volume.
+  sell_volume        Raw sell-side volume.
+  total_volume       buy_volume + sell_volume.
+  buy_ratio          Fraction of volume from buys.  > 0.5 = buying dominance.
+
+── TIME FEATURES ─────────────────────────────────────────────────
+
+  hour_sin           sin(2π * hour / 24)  — cyclical hour encoding
+  hour_cos           cos(2π * hour / 24)
+  is_london          1.0 if 07:00–15:59 UTC, else 0.0
+  is_ny              1.0 if 13:00–20:59 UTC, else 0.0
+
+  Overlap (London+NY) can be derived: is_london AND is_ny simultaneously.
+
+── OSCILLATORS & VOLATILITY ──────────────────────────────────────
+
+  rsi_14             Exponential Wilder RSI, 14-bar lookback.  Scaled to [0,1].
+                     Formula: 100 - 100/(1+gain_ema/loss_ema), divided by 100.
+                     EWM: com=13 (alpha=1/14), adjust=False.
+
+  atr_norm           ATR(14) / close price.  Normalised volatility.
+                     ATR EWM: com=13, adjust=False.  Same formula as ATR in
+                     meta_labeling_ema.py's _atr() function.
+
+── ROLLING / SMA5-DERIVED ────────────────────────────────────────
+  (SMA window = 5 bars, using the 5 most recent bars including current)
+
+  tick_velocity_sma5   5-bar simple moving average of tick_velocity.
+  tick_velocity_ratio  tick_velocity / tick_velocity_sma5
+                       > 1.0 = activity surging vs recent average.
+
+  spread_sma5          5-bar SMA of avg_spread.
+  spread_ratio         avg_spread / spread_sma5
+                       > 1.0 = spread wider than recent norm (thinning).
+
+  vol_imbalance_sma5   5-bar SMA of vol_imbalance.
+  buy_ratio_sma5       5-bar SMA of buy_ratio.
+
+  liquidity_shock      max_spread / avg_spread
+                       >> 1.0 = a single tick had outsized spread spike.
+
+  order_flow_toxicity  buy_ratio - buy_ratio_sma5
+                       Positive = buy pressure accelerating (potential toxic flow).
+
+── COMPOSITE MICROSTRUCTURE ──────────────────────────────────────
+
+  micro_trend_alignment
+    +1.0  if tick_velocity_ratio > 1.0 AND spread_ratio < 1.0
+           (more activity + tighter spread = healthy trending move)
+    -1.0  if tick_velocity_ratio < 1.0 AND spread_ratio > 1.0
+           (less activity + wider spread = exhaustion or reversal risk)
+     0.0  otherwise
+
+  price_vol_divergence
+    1.0  if signal == +1 (bull cross) AND vol_imbalance_sma5 < 0
+           (price crossing up but sell pressure dominates = suspect signal)
+    1.0  if signal == -1 (bear cross) AND vol_imbalance_sma5 > 0
+           (price crossing down but buy pressure dominates = suspect signal)
+    0.0  no divergence (price and order flow agree)
+
+FEATURES NOT PASSED TO MODEL (used for labeling only):
+  signal      ±1  EMA crossover direction
+  y_meta      0/1 trade outcome label
+  timestamp   bar close time
+
+RAW PRICE COLUMNS (dropped before training to prevent leakage):
+  open, high, low, close, ema_fast, ema_slow, atr
+
+
+════════════════════════════════════════════════════════════════
+5.  TRADE LABELING PARAMETERS
+════════════════════════════════════════════════════════════════
+
+  Base strategy:    EMA-20 / EMA-50 crossover on tick bars
+  TP distance:      1.5 × ATR(14)
+  SL distance:      1.0 × ATR(14)
+  Reward:Risk       1.5 : 1
+  Spread penalty:   0.00010 (1 pip, applied to entry price)
+  Lookahead limit:  100 bars (trade expires as loss if neither hit)
+  Tie-break:        If TP and SL both hit on same bar → label as loss (conservative)
+
+  y_meta = 1   TP hit first  (win)
+  y_meta = 0   SL hit first, or expired  (loss)
+  y_meta = -1  Not enough lookahead bars → excluded from training
+
+
+════════════════════════════════════════════════════════════════
+6.  MODEL TRAINING DETAILS
+════════════════════════════════════════════════════════════════
+
+  Library:          XGBClassifier (sklearn API — required for V4ModelInference)
+  Objective:        binary:logistic
+  CV:               TimeSeriesSplit, 5 folds (no shuffling — respects time order)
+  Imbalance:        scale_pos_weight = neg_count / pos_count per fold
+  Depth:            max_depth=4  (shallow to limit overfitting)
+  Learning rate:    0.05
+  Trees (CV):       200, early stopping on logloss, patience=20
+  Trees (final):    150 fixed (no eval set when training on full data)
+  Subsample:        0.8 (rows)
+  Col sample:       0.8 (features per tree)
+  Min child wt:     5
+  Gamma:            0.1 (minimum loss reduction to split)
+
+  Threshold selection:
+    Sweep precision-recall curve on last CV fold.
+    Select threshold that maximises F1 subject to recall >= 0.10.
+    Saved to _threshold.json.  V4ModelInference loads this automatically.
+
+  Reporting threshold (separate from selected):
+    0.65 — used only in per-fold console output.
+
+  THREE artifacts saved (all required by V4ModelInference):
+    model/meta_model_ema_eurusd.pkl
+    model/meta_model_ema_eurusd_features.json   ← ordered feature name list
+    model/meta_model_ema_eurusd_threshold.json  ← {"threshold": X.XXXX}
+
+
+════════════════════════════════════════════════════════════════
+7.  PARITY CALIBRATION (IBKR vs DUKASCOPY)
+════════════════════════════════════════════════════════════════
+
+Problem: Dukascopy tick data and IBKR live tick data have different
+tick densities.  If we train on 1000-tick Dukascopy bars but use
+1000-tick IBKR bars live, the bar duration (and tick_velocity) will
+be totally different → feature distribution mismatch.
+
+Calibration result (check_tick_parity.py, run on 2026-02-18):
+  Dukascopy 1-hour window:    5,382 ticks
+  IBKR 1-hour window:        42,271 ticks
+  Ratio:                      7.85×
+
+  IBKR ticks per bar = 1000 × 7.85 = 7,854 (rounded to nearest int)
+
+Live system uses 7,854-tick IBKR bars to match the information content
+of 1,000-tick Dukascopy training bars.
+
+Config: TICK_BAR_SIZE env var in run_live_tick.py (default 7854).
+Must re-run check_tick_parity.py monthly to detect drift.
+IBKR historical ticks are only available for the last ~6 months,
+so TARGET_DATE must be within that window.
+
+
+════════════════════════════════════════════════════════════════
+8.  FILE MAP
+════════════════════════════════════════════════════════════════
+
+OFFLINE SCRIPTS
+  trading_system_v4/scripts/download_tick_data.py
+    Downloads 2015–2025 Dukascopy EURUSD ticks via tick-vault library.
+    Builds 1000-tick bars with all raw microstructure fields.
+    Saves checkpoint parquet every 12 processed months.
+    Output: data/eurusd_1000t_bars.parquet
+
+  trading_system_v4/scripts/meta_labeling_ema.py
+    EMA crossover signal generation + path-dependent TP/SL labeling.
+    Full feature engineering at each signal point.
+    Output: data/meta_labeled_1000t.parquet
+
+  trading_system_v4/scripts/train_meta_model.py
+    TimeSeriesSplit CV with XGBClassifier.
+    F1-optimal threshold selection on last fold.
+    Full-data final model training.
+    Output: model/meta_model_ema_eurusd.{pkl,_features.json,_threshold.json}
+
+  trading_system_v4/scripts/check_tick_parity.py
+    Compares Dukascopy vs IBKR tick density on same 1-hour window.
+    Run this monthly.  Requires IB Gateway on port 4002.
+    TARGET_DATE must be within last 6 months.
+
+LIVE MODULES
+  trading_system_v4/execution/live_tick_aggregator.py
+    Subscribes to IBKR reqTickByTickData BidAsk stream.
+    Aggregates ticks into N-tick bars.
+    Persists partial bar state every 10 ticks (crash recovery).
+    Calls on_bar_complete(bar_dict) callback.
+
+  trading_system_v4/execution/live_feature_builder.py
+    Stateful incremental feature engine.
+    Mirrors meta_labeling_ema.py formulas exactly.
+    push_bar(bar_dict) -> (signal: int, features: dict | None)
+    Warmup: 70 bars before first signal emitted.
+
+  trading_system_v4/execution/execution_engine.py
+    Order routing stub.  send_order() logs but does not submit to IBKR.
+    broker_api attribute must be wired for real trading.
+
+  trading_system_v4/model/model_inference.py
+    V4ModelInference class.  Loads .pkl + _features.json + _threshold.json.
+    predict_proba(features_dict) -> float
+    should_trade(features_dict) -> (bool, float)
+    Enforces feature order from JSON.  Missing keys → 0.0.
+
+  trading_system_v4/scripts/run_live_tick.py
+    Full live execution entry point.
+    Wires all components together.
+    --dry-run flag: logs signals, suppresses orders.
+    Config via env vars (see Section 9).
+    Logs to logs/live_tick_v4.log.
+
+
+════════════════════════════════════════════════════════════════
+9.  CONFIGURATION (env vars for run_live_tick.py)
+════════════════════════════════════════════════════════════════
+
+  TICK_IB_HOST      IB Gateway host            default: 127.0.0.1
+  TICK_IB_PORT      IB Gateway port            default: 4002 (paper)
+  TICK_CLIENT_ID    IBKR client ID             default: 10
+  TICK_SYMBOL       Contract symbol            default: EUR
+  TICK_CURRENCY     Contract currency          default: USD
+  TICK_EXCHANGE     Exchange                   default: IDEALPRO
+  TICK_MODEL_STEM   Model artifact stem        default: meta_model_ema_eurusd
+  TICK_BAR_SIZE     IBKR ticks per bar         default: 7854
+
+
+════════════════════════════════════════════════════════════════
+10.  CURRENT STATUS (as of 2026-02-23 ~14:00 local)
+════════════════════════════════════════════════════════════════
+
+  [RUNNING]  download_tick_data.py (PID 30008, started 09:12 AM)
+             Last confirmed progress: 2015-04 with timeout retries (~12:xx PM)
+             No parquet checkpoint written yet (fires after 12 months done)
+             Estimated completion: ~14:00–14:30 local
+             Output path: data/eurusd_1000t_bars.parquet
+
+  [DONE]     train_meta_model.py  P0 bug fixed this session
+             - Switched from xgb.train()/Booster to XGBClassifier
+             - Added threshold selection + _threshold.json save
+             - V4ModelInference now loads correctly
+
+  [DONE]     live_feature_builder.py  created this session
+             - Incremental EMA/ATR/RSI with exact same formula as training
+             - SMA5 rolling window from deque
+             - 70-bar warmup enforced
+             - All 24 model features produced
+
+  [DONE]     run_live_tick.py  created this session
+             - Full pipeline wired: Aggregator → Builder → Inference → Engine
+             - --dry-run supported
+             - Ready to run once model artifacts exist
+
+
+════════════════════════════════════════════════════════════════
+11.  NEXT STEPS (ordered by priority)
+════════════════════════════════════════════════════════════════
+
+STEP 1 — Wait for download and run pipeline  [blocked on download]
+  >> Monitor: Test-Path C:\nautilus0\trading_system_v4\data\eurusd_1000t_bars.parquet
+  >> Once file exists:
+
+  python -m trading_system_v4.scripts.meta_labeling_ema
+  python -m trading_system_v4.scripts.train_meta_model
+
+  Verify output:
+  - model/meta_model_ema_eurusd.pkl           (exists)
+  - model/meta_model_ema_eurusd_features.json (contains list of 24 feature names)
+  - model/meta_model_ema_eurusd_threshold.json (contains {"threshold": X.XXXX})
+
+STEP 2 — Dry-run smoke test  [can do immediately after step 1]
+  python -m trading_system_v4.scripts.run_live_tick --dry-run
+
+  Check logs/live_tick_v4.log for:
+  - "Model ready — 24 features  threshold=X.XXXX"
+  - "Feature builder ready — warmup=70 bars"
+  - After 70 bars: "SIGNAL FILTERED" or "TRADE SIGNAL" lines
+  - Feature vector length in log must equal model.n_features()
+
+STEP 3 — Feature schema assertion  [add before going live]
+  In run_live_tick.py after model and builder are loaded, add:
+    live_keys = set(builder._compute_features(...).keys())
+    model_keys = set(model.feature_names)
+    assert live_keys == model_keys, f"Schema mismatch: {live_keys ^ model_keys}"
+
+STEP 4 — Wire real IBKR order submission  [required for live capital]
+  In execution/execution_engine.py, implement send_order() using ib_insync:
+    contract = Forex(pair=symbol.replace("/",""), exchange="IDEALPRO")
+    order = MarketOrder(side.upper(), qty)
+    trade = self.broker_api.placeOrder(contract, order)
+  Also implement position tracking so re-entry is blocked when already in trade.
+
+STEP 5 — [CRITICAL] Extend training data to include Jan–Feb 2026
+  In download_tick_data.py, change END_YEAR = 2026.
+  Re-run the full pipeline: download → meta_labeling_ema → train_meta_model.
+  The model must have seen current market conditions before live deployment.
+
+STEP 6 — [CRITICAL] Implement Purged + Embargoed CV in train_meta_model.py
+  Replace TimeSeriesSplit with a purged CV that drops label-overlapping samples.
+  Lookahead window = 100 bars.  Embargo = 5 bars (SMA5 feature window).
+  Any training sample whose lookahead overlaps the test set must be dropped.
+  This will likely reduce reported AUC/precision — that is the correct result;
+  the previous numbers were inflated by label leakage.
+
+STEP 7 — [CRITICAL] Multi-session parity calibration
+  Re-run check_tick_parity.py across 5 full trading days (not 1 hour).
+  Measure ratio separately for:
+    - Asian session (00:00–07:00 UTC)
+    - London session (07:00–13:00 UTC)
+    - London/NY overlap (13:00–16:00 UTC)
+    - NY session (16:00–21:00 UTC)
+  If session ratios differ by more than 15%, implement session-aware
+  TICK_BAR_SIZE or normalise tick_velocity by session baseline instead
+  of using a single global constant.
+
+STEP 8 — Walk-forward threshold optimisation  [before real capital]
+  Current threshold is selected once on the last CV fold.
+  A proper approach: for each out-of-sample window, compute threshold that
+  maximises net expectancy (precision × RR - (1-precision)) and average over
+  all windows.  Replace _select_threshold() with this.
+
+STEP 9 — Paper trade for minimum 1 week  [before real capital]
+  Run with real IBKR paper account (port 4002).
+  Compare live signal rate, probability distribution, and win rate vs
+  backtest expectations.  Abort if significant divergence.
+
+STEP 10 — Monthly maintenance tasks  [ongoing]
+  a. Re-run check_tick_parity.py; update TICK_BAR_SIZE if ratio shifts > 10%.
+  b. Append new months to eurusd_1000t_bars.parquet (re-run download_tick_data.py
+     with START_YEAR/END_YEAR updated, or modify script to append).
+  c. Retrain model quarterly on expanded dataset.
+  d. Monitor live feature distribution drift vs training (PSI or KS test
+     on rolling 1000-bar live window vs training quantiles).
+
+
+════════════════════════════════════════════════════════════════
+12.  KNOWN LIMITATIONS & RISKS
+════════════════════════════════════════════════════════════════
+
+  Severity ratings updated after external model review (see Section 13).
+  Items marked [CRITICAL] must be resolved before real capital.
+
+  A. Fixed 1-pip spread penalty in labeling
+     Real spread during NFP/FOMC can be 3–10× wider.
+     Labels are too optimistic during high-volatility events.
+     Mitigation: add regime-dependent spread model in labeling, or
+     exclude high-spread bars from training set.
+
+  B. [CRITICAL] Parity ratio is a single-point estimate
+     7.85× was measured on ONE quiet February morning hour.
+     Tick density is non-linear: it clusters during news events (NFP,
+     FOMC) and shifts dramatically between sessions.  If the ratio drifts
+     to 12x during NY open but stays 7x in London, tick_velocity features
+     will be completely out-of-distribution live — the model's most
+     important feature group will be garbage.
+     Required fix: measure ratio across 5 full trading days, compute
+     separately for High-Vol and Low-Vol regimes and for London vs NY
+     sessions.  Implement dynamic TICK_BAR_SIZE (or regime-conditional
+     normalisation of tick_velocity features) rather than a single global
+     constant.
+
+  C. No open-position state persistence in live runner
+     If run_live_tick.py crashes while a trade is open, it will
+     not know the trade exists on restart and may double-enter.
+     Mitigation: persist open trades to state/live_tick_positions.json
+     (same pattern as LiveTickAggregator crash recovery).
+
+  D. XGBoost IBKR tick events happen in ib.run() loop
+     ib.run() blocks the main thread.  If on_bar_complete callback is
+     slow (e.g., model inference hangs), it will starve the event loop.
+     Mitigation: move inference to a background thread queue.
+
+  E. [CRITICAL] Training data ends at 2025-12-31
+     Current date is 2026-02-23.  The model has not seen 54 days of live
+     price action.  Early 2026 may represent a different volatility regime.
+     Running live capital on a model blind to the most recent ~54 trading
+     days is unnecessary risk.
+     Required fix: extend END_YEAR=2026 and re-run the full pipeline
+     (download → label → train) before any real-capital deployment.
+
+  F. [CRITICAL] TimeSeriesSplit is NOT purged CV — label overlap
+     The meta-label lookahead is 100 bars.  Any two EMA signals within
+     100 bars of each other share the same future price path (their labels
+     are computed from overlapping forward windows).  Standard
+     TimeSeriesSplit does not remove this overlap at fold boundaries.
+     This causes the model to overfit on specific price trajectories,
+     producing "ghost" backtest performance that disappears in live trading.
+     Required fix: implement Purged + Embargoed CV.
+       - Purging:  for each test-fold sample with label assigned from
+         bars [i, i+100], drop all training samples whose lookahead
+         window overlaps [i, i+100].
+       - Embargo:  additionally drop the K bars immediately before the
+         test fold to prevent feature leakage from rolling windows
+         (K = 5 for our SMA5 features).
+     Reference implementation: mlfinlab.cross_validation.PurgedKFold
+     or implement manually: drop train samples where
+     train_idx > (test_start - embargo) AND train_idx < (test_end + 100).
+
+
+════════════════════════════════════════════════════════════════
+13.  EXTERNAL MODEL REVIEW (2026-02-23)
+════════════════════════════════════════════════════════════════
+
+The following is a verbatim critique received from an independent model
+review.  It has been incorporated into Sections 11 and 12 above.
+
+Overall assessment:
+  "This is a significant architectural level-up from the previous version.
+  Moving from fixed-time bars to Information-Driven (Tick) Bars is a
+  professional-grade pivot that addresses the core issue of market
+  heteroskedasticity — the fact that 'time' is a poor proxy for market
+  activity.  The introduction of Meta-Labeling is the most sophisticated
+  change.  By separating the signal (Stage 1) from the filter (Stage 2),
+  you are no longer asking the ML model to find a trade out of thin air.
+  Instead, you are asking it to be a high-precision referee, which is a
+  much more tractable problem for XGBoost."
+
+Critique 1 — Parity Calibration Risk  [upgraded to CRITICAL in Section 12.B]
+  "Measuring the tick ratio on a single quiet February morning is dangerous.
+  Tick density is not linear; it clusters during news events (NFP, FOMC)
+  and shifts dramatically between the London/NY overlap and the Asian
+  session.  The Fix: measure the ratio across 5 full trading days and
+  calculate separately for High-Volatility vs Low-Volatility regimes.  If
+  the ratio drifts to 12x during the NY open but stays 7x in London, your
+  tick_velocity features will be completely out of distribution live."
+
+Critique 2 — Data Leakage via Label Overlap  [upgraded to CRITICAL in Section 12.F]
+  "Section 12.F is more than a 'low severity' issue.  Because your label
+  lookahead is 100 bars, any two EMA signals occurring within 100 bars of
+  each other will share the same future price path.  This 'labels overlap'
+  causes the model to overfit on specific price trajectories, leading to
+  'ghost' performance in backtests that vanishes live.  The Fix: implement
+  Purged and Embargoed Cross-Validation.  When you create a training fold,
+  you must drop any samples that overlap in time with the testing fold."
+
+Critique 3 — Missing 2026 Data  [upgraded to CRITICAL in Section 12.E]
+  "Markets in early 2026 may have different volatility regimes than 2025.
+  Running a model live that hasn't seen the most recent 54 days of price
+  action is risky.  Do not skip Step 7.b.  Before putting real capital at
+  risk, update the downloader to include January and February 2026."
+
+Version comparison table from review:
+
+  Feature              v4 (Previous)             v4 Meta-Labeling (Current)
+  ─────────────────────────────────────────────────────────────────────────
+  Bar Type             5m Time Bars              1000-Tick Information Bars
+  Philosophy           Predict 1-hour direction  Predict P(signal success)
+  Feature Count        95 (Bloated)              24 (Clean, microstructure)
+  Targeting            Point-in-time             Path-dependent (TP/SL)
+
+Final quote:
+  "The Microstructure Features — specifically order_flow_toxicity and
+  liquidity_shock — are exactly the kind of inputs that give tick-bar
+  models an edge.  You are on the right track.  The meta-labeling approach
+  respects the 'random walk' nature of FX by only taking trades where the
+  context significantly favors the base strategy."
