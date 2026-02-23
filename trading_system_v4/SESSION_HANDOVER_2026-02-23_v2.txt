@@ -1,0 +1,282 @@
+SESSION HANDOVER — 2026-02-23 (v2, afternoon)
+EURUSD Tick-Bar Meta-Labeling Trading System — v4
+==================================================
+Read this file at the start of a new session to resume exactly where we left off.
+Full architecture reference: trading_system_v4/TICK_SYSTEM_REFERENCE_2026-02-23.txt
+
+
+════════════════════════════════════════════════════════════════
+1.  GIT STATE (fully pushed, safe to continue)
+════════════════════════════════════════════════════════════════
+
+  Branch:   feature/data-pipeline-and-retrain
+  Remote:   https://github.com/nsherstyuk/nautilus0.git
+  HEAD:     8ac272d23  feat(parity): multi-session calibration + session-aware bar sizing
+  Prior:    26eabf5cb  feat(v4): tick-bar meta-labeling system + purged CV fix
+
+  Everything is committed and pushed.  No uncommitted changes in v4.
+
+
+════════════════════════════════════════════════════════════════
+2.  WHAT IS RUNNING RIGHT NOW (do not kill)
+════════════════════════════════════════════════════════════════
+
+  PID 29756 — build_tick_bars.py
+    Started:  ~12:17 local, 2026-02-23
+    Script:   trading_system_v4/scripts/build_tick_bars.py
+    Output:   trading_system_v4/data/eurusd_1000t_bars.parquet
+    Log:      trading_system_v4/data/build_tick_bars.log
+
+    Status at handover (~13:50 local):
+      Parquet EXISTS — 77,381 rows, 2015-01 to 2017-11
+      Currently downloading/processing 2017-12
+      29 of 132 months done (ok=29, skip=0, err=6)
+      6 errors are months with genuinely no Dukascopy data (not a bug)
+
+    Estimated completion: ~3–4 hours from handover time (all remaining months
+      must be downloaded from Dukascopy; ~2 min each).
+
+  Check progress:
+    Get-Content "C:\nautilus0\trading_system_v4\data\build_tick_bars.log" -Tail 10
+
+  Watch for completion:
+    Get-Content "C:\nautilus0\trading_system_v4\data\build_tick_bars.log" -Wait -Tail 5
+
+  Verify process still running:
+    Get-Process -Id 29756 -ErrorAction SilentlyContinue | Select-Object Id, CPU
+
+
+════════════════════════════════════════════════════════════════
+3.  WHAT WAS COMPLETED THIS SESSION
+════════════════════════════════════════════════════════════════
+
+[FIXED]  trading_system_v4/scripts/train_meta_model.py
+  Plain TimeSeriesSplit replaced with Purged + Embargoed Cross-Validation.
+  Constants: LOOKAHEAD_BARS=100, EMBARGO_BARS=5 (match meta_labeling_ema.py).
+  Per fold: drops training samples whose lookahead window overlaps test window,
+  plus EMBARGO_BARS samples on each edge.  CV metrics are now honest — expect
+  AUC to drop from ~0.62 (inflated) to ~0.55 (real).  This is correct.
+
+[REBUILT] trading_system_v4/scripts/build_tick_bars.py  (replaces download_tick_data.py)
+  The old script was stuck at 2015-04 after 162+ minutes with no output and no
+  saves.  Root cause: await download_range() was silently retrying on one month
+  forever with no timeout and no output to log.
+  New script fixes:
+    - Saves parquet after EVERY month (not every 12) — crash-safe
+    - Resumes from last saved timestamp automatically on restart
+    - 240s asyncio timeout per month — never hangs forever
+    - Logs to file + stdout with timestamps
+    - Shows cumulative row count per save
+
+[REWRITTEN] trading_system_v4/scripts/check_tick_parity.py
+  Old: single 1-hour sample at London/NY overlap → hardcoded 7854 everywhere.
+  New: measures 4 session windows per day and accumulates to JSON:
+    asian         01:00–02:00 UTC
+    london_open   08:00–09:00 UTC
+    london_ny     14:00–15:00 UTC  (original measurement)
+    ny_afternoon  20:00–21:00 UTC
+  Results saved to: parity_snapshots/session_parity.json (append-only)
+  New public API: build_session_ratios() → {session: ibkr_ticks_per_bar}
+  New flags: --date YYYY-MM-DD, --summary (no IBKR needed)
+
+[UPDATED] trading_system_v4/scripts/run_live_tick.py
+  Bar size now resolved at startup via _resolve_ticks_per_bar():
+    Priority: TICK_BAR_SIZE env var > session_parity.json (>=3 samples) > 7854
+  Session mapped from current UTC hour at startup.
+  Startup log now prints: "ticks_per_bar=785 (parity calibration (session=london_ny))"
+
+
+════════════════════════════════════════════════════════════════
+4.  IMMEDIATE NEXT ACTIONS (in order)
+════════════════════════════════════════════════════════════════
+
+── STEP A  [wait for build to complete] ──────────────────────────
+
+Monitor:
+  Get-Content "C:\nautilus0\trading_system_v4\data\build_tick_bars.log" -Wait -Tail 5
+
+Expected final log line:
+  HH:MM:SS  INFO     DONE  ok=126  skipped=0  errors=6
+  HH:MM:SS  INFO     Final parquet: ~260,000 rows  2015-01-XX → 2025-12-XX
+
+If PID 29756 dies before finishing (crash, power cut):
+  .venv\Scripts\python.exe -m trading_system_v4.scripts.build_tick_bars
+  The script auto-resumes from 2017-12 (last saved month) — no data lost.
+
+── STEP B  [append Jan–Feb 2026, do NOT wait for Step A first] ──
+
+In build_tick_bars.py, change END_YEAR = 2025 → END_YEAR = 2026.
+FIRST verify the append logic is safe (it reads + concats existing parquet).
+The script already does this correctly — save is:
+  existing = pd.read_parquet(OUTPUT_FILE)
+  combined = pd.concat([existing, new_bars])
+  combined.drop_duplicates(subset=["timestamp"])
+So it is safe to change and re-run after Step A completes.
+
+After Step A + B complete, run:
+  .venv\Scripts\python.exe -m trading_system_v4.scripts.meta_labeling_ema
+  .venv\Scripts\python.exe -m trading_system_v4.scripts.train_meta_model
+
+Expected outputs:
+  trading_system_v4/data/meta_labeled_1000t.parquet
+  trading_system_v4/model/meta_model_ema_eurusd.pkl
+  trading_system_v4/model/meta_model_ema_eurusd_features.json
+  trading_system_v4/model/meta_model_ema_eurusd_threshold.json
+
+Sanity check after training:
+  .venv\Scripts\python.exe -c "
+  import json; from pathlib import Path
+  d = Path('trading_system_v4/model')
+  f = json.load(open(d/'meta_model_ema_eurusd_features.json'))
+  t = json.load(open(d/'meta_model_ema_eurusd_threshold.json'))
+  print(f'Features: {len(f)}  (expected 24)')
+  print(f'Threshold: {t[\"threshold\"]}  (expect 0.50–0.80)')
+  print('CV AUC should be 0.52–0.59 with purged CV (not 0.62+)')
+  "
+
+── STEP C  [parity calibration — requires IB Gateway] ──────────
+
+Run once per trading day for 5 days to build session_parity.json:
+  .venv\Scripts\python.exe -m trading_system_v4.scripts.check_tick_parity --date 2026-02-18
+  .venv\Scripts\python.exe -m trading_system_v4.scripts.check_tick_parity --date 2026-02-19
+  .venv\Scripts\python.exe -m trading_system_v4.scripts.check_tick_parity --date 2026-02-20
+  (dates must be weekdays, IBKR only keeps 6 months of tick history)
+
+Check progress any time (no IBKR needed):
+  .venv\Scripts\python.exe -m trading_system_v4.scripts.check_tick_parity --summary
+
+After 5 days: run_live_tick.py automatically uses session-aware bar sizes.
+
+── STEP D  [first live test — after Steps A+B done] ─────────────
+
+  .venv\Scripts\python.exe -m trading_system_v4.scripts.run_live_tick --dry-run
+
+  IB Gateway must be running on port 4002 (paper account).
+  Watch logs/live_tick_v4.log for:
+    "Model ready — 24 features  threshold=X.XXXX"
+    "ticks_per_bar=XXXX (parity calibration ...)"  or  "(fallback)"
+    After 70 bars: "SIGNAL FILTERED" or "TRADE SIGNAL" lines
+
+
+════════════════════════════════════════════════════════════════
+5.  KNOWN TODO / INCOMPLETE ITEMS
+════════════════════════════════════════════════════════════════
+
+[TODO — blocking for real orders]
+  trading_system_v4/execution/execution_engine.py
+  ExecutionEngine.send_order() is a stub (logs but does not submit to IBKR).
+  Wire it with:
+    from ib_insync import MarketOrder, Forex
+    contract = Forex(pair=symbol.replace("/",""), exchange="IDEALPRO")
+    order = MarketOrder(side.upper(), qty)
+    trade = self.broker_api.placeOrder(contract, order)
+  Also: add position tracking + persist to state/live_tick_positions.json
+  Also: reconciliation loop — query IBKR every 5 min, adopt orphan trades
+
+[TODO — before real capital]
+  Parity: 5-day session-stratified remeasure (Step C above)
+  Data freshness: Jan–Feb 2026 top-up (Step B above)
+  Walk-forward threshold optimisation
+  Paper trade ≥ 1 week
+
+[TODO — reviewed but not implemented yet — lower priority]
+  Sample weighting by temporal uniqueness (weights tick bars by isolation in time)
+  Session-based thresholds (higher P-threshold during Asian low-liquidity session)
+  Feature: spread_std (std dev of spread within bar — easy 1-line add in build_tick_bars)
+  Feature: market entropy (disorder of price moves within bar)
+  Cross-symbol USD basket (needs GBP/USD + USD/CHF parallel pipelines)
+  Feature schema assertion on startup in run_live_tick.py
+
+
+════════════════════════════════════════════════════════════════
+6.  SYSTEM CONSTANTS (do not change without understanding impact)
+════════════════════════════════════════════════════════════════
+
+  Dukascopy ticks/bar:   1,000
+  IBKR ticks/bar:        7,854 fallback (measured 2026-02-18, London/NY only)
+                         → will be replaced per-session after parity calibration
+  EMA fast:              20 bars
+  EMA slow:              50 bars
+  ATR/RSI period:        14 (com=13, alpha=1/14)
+  SMA window:            5 bars
+  Warmup bars:           70
+  TP:                    1.5 × ATR
+  SL:                    1.0 × ATR
+  Label lookahead:       100 bars   ← also LOOKAHEAD_BARS in purged CV
+  Embargo:               5 bars     ← EMBARGO_BARS in purged CV
+  Spread penalty:        0.00010 (1 pip)
+  Model stem:            meta_model_ema_eurusd
+  IB Gateway port:       4002 (paper), 4001 (live)
+  IBKR clientId:         10 (run_live_tick), 99 (check_tick_parity)
+
+
+════════════════════════════════════════════════════════════════
+7.  FILE LOCATIONS CHEAT SHEET
+════════════════════════════════════════════════════════════════
+
+  Scripts (offline)
+    trading_system_v4/scripts/build_tick_bars.py        ← NEW (replaces download_tick_data.py)
+    trading_system_v4/scripts/download_tick_data.py     ← OLD, keep for reference
+    trading_system_v4/scripts/meta_labeling_ema.py
+    trading_system_v4/scripts/train_meta_model.py       ← purged CV implemented
+    trading_system_v4/scripts/check_tick_parity.py      ← REWRITTEN multi-session
+    trading_system_v4/scripts/run_live_tick.py          ← session-aware bar sizing
+
+  Live execution
+    trading_system_v4/execution/live_tick_aggregator.py
+    trading_system_v4/execution/live_feature_builder.py
+    trading_system_v4/execution/execution_engine.py     ← send_order() stub
+
+  Model inference
+    trading_system_v4/model/model_inference.py
+
+  Parity calibration
+    parity_snapshots/session_parity.json                ← grows with each --date run
+
+  Data (parquet files)
+    trading_system_v4/data/eurusd_1000t_bars.parquet    ← EXISTS, building (2015–2017-11 so far)
+    trading_system_v4/data/meta_labeled_1000t.parquet   ← NOT YET
+    trading_system_v4/data/build_tick_bars.log          ← live build progress
+
+  Model artifacts
+    trading_system_v4/model/meta_model_ema_eurusd.pkl                ← NOT YET
+    trading_system_v4/model/meta_model_ema_eurusd_features.json      ← NOT YET
+    trading_system_v4/model/meta_model_ema_eurusd_threshold.json     ← NOT YET
+
+  Runtime state
+    trading_system_v4/state/eurusd_tick_state.json      ← written by LiveTickAggregator
+
+  Logs
+    logs/live_tick_v4.log
+
+  Reference
+    trading_system_v4/TICK_SYSTEM_REFERENCE_2026-02-23.txt
+    trading_system_v4/SESSION_HANDOVER_2026-02-23.txt       ← morning session
+    trading_system_v4/SESSION_HANDOVER_2026-02-23_v2.txt    ← this file
+
+
+════════════════════════════════════════════════════════════════
+8.  QUICK CONTEXT FOR NEW AGENT
+════════════════════════════════════════════════════════════════
+
+Previous ML system (v2/v3) used 5m/15m time bars, AUC ~0.55.
+
+New system (v4 Meta-Labeling tick) uses:
+  - 1000-tick information-driven bars (not time bars)
+  - Two-stage meta-labeling: EMA crossover (Stage 1) → XGBoost filter (Stage 2)
+  - 24 microstructure features (tick velocity, spread, order flow, RSI, ATR)
+  - Path-dependent TP/SL labels (1.5R TP, 1.0R SL, 100-bar lookahead)
+  - Purged+Embargoed CV (100-bar lookahead + 5-bar embargo per fold)
+
+The meta-model does NOT predict direction.
+It predicts P(win | signal context) at an EMA crossover.
+Only trade when P > threshold (auto-loaded from _threshold.json).
+
+Three external-review concerns — status:
+  1. Parity calibration  → code complete, needs 5 days of measurements (Step C)
+  2. Purged CV           → DONE (implemented in train_meta_model.py this session)
+  3. Data freshness      → partial (2015–2017-11 built, build running, Jan-Feb 2026 pending)
+
+Give new agent:
+  trading_system_v4/TICK_SYSTEM_REFERENCE_2026-02-23.txt  (architecture)
+  trading_system_v4/SESSION_HANDOVER_2026-02-23_v2.txt    (this file, current state)
