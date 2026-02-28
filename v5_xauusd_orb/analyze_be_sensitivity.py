@@ -41,16 +41,13 @@ def main():
     skip = cfg.strategy.skip_weekdays
     qty = cfg.position.qty
     
-    # Adjust spread to account for slippage
-    total_cost_per_side = args.spread + args.slippage
-
     print("Loading data...")
     ohlcv = build_5min_bars(cfg.paths.tick_bar_file)
     start = pd.Timestamp(args.start, tz='UTC')
     end = pd.Timestamp(args.end, tz='UTC') if args.end else ohlcv.index.max()
     ohlcv = ohlcv.loc[start:end]
     print(f"Bars: {len(ohlcv):,}  ({ohlcv.index.min().date()} -> {ohlcv.index.max().date()})")
-    print(f"RR={rr}  skip_weekdays={skip}  cost={total_cost_per_side}/side\n")
+    print(f"RR={rr}  skip_weekdays={skip}  spread={args.spread}/side  slippage={args.slippage}\n")
 
     # Test BE rule at different time thresholds (in 5-min bars)
     # 30min = 6 bars, 45min = 9 bars, 60min = 12 bars, 75min = 15 bars, 90min = 18 bars, 120min = 24 bars
@@ -75,7 +72,7 @@ def main():
             time_be_bars=be_bars
         )
         
-        df = run_strategy(ohlcv, strat, cfg, rr, skip, qty, total_cost_per_side)
+        df = run_strategy(ohlcv, strat, cfg, rr, skip, qty, args.spread, args.slippage)
         s = stats(df)
         s['strategy'] = label
         s['be_minutes'] = be_bars * 5 if be_bars else 0
@@ -86,7 +83,7 @@ def main():
     results_df = pd.DataFrame(results).set_index('strategy')
 
     print("\n" + "=" * 120)
-    print(f"  BREAKEVEN RULE SENSITIVITY ANALYSIS  (RR={rr}, cost={total_cost_per_side}/side, {args.start} -> {args.end or 'latest'})")
+    print(f"  BREAKEVEN RULE SENSITIVITY ANALYSIS  (RR={rr}, spread={args.spread}/side, slippage={args.slippage}, {args.start} -> {args.end or 'latest'})")
     print("=" * 120)
     header = f"  {'Strategy':<25}  {'BE(min)':>8}  {'Trades':>6}  {'TP%':>5}  {'SL%':>5}  {'BE%':>5}  {'EOD%':>5}  {'P&L':>10}  {'Avg':>7}  {'MaxDD':>10}  {'Sharpe':>7}  {'PF':>5}"
     print(header)
@@ -133,7 +130,7 @@ def main():
             label=strat_label,
             time_be_bars=be_bars_val
         )
-        df = run_strategy(ohlcv, strat, cfg, rr, skip, qty, total_cost_per_side)
+        df = run_strategy(ohlcv, strat, cfg, rr, skip, qty, args.spread, args.slippage)
         df['year'] = pd.to_datetime(df['date']).dt.year
         yearly_data[strat_label] = df
         print(f"  {strat_label[:20]:<22}", end='')
