@@ -716,17 +716,25 @@ def cancel_all_and_close(conn: IBKRConnection, state: ORBState,
 # ── Breakeven Stop Helper ────────────────────────────────────────────────────
 
 def apply_breakeven_stop(conn: IBKRConnection, state: ORBState,
-                         dry_run: bool, log: logging.Logger):
-    """Move the active SL order to entry price after be_hours elapsed.
+                         dry_run: bool, log: logging.Logger,
+                         be_offset: float = 2.0):
+    """Move the active SL order to entry + offset after be_hours elapsed.
 
     For live trading, scans open orders for the SL child order
     (SELL STP for LONG, BUY STP for SHORT) and modifies its auxPrice
-    to state.entry_price.  For dry-run, only updates state.sl_price.
+    to state.entry_price + be_offset (LONG) or - be_offset (SHORT).
+    For dry-run, only updates state.sl_price.
     """
+    if state.direction == "LONG":
+        new_sl = state.entry_price + be_offset
+    else:
+        new_sl = state.entry_price - be_offset
+
     if dry_run:
-        log.info(f"[DRY RUN] 1h BE rule: SL moved to entry "
-                 f"{state.entry_price:.2f} (was {state.sl_price:.2f})")
-        state.sl_price = state.entry_price
+        log.info(f"[DRY RUN] BE rule: SL moved to {new_sl:.2f} "
+                 f"(entry {state.entry_price:.2f} + offset {be_offset}) "
+                 f"(was {state.sl_price:.2f})")
+        state.sl_price = new_sl
         state.be_applied = True
         state.save()
         return
@@ -740,14 +748,15 @@ def apply_breakeven_stop(conn: IBKRConnection, state: ORBState,
         for order in conn.ib.openOrders():
             if order.action == sl_action and order.orderType == "STP":
                 old_sl = order.auxPrice
-                order.auxPrice = state.entry_price
+                order.auxPrice = new_sl
                 conn.ib.placeOrder(conn.contract, order)  # modify in-place
                 conn.sleep(0.5)
-                state.sl_price = state.entry_price
+                state.sl_price = new_sl
                 state.be_applied = True
                 state.save()
-                log.info(f"1h BE rule triggered: SL moved "
-                         f"{old_sl:.2f} -> {state.entry_price:.2f}")
+                log.info(f"BE rule triggered: SL moved "
+                         f"{old_sl:.2f} -> {new_sl:.2f} "
+                         f"(entry {state.entry_price:.2f} + offset {be_offset})")
                 return
         log.warning("1h BE rule: SL order not found in open orders")
     except Exception as e:
@@ -1011,13 +1020,14 @@ def run_loop(conn: IBKRConnection, state: ORBState,
 
                 done = check_trade_exit(conn, state, dry_run)
 
-                # ── 1h breakeven stop rule ──
+                # ── Breakeven stop rule ──
                 if not done and not state.be_applied and state.entry_time:
                     elapsed_secs = (
                         now - datetime.fromisoformat(state.entry_time)
                     ).total_seconds()
                     if elapsed_secs >= strat.be_hours * 3600:
-                        apply_breakeven_stop(conn, state, dry_run, log)
+                        apply_breakeven_stop(conn, state, dry_run, log,
+                                             be_offset=strat.be_offset_usd)
 
                 if dry_run:
                     price = get_current_price(conn)

@@ -24,8 +24,12 @@ strategy:
   # From seasonality analysis: Wednesday (2) has near-zero edge.
   skip_weekdays: [2]         # [] to trade every weekday
 
-  # Breakeven stop rule: move SL to entry after N hours in trade
-  be_hours: 1                 # 1h is optimal per backtest (Sharpe 5.00, PF 7.98)
+  # Breakeven stop rule: move SL to entry + offset after N hours in trade
+  # Validated via sensitivity analysis with realistic slippage ($0.15) + spread ($0.10)
+  # 120min: P&L $+2,758  Sharpe 4.28  PF 3.31  MaxDD -$36  (corrected cost model)
+  # Neighbors (90min/no-BE) perform similarly -> not overfitted
+  be_hours: 2                 # 2h breakeven trigger (was 1h; 2h gives trades more room)
+  be_offset_usd: 2.0          # move SL to entry + $2 (covers spread+slippage costs)
 
   # Poll interval inside the main event loop (seconds)
   poll_interval: 10

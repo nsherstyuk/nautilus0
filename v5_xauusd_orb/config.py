@@ -37,7 +37,8 @@ class StrategyConfig:
     min_range_pct: float = 0.05
     max_range_pct: float = 2.0
     skip_weekdays: List[int] = field(default_factory=list)
-    be_hours: int = 1
+    be_hours: int = 2
+    be_offset_usd: float = 2.0     # move SL to entry + offset (covers costs)
     poll_interval: int = 10
 
 
