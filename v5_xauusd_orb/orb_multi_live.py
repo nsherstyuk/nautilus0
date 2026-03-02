@@ -654,10 +654,38 @@ class InstrumentManager:
         short_sl = round(rh, d)
         short_tp = round(rl - rr * rs, d)
 
+        # ── Stale-price guard ──
+        # If price already broke past a stop level, that side would fill
+        # immediately at market with potentially huge slippage. Skip it.
+        price = self.conn.get_price(inst.name)
+        skip_long = False
+        skip_short = False
+        if price is not None:
+            if price >= long_entry:
+                self.log.warning(
+                    f"{self.tag} Price {price:.{d}f} >= buy stop "
+                    f"{long_entry:.{d}f} -- SKIPPING long side "
+                    f"(would fill at market with slippage)")
+                skip_long = True
+            if price <= short_entry:
+                self.log.warning(
+                    f"{self.tag} Price {price:.{d}f} <= sell stop "
+                    f"{short_entry:.{d}f} -- SKIPPING short side "
+                    f"(would fill at market with slippage)")
+                skip_short = True
+        if skip_long and skip_short:
+            self.log.warning(
+                f"{self.tag} Both sides stale -- skipping today")
+            state.status = InstrumentState.DONE_TODAY
+            state.save()
+            return
+
         self.log.info(f"{self.tag} LONG:  entry={long_entry} SL={long_sl} "
-                      f"TP={long_tp}")
+                      f"TP={long_tp}"
+                      f"{' [SKIPPED]' if skip_long else ''}")
         self.log.info(f"{self.tag} SHORT: entry={short_entry} SL={short_sl} "
-                      f"TP={short_tp}")
+                      f"TP={short_tp}"
+                      f"{' [SKIPPED]' if skip_short else ''}")
         self.log.info(f"{self.tag} Qty: {inst.qty}, RR={rr}")
 
         if self.dry_run:
@@ -680,59 +708,64 @@ class InstrumentManager:
         gtd_time = trade_end_utc.strftime("%Y%m%d %H:%M:%S %Z")
 
         try:
-            # Buy stop bracket
-            buy_parent = Order(
-                action="BUY", orderType="STP", totalQuantity=inst.qty,
-                auxPrice=long_entry, tif="GTD", goodTillDate=gtd_time,
-                ocaGroup=oca_group, ocaType=1, transmit=False)
-            buy_sl = Order(
-                action="SELL", orderType="STP", totalQuantity=inst.qty,
-                auxPrice=long_sl, tif="GTC", transmit=False)
-            buy_tp = Order(
-                action="SELL", orderType="LMT", totalQuantity=inst.qty,
-                lmtPrice=long_tp, tif="GTC", transmit=False)
+            buy_id = 0
+            sell_id = 0
 
-            # Sell stop bracket
-            sell_parent = Order(
-                action="SELL", orderType="STP", totalQuantity=inst.qty,
-                auxPrice=short_entry, tif="GTD", goodTillDate=gtd_time,
-                ocaGroup=oca_group, ocaType=1, transmit=False)
-            sell_sl = Order(
-                action="BUY", orderType="STP", totalQuantity=inst.qty,
-                auxPrice=short_sl, tif="GTC", transmit=False)
-            sell_tp = Order(
-                action="BUY", orderType="LMT", totalQuantity=inst.qty,
-                lmtPrice=short_tp, tif="GTC", transmit=True)
+            if not skip_long:
+                # Buy stop bracket
+                buy_parent = Order(
+                    action="BUY", orderType="STP", totalQuantity=inst.qty,
+                    auxPrice=long_entry, tif="GTD", goodTillDate=gtd_time,
+                    ocaGroup=oca_group, ocaType=1, transmit=False)
+                buy_sl = Order(
+                    action="SELL", orderType="STP", totalQuantity=inst.qty,
+                    auxPrice=long_sl, tif="GTC", transmit=False)
+                buy_tp = Order(
+                    action="SELL", orderType="LMT", totalQuantity=inst.qty,
+                    lmtPrice=long_tp, tif="GTC", transmit=False)
 
-            buy_trade = self.conn.ib.placeOrder(contract, buy_parent)
-            self.conn.sleep(1)
-            buy_id = buy_trade.order.orderId
+                buy_trade = self.conn.ib.placeOrder(contract, buy_parent)
+                self.conn.sleep(1)
+                buy_id = buy_trade.order.orderId
 
-            buy_sl.parentId = buy_id
-            self.conn.ib.placeOrder(contract, buy_sl)
-            self.conn.sleep(0.5)
+                buy_sl.parentId = buy_id
+                self.conn.ib.placeOrder(contract, buy_sl)
+                self.conn.sleep(0.5)
 
-            buy_tp.parentId = buy_id
-            buy_tp.transmit = True
-            self.conn.ib.placeOrder(contract, buy_tp)
-            self.conn.sleep(1)
+                buy_tp.parentId = buy_id
+                buy_tp.transmit = True
+                self.conn.ib.placeOrder(contract, buy_tp)
+                self.conn.sleep(1)
 
-            self.log.info(f"{self.tag} Buy bracket placed: id={buy_id}")
+                self.log.info(f"{self.tag} Buy bracket placed: id={buy_id}")
 
-            sell_trade = self.conn.ib.placeOrder(contract, sell_parent)
-            self.conn.sleep(1)
-            sell_id = sell_trade.order.orderId
+            if not skip_short:
+                # Sell stop bracket
+                sell_parent = Order(
+                    action="SELL", orderType="STP", totalQuantity=inst.qty,
+                    auxPrice=short_entry, tif="GTD", goodTillDate=gtd_time,
+                    ocaGroup=oca_group, ocaType=1, transmit=False)
+                sell_sl = Order(
+                    action="BUY", orderType="STP", totalQuantity=inst.qty,
+                    auxPrice=short_sl, tif="GTC", transmit=False)
+                sell_tp = Order(
+                    action="BUY", orderType="LMT", totalQuantity=inst.qty,
+                    lmtPrice=short_tp, tif="GTC", transmit=True)
 
-            sell_sl.parentId = sell_id
-            self.conn.ib.placeOrder(contract, sell_sl)
-            self.conn.sleep(0.5)
+                sell_trade = self.conn.ib.placeOrder(contract, sell_parent)
+                self.conn.sleep(1)
+                sell_id = sell_trade.order.orderId
 
-            sell_tp.parentId = sell_id
-            sell_tp.transmit = True
-            self.conn.ib.placeOrder(contract, sell_tp)
-            self.conn.sleep(1)
+                sell_sl.parentId = sell_id
+                self.conn.ib.placeOrder(contract, sell_sl)
+                self.conn.sleep(0.5)
 
-            self.log.info(f"{self.tag} Sell bracket placed: id={sell_id}")
+                sell_tp.parentId = sell_id
+                sell_tp.transmit = True
+                self.conn.ib.placeOrder(contract, sell_tp)
+                self.conn.sleep(1)
+
+                self.log.info(f"{self.tag} Sell bracket placed: id={sell_id}")
 
             state.buy_order_id = buy_id
             state.sell_order_id = sell_id
@@ -924,13 +957,25 @@ class InstrumentManager:
         contract = self.conn.contracts.get(self.inst.name)
         if contract is None:
             return
+
+        # Only cancel orders belonging to THIS instrument
+        my_order_ids = set()
+        if self.state.buy_order_id:
+            my_order_ids.add(self.state.buy_order_id)
+        if self.state.sell_order_id:
+            my_order_ids.add(self.state.sell_order_id)
+
         try:
-            for order in self.conn.ib.openOrders():
-                try:
-                    self.conn.ib.cancelOrder(order)
-                    self.conn.sleep(0.5)
-                except Exception:
-                    pass
+            for trade in self.conn.ib.openTrades():
+                oid = trade.order.orderId
+                parent = trade.order.parentId
+                # Cancel if it's our parent order or a child of our parent
+                if oid in my_order_ids or parent in my_order_ids:
+                    try:
+                        self.conn.ib.cancelOrder(trade.order)
+                        self.conn.sleep(0.5)
+                    except Exception:
+                        pass
             self.conn.sleep(2)
 
             for pos in self.conn.ib.positions():
