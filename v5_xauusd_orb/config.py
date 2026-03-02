@@ -105,6 +105,34 @@ class SignalConfig:
 
 
 @dataclass
+class InstrumentConfig:
+    """Per-instrument config for multi-instrument ORB trading."""
+    name: str = ""             # display name e.g. "XAUUSD", "EURUSD"
+    enabled: bool = True
+    # IB contract
+    symbol: str = ""
+    sec_type: str = "CASH"
+    exchange: str = "SMART"
+    currency: str = "USD"
+    # Session times (UTC hours)
+    asian_start_hour: int = 0
+    asian_end_hour: int = 6
+    trade_start_hour: int = 8
+    trade_end_hour: int = 16
+    # Strategy
+    rr_ratio: float = 2.0
+    min_range_pct: float = 0.01
+    max_range_pct: float = 2.0
+    skip_weekdays: List[int] = field(default_factory=list)
+    be_hours: int = 2
+    be_offset: float = 0.0
+    qty: int = 1
+    # Display
+    price_decimals: int = 2
+    pip_label: str = "$"
+
+
+@dataclass
 class Config:
     strategy: StrategyConfig = field(default_factory=StrategyConfig)
     position: PositionConfig = field(default_factory=PositionConfig)
@@ -112,6 +140,7 @@ class Config:
     gateway: GatewayConfig = field(default_factory=GatewayConfig)
     paths: PathsConfig = field(default_factory=PathsConfig)
     signal: SignalConfig = field(default_factory=SignalConfig)
+    instruments: dict = field(default_factory=dict)  # name -> InstrumentConfig
 
 
 # ── Loader ─────────────────────────────────────────────────────────────────
@@ -145,6 +174,13 @@ def load_config(path: Path | str | None = None) -> Config:
         _merge(cfg.gateway, raw.get('gateway'))
         _merge(cfg.paths, raw.get('paths'))
         _merge(cfg.signal, raw.get('signal'))
+
+        # Load multi-instrument configs
+        instruments_raw = raw.get('instruments', {})
+        for inst_name, inst_data in instruments_raw.items():
+            ic = InstrumentConfig(name=inst_name)
+            _merge(ic, inst_data)
+            cfg.instruments[inst_name] = ic
     else:
         import warnings
         warnings.warn(f"Config file not found: {path}  -- using defaults")
