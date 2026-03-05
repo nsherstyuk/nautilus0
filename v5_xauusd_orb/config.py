@@ -126,6 +126,7 @@ class InstrumentConfig:
     skip_weekdays: List[int] = field(default_factory=list)
     be_hours: int = 2
     be_offset: float = 0.0
+    max_pending_hours: int = 4   # cancel unfilled entry after N hours (0=full window)
     qty: int = 1
     # Display
     price_decimals: int = 2

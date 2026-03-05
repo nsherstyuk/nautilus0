@@ -127,6 +127,7 @@ class InstrumentState:
         self.buy_order_id: int = 0
         self.sell_order_id: int = 0
         self.be_applied: bool = False
+        self.orders_placed_time: Optional[str] = None
         self.load()
 
     def load(self):
@@ -154,6 +155,7 @@ class InstrumentState:
             'buy_order_id': self.buy_order_id,
             'sell_order_id': self.sell_order_id,
             'be_applied': self.be_applied,
+            'orders_placed_time': self.orders_placed_time,
         }
         self.state_file.write_text(json.dumps(data, indent=2))
 
@@ -171,6 +173,7 @@ class InstrumentState:
         self.buy_order_id = 0
         self.sell_order_id = 0
         self.be_applied = False
+        self.orders_placed_time = None
         self.save()
 
 
@@ -483,6 +486,45 @@ class InstrumentManager:
         log_dir.mkdir(parents=True, exist_ok=True)
         self.trade_log = str(log_dir / f"orb_{inst.name.lower()}_trades.csv")
 
+    def verify_orders_on_startup(self):
+        """Check if saved ORDERS_PLACED orders still exist at IBKR.
+        If they were cancelled (e.g. by a previous shutdown), reset state
+        to RANGE_COMPUTED so brackets get re-placed."""
+        state = self.state
+        if state.status != InstrumentState.ORDERS_PLACED:
+            return
+        if self.dry_run:
+            return
+
+        saved_ids = set()
+        if state.buy_order_id:
+            saved_ids.add(state.buy_order_id)
+        if state.sell_order_id:
+            saved_ids.add(state.sell_order_id)
+        if not saved_ids:
+            return
+
+        # Query IBKR for open orders
+        try:
+            self.conn.ib.reqAllOpenOrders()
+            self.conn.sleep(2)
+            live_ids = {t.order.orderId for t in self.conn.ib.openTrades()}
+            found = saved_ids & live_ids
+            if not found:
+                self.log.warning(
+                    f"{self.tag} Saved orders {saved_ids} not found at IBKR "
+                    f"-- resetting to RANGE_COMPUTED to re-place")
+                state.buy_order_id = 0
+                state.sell_order_id = 0
+                state.orders_placed_time = None
+                state.status = InstrumentState.RANGE_COMPUTED
+                state.save()
+            else:
+                self.log.info(
+                    f"{self.tag} Verified orders {found} still active at IBKR")
+        except Exception as e:
+            self.log.error(f"{self.tag} Order verification failed: {e}")
+
     def tick(self, now: datetime):
         """One iteration of the state machine. Called every poll_interval."""
         hour = now.hour
@@ -519,6 +561,9 @@ class InstrumentManager:
         # ── RANGE_COMPUTED: place bracket orders when trade window opens ──
         elif state.status == InstrumentState.RANGE_COMPUTED:
             if hour >= inst.trade_start_hour:
+                self.log.info(
+                    f"{self.tag} Trade window check PASSED: "
+                    f"hour={hour} >= trade_start={inst.trade_start_hour}")
                 self._log_pre_placement(now)
                 self._place_bracket_orders(now)
 
@@ -531,6 +576,20 @@ class InstrumentManager:
                 state.save()
                 self.log.info(f"{self.tag} No fill today. Done.")
                 return
+
+            # Max pending hours: cancel if orders haven't filled in time
+            if (inst.max_pending_hours > 0 and state.orders_placed_time):
+                elapsed = (now - datetime.fromisoformat(
+                    state.orders_placed_time)).total_seconds()
+                if elapsed >= inst.max_pending_hours * 3600:
+                    hrs = inst.max_pending_hours
+                    self.log.warning(
+                        f"{self.tag} Orders pending > {hrs}h -- cancelling "
+                        f"(max_pending_hours={hrs})")
+                    self._cancel_and_close()
+                    state.status = InstrumentState.DONE_TODAY
+                    state.save()
+                    return
 
             filled = self._check_fills()
             if filled:
@@ -654,41 +713,31 @@ class InstrumentManager:
         short_sl = round(rh, d)
         short_tp = round(rl - rr * rs, d)
 
-        # ── Stale-price guard ──
-        # If price already broke past a stop level, that side would fill
-        # immediately at market with potentially huge slippage. Skip it.
+        # ── Gap-open info (no skip) ──
+        # If price already broke past a stop level, the stop order will fill
+        # immediately at market. Backtest shows gap-open trades are among the
+        # best (strong momentum signal), so we place the order anyway.
         price = self.conn.get_price(inst.name)
-        skip_long = False
-        skip_short = False
         if price is not None:
             if price >= long_entry:
-                self.log.warning(
+                self.log.info(
                     f"{self.tag} Price {price:.{d}f} >= buy stop "
-                    f"{long_entry:.{d}f} -- SKIPPING long side "
-                    f"(would fill at market with slippage)")
-                skip_long = True
+                    f"{long_entry:.{d}f} -- gap-open long "
+                    f"(will fill at market)")
             if price <= short_entry:
-                self.log.warning(
+                self.log.info(
                     f"{self.tag} Price {price:.{d}f} <= sell stop "
-                    f"{short_entry:.{d}f} -- SKIPPING short side "
-                    f"(would fill at market with slippage)")
-                skip_short = True
-        if skip_long and skip_short:
-            self.log.warning(
-                f"{self.tag} Both sides stale -- skipping today")
-            state.status = InstrumentState.DONE_TODAY
-            state.save()
-            return
+                    f"{short_entry:.{d}f} -- gap-open short "
+                    f"(will fill at market)")
 
         self.log.info(f"{self.tag} LONG:  entry={long_entry} SL={long_sl} "
-                      f"TP={long_tp}"
-                      f"{' [SKIPPED]' if skip_long else ''}")
+                      f"TP={long_tp}")
         self.log.info(f"{self.tag} SHORT: entry={short_entry} SL={short_sl} "
-                      f"TP={short_tp}"
-                      f"{' [SKIPPED]' if skip_short else ''}")
+                      f"TP={short_tp}")
         self.log.info(f"{self.tag} Qty: {inst.qty}, RR={rr}")
 
         if self.dry_run:
+            state.orders_placed_time = now.isoformat()
             state.status = InstrumentState.ORDERS_PLACED
             state.save()
             return
@@ -708,67 +757,63 @@ class InstrumentManager:
         gtd_time = trade_end_utc.strftime("%Y%m%d %H:%M:%S %Z")
 
         try:
-            buy_id = 0
-            sell_id = 0
+            # Buy stop bracket
+            buy_parent = Order(
+                action="BUY", orderType="STP", totalQuantity=inst.qty,
+                auxPrice=long_entry, tif="GTD", goodTillDate=gtd_time,
+                ocaGroup=oca_group, ocaType=1, transmit=False)
+            buy_sl = Order(
+                action="SELL", orderType="STP", totalQuantity=inst.qty,
+                auxPrice=long_sl, tif="GTC", transmit=False)
+            buy_tp = Order(
+                action="SELL", orderType="LMT", totalQuantity=inst.qty,
+                lmtPrice=long_tp, tif="GTC", transmit=False)
 
-            if not skip_long:
-                # Buy stop bracket
-                buy_parent = Order(
-                    action="BUY", orderType="STP", totalQuantity=inst.qty,
-                    auxPrice=long_entry, tif="GTD", goodTillDate=gtd_time,
-                    ocaGroup=oca_group, ocaType=1, transmit=False)
-                buy_sl = Order(
-                    action="SELL", orderType="STP", totalQuantity=inst.qty,
-                    auxPrice=long_sl, tif="GTC", transmit=False)
-                buy_tp = Order(
-                    action="SELL", orderType="LMT", totalQuantity=inst.qty,
-                    lmtPrice=long_tp, tif="GTC", transmit=False)
+            buy_trade = self.conn.ib.placeOrder(contract, buy_parent)
+            self.conn.sleep(1)
+            buy_id = buy_trade.order.orderId
 
-                buy_trade = self.conn.ib.placeOrder(contract, buy_parent)
-                self.conn.sleep(1)
-                buy_id = buy_trade.order.orderId
+            buy_sl.parentId = buy_id
+            self.conn.ib.placeOrder(contract, buy_sl)
+            self.conn.sleep(0.5)
 
-                buy_sl.parentId = buy_id
-                self.conn.ib.placeOrder(contract, buy_sl)
-                self.conn.sleep(0.5)
+            buy_tp.parentId = buy_id
+            buy_tp.transmit = True
+            self.conn.ib.placeOrder(contract, buy_tp)
+            self.conn.sleep(1)
 
-                buy_tp.parentId = buy_id
-                buy_tp.transmit = True
-                self.conn.ib.placeOrder(contract, buy_tp)
-                self.conn.sleep(1)
+            self.log.info(f"{self.tag} Buy bracket placed: id={buy_id}")
 
-                self.log.info(f"{self.tag} Buy bracket placed: id={buy_id}")
+            # Sell stop bracket
+            sell_parent = Order(
+                action="SELL", orderType="STP", totalQuantity=inst.qty,
+                auxPrice=short_entry, tif="GTD", goodTillDate=gtd_time,
+                ocaGroup=oca_group, ocaType=1, transmit=False)
+            sell_sl = Order(
+                action="BUY", orderType="STP", totalQuantity=inst.qty,
+                auxPrice=short_sl, tif="GTC", transmit=False)
+            sell_tp = Order(
+                action="BUY", orderType="LMT", totalQuantity=inst.qty,
+                lmtPrice=short_tp, tif="GTC", transmit=True)
 
-            if not skip_short:
-                # Sell stop bracket
-                sell_parent = Order(
-                    action="SELL", orderType="STP", totalQuantity=inst.qty,
-                    auxPrice=short_entry, tif="GTD", goodTillDate=gtd_time,
-                    ocaGroup=oca_group, ocaType=1, transmit=False)
-                sell_sl = Order(
-                    action="BUY", orderType="STP", totalQuantity=inst.qty,
-                    auxPrice=short_sl, tif="GTC", transmit=False)
-                sell_tp = Order(
-                    action="BUY", orderType="LMT", totalQuantity=inst.qty,
-                    lmtPrice=short_tp, tif="GTC", transmit=True)
+            sell_trade = self.conn.ib.placeOrder(contract, sell_parent)
+            self.conn.sleep(1)
+            sell_id = sell_trade.order.orderId
 
-                sell_trade = self.conn.ib.placeOrder(contract, sell_parent)
-                self.conn.sleep(1)
-                sell_id = sell_trade.order.orderId
+            sell_sl.parentId = sell_id
+            self.conn.ib.placeOrder(contract, sell_sl)
+            self.conn.sleep(0.5)
 
-                sell_sl.parentId = sell_id
-                self.conn.ib.placeOrder(contract, sell_sl)
-                self.conn.sleep(0.5)
+            sell_tp.parentId = sell_id
+            sell_tp.transmit = True
+            self.conn.ib.placeOrder(contract, sell_tp)
+            self.conn.sleep(1)
 
-                sell_tp.parentId = sell_id
-                sell_tp.transmit = True
-                self.conn.ib.placeOrder(contract, sell_tp)
-                self.conn.sleep(1)
-
-                self.log.info(f"{self.tag} Sell bracket placed: id={sell_id}")
+            self.log.info(f"{self.tag} Sell bracket placed: id={sell_id}")
 
             state.buy_order_id = buy_id
             state.sell_order_id = sell_id
+            state.orders_placed_time = now.isoformat()
             state.status = InstrumentState.ORDERS_PLACED
             state.save()
 
@@ -1075,6 +1120,39 @@ class InstrumentManager:
         self._exit_result = None
 
 
+# ── Account Snapshot ──────────────────────────────────────────────────────────
+
+def _snapshot_account(conn: SharedConnection, cfg: Config, log: logging.Logger):
+    """Query IBKR account summary and write to JSON for the dashboard."""
+    if not conn.connected:
+        return
+    try:
+        summary = conn.ib.accountSummary()
+        if not summary:
+            return
+
+        acct = {}
+        for item in summary:
+            acct[item.tag] = item.value
+
+        snapshot = {
+            "timestamp": datetime.now(tz=timezone.utc).isoformat(),
+            "net_liquidation": acct.get("NetLiquidation", ""),
+            "total_cash": acct.get("TotalCashValue", ""),
+            "unrealized_pnl": acct.get("UnrealizedPnL", ""),
+            "realized_pnl": acct.get("RealizedPnL", ""),
+            "buying_power": acct.get("BuyingPower", ""),
+            "maint_margin": acct.get("MaintMarginReq", ""),
+            "currency": acct.get("Currency", "USD"),
+        }
+
+        snap_path = Path(cfg.paths.state_dir) / "account_snapshot.json"
+        snap_path.write_text(json.dumps(snapshot, indent=2), encoding="utf-8")
+
+    except Exception as e:
+        log.debug(f"Account snapshot failed: {e}")
+
+
 # ── Main Loop ─────────────────────────────────────────────────────────────────
 
 def run_day(managers: list[InstrumentManager], conn: SharedConnection,
@@ -1089,11 +1167,16 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
             log.info(f"{mgr.tag} New day: {today_str}")
             mgr.reset_for_new_day(today_str)
 
+    # Verify any ORDERS_PLACED states still have live orders at IBKR
+    for mgr in managers:
+        mgr.verify_orders_on_startup()
+
     now = datetime.now(tz=timezone.utc)
 
-    # Skip weekends
-    if now.weekday() >= 5:
-        log.info("Weekend -- no trading")
+    # Skip weekends (use trade_date, not wall-clock)
+    trade_date_dt = datetime.strptime(today_str, "%Y-%m-%d")
+    if trade_date_dt.weekday() >= 5:
+        log.info(f"Weekend ({today_str}) -- no trading")
         return
 
     log.info(f"Starting multi-ORB day | instruments: "
@@ -1101,6 +1184,7 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
              f"dry_run={managers[0].dry_run}")
 
     last_heartbeat = 0.0
+    trade_weekday = trade_date_dt.weekday()
 
     while True:
         now = datetime.now(tz=timezone.utc)
@@ -1110,17 +1194,15 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
             time.sleep(30)
             continue
 
-        # Skip configured weekdays (per instrument, handled inside tick())
-        # But if ALL are done, we can break
+        # Skip configured weekdays per instrument
         all_done = True
         for mgr in managers:
             inst = mgr.inst
-            # Skip this instrument's weekday filter
-            if now.weekday() in inst.skip_weekdays:
+            if trade_weekday in inst.skip_weekdays:
                 if mgr.state.status != InstrumentState.DONE_TODAY:
                     day_name = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri',
-                                'Sat', 'Sun'][now.weekday()]
-                    log.info(f"{mgr.tag} {day_name} skipped")
+                                'Sat', 'Sun'][trade_weekday]
+                    log.info(f"{mgr.tag} {day_name} skipped (trade_date={today_str})")
                     mgr.state.status = InstrumentState.DONE_TODAY
                     mgr.state.save()
                 continue
@@ -1148,6 +1230,8 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
             for mgr in managers:
                 if mgr.state.status != InstrumentState.DONE_TODAY:
                     log.info(f"[STATUS] {mgr.status_line(now)}")
+            # Snapshot account balance to JSON for dashboard
+            _snapshot_account(conn, cfg, log)
 
         if all_done:
             log.info("All instruments done for today.")

@@ -78,7 +78,7 @@ INSTRUMENTS = {
     ),
     'GBPUSD': InstrumentConfig(
         symbol='GBPUSD',
-        data_file='trading_system_v4/data/gbpusd_1000t_bars.parquet',
+        data_file='trading_system_v4/data/gbpusd_1h_bars.parquet',
         pip_size=0.0001,
         spread_per_side=0.00004,  # ~0.4 pips per side
         slippage=0.00006,         # ~0.6 pips per stop fill
@@ -90,7 +90,7 @@ INSTRUMENTS = {
     ),
     'USDJPY': InstrumentConfig(
         symbol='USDJPY',
-        data_file='trading_system_v4/data/usdjpy_1000t_bars.parquet',
+        data_file='trading_system_v4/data/usdjpy_1h_bars.parquet',
         pip_size=0.01,
         spread_per_side=0.005,    # ~0.5 pips per side
         slippage=0.008,           # ~0.8 pips per stop fill
@@ -106,16 +106,20 @@ INSTRUMENTS = {
 
 # ── Data loading ──────────────────────────────────────────────────────────────
 
-def build_5min_bars(parquet_path: str) -> pd.DataFrame:
-    """Load tick bars and resample to 5-minute OHLCV."""
+def load_ohlcv(parquet_path: str) -> pd.DataFrame:
+    """Load bar data and resample to 1-hour OHLCV.
+
+    Handles both tick-bar files (have avg_spread column) and
+    pre-built 1h bar files (just timestamp + OHLC).
+    """
     df = pd.read_parquet(parquet_path)
     df = df.set_index('timestamp').sort_index()
     df.index = pd.to_datetime(df.index, utc=True)
     ohlcv = pd.DataFrame({
-        'open':  df['open'].resample('5min').first(),
-        'high':  df['high'].resample('5min').max(),
-        'low':   df['low'].resample('5min').min(),
-        'close': df['close'].resample('5min').last(),
+        'open':  df['open'].resample('1h').first(),
+        'high':  df['high'].resample('1h').max(),
+        'low':   df['low'].resample('1h').min(),
+        'close': df['close'].resample('1h').last(),
     }).dropna()
     return ohlcv
 
@@ -343,8 +347,8 @@ def main():
     parser.add_argument("--start", default="2019-01-01")
     parser.add_argument("--end", default=None)
     parser.add_argument("--rr", type=float, default=2.0)
-    parser.add_argument("--be-bars", type=int, default=24,
-                        help="BE trigger in 5-min bars (24=120min, None=disabled)")
+    parser.add_argument("--be-bars", type=int, default=2,
+                        help="BE trigger in hours (2=120min, None=disabled)")
     parser.add_argument("--be-offset-pips", type=float, default=0.0,
                         help="BE offset in pips (converted to price per instrument)")
     parser.add_argument("--no-be", action="store_true",
@@ -370,7 +374,7 @@ def main():
         return
 
     print(f"Testing {len(pairs)} pairs: {', '.join(pairs)}")
-    print(f"RR={args.rr}  BE={'OFF' if args.no_be else f'{args.be_bars*5}min'}  "
+    print(f"RR={args.rr}  BE={'OFF' if args.no_be else f'{args.be_bars}h'}  "
           f"BE offset={args.be_offset_pips} pips")
     print(f"Period: {args.start} -> {args.end or 'latest'}")
     print()
@@ -387,7 +391,7 @@ def main():
             continue
 
         print(f"Loading {sym}...", end=' ', flush=True)
-        ohlcv = build_5min_bars(str(path))
+        ohlcv = load_ohlcv(str(path))
 
         start = pd.Timestamp(args.start, tz='UTC')
         end = pd.Timestamp(args.end, tz='UTC') if args.end else ohlcv.index.max()
@@ -415,7 +419,7 @@ def main():
     results_df = pd.DataFrame(all_stats).set_index('symbol')
     print("\n" + "=" * 130)
     print(f"  MULTI-INSTRUMENT ORB BACKTEST  "
-          f"(RR={args.rr}, BE={'OFF' if args.no_be else f'{args.be_bars*5}min'}, "
+          f"(RR={args.rr}, BE={'OFF' if args.no_be else f'{args.be_bars}h'}, "
           f"{args.start} -> {args.end or 'latest'})")
     print("=" * 130)
     header = (f"  {'Symbol':<10}  {'Trades':>6}  {'TP%':>5}  {'SL%':>5}  "

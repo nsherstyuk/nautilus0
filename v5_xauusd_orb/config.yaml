@@ -103,6 +103,7 @@ instruments:
     skip_weekdays: [2]
     be_hours: 2
     be_offset: 2.0            # $2 offset for Gold (covers ~$0.50 round-trip costs)
+    max_pending_hours: 4      # cancel unfilled entry after 4h (backtested: improves Sharpe, cuts DD)
     qty: 1                    # 1 oz
     # Display
     price_decimals: 2
@@ -118,8 +119,8 @@ instruments:
     # Session times (UTC hours)
     asian_start_hour: 0
     asian_end_hour: 6
-    trade_start_hour: 13      # NY session (Asian->NY breakout)
-    trade_end_hour: 21
+    trade_start_hour: 7       # London session (matches backtest)
+    trade_end_hour: 16
     # Strategy
     rr_ratio: 2.0
     min_range_pct: 0.01
@@ -127,6 +128,7 @@ instruments:
     skip_weekdays: []          # all weekdays profitable for EURUSD
     be_hours: 2
     be_offset: 0.0002         # 2 pips offset (covers ~1.6 pips round-trip costs)
+    max_pending_hours: 4      # cancel unfilled entry after 4h (backtested: improves Sharpe, cuts DD)
     qty: 20000                # 20k units (mini lot = $2/pip)
     # Display
     price_decimals: 5
