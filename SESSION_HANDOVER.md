@@ -1,165 +1,135 @@
-﻿# Session Handover  February 22, 2026 (Night)
-
-## Project: trading_system_v4  Hybrid Modular Trading System
-
-**Do NOT touch v2/v3 systems.** This is a new parallel implementation.
-
----
+﻿# Session Handover — 2026-02-26
 
 ## Copy-Paste Prompt for Next Agent
 
 ```
-I am continuing development of a new modular hybrid trading system at
-c:\nautilus0\trading_system_v4\
+I am continuing work on the trading system at c:\nautilus0\
 
 Read this file first and use it as your full context:
   c:\nautilus0\SESSION_HANDOVER.md
 
-Do NOT touch the existing v2/v3 system files.
+Follow c:\nautilus0\.github\copilot-instructions.md for project rules.
+Do NOT touch v2/v3 system files unless explicitly asked.
 Continue from the "Immediate Next Steps" section below.
-Act autonomously, verify each step, critique your own work, and keep
-changes minimal and modular.
 ```
 
 ---
 
-## What Was Built This Session
+## What Happened This Session (2026-02-26)
 
-### Modules Implemented
+### Problem: v5 ORB dry-run could not connect to IB Gateway
+`python -m v5_xauusd_orb.orb_live --dry-run` repeatedly timed out on port 4002.
+
+### Root cause
+`is_port_listening()` used `socket.create_connection()` to probe port 4002 before each connect attempt. IB Gateway treats every raw TCP connection as an API client. When the socket disconnects without speaking IBKR protocol, Gateway holds the slot in **CLOSE_WAIT** state indefinitely. After several probes + retries, Gateway's connection pool was exhausted → all real connections timed out. Required ~5 Gateway restarts during debugging.
+
+### Fix applied
+Refactored `v5_xauusd_orb/orb_live.py` `IBKRConnection` class to follow the **battle-tested pattern** from `live/ib_bar_streamer.py` (runs MTF v2 live system 24/5):
+
+1. Added `nest_asyncio.apply()` at module top — required for ib_insync in nested event loops.
+2. Removed `is_port_listening()`, `is_gateway_running()`, `start_gateway()` — all zombie socket creators.
+3. New `IBKRConnection.connect()` — simple `ib.connect()` with retry + exponential backoff.
+4. Added `_on_ib_error()` handler — mirrors IBBarStreamer critical error codes (`{504, 502, 1100, 2110, 10182}`) and warning suppression (`{2103–2108, 2157, 2158}`).
+5. Secondary fix in `trading_system_v4/scripts/xauusd_orb_live.py` — replaced raw socket with netstat-based port check.
+
+### Result
+Dry-run connected instantly, contract qualified (XAUUSD CFD, conId=457068913), entered main loop in IDLE state.
+
+---
+
+## Files Modified This Session
+
+| File | Change |
+|------|--------|
+| `v5_xauusd_orb/orb_live.py` | Rewrote `IBKRConnection` class; added `nest_asyncio`; removed port-probing helpers |
+| `trading_system_v4/scripts/xauusd_orb_live.py` | Fixed `is_port_listening()` from raw socket to netstat-based |
+
+---
+
+## Current Infrastructure State (as of 2026-02-26 17:42 UTC-5)
+
+| Component | Status | Details |
+|-----------|--------|---------|
+| IB Gateway | **Running** | PID 25564, port 4002 (paper), account DU1558484 |
+| v5 dry-run | **Stopped** | Ran successfully; shut down when terminal closed |
+| MTF v2 live | **Not running** | No Python processes active |
+| Gateway path | — | `C:\Jts\ibgateway\1041\ibgateway.exe` |
+
+---
+
+## v5 XAUUSD ORB Strategy Overview
+
+- **Asian Range**: 00:00–06:00 UTC — record session high/low
+- **London Breakout**: 08:00–16:00 UTC — bracket orders at range high+buffer / low-buffer
+- **Risk/Reward**: 2.0 (SL = range opposite side, TP = 2× distance)
+- **Skip**: Wednesdays (weekday=2)
+- **State machine**: `IDLE → RANGE_COMPUTED → ORDERS_PLACED → IN_TRADE → DONE_TODAY`
+- **IBKR**: host `127.0.0.1`, port `4002`, clientId `60`
+- **Contract**: XAUUSD CFD, SMART exchange, USD
+
+### v5 Key Files
+
+| File | Purpose |
+|------|---------|
+| `v5_xauusd_orb/orb_live.py` | Live execution script (refactored this session) |
+| `v5_xauusd_orb/config.yaml` | Strategy parameters |
+| `v5_xauusd_orb/config.py` | Typed dataclass config loader |
+
+### Run command
+```powershell
+cd c:\nautilus0
+python -m v5_xauusd_orb.orb_live --dry-run   # paper mode
+python -m v5_xauusd_orb.orb_live              # live (removes dry-run guard)
+```
+
+---
+
+## Proven Live Infrastructure (Reference)
+
+These files are battle-tested and should be reused/referenced for any new IBKR integration:
+
+| File | Purpose |
+|------|---------|
+| `live/ib_bar_streamer.py` | Bar streamer — runs 24/5, composite sub keys, reconnect logic |
+| `live/run_live_mtf_v2_entry_confirmed_v2_failsafe.py` | Working MTF v2 live runner |
+| `config/ibkr_config.py` | Env-based IBKR config |
+| `patches/ib_connection_patch.py` | NautilusTrader connection patch |
+
+---
+
+## trading_system_v4 Status (from prior session 2026-02-22)
+
+### Modules Built
 
 | Module | File | Status |
 |---|---|---|
-| Data adapter | `trading_system_v4/data/nautilus_adapter.py` | Working  mock stream |
-| Feature engineering | `trading_system_v4/features/feature_engineering.py` | Working  35 features |
-| Execution engine | `trading_system_v4/execution/execution_engine.py` | Working  stub broker |
-| Risk manager | `trading_system_v4/risk/risk_manager.py` | Working  size + drawdown |
-| Logger | `trading_system_v4/monitoring/logger.py` | Working  rotating files |
-| Live runner | `trading_system_v4/scripts/run_live_hybrid.py` | Working  test mode validated |
+| Data adapter | `trading_system_v4/data/nautilus_adapter.py` | Working (mock stream) |
+| Feature engineering | `trading_system_v4/features/feature_engineering.py` | Working (35 features) |
+| Execution engine | `trading_system_v4/execution/execution_engine.py` | Working (stub broker) |
+| Risk manager | `trading_system_v4/risk/risk_manager.py` | Working |
+| Logger | `trading_system_v4/monitoring/logger.py` | Working |
+| Live runner | `trading_system_v4/scripts/run_live_hybrid.py` | Working (test mode) |
 
-### Test Command (Validated  exits 0)
-
+### Test Command
 ```powershell
-cd c:\nautilus0
 python -m trading_system_v4.scripts.run_live_hybrid test
 ```
-
-Expected output: bars received, 35 live features logged, exits cleanly.
-
----
-
-## Folder Structure
-
-```
-trading_system_v4/
-  config/          # config loaders (env-driven)
-  data/
-    nautilus_adapter.py   # live bar streaming + deduplication
-  execution/
-    execution_engine.py   # order routing, portfolio tracking
-  features/
-    feature_engineering.py  # 35-feature set (batch + live)
-  model/           # (empty  model training not yet done)
-  monitoring/
-    logger.py      # RotatingFileHandler setup
-  risk/
-    risk_manager.py  # position size + drawdown checks
-  scripts/
-    run_live_hybrid.py  # main live runner
-  README.md
-```
-
----
-
-## 35-Feature Set (Group Summary)
-
-| Group | Features |
-|---|---|
-| Price action | body_ratio, close_position, upper_wick, lower_wick, bar_range_norm, open_gap |
-| Momentum | return_1, return_5, return_12, return_24 |
-| Volatility | atr_5, atr_14, atr_ratio, atr_norm, vol_5, vol_20, vol_ratio |
-| Trend / EMA | ema_ratio_5_20, close_vs_ema20, close_vs_ema50, close_vs_ema200, ema20_slope |
-| Oscillators | rsi_9, rsi_14 |
-| Volume | volume_spike, log_volume |
-| Session / time | hour_sin, hour_cos, dow_sin, dow_cos, is_london, is_ny, is_overlap |
-| Regime | vol_regime |
-| Pattern | range_position, return_max_10, return_min_10 |
-
-Full implementation in `trading_system_v4/features/feature_engineering.py`:
-- `add_features(df)`  batch mode (DataFrame in, DataFrame with 35 extra columns out)
-- `FeatureEngineer(window=250)`  stateful live mode, call `add_bar(bar_dict)` per bar
-
----
-
-## Key Implementation Details
-
-### NautilusDataAdapter (data/nautilus_adapter.py)
-- Deduplication cache: set of (timestamp, symbol)  prevents double-processing same bar
-- Cache window: 100 entries (LRU-style eviction)
-- IMPORTANT: `stream_loop()` is currently a **mock** (generates synthetic bars). Replace with real NautilusTrader API call for production.
-- Thread-safe: uses daemon thread, `on_bar_callback` called on that thread
-
-### FeatureEngineer (features/feature_engineering.py)
-- Warm-up needed: returns empty dict for first ~200 bars (rolling windows)
-- `add_bar()` returns `dict[str, float]`  filter out NaN values before passing to model
-- Window buffer: 250 bars of OHLCV history kept in memory per instance
-
-### ExecutionEngine (execution/execution_engine.py)
-- `self.broker_api = None`  set this to real broker before going live
-- Portfolio dict: `{symbol: {'position': float, 'avg_price': float}}`
-
-### RiskManager (risk/risk_manager.py)
-- `check_risk(portfolio, signal)` returns `bool`
-- Checks: max position size (default 1.0), drawdown limit (default 10%)
-
-### run_live_hybrid.py
-- Run with `python -m trading_system_v4.scripts.run_live_hybrid` (not `python trading_system_v4/...`)
-- `test` arg runs test mode (5 synthetic bars, then exit)
-- Health-check thread logs heartbeat every 60s
 
 ---
 
 ## Immediate Next Steps (Priority Order)
 
-### 1. Training Data Pipeline (HIGHEST PRIORITY)
-- Script: `trading_system_v4/scripts/build_training_dataset.py`
-- Load historical OHLCV parquet from `c:\nautilus0\data\historical\` (or catalog)
-- Apply `add_features(df)` to get 35 features per row
-- Output: `trading_system_v4/data/training_features.parquet`
+### v5 ORB
+1. **Full-day dry-run validation** — run through Asian → London session to confirm range computation, bracket order placement, fill checking, EOD cleanup.
+2. **Bracket order testing** — `place_bracket_orders()`, `check_fills()`, `check_trade_exit()` have not been live-tested. Validate that IBKR accepts the bracket structure.
+3. **Consider reusing MTF v2 order management** — user suggested further reuse from proven live system beyond just connection code.
 
-### 2. Label Engineering
-- Simulate SL/TP-aware labels (same logic as v3 retrain):
-  - Label=1 if any forward bar HIGH >= close + ATR*1.4 within 60 bars
-  - Label=0 if any forward bar LOW <= close - ATR*1.8 within 60 bars
-  - Drop ambiguous rows
-- Add labels as column `y` to training parquet
-
-### 3. Train Model
-- Script: `trading_system_v4/scripts/train_model.py`
-- XGBoost or LightGBM on 35 features + label `y`
-- Walk-forward CV (3 folds), target precision ~65%+
-- Save to `trading_system_v4/model/hybrid_model_v1.pkl`
-
-### 4. Probability Calibration
-- Add isotonic regression calibration pass after training
-- Save calibrator alongside model
-
-### 5. Connect Real NautilusTrader Feed
-- Replace mock `stream_loop()` in `nautilus_adapter.py` with real API
-- Match IB streamer conventions: composite subscription key (symbol + bar_size + what_to_show + use_rth)
-
-### 6. HTF Feature Injection
-- Add 15m/30m features to each 5m bar row
-- Requirement: no lookahead  use most recently *completed* 15m bar
-- Separate `FeatureEngineer` instance per timeframe
-
-### 7. Session/Hour Filter
-- Skip inference during Asian session / low-liquidity hours
-- Already have `is_london`, `is_ny`, `is_overlap` features  use at entry gate
-
-### 8. End-to-End Live Test
-- Run with real NautilusTrader feed + trained model
-- Paper trade first (no real orders)
-- Validate: prediction rate, feature coverage, deduplication working
+### trading_system_v4
+4. **Training data pipeline** — build `training_features.parquet` from historical data using `add_features(df)`.
+5. **Label engineering** — SL/TP-aware labels (ATR-based forward lookout).
+6. **Train model** — XGBoost/LightGBM, walk-forward CV, save to `model/`.
+7. **Connect real NautilusTrader feed** — replace mock `stream_loop()`.
+8. **HTF feature injection** — 15m/30m features per 5m bar, no lookahead.
 
 ---
 
@@ -167,18 +137,17 @@ Full implementation in `trading_system_v4/features/feature_engineering.py`:
 
 | Issue | Severity | Notes |
 |---|---|---|
-| Mock data adapter | High | Must replace before any real trading |
-| No trained model yet | High | Pipeline not built, model file missing |
-| No historical data path confirmed | Medium | Check `c:\nautilus0\data\historical\` exists |
-| HTF features missing | Medium | 5m model lacks multi-timeframe context |
-| No order sizing logic | Medium | ExecutionEngine sends flat 1-lot  needs ATR-based sizing |
-| No live P&L tracking | Low | Portfolio dict tracks position but no realized P&L |
+| v5 bracket orders untested | High | Need full-day paper trade run |
+| Mock data adapter (v4) | High | Must replace before real trading |
+| No trained model (v4) | High | Pipeline not built yet |
+| v5 order management is custom | Medium | Not yet reusing proven MTF v2 patterns |
+| HTF features missing (v4) | Medium | 5m model lacks multi-timeframe context |
 
 ---
 
 ## Do Not Touch
 
-- `c:\nautilus0\strategies\`  v2/v3 live system
-- `c:\nautilus0\models\`  v3 production model files
-- `.env.mtf_v2`, `.env.mtf_v3`  live config
-- Any file outside `trading_system_v4\` unless explicitly asked
+- `strategies/` — v2/v3 live system
+- `models/` — v3 production model files
+- `.env.mtf_v2`, `.env.mtf_v3` — live config
+- Do not change v2/v3 behavior unless explicitly requested
