@@ -61,6 +61,7 @@ class V4ModelInference:
         with open(threshold_path) as fh:
             data = json.load(fh)
             self.threshold: float = float(data["threshold"])
+            self.shift_val: float = float(data.get("shift_val", 0.0))
 
         print(
             f"[V4ModelInference] Loaded {model_stem}  "
@@ -71,7 +72,8 @@ class V4ModelInference:
 
     def predict_proba(self, features_dict: dict) -> float:
         """
-        Return P(y=1) for the given feature dict.
+        Return P(y=1) for the given feature dict (classification)
+        or the predicted value (regression).
 
         Feature order is enforced from the saved JSON list.  Missing keys get 0.0.
         """
@@ -79,7 +81,15 @@ class V4ModelInference:
             [float(features_dict.get(f, 0.0)) for f in self.feature_names],
             dtype=np.float32,
         ).reshape(1, -1)
-        return float(self.model.predict_proba(vec)[0, 1])
+        
+        if hasattr(self.model, "predict_proba"):
+            return float(self.model.predict_proba(vec)[0, 1])
+        else:
+            pred = float(self.model.predict(vec)[0])
+            if self.shift_val > 0.0:
+                # Inverse transform log1p
+                pred = np.expm1(pred) - self.shift_val
+            return pred
 
     def should_trade(self, features_dict: dict) -> tuple[bool, float]:
         """

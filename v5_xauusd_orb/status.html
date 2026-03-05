@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORB Multi-Instrument Dashboard</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0f172a; color: #e2e8f0; padding: 20px;
+        max-width: 1400px; margin: 0 auto;
+    }
+    h1 { color: #f8fafc; margin-bottom: 4px; font-size: 1.5rem; }
+    h2 { color: #94a3b8; font-size: 1.1rem; margin-bottom: 12px; }
+    h3 { color: #cbd5e1; font-size: 0.95rem; margin-bottom: 8px; }
+    .header {
+        display: flex; justify-content: space-between; align-items: baseline;
+        border-bottom: 1px solid #1e293b; padding-bottom: 12px; margin-bottom: 20px;
+    }
+    .header-time { color: #64748b; font-size: 0.85rem; }
+    .card {
+        background: #1e293b; border-radius: 8px; padding: 16px;
+        margin-bottom: 16px; border: 1px solid #334155;
+    }
+    .card.muted p { color: #64748b; }
+    .grid-4 {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    }
+    .stat-box {
+        background: #0f172a; border-radius: 6px; padding: 12px; text-align: center;
+    }
+    .stat-label { color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .stat-value { color: #f1f5f9; font-size: 1.3rem; font-weight: 600; margin-top: 4px; }
+    .inst-header { display: flex; justify-content: space-between; align-items: center; }
+    .status-badge {
+        padding: 3px 10px; border-radius: 12px; font-size: 0.75rem;
+        font-weight: 600; text-transform: uppercase;
+    }
+    .status-idle { background: #334155; color: #94a3b8; }
+    .status-active { background: #1e3a5f; color: #60a5fa; animation: pulse 2s infinite; }
+    .status-watching { background: #3b2f1e; color: #fbbf24; }
+    .status-done { background: #14532d; color: #4ade80; }
+    .status-range { background: #2d2b4e; color: #a78bfa; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+    .state-detail { color: #64748b; font-size: 0.85rem; margin-top: 6px; }
+    .inst-card { min-height: 120px; }
+    .inst-detail { margin-top: 10px; }
+    .detail-row { display: flex; gap: 8px; align-items: baseline; padding: 3px 0; font-size: 0.85rem; color: #cbd5e1; }
+    .detail-label { color: #64748b; min-width: 80px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; }
+    .dir-long { color: #4ade80; font-weight: 600; }
+    .dir-short { color: #f87171; font-weight: 600; }
+    .badge-be { background: #1e3a5f; color: #60a5fa; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    .badge-skip { background: #4a1d1d; color: #fca5a5; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+    .badge-pending { background: #3b2f1e; color: #fbbf24; padding: 1px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; animation: pulse 2s infinite; }
+    .evt-section { align-items: flex-start; }
+    .evt-list { display: flex; flex-direction: column; gap: 2px; }
+    .evt-line { font-size: 0.8rem; color: #94a3b8; }
+    .evt-line.evt-warn { color: #fbbf24; }
+    .evt-time { color: #475569; font-family: monospace; font-size: 0.75rem; margin-right: 4px; }
+    .evt-detail { color: #64748b; font-style: italic; }
+    .activity-card { }
+    .activity-line { display: flex; gap: 8px; padding: 4px 0; font-size: 0.82rem; border-bottom: 1px solid #1e293b; }
+    .activity-line:last-child { border-bottom: none; }
+    .activity-time { color: #475569; font-family: monospace; font-size: 0.78rem; min-width: 65px; }
+    .activity-inst { min-width: 60px; }
+    .activity-msg { color: #cbd5e1; }
+    .activity-msg.warn { color: #fbbf24; }
+    .activity-msg.skip { color: #fca5a5; }
+    .activity-msg.good { color: #4ade80; }
+    table {
+        width: 100%; border-collapse: collapse; font-size: 0.85rem;
+    }
+    th {
+        text-align: left; padding: 8px 10px; border-bottom: 2px solid #334155;
+        color: #64748b; font-weight: 600; text-transform: uppercase;
+        font-size: 0.7rem; letter-spacing: 0.05em;
+    }
+    td { padding: 7px 10px; border-bottom: 1px solid #1e293b; }
+    tr:hover { background: #1a2744; }
+    .inst-tag {
+        background: #334155; padding: 2px 6px; border-radius: 4px;
+        font-size: 0.75rem; font-weight: 600;
+    }
+    .result-tp { color: #4ade80; font-weight: 600; }
+    .result-sl { color: #f87171; font-weight: 600; }
+    code {
+        background: #334155; padding: 2px 6px; border-radius: 4px;
+        font-size: 0.8rem;
+    }
+    @media (max-width: 768px) {
+        .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+</style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>ORB Multi-Instrument Dashboard</h1>
+            <p style="color: #64748b; font-size: 0.85rem;">Asian Range Breakout Strategy -- Live Trading</p>
+        </div>
+        <div class="header-time">Updated: 2026-03-05 18:27 UTC</div>
+    </div>
+
+    
+            <div style="background:#4a1d1d;border:1px solid #ef4444;border-radius:8px;padding:10px 16px;
+                        margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+                <span style="font-size:1.2rem;">&#x25CF;</span>
+                <span style="color:#ef4444;font-weight:600;">Process DOWN</span>
+                <span style="color:#fca5a5;font-size:0.85rem;">Last log: 2026-03-05 11:00:09 (2h 27m ago)
+                -- EOD close and BE rules WILL NOT FIRE</span>
+            </div>
+
+    
+        <div class="card">
+            <h2>IBKR Account <span style="color:#64748b;font-size:0.75rem;margin-left:8px;">(15:59 UTC)</span><span style="color:#fbbf24;font-size:0.75rem;margin-left:8px;">STALE -- 148m old</span></h2>
+            <div class="grid-4">
+                <div class="stat-box">
+                    <div class="stat-label">Net Liquidation</div>
+                    <div class="stat-value">$4212.49</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Cash Balance</div>
+                    <div class="stat-value">$9306.58</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Buying Power</div>
+                    <div class="stat-value">$9951.35</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Unrealized P&L</div>
+                    <div class="stat-value" style="color: #22c55e;">$51.83</div>
+                </div>
+            </div>
+        </div>
+        
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 16px; margin-bottom: 16px;">
+        
+        <div class="card inst-card">
+            <div class="inst-header">
+                <h3>XAUUSD</h3>
+                <span class="status-badge status-done">DONE TODAY</span>
+            </div>
+            <div class="inst-detail">
+                <div class="detail-row"><span class="detail-label">Date</span><span>2026-03-05</span></div><div class="detail-row"><span class="detail-label">Asian Range</span><span>5148.4 &mdash; 5195 (size: 46.57)</span></div><div class="detail-row"><span class="detail-label">Position</span><span class="dir-short">SHORT</span> @ 5147.9</div><div class="detail-row"><span class="detail-label">SL / TP</span><span style="color:#f87171">5145.9</span> / <span style="color:#4ade80">5055.3</span></div><div class="detail-row"><span class="detail-label">Breakeven</span><span class="badge-be">BE APPLIED</span></div><div class="detail-row"><span class="detail-label">Orders</span><span>Buy #91 | <span class="badge-be">Sell #94 FILLED</span></span></div><div class="detail-row evt-section"><span class="detail-label">Today</span><div class="evt-list"><div class="evt-line evt-info"><span class="evt-time">03:00:00</span> &#x1F50D; Pre-placement check <span class="evt-detail">&mdash; price=5162.44 | range 5148.45-5195.02 | INSIDE range</span></div><div class="evt-line evt-info"><span class="evt-time">03:00:00</span> &#x1F514; Trade window opened</div><div class="evt-line evt-info"><span class="evt-time">03:00:00</span> &#x1F4DD; Long levels set <span class="evt-detail">&mdash; entry=5195.02 SL=5148.45 TP=5288.16</span></div><div class="evt-line evt-info"><span class="evt-time">03:00:00</span> &#x1F4DD; Short levels set <span class="evt-detail">&mdash; entry=5148.45 SL=5195.02 TP=5055.31</span></div><div class="evt-line evt-info"><span class="evt-time">03:00:02</span> &#x2705; Buy bracket placed <span class="evt-detail">&mdash; order #91</span></div><div class="evt-line evt-info"><span class="evt-time">03:00:05</span> &#x2705; Sell bracket placed <span class="evt-detail">&mdash; order #94</span></div><div class="evt-line evt-info"><span class="evt-time">11:00:09</span> &#x1F6D1; Position closed</div></div></div>
+            </div>
+        </div>
+        <div class="card inst-card">
+            <div class="inst-header">
+                <h3>EURUSD</h3>
+                <span class="status-badge status-done">DONE TODAY</span>
+            </div>
+            <div class="inst-detail">
+                <div class="detail-row"><span class="detail-label">Date</span><span>2026-03-05</span></div><div class="detail-row"><span class="detail-label">Asian Range</span><span>1.1594 &mdash; 1.1647 (size: 0.005345)</span></div><div class="detail-row"><span class="detail-label">Position</span><span class="dir-short">SHORT</span> @ 1.1594</div><div class="detail-row"><span class="detail-label">SL / TP</span><span style="color:#f87171">1.1647</span> / <span style="color:#4ade80">1.1487</span></div><div class="detail-row"><span class="detail-label">Orders</span><span>Buy #85 | <span class="badge-be">Sell #88 FILLED</span></span></div><div class="detail-row evt-section"><span class="detail-label">Today</span><div class="evt-list"><div class="evt-line evt-info"><span class="evt-time">02:00:01</span> &#x1F50D; Pre-placement check <span class="evt-detail">&mdash; price=1.16082 | range 1.15940-1.16474 | INSIDE range</span></div><div class="evt-line evt-info"><span class="evt-time">02:00:01</span> &#x1F514; Trade window opened</div><div class="evt-line evt-info"><span class="evt-time">02:00:01</span> &#x1F4DD; Long levels set <span class="evt-detail">&mdash; entry=1.16474 SL=1.1594 TP=1.17543</span></div><div class="evt-line evt-info"><span class="evt-time">02:00:01</span> &#x1F4DD; Short levels set <span class="evt-detail">&mdash; entry=1.1594 SL=1.16474 TP=1.14871</span></div><div class="evt-line evt-info"><span class="evt-time">02:00:04</span> &#x2705; Buy bracket placed <span class="evt-detail">&mdash; order #85</span></div><div class="evt-line evt-info"><span class="evt-time">02:00:06</span> &#x2705; Sell bracket placed <span class="evt-detail">&mdash; order #88</span></div><div class="evt-line evt-info"><span class="evt-time">03:15:26</span> &#x1F6D1; Position closed</div><div class="evt-line evt-info"><span class="evt-time">03:15:26</span> &#x1F3AF; Trade closed <span class="evt-detail">&mdash; SHORT TP | Entry=1.15939 Exit=1.15909 | PnL=+0.00030/unit | Total=$+6.00</span></div></div></div>
+            </div>
+        </div>
+    </div>
+
+    
+        <div class="card activity-card">
+            <h2>Today's Activity</h2>
+            
+            <div class="activity-line">
+                <span class="activity-time">00:47:31</span>
+                <span class="activity-inst"><span class="inst-tag" style="background:#334155;color:#64748b">SYS</span></span>
+                <span class="activity-msg ">&#x2699; Connected to IBKR</span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">02:00:01</span>
+                <span class="activity-inst"><span class="inst-tag">EURUSD</span></span>
+                <span class="activity-msg ">&#x1F50D; Pre-placement check &mdash; <span class="evt-detail">price=1.16082 | range 1.15940-1.16474 | INSIDE range</span></span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">02:00:01</span>
+                <span class="activity-inst"><span class="inst-tag">EURUSD</span></span>
+                <span class="activity-msg ">&#x1F514; Trade window opened</span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">02:00:01</span>
+                <span class="activity-inst"><span class="inst-tag">EURUSD</span></span>
+                <span class="activity-msg ">&#x1F4DD; Long levels set &mdash; <span class="evt-detail">entry=1.16474 SL=1.1594 TP=1.17543</span></span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">02:00:01</span>
+                <span class="activity-inst"><span class="inst-tag">EURUSD</span></span>
+                <span class="activity-msg ">&#x1F4DD; Short levels set &mdash; <span class="evt-detail">entry=1.1594 SL=1.16474 TP=1.14871</span></span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">02:00:04</span>
+                <span class="activity-inst"><span class="inst-tag">EURUSD</span></span>
+                <span class="activity-msg good">&#x2705; Buy bracket placed</span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">02:00:06</span>
+                <span class="activity-inst"><span class="inst-tag">EURUSD</span></span>
+                <span class="activity-msg good">&#x2705; Sell bracket placed</span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">03:00:00</span>
+                <span class="activity-inst"><span class="inst-tag">XAUUSD</span></span>
+                <span class="activity-msg ">&#x1F50D; Pre-placement check &mdash; <span class="evt-detail">price=5162.44 | range 5148.45-5195.02 | INSIDE range</span></span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">03:00:00</span>
+                <span class="activity-inst"><span class="inst-tag">XAUUSD</span></span>
+                <span class="activity-msg ">&#x1F514; Trade window opened</span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">03:00:00</span>
+                <span class="activity-inst"><span class="inst-tag">XAUUSD</span></span>
+                <span class="activity-msg ">&#x1F4DD; Long levels set &mdash; <span class="evt-detail">entry=5195.02 SL=5148.45 TP=5288.16</span></span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">03:00:00</span>
+                <span class="activity-inst"><span class="inst-tag">XAUUSD</span></span>
+                <span class="activity-msg ">&#x1F4DD; Short levels set &mdash; <span class="evt-detail">entry=5148.45 SL=5195.02 TP=5055.31</span></span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">03:00:02</span>
+                <span class="activity-inst"><span class="inst-tag">XAUUSD</span></span>
+                <span class="activity-msg good">&#x2705; Buy bracket placed</span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">03:00:05</span>
+                <span class="activity-inst"><span class="inst-tag">XAUUSD</span></span>
+                <span class="activity-msg good">&#x2705; Sell bracket placed</span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">03:15:26</span>
+                <span class="activity-inst"><span class="inst-tag">EURUSD</span></span>
+                <span class="activity-msg good">&#x1F6D1; Position closed</span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">03:15:26</span>
+                <span class="activity-inst"><span class="inst-tag">EURUSD</span></span>
+                <span class="activity-msg good">&#x1F3AF; Trade closed &mdash; <span class="evt-detail">SHORT TP | Entry=1.15939 Exit=1.15909 | PnL=+0.00030/unit | Total=$+6.00</span></span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">05:09:53</span>
+                <span class="activity-inst"><span class="inst-tag" style="background:#334155;color:#64748b">SYS</span></span>
+                <span class="activity-msg warn">&#x274C; IBKR error &mdash; <span class="evt-detail">[105] Order being modified does not match original order.</span></span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">11:00:04</span>
+                <span class="activity-inst"><span class="inst-tag" style="background:#334155;color:#64748b">SYS</span></span>
+                <span class="activity-msg warn">&#x274C; IBKR error &mdash; <span class="evt-detail">[10148] OrderId 96 that needs to be cancelled cannot be cancelled, state: Cancelled.</span></span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">11:00:06</span>
+                <span class="activity-inst"><span class="inst-tag" style="background:#334155;color:#64748b">SYS</span></span>
+                <span class="activity-msg warn">&#x274C; IBKR error &mdash; <span class="evt-detail">[10349] Order TIF was set to DAY based on order preset.</span></span>
+            </div>
+            <div class="activity-line">
+                <span class="activity-time">11:00:09</span>
+                <span class="activity-inst"><span class="inst-tag">XAUUSD</span></span>
+                <span class="activity-msg good">&#x1F6D1; Position closed</span>
+            </div>
+        </div>
+
+    
+    <div class="card">
+        <h2>Overall Performance</h2>
+        <div class="grid-4">
+            <div class="stat-box">
+                <div class="stat-label">Total P&L</div>
+                <div class="stat-value" style="color: #22c55e;">+$244.13</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Trades</div>
+                <div class="stat-value">5</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Win Rate</div>
+                <div class="stat-value">80.0%</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Avg Hold</div>
+                <div class="stat-value">161 min</div>
+            </div>
+        </div>
+        <div class="grid-4" style="margin-top: 12px;">
+            <div class="stat-box">
+                <div class="stat-label">Avg Win</div>
+                <div class="stat-value" style="color:#22c55e;">+$63.83</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Avg Loss</div>
+                <div class="stat-value" style="color:#ef4444;">$-11.20</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Best</div>
+                <div class="stat-value" style="color:#22c55e;">+$151.03</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Worst</div>
+                <div class="stat-value" style="color: #ef4444;">$-11.20</div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <h3>XAUUSD -- 2 trades | Win rate: 100.0% | P&L: <span style="color: #22c55e;">+$195.53</span></h3>
+    </div>
+    <div class="card">
+        <h3>EURUSD -- 3 trades | Win rate: 66.7% | P&L: <span style="color: #22c55e;">+$48.60</span></h3>
+    </div>
+
+    <div class="card">
+        <h2>Trade History</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th><th>Time (UTC)</th><th>Instrument</th>
+                    <th>Dir</th><th>Entry</th><th>Exit</th>
+                    <th>SL</th><th>TP</th><th>Result</th>
+                    <th>Hold</th><th>P&L</th><th>Cumul.</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+        <tr>
+            <td>2026-03-05</td>
+            <td>16:00:03</td>
+            <td><span class="inst-tag">XAUUSD</span></td>
+            <td>SHORT</td>
+            <td>5147.91</td>
+            <td>5103.41</td>
+            <td>5145.91</td>
+            <td>5055.31</td>
+            <td><span class="">TIME</span></td>
+            <td>470m</td>
+            <td style="color: #22c55e;">+$44.50</td>
+            <td style="color: #22c55e;">+$244.13</td>
+        </tr>
+        <tr>
+            <td>2026-03-05</td>
+            <td>08:15:26</td>
+            <td><span class="inst-tag">EURUSD</span></td>
+            <td>SHORT</td>
+            <td>1.15939</td>
+            <td>1.15909</td>
+            <td>1.164745</td>
+            <td>1.14871</td>
+            <td><span class="result-tp">TP</span></td>
+            <td>11m</td>
+            <td style="color: #22c55e;">+$6.00</td>
+            <td style="color: #22c55e;">+$199.63</td>
+        </tr>
+        <tr>
+            <td>2026-03-04</td>
+            <td>13:45:14</td>
+            <td><span class="inst-tag">EURUSD</span></td>
+            <td>LONG</td>
+            <td>1.16429</td>
+            <td>1.16373</td>
+            <td>1.157465</td>
+            <td>1.16841</td>
+            <td><span class="result-sl">SL</span></td>
+            <td>24m</td>
+            <td style="color: #ef4444;">$-11.20</td>
+            <td style="color: #22c55e;">+$193.63</td>
+        </tr>
+        <tr>
+            <td>2026-03-03</td>
+            <td>11:29:05</td>
+            <td><span class="inst-tag">XAUUSD</span></td>
+            <td>SHORT</td>
+            <td>5304.73</td>
+            <td>5153.7</td>
+            <td>5302.73</td>
+            <td>5156.19</td>
+            <td><span class="result-tp">TP</span></td>
+            <td>174m</td>
+            <td style="color: #22c55e;">+$151.03</td>
+            <td style="color: #22c55e;">+$204.83</td>
+        </tr>
+        <tr>
+            <td>2026-03-02</td>
+            <td>16:52:57</td>
+            <td><span class="inst-tag">EURUSD</span></td>
+            <td>SHORT</td>
+            <td>1.17164</td>
+            <td>1.16895</td>
+            <td>1.17959</td>
+            <td>1.16767</td>
+            <td><span class="result-tp">TP</span></td>
+            <td>124m</td>
+            <td style="color: #22c55e;">+$53.80</td>
+            <td style="color: #22c55e;">+$53.80</td>
+        </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p style="color: #475569; font-size: 0.75rem; text-align: center; margin-top: 20px;">
+        Generated by status_report.py | Data from v5_xauusd_orb trade logs
+    </p>
+</body>
+</html>

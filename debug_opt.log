@@ -1,7 +1,0 @@
-2025-12-30 17:45:24,619 - MLSignalStrategy_V2 - INFO - Model loaded from C:\nautilus0\models\ml_model_mtf_backup.pkl
-2025-12-30 17:45:24,619 - MLSignalStrategy_V2 - INFO - MLSignalStrategyV2 initialized - Three-position bracket approach
-2025-12-30 17:45:25,299 - MLSignalStrategy_V2 - INFO - Strategy started - bars fed directly from ib_insync
-2025-12-30 17:45:25,299 - MLSignalStrategy_V2 - INFO - Instrument: EURUSD.IDEALPRO
-2025-12-30 17:45:25,299 - MLSignalStrategy_V2 - INFO - Position sizes: POS1=50000, POS2=0, POS3=0
-2025-12-30 17:45:25,299 - MLSignalStrategy_V2 - INFO - TP mults: POS1=0.8x, POS2=0.8x | SL: 1.2x ATR
-2025-12-30 17:45:25,299 - MLSignalStrategy_V2 - INFO - Weekday-specific hour filtering enabled (config in EST)

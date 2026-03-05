@@ -17,7 +17,7 @@ Configuration (env vars, all optional):
   TICK_SYMBOL     IBKR contract symbol,  default: EUR
   TICK_CURRENCY   IBKR contract currency, default: USD
   TICK_EXCHANGE   IBKR exchange,          default: IDEALPRO
-  TICK_MODEL_STEM Model artifact stem,    default: meta_model_ema_eurusd
+  TICK_MODEL_STEM Model artifact stem,    default: meta_model_mfe_eurusd
   TICK_IB_HOST    IBKR gateway host,      default: 127.0.0.1
   TICK_IB_PORT    IBKR gateway port,      default: 4002 (IB Gateway paper)
   TICK_CLIENT_ID  IBKR client ID,         default: 10
@@ -157,25 +157,30 @@ def _make_on_bar_callback(
             atr_norm = features.get("atr_norm", 0.0)
             atr      = atr_norm * close
 
+            # If using MFE regression, prob is the predicted MFE in ATR multiples.
+            # We use it to dynamically set the Take Profit.
+            # If it's a classification model, prob is a probability (0-1), so we fallback to _TP_ATR.
+            dynamic_tp_atr = prob if prob > 1.0 else _TP_ATR
+
             if signal == 1:
-                tp_price = (close + _SPREAD_EST) + atr * _TP_ATR
+                tp_price = (close + _SPREAD_EST) + atr * dynamic_tp_atr
                 sl_price = (close + _SPREAD_EST) - atr * _SL_ATR
                 side     = "buy"
             else:
-                tp_price = (close - _SPREAD_EST) - atr * _TP_ATR
+                tp_price = (close - _SPREAD_EST) - atr * dynamic_tp_atr
                 sl_price = (close - _SPREAD_EST) + atr * _SL_ATR
                 side     = "sell"
 
             if not should_trade:
                 logger.debug(
                     f"SIGNAL FILTERED  {direction}  ts={bar_ts}  "
-                    f"close={close:.5f}  prob={prob:.4f}  thresh={model.threshold:.4f}"
+                    f"close={close:.5f}  pred_mfe={prob:.4f}  thresh={model.threshold:.4f}"
                 )
                 return
 
             logger.info(
                 f"TRADE SIGNAL  {direction}  ts={bar_ts}  close={close:.5f}  "
-                f"prob={prob:.4f}  thresh={model.threshold:.4f}  "
+                f"pred_mfe={prob:.4f}  thresh={model.threshold:.4f}  "
                 f"TP={tp_price:.5f}  SL={sl_price:.5f}  "
                 f"{'DRY-RUN — order suppressed' if dry_run else ''}"
             )
@@ -207,7 +212,7 @@ def main(dry_run: bool = False) -> None:
     symbol        = os.getenv("TICK_SYMBOL",   "EUR")
     currency      = os.getenv("TICK_CURRENCY", "USD")
     exchange      = os.getenv("TICK_EXCHANGE", "IDEALPRO")
-    model_stem    = os.getenv("TICK_MODEL_STEM", "meta_model_ema_eurusd")
+    model_stem = os.getenv("TICK_MODEL_STEM", "meta_model_mfe_eurusd")
     model_dir     = _PROJECT_ROOT / "trading_system_v4" / "model"
 
     ticks_per_bar, bar_size_source = _resolve_ticks_per_bar(

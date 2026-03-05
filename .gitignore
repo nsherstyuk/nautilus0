@@ -62,3 +62,12 @@ TRADER-V2-*.log
 archive/
 
 *.bundle
+
+# Large binary data vaults
+tick_vault_data/
+
+# Live state files (machine-specific, runtime-generated)
+trading_system_v4/state/
+v5_xauusd_orb/state/
+v5_xauusd_orb/status.html
+v5_xauusd_orb/logs/

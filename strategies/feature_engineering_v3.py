@@ -67,7 +67,15 @@ def _mama_fama(close: pd.Series, fast: float = 0.5, slow: float = 0.05) -> tuple
 
 
 def _resample_ohlcv(df: pd.DataFrame, rule: str) -> pd.DataFrame:
-    """Resample 15m OHLCV to a higher timeframe."""
+    """Resample 15m OHLCV to a higher timeframe.
+
+    WARNING: uses pandas defaults (label='left', closed='left') which
+    introduces lookahead when combined with ffill.  See AUDIT notes.
+    The production v3 XGB model was trained with this behaviour — do NOT
+    change without retraining. A clean ``label='right', closed='right'``
+    version eliminates the leak but requires a from-scratch retrain that
+    currently shows the 15m + HTF feature set lacks sufficient edge.
+    """
     resampled = df.resample(rule).agg({
         'open': 'first',
         'high': 'max',

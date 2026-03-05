@@ -1242,24 +1242,26 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         if len(self.bars_buffer_30m) < self._min_warmup_bars_30m:
             return None
 
+        recent_15m = list(self.bars_buffer_15m)[-self._min_warmup_bars_15m:]
         data_15m = {
-            'open': [float(b.open) for b in self.bars_buffer_15m],
-            'high': [float(b.high) for b in self.bars_buffer_15m],
-            'low': [float(b.low) for b in self.bars_buffer_15m],
-            'close': [float(b.close) for b in self.bars_buffer_15m],
-            'volume': [float(getattr(b, 'volume', 0.0)) for b in self.bars_buffer_15m],
-            'timestamp': [pd.Timestamp(b.ts_event, unit='ns', tz='UTC') for b in self.bars_buffer_15m],
+            'open': [float(b.open) for b in recent_15m],
+            'high': [float(b.high) for b in recent_15m],
+            'low': [float(b.low) for b in recent_15m],
+            'close': [float(b.close) for b in recent_15m],
+            'volume': [float(getattr(b, 'volume', 0.0)) for b in recent_15m],
+            'timestamp': [pd.Timestamp(b.ts_event, unit='ns', tz='UTC') for b in recent_15m],
         }
         df_15m = pd.DataFrame(data_15m)
         df_15m.set_index('timestamp', inplace=True)
         df_15m = df_15m.loc[~df_15m.index.duplicated(keep='last')]
 
+        recent_30m = list(self.bars_buffer_30m)[-self._min_warmup_bars_30m:]
         data_30m = {
-            'open': [float(b.open) for b in self.bars_buffer_30m],
-            'close': [float(b.close) for b in self.bars_buffer_30m],
-            'high': [float(b.high) for b in self.bars_buffer_30m],
-            'low': [float(b.low) for b in self.bars_buffer_30m],
-            'timestamp': [pd.Timestamp(b.ts_event, unit='ns', tz='UTC') for b in self.bars_buffer_30m],
+            'open': [float(b.open) for b in recent_30m],
+            'close': [float(b.close) for b in recent_30m],
+            'high': [float(b.high) for b in recent_30m],
+            'low': [float(b.low) for b in recent_30m],
+            'timestamp': [pd.Timestamp(b.ts_event, unit='ns', tz='UTC') for b in recent_30m],
         }
         df_30m = pd.DataFrame(data_30m)
         df_30m.set_index('timestamp', inplace=True)
@@ -2096,9 +2098,11 @@ class MLSignalStrategyV2EntryConfirmedAdaptiveFailSafe(Strategy):
         if len(self.bars_buffer_15m) < 14:
             return None
 
-        highs = [float(b.high) for b in self.bars_buffer_15m]
-        lows = [float(b.low) for b in self.bars_buffer_15m]
-        closes = [float(b.close) for b in self.bars_buffer_15m]
+        # Use only the last 100 bars to speed up calculation
+        recent_bars = list(self.bars_buffer_15m)[-100:]
+        highs = [float(b.high) for b in recent_bars]
+        lows = [float(b.low) for b in recent_bars]
+        closes = [float(b.close) for b in recent_bars]
 
         df = pd.DataFrame({'high': highs, 'low': lows, 'close': closes})
         atr = ta.atr(df['high'], df['low'], df['close'], length=14)

@@ -1,0 +1,175 @@
+
+python data/ingest_historical.py
+
+python live/run_live_mtf_v2_dashboard_supervisor.py
+
+python 
+
+
+
+live\run_ 
+
+python live/run_live_mtf_v2_entry_confirmed_v2.py
+
+*********************************
+C:\nautilus0\.venv\Scripts\python.exe C:\nautilus0\live\run_live_mtf_v2_entry_confirmed_adaptive_failsafe_supervisor.py
+*************************************
+
+cd c:\nautilus0
+python run_backtest_mtf_v2_entry_confirmed.py
+
+python run_backtest_mtf_v2_replay.py
+Weekly Optimization Pipeline — Ready ✅
+Script: c:\nautilus0\scripts\weekly_optimize_hours.py
+
+Usage
+bash
+# Preview recommendations (dry run - default)
+python scripts/weekly_optimize_hours.py
+ 
+# Apply exclusions to .env.mtf_v2 (creates backup first)
+python scripts/weekly_optimize_hours.py --apply
+ 
+# Use a specific backtest result
+python scripts/weekly_optimize_hours.py --backtest-dir MTF_V2_ENTRY_CONFIRMED_20260209_144652
+ 
+# Use live trades CSV (when you have enough live data)
+python scripts/weekly_optimize_hours.py --live-csv path/to/trades.csv
+ 
+# Custom win rate threshold
+python scripts/weekly_optimize_hours.py --min-wr 70
+ 
+# Disable all exclusions
+python scripts/weekly_optimize_hours.py --disable
+Weekend Workflow
+Saturday/Sunday: Run a fresh backtest with current config
+Run python scripts/weekly_optimize_hours.py to preview
+If it looks good: python scripts/weekly_optimize_hours.py --apply
+The supervisor auto-restarts Monday with new exclusions
+As live trades accumulate, switch to --live-csv for ground-truth data
+What It Does
+Reads hour/weekday matrices from the latest backtest (or live CSV)
+Keeps only slots with WR ≥ 68% AND positive PnL
+Excludes all other slots that have trades
+Leaves zero-trade slots open (no data to judge)
+Always excludes Saturday
+Creates a backup of .env.mtf_v2 before any changes
+
+
+**********************************************************************************************
+Perfect. Here are copy-paste prompts you can use immediately.
+
+1) Daily preflight (Live Ops Agent)
+Use with MTF Live Ops Controller:
+
+“Run daily preflight for current MTF V2 adaptive-failsafe deployment.
+
+Scope:
+
+Active runner/supervisor process health.
+IB connectivity and recent disconnect/reconnect events.
+Last 12h strategy activity summary from live logs:
+count [BAR], [BAR_METRICS], Signal generated, [SUBMIT],
+top filter reasons and counts.
+Open positions/orders safety state.
+Confirm startup guard behavior present.
+Confirm no unprotected-position warnings.
+Output required:
+
+Preflight table (PASS/FAIL per check)
+Top risks (max 5)
+Final verdict: SAFE_TO_RUN or UNSAFE_TO_RUN
+If unsafe: exact remediation steps”
+2) Weekly research run (Research Agent)
+Use with MTF Research Operator:
+
+“Run one controlled weekly experiment batch for MTF V2 entry-confirmed adaptive.
+
+Constraints:
+
+Change only ONE parameter family this week.
+Keep all other env settings fixed.
+Backup env before changes and restore after runs.
+Use current production candidate as baseline.
+Experiment design:
+
+4–6 candidates max.
+Same backtest date range for all.
+Report failures but continue safe runs.
+Output required:
+
+Candidate parameter table
+KPI table per candidate:
+net PnL, win rate, max drawdown, Sharpe, trades
+Ranked top 3 with rationale
+Recommendation: HOLD or SEND_TO_PROMOTION
+Exact rerun commands”
+3) Promotion gate check (Promotion Agent)
+Use with MTF Promotion Gatekeeper:
+
+“Evaluate candidate <CANDIDATE_ID> against promotion gates using baseline <BASELINE_ID>.
+
+Apply strict gates:
+
+trades >= 80
+win rate >= 63%
+max drawdown <= 12% of initial balance (or explain if using different approved envelope)
+no single weekday PnL concentration >45%
+no single hour PnL concentration >35%
+no critical runtime/log errors
+Output required:
+
+Gate-by-gate PASS/FAIL table
+Candidate vs baseline deltas
+Final decision: PROMOTE / REJECT / HOLD_FOR_MORE_DATA
+If not promote: exact remediation and next test design
+Rollback notes”
+4) Deployment/restart (Live Ops Agent)
+Use with MTF Live Ops Controller only when Promotion says PROMOTE:
+
+“Execute controlled paper-live deployment checklist for the approved candidate.
+
+Steps:
+
+preflight safety checks,
+controlled restart of supervisor/child,
+verify first 5–10 minutes health:
+bars updating,
+no stale-startup-triggered entry,
+no protection warnings,
+no reconnect loop.
+Output required:
+
+Actions performed
+Post-restart checks with PASS/FAIL
+Final verdict: SAFE_TO_RUN / UNSAFE_TO_RUN
+If unsafe: immediate rollback steps”
+5) Orchestration prompt for me (single command)
+Use with me to drive all steps:
+
+“Start orchestrated cycle:
+
+generate prompt for Live Ops preflight,
+wait for response and assess,
+generate prompt for weekly Research batch,
+assess results and generate Promotion prompt,
+if promoted, generate Live Ops deployment prompt.
+At each stage, provide GO/NO-GO and next prompt only.”
+If you want, I can also give a super-short 3-line daily version for fast routine use.
+*****************************************************************************
+
+
+
+ Quick status check (offline, from trade CSVs + state files):
+python -m v5_xauusd_orb.status_report
+ 
+# With live IBKR account balance, positions, open orders:
+python -m v5_xauusd_orb.status_report --live
+ 
+# Generate without opening browser:
+python -m v5_xauusd_orb.status_report --no-open
+
+
+python -m v5_xauusd_orb.orb_multi_live
+
+

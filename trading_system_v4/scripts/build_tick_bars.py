@@ -26,30 +26,31 @@ import pandas as pd
 from tick_vault import download_range, read_tick_data
 
 # ── Config ────────────────────────────────────────────────────────────────────
-SYMBOL       = "EURUSD"
-START_YEAR   = 2015
-END_YEAR     = 2025
+SYMBOL        = "EURUSD"  # overridden by --symbol arg
+START_YEAR    = 2015
+END_YEAR      = 2026
 TICKS_PER_BAR = 1000
 MONTH_TIMEOUT = 240  # seconds per month before giving up
 
-ROOT       = Path(__file__).resolve().parents[2]
-DATA_DIR   = ROOT / "trading_system_v4" / "data"
+ROOT     = Path(__file__).resolve().parents[2]
+DATA_DIR = ROOT / "trading_system_v4" / "data"
+
+# Derived paths — recalculated after arg parsing in __main__
 OUTPUT_FILE = DATA_DIR / f"{SYMBOL.lower()}_{TICKS_PER_BAR}t_bars.parquet"
-LOG_FILE    = DATA_DIR / "build_tick_bars.log"
+LOG_FILE    = DATA_DIR / f"build_tick_bars_{SYMBOL.lower()}.log"
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-handler_stdout = logging.StreamHandler(sys.stdout)
-handler_file   = logging.FileHandler(LOG_FILE, encoding="utf-8")
 fmt = logging.Formatter("%(asctime)s  %(levelname)-7s  %(message)s", datefmt="%H:%M:%S")
+
+handler_stdout = logging.StreamHandler(sys.stdout)
 handler_stdout.setFormatter(fmt)
-handler_file.setFormatter(fmt)
 
 log = logging.getLogger("build")
 log.setLevel(logging.DEBUG)
 log.addHandler(handler_stdout)
-log.addHandler(handler_file)
+# File handler added in __main__ after symbol is known
 
 
 # ── Bar builder (identical logic to download_tick_data.py) ────────────────────
@@ -131,15 +132,15 @@ def save_month(df_bars: pd.DataFrame) -> int:
 
 
 # ── Per-month async worker ────────────────────────────────────────────────────
-async def process_month(year: int, month: int) -> pd.DataFrame:
+async def process_month(year: int, month: int, symbol: str) -> pd.DataFrame:
     start_date = datetime(year, month, 1)
     end_date   = datetime(year + 1, 1, 1) if month == 12 else datetime(year, month + 1, 1)
 
     log.info(f"[{year}-{month:02d}] downloading/verifying cache …")
-    await download_range(symbol=SYMBOL, start=start_date, end=end_date)
+    await download_range(symbol=symbol, start=start_date, end=end_date)
 
     log.info(f"[{year}-{month:02d}] reading ticks …")
-    df_raw = read_tick_data(symbol=SYMBOL, start=start_date, end=end_date)
+    df_raw = read_tick_data(symbol=symbol, start=start_date, end=end_date)
 
     if df_raw is None or df_raw.empty:
         log.warning(f"[{year}-{month:02d}] no tick data returned — skipping")
@@ -157,9 +158,9 @@ async def process_month(year: int, month: int) -> pd.DataFrame:
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
-async def main(start_year: int, end_year: int) -> None:
+async def main(start_year: int, end_year: int, symbol: str) -> None:
     log.info("=" * 60)
-    log.info(f"build_tick_bars  {SYMBOL}  {TICKS_PER_BAR}t  "
+    log.info(f"build_tick_bars  {symbol}  {TICKS_PER_BAR}t  "
              f"{start_year}–{end_year}  timeout={MONTH_TIMEOUT}s/month")
     log.info(f"Output: {OUTPUT_FILE}")
     log.info("=" * 60)
@@ -185,7 +186,7 @@ async def main(start_year: int, end_year: int) -> None:
             tag = f"{year}-{month:02d}"
             try:
                 df_bars = await asyncio.wait_for(
-                    process_month(year, month),
+                    process_month(year, month, symbol),
                     timeout=MONTH_TIMEOUT,
                 )
             except asyncio.TimeoutError:
@@ -218,11 +219,23 @@ async def main(start_year: int, end_year: int) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--start", type=int, default=START_YEAR)
-    parser.add_argument("--end",   type=int, default=END_YEAR)
+    parser.add_argument("--start",  type=int, default=START_YEAR)
+    parser.add_argument("--end",    type=int, default=END_YEAR)
+    parser.add_argument("--symbol", type=str, default=SYMBOL,
+                        help="Dukascopy symbol, e.g. EURUSD, XAUUSD, USDCAD")
     args = parser.parse_args()
+
+    # Patch globals so get_resume_point() / save_month() use correct paths
+    SYMBOL      = args.symbol.upper()
+    OUTPUT_FILE = DATA_DIR / f"{SYMBOL.lower()}_{TICKS_PER_BAR}t_bars.parquet"
+    LOG_FILE    = DATA_DIR / f"build_tick_bars_{SYMBOL.lower()}.log"
+
+    # Add per-symbol file handler now that LOG_FILE is known
+    handler_file = logging.FileHandler(LOG_FILE, encoding="utf-8")
+    handler_file.setFormatter(fmt)
+    log.addHandler(handler_file)
 
     if os.name == "nt":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-    asyncio.run(main(args.start, args.end))
+    asyncio.run(main(args.start, args.end, SYMBOL))
