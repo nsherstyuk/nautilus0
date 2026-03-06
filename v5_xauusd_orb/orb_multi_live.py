@@ -52,6 +52,7 @@ except ImportError:
 import pandas as pd
 
 from v5_xauusd_orb.config import load_config, Config, InstrumentConfig, ROOT
+from v5_xauusd_orb.guardrails import Guardrails, graceful_shutdown
 
 
 # ── Logging ───────────────────────────────────────────────────────────────────
@@ -473,11 +474,13 @@ class InstrumentManager:
     """Manages one instrument's ORB lifecycle within the shared connection."""
 
     def __init__(self, inst: InstrumentConfig, conn: SharedConnection,
-                 state_dir: str, log: logging.Logger, dry_run: bool):
+                 state_dir: str, log: logging.Logger, dry_run: bool,
+                 guardrails: Guardrails = None):
         self.inst = inst
         self.conn = conn
         self.log = log
         self.dry_run = dry_run
+        self.guardrails = guardrails
         self.state = InstrumentState(state_dir, inst.name)
         self.tag = f"[{inst.name}]"
         self.dec = inst.price_decimals
@@ -561,6 +564,14 @@ class InstrumentManager:
         # ── RANGE_COMPUTED: place bracket orders when trade window opens ──
         elif state.status == InstrumentState.RANGE_COMPUTED:
             if hour >= inst.trade_start_hour:
+                # Guardrail: check daily loss limit + max positions
+                if self.guardrails and not self.guardrails.can_trade(
+                        self.conn, inst.name):
+                    self.log.warning(
+                        f"{self.tag} GUARDRAIL blocked order placement")
+                    state.status = InstrumentState.DONE_TODAY
+                    state.save()
+                    return
                 self.log.info(
                     f"{self.tag} Trade window check PASSED: "
                     f"hour={hour} >= trade_start={inst.trade_start_hour}")
@@ -1042,6 +1053,7 @@ class InstrumentManager:
         price = self.conn.get_price(self.inst.name) or state.entry_price
         pnl = ((price - state.entry_price) if state.direction == "LONG"
                else (state.entry_price - price))
+        pnl_total = round(pnl * self.inst.qty, 2)
         hold_m = (int((now - datetime.fromisoformat(
             state.entry_time)).total_seconds() / 60)
             if state.entry_time else 0)
@@ -1059,12 +1071,17 @@ class InstrumentManager:
             'range_size': state.range_size,
             'qty': self.inst.qty,
             'pnl_per_unit': round(pnl, self.dec),
-            'pnl_total': round(pnl * self.inst.qty, 2),
+            'pnl_total': pnl_total,
             'result': 'TIME',
             'hold_minutes': hold_m,
         }, self.trade_log)
         state.status = InstrumentState.DONE_TODAY
         state.save()
+        # Guardrail: track P&L
+        if self.guardrails:
+            self.guardrails.on_trade_closed(
+                pnl_total, self.inst.name, state.direction,
+                'TIME', state.entry_price, price)
 
     def _record_exit(self, now: datetime, done: bool):
         """Record a completed trade (SL/TP/BE exit)."""
@@ -1086,12 +1103,13 @@ class InstrumentManager:
             state.entry_time)).total_seconds() / 60)
             if state.entry_time else 0)
 
+        pnl_total = round(pnl * self.inst.qty, 2)
         self.log.info(
             f"{self.tag} Trade closed: {state.direction} {result} | "
             f"Entry={state.entry_price:.{self.dec}f} "
             f"Exit={exit_price:.{self.dec}f} | "
             f"PnL={pnl:+.{self.dec}f}/unit | "
-            f"Total=${pnl * self.inst.qty:+.2f}")
+            f"Total=${pnl_total:+.2f}")
 
         log_trade({
             'timestamp': now.isoformat(),
@@ -1107,13 +1125,19 @@ class InstrumentManager:
             'range_size': state.range_size,
             'qty': self.inst.qty,
             'pnl_per_unit': round(pnl, self.dec),
-            'pnl_total': round(pnl * self.inst.qty, 2),
+            'pnl_total': pnl_total,
             'result': result,
             'hold_minutes': hold_m,
         }, self.trade_log)
 
         state.status = InstrumentState.DONE_TODAY
         state.save()
+
+        # Guardrail: track P&L + notify
+        if self.guardrails:
+            self.guardrails.on_trade_closed(
+                pnl_total, self.inst.name, state.direction,
+                result, state.entry_price, exit_price)
 
         # Clean up temp attributes
         self._exit_price = None
@@ -1156,7 +1180,8 @@ def _snapshot_account(conn: SharedConnection, cfg: Config, log: logging.Logger):
 # ── Main Loop ─────────────────────────────────────────────────────────────────
 
 def run_day(managers: list[InstrumentManager], conn: SharedConnection,
-            cfg: Config, log: logging.Logger):
+            cfg: Config, log: logging.Logger,
+            guardrails: Guardrails = None):
     """Run one trading day for all instruments."""
     today_str = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
     poll = cfg.strategy.poll_interval
@@ -1166,6 +1191,10 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
         if mgr.state.trade_date != today_str:
             log.info(f"{mgr.tag} New day: {today_str}")
             mgr.reset_for_new_day(today_str)
+
+    # Guardrail: reset daily P&L tracker
+    if guardrails:
+        guardrails.on_new_day(today_str, cfg.paths.log_dir)
 
     # Verify any ORDERS_PLACED states still have live orders at IBKR
     for mgr in managers:
@@ -1211,6 +1240,8 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
                 mgr.tick(now)
             except Exception as e:
                 log.error(f"{mgr.tag} Error in tick: {e}", exc_info=True)
+                if guardrails:
+                    guardrails.on_error(str(e), mgr.inst.name)
 
             if mgr.state.status != InstrumentState.DONE_TODAY:
                 # Check if trade window has passed without action
@@ -1292,6 +1323,9 @@ def main():
         print("\n  WARNING: LIVE MODE -- real orders will be placed!")
         print("  Press Ctrl+C to abort.\n")
 
+    # Initialize guardrails
+    guards = Guardrails(cfg, log)
+
     conn = SharedConnection(cfg, log)
     if not conn.connect():
         log.error("Could not connect to IBKR after retries")
@@ -1303,13 +1337,13 @@ def main():
             log.error(f"Cannot qualify {name} -- removing from session")
             continue
 
-    # Create managers
+    # Create managers (with guardrails)
     managers = []
     for name, inst in enabled.items():
         if name not in conn.contracts:
             continue
         mgr = InstrumentManager(inst, conn, cfg.paths.state_dir,
-                                log, args.dry_run)
+                                log, args.dry_run, guardrails=guards)
         managers.append(mgr)
 
     if not managers:
@@ -1320,12 +1354,14 @@ def main():
     log.info(f"Active instruments: "
              f"{', '.join(m.inst.name for m in managers)}")
 
+    # Guardrail: startup scan (orphans, load today's P&L)
+    today_str = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d")
+    guards.on_startup(conn, managers, today_str, cfg.paths.log_dir)
+
     def shutdown(signum, frame):
         log.info("Shutdown signal received")
-        if not args.dry_run:
-            for mgr in managers:
-                mgr._cancel_and_close()
-        conn.disconnect()
+        graceful_shutdown(managers, conn, log,
+                          notifier=guards.notifier, reason="signal")
         sys.exit(0)
 
     signal_mod.signal(signal_mod.SIGINT, shutdown)
@@ -1333,7 +1369,7 @@ def main():
 
     try:
         while True:
-            run_day(managers, conn, cfg, log)
+            run_day(managers, conn, cfg, log, guardrails=guards)
 
             # Sleep until next UTC midnight + 10 min
             now = datetime.now(tz=timezone.utc)
@@ -1355,12 +1391,8 @@ def main():
     except KeyboardInterrupt:
         log.info("Interrupted by user")
     finally:
-        if not args.dry_run:
-            log.info("Cleaning up...")
-            for mgr in managers:
-                mgr._cancel_and_close()
-        conn.disconnect()
-        log.info("Disconnected from IBKR")
+        graceful_shutdown(managers, conn, log,
+                          notifier=guards.notifier, reason="exit")
 
 
 if __name__ == "__main__":

@@ -100,6 +100,31 @@ class PathsConfig:
 
 
 @dataclass
+class NotificationConfig:
+    enabled: bool = False
+    smtp_host: str = "smtp.gmail.com"
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    from_addr: str = ""
+    to_addr: str = ""
+    notify_on_fill: bool = True
+    notify_on_error: bool = True
+    notify_on_startup: bool = True
+    notify_on_shutdown: bool = True
+    notify_on_daily_loss_limit: bool = True
+
+
+@dataclass
+class GuardrailsConfig:
+    daily_loss_limit_usd: float = 50.0
+    max_positions_per_instrument: int = 1
+    cancel_orphaned_orders: bool = True
+    close_orphaned_positions: bool = False
+    notifications: NotificationConfig = field(default_factory=NotificationConfig)
+
+
+@dataclass
 class SignalConfig:
     history_days: int = 30
 
@@ -141,6 +166,7 @@ class Config:
     gateway: GatewayConfig = field(default_factory=GatewayConfig)
     paths: PathsConfig = field(default_factory=PathsConfig)
     signal: SignalConfig = field(default_factory=SignalConfig)
+    guardrails: GuardrailsConfig = field(default_factory=GuardrailsConfig)
     instruments: dict = field(default_factory=dict)  # name -> InstrumentConfig
 
 
@@ -175,6 +201,14 @@ def load_config(path: Path | str | None = None) -> Config:
         _merge(cfg.gateway, raw.get('gateway'))
         _merge(cfg.paths, raw.get('paths'))
         _merge(cfg.signal, raw.get('signal'))
+
+        # Load guardrails config
+        gr_raw = raw.get('guardrails', {})
+        if gr_raw:
+            notif_raw = gr_raw.pop('notifications', None)
+            _merge(cfg.guardrails, gr_raw)
+            if notif_raw:
+                _merge(cfg.guardrails.notifications, notif_raw)
 
         # Load multi-instrument configs
         instruments_raw = raw.get('instruments', {})

@@ -134,6 +134,39 @@ instruments:
     price_decimals: 5
     pip_label: "pip"
 
-# ── Signal script ────────────────────────────────────────────
+# ── Guardrails ──────────────────────────────────────────────
+guardrails:
+  # Daily loss limit: skip remaining instruments if total realized
+  # loss today exceeds this amount (in USD). 0 = disabled.
+  daily_loss_limit_usd: 50.0
+
+  # Max positions: if we detect more than 1 position per instrument,
+  # refuse to place new orders (prevents double-entry bugs).
+  max_positions_per_instrument: 1
+
+  # Orphaned order/position cleanup on startup:
+  # If we find open orders or positions at IBKR that don't belong
+  # to any active instrument state, log a warning and optionally cancel.
+  cancel_orphaned_orders: true
+  close_orphaned_positions: false    # false = log warning only, true = auto-close
+
+  # Email notifications (via SMTP).
+  # Set enabled: true and fill in credentials to activate.
+  notifications:
+    enabled: false
+    smtp_host: "smtp.gmail.com"
+    smtp_port: 587
+    smtp_user: ""              # your-email@gmail.com
+    smtp_password: ""          # app-specific password (NOT your Google password)
+    from_addr: ""
+    to_addr: ""
+    # Which events trigger emails:
+    notify_on_fill: true
+    notify_on_error: true
+    notify_on_startup: true
+    notify_on_shutdown: true
+    notify_on_daily_loss_limit: true
+
+# ── Signal script ────────────────────────────────────────
 signal:
   history_days: 30           # how many recent days to show
