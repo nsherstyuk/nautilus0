@@ -34,6 +34,11 @@ Read these files in order to understand how the project evolved.
 - **[2026-03-04_session_notes.md](2026-03-04_session_notes.md)** — Earlier parity investigation notes (carried forward)
 - **[2026-03-05_session_handover_latest.md](2026-03-05_session_handover_latest.md)** — Latest handover: dashboard improvements, repo cleanup, strategy validated live (+$244, 80% WR over 5 trades)
 
+### Phase 6: Guardrails & Reconciliation (Mar 5, 2026)
+- **`v5_xauusd_orb/reconcile.py`** — Live trade parity validator: parses live log, validates math/fills/BE/exits/P&L for each trade. 5/5 trades graded EXCELLENT.
+- **`v5_xauusd_orb/guardrails.py`** — 5 safety guardrails for real-money readiness: daily loss limit ($50), max position check, orphaned order detection, email notifications (SMTP), graceful shutdown (SIGINT/SIGTERM).
+- Config additions: `guardrails` section in `config.yaml`, `GuardrailsConfig`/`NotificationConfig` dataclasses in `config.py`.
+
 ## Key Decisions
 
 | Date | Decision | Rationale |
@@ -44,3 +49,4 @@ Read these files in order to understand how the project evolved.
 | Feb 28 | Deploy Config: 2h BE + $2 offset | Balances robustness vs. cost coverage |
 | Mar 2 | Add EURUSD as second instrument | Diversification, same ORB framework |
 | Mar 5 | Merge to main, repo cleanup | Strategy validated live, branch no longer needed |
+| Mar 5 | Add guardrails + reconciliation | Real-money readiness: loss limits, orphan detection, trade validation |
