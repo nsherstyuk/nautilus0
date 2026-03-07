@@ -89,6 +89,7 @@ TRADE_FIELDS = [
     'timestamp', 'date', 'instrument', 'direction', 'entry', 'exit',
     'sl', 'tp', 'range_high', 'range_low', 'range_size', 'qty',
     'pnl_per_unit', 'pnl_total', 'result', 'hold_minutes',
+    'mfe', 'mae', 'account_mode',
 ]
 
 
@@ -129,6 +130,8 @@ class InstrumentState:
         self.sell_order_id: int = 0
         self.be_applied: bool = False
         self.orders_placed_time: Optional[str] = None
+        self.mfe: float = 0
+        self.mae: float = 0
         self.load()
 
     def load(self):
@@ -157,6 +160,8 @@ class InstrumentState:
             'sell_order_id': self.sell_order_id,
             'be_applied': self.be_applied,
             'orders_placed_time': self.orders_placed_time,
+            'mfe': self.mfe,
+            'mae': self.mae,
         }
         self.state_file.write_text(json.dumps(data, indent=2))
 
@@ -175,6 +180,8 @@ class InstrumentState:
         self.sell_order_id = 0
         self.be_applied = False
         self.orders_placed_time = None
+        self.mfe = 0
+        self.mae = 0
         self.save()
 
 
@@ -475,12 +482,13 @@ class InstrumentManager:
 
     def __init__(self, inst: InstrumentConfig, conn: SharedConnection,
                  state_dir: str, log: logging.Logger, dry_run: bool,
-                 guardrails: Guardrails = None):
+                 guardrails: Guardrails = None, account_mode: str = 'paper'):
         self.inst = inst
         self.conn = conn
         self.log = log
         self.dry_run = dry_run
         self.guardrails = guardrails
+        self.account_mode = account_mode
         self.state = InstrumentState(state_dir, inst.name)
         self.tag = f"[{inst.name}]"
         self.dec = inst.price_decimals
@@ -623,6 +631,21 @@ class InstrumentManager:
                 return
 
             done = self._check_exit()
+
+            # Update MFE / MAE (best favorable / worst adverse excursion)
+            price = self.conn.get_price(self.inst.name)
+            if price is not None and state.entry_price:
+                if state.direction == "LONG":
+                    favor = price - state.entry_price
+                    adverse = state.entry_price - price
+                else:
+                    favor = state.entry_price - price
+                    adverse = price - state.entry_price
+                if favor > state.mfe:
+                    state.mfe = round(favor, self.dec)
+                if adverse > state.mae:
+                    state.mae = round(adverse, self.dec)
+                state.save()
 
             # Breakeven rule
             if not done and not state.be_applied and state.entry_time:
@@ -1053,6 +1076,18 @@ class InstrumentManager:
         price = self.conn.get_price(self.inst.name) or state.entry_price
         pnl = ((price - state.entry_price) if state.direction == "LONG"
                else (state.entry_price - price))
+        # Final MFE/MAE update with closing price
+        if state.entry_price:
+            if state.direction == "LONG":
+                favor = price - state.entry_price
+                adverse = state.entry_price - price
+            else:
+                favor = state.entry_price - price
+                adverse = price - state.entry_price
+            if favor > state.mfe:
+                state.mfe = round(favor, self.dec)
+            if adverse > state.mae:
+                state.mae = round(adverse, self.dec)
         pnl_total = round(pnl * self.inst.qty, 2)
         hold_m = (int((now - datetime.fromisoformat(
             state.entry_time)).total_seconds() / 60)
@@ -1074,6 +1109,9 @@ class InstrumentManager:
             'pnl_total': pnl_total,
             'result': 'TIME',
             'hold_minutes': hold_m,
+            'mfe': state.mfe,
+            'mae': state.mae,
+            'account_mode': self.account_mode,
         }, self.trade_log)
         state.status = InstrumentState.DONE_TODAY
         state.save()
@@ -1128,6 +1166,9 @@ class InstrumentManager:
             'pnl_total': pnl_total,
             'result': result,
             'hold_minutes': hold_m,
+            'mfe': state.mfe,
+            'mae': state.mae,
+            'account_mode': self.account_mode,
         }, self.trade_log)
 
         state.status = InstrumentState.DONE_TODAY
@@ -1338,12 +1379,14 @@ def main():
             continue
 
     # Create managers (with guardrails)
+    account_mode = 'live' if cfg.ibkr.port == 4001 else 'paper'
     managers = []
     for name, inst in enabled.items():
         if name not in conn.contracts:
             continue
         mgr = InstrumentManager(inst, conn, cfg.paths.state_dir,
-                                log, args.dry_run, guardrails=guards)
+                                log, args.dry_run, guardrails=guards,
+                                account_mode=account_mode)
         managers.append(mgr)
 
     if not managers:

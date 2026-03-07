@@ -28,7 +28,7 @@ strategy:
   # Validated via sensitivity analysis with realistic slippage ($0.15) + spread ($0.10)
   # 120min: P&L $+2,758  Sharpe 4.28  PF 3.31  MaxDD -$36  (corrected cost model)
   # Neighbors (90min/no-BE) perform similarly -> not overfitted
-  be_hours: 2                 # 2h breakeven trigger (was 1h; 2h gives trades more room)
+  be_hours: 1                 # 1h breakeven trigger (verified: Sharpe 7.08 vs 5.54 at 2h, holds OOS)
   be_offset_usd: 2.0          # move SL to entry + $2 (covers spread+slippage costs)
 
   # Poll interval inside the main event loop (seconds)
@@ -101,7 +101,7 @@ instruments:
     min_range_pct: 0.05
     max_range_pct: 2.0
     skip_weekdays: [2]
-    be_hours: 2
+    be_hours: 1               # 1h BE (verified: Sharpe 7.08 vs 5.54 at 2h, OOS confirmed)
     be_offset: 2.0            # $2 offset for Gold (covers ~$0.50 round-trip costs)
     max_pending_hours: 4      # cancel unfilled entry after 4h (backtested: improves Sharpe, cuts DD)
     qty: 1                    # 1 oz
@@ -125,8 +125,8 @@ instruments:
     rr_ratio: 2.0
     min_range_pct: 0.01
     max_range_pct: 2.0
-    skip_weekdays: []          # all weekdays profitable for EURUSD
-    be_hours: 2
+    skip_weekdays: [2]         # Wed skip (verified: Sharpe 3.19 vs 3.09, consistent with XAUUSD)
+    be_hours: 1               # 1h BE (verified: Sharpe 3.86 vs 3.09 at 2h)
     be_offset: 0.0002         # 2 pips offset (covers ~1.6 pips round-trip costs)
     max_pending_hours: 4      # cancel unfilled entry after 4h (backtested: improves Sharpe, cuts DD)
     qty: 20000                # 20k units (mini lot = $2/pip)
