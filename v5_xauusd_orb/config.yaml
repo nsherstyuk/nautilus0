@@ -101,16 +101,17 @@ instruments:
     min_range_pct: 0.05
     max_range_pct: 2.0
     skip_weekdays: [2]
-    be_hours: 1               # 1h BE (verified: Sharpe 7.08 vs 5.54 at 2h, OOS confirmed)
-    be_offset: 2.0            # $2 offset for Gold (covers ~$0.50 round-trip costs)
+    be_hours: 999             # DISABLED — blind BE overstates backtest (see CLAUDE_RESPONSE_4.md)
+    be_offset: 2.0            # $2 offset for Gold (unused while be_hours=999)
     max_pending_hours: 4      # cancel unfilled entry after 4h (backtested: improves Sharpe, cuts DD)
+    time_exit_minutes: 60      # close at market after 60min in trade (5m backtest: Sharpe 3.35→2.04 without)
     qty: 1                    # 1 oz
     # Display
     price_decimals: 2
     pip_label: "$"
 
   EURUSD:
-    enabled: true
+    enabled: false             # DISABLED — dilutes XAUUSD Sharpe at 1oz sizing (Windsurf research 2026-03-10)
     # IB contract
     symbol: "EUR"
     sec_type: "CASH"
@@ -126,10 +127,61 @@ instruments:
     min_range_pct: 0.01
     max_range_pct: 2.0
     skip_weekdays: [2]         # Wed skip (verified: Sharpe 3.19 vs 3.09, consistent with XAUUSD)
-    be_hours: 1               # 1h BE (verified: Sharpe 3.86 vs 3.09 at 2h)
-    be_offset: 0.0002         # 2 pips offset (covers ~1.6 pips round-trip costs)
+    be_hours: 999             # DISABLED — blind BE overstates backtest (see CLAUDE_RESPONSE_4.md)
+    be_offset: 0.0002         # 2 pips offset (unused while be_hours=999)
     max_pending_hours: 4      # cancel unfilled entry after 4h (backtested: improves Sharpe, cuts DD)
     qty: 20000                # 20k units (mini lot = $2/pip)
+    # Display
+    price_decimals: 5
+    pip_label: "pip"
+
+  USDJPY:
+    enabled: false             # DISABLED — marginal edge (Sharpe 0.86 true no-BE), dilutes portfolio
+    # IB contract
+    symbol: "JPY"
+    sec_type: "CASH"
+    exchange: "IDEALPRO"
+    currency: "USD"
+    # Session times (UTC hours)
+    asian_start_hour: 0
+    asian_end_hour: 6
+    trade_start_hour: 7       # London session (matches EURUSD)
+    trade_end_hour: 16
+    # Strategy
+    rr_ratio: 2.0
+    min_range_pct: 0.01
+    max_range_pct: 2.0
+    skip_weekdays: [2]         # Wed skip (consistent with other pairs)
+    be_hours: 999             # DISABLED — blind BE overstates backtest (see CLAUDE_RESPONSE_4.md)
+    be_offset: 0.02           # 2 pips offset (unused while be_hours=999)
+    max_pending_hours: 4
+    qty: 20000                # 20k units (mini lot, ~$2/pip at USD/JPY ~150)
+    point_value: 0.00667      # 1/USDJPY (~150) to convert JPY P&L to USD
+    # Display
+    price_decimals: 3
+    pip_label: "pip"
+
+  AUDUSD:
+    enabled: false             # DISABLED — fails OOS validation (Sharpe -0.51 in 2021-2026)
+    # IB contract
+    symbol: "AUD"
+    sec_type: "CASH"
+    exchange: "IDEALPRO"
+    currency: "USD"
+    # Session times (UTC hours)
+    asian_start_hour: 0
+    asian_end_hour: 6
+    trade_start_hour: 7       # London session (matches EURUSD)
+    trade_end_hour: 16
+    # Strategy
+    rr_ratio: 2.0
+    min_range_pct: 0.01
+    max_range_pct: 2.0
+    skip_weekdays: [2]         # Wed skip (consistent with other pairs)
+    be_hours: 999             # DISABLED — blind BE overstates backtest (see CLAUDE_RESPONSE_4.md)
+    be_offset: 0.0002         # 2 pips offset (unused while be_hours=999)
+    max_pending_hours: 4
+    qty: 20000                # 20k units (mini lot, $2/pip)
     # Display
     price_decimals: 5
     pip_label: "pip"

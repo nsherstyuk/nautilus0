@@ -152,7 +152,9 @@ class InstrumentConfig:
     be_hours: int = 2
     be_offset: float = 0.0
     max_pending_hours: int = 4   # cancel unfilled entry after N hours (0=full window)
+    time_exit_minutes: int = 0  # close at market after N minutes in trade (0=disabled, use trade_end_hour EOD)
     qty: int = 1
+    point_value: float = 1.0    # multiplier to convert P&L to USD (1.0 for XXX/USD pairs, ~1/rate for USD/XXX)
     # Display
     price_decimals: int = 2
     pip_label: str = "$"

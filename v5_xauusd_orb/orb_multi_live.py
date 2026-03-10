@@ -132,6 +132,10 @@ class InstrumentState:
         self.orders_placed_time: Optional[str] = None
         self.mfe: float = 0
         self.mae: float = 0
+        self.buy_sl_order_id: int = 0
+        self.buy_tp_order_id: int = 0
+        self.sell_sl_order_id: int = 0
+        self.sell_tp_order_id: int = 0
         self.load()
 
     def load(self):
@@ -162,6 +166,10 @@ class InstrumentState:
             'orders_placed_time': self.orders_placed_time,
             'mfe': self.mfe,
             'mae': self.mae,
+            'buy_sl_order_id': self.buy_sl_order_id,
+            'buy_tp_order_id': self.buy_tp_order_id,
+            'sell_sl_order_id': self.sell_sl_order_id,
+            'sell_tp_order_id': self.sell_tp_order_id,
         }
         self.state_file.write_text(json.dumps(data, indent=2))
 
@@ -182,6 +190,10 @@ class InstrumentState:
         self.orders_placed_time = None
         self.mfe = 0
         self.mae = 0
+        self.buy_sl_order_id = 0
+        self.buy_tp_order_id = 0
+        self.sell_sl_order_id = 0
+        self.sell_tp_order_id = 0
         self.save()
 
 
@@ -622,13 +634,25 @@ class InstrumentManager:
             if self.dry_run and not filled:
                 self._dry_run_fill_check(now)
 
-        # ── IN_TRADE: monitor SL/TP/BE/EOD ──
+        # ── IN_TRADE: monitor SL/TP/BE/EOD/TIME_EXIT ──
         elif state.status == InstrumentState.IN_TRADE:
             if hour >= inst.trade_end_hour:
                 self.log.info(f"{self.tag} Window closed in position. "
                               f"Closing at market.")
                 self._eod_close(now)
                 return
+
+            # Time-based exit: close at market after N minutes in trade
+            if (inst.time_exit_minutes > 0 and state.entry_time):
+                elapsed_min = (now - datetime.fromisoformat(
+                    state.entry_time)).total_seconds() / 60
+                if elapsed_min >= inst.time_exit_minutes:
+                    self.log.info(
+                        f"{self.tag} Time exit triggered: "
+                        f"{elapsed_min:.0f}min >= {inst.time_exit_minutes}min. "
+                        f"Closing at market.")
+                    self._time_exit_close(now)
+                    return
 
             done = self._check_exit()
 
@@ -652,7 +676,7 @@ class InstrumentManager:
                 elapsed = (now - datetime.fromisoformat(
                     state.entry_time)).total_seconds()
                 if elapsed >= inst.be_hours * 3600:
-                    self._apply_breakeven(now)
+                    self._apply_breakeven(now, price)
 
             # Dry-run exit simulation
             if self.dry_run and not done:
@@ -808,15 +832,18 @@ class InstrumentManager:
             buy_id = buy_trade.order.orderId
 
             buy_sl.parentId = buy_id
-            self.conn.ib.placeOrder(contract, buy_sl)
+            buy_sl_trade = self.conn.ib.placeOrder(contract, buy_sl)
             self.conn.sleep(0.5)
 
             buy_tp.parentId = buy_id
             buy_tp.transmit = True
-            self.conn.ib.placeOrder(contract, buy_tp)
+            buy_tp_trade = self.conn.ib.placeOrder(contract, buy_tp)
             self.conn.sleep(1)
 
-            self.log.info(f"{self.tag} Buy bracket placed: id={buy_id}")
+            buy_sl_id = buy_sl_trade.order.orderId
+            buy_tp_id = buy_tp_trade.order.orderId
+            self.log.info(f"{self.tag} Buy bracket placed: id={buy_id}"
+                          f" (SL={buy_sl_id}, TP={buy_tp_id})")
 
             # Sell stop bracket
             sell_parent = Order(
@@ -835,18 +862,25 @@ class InstrumentManager:
             sell_id = sell_trade.order.orderId
 
             sell_sl.parentId = sell_id
-            self.conn.ib.placeOrder(contract, sell_sl)
+            sell_sl_trade = self.conn.ib.placeOrder(contract, sell_sl)
             self.conn.sleep(0.5)
 
             sell_tp.parentId = sell_id
             sell_tp.transmit = True
-            self.conn.ib.placeOrder(contract, sell_tp)
+            sell_tp_trade = self.conn.ib.placeOrder(contract, sell_tp)
             self.conn.sleep(1)
 
-            self.log.info(f"{self.tag} Sell bracket placed: id={sell_id}")
+            sell_sl_id = sell_sl_trade.order.orderId
+            sell_tp_id = sell_tp_trade.order.orderId
+            self.log.info(f"{self.tag} Sell bracket placed: id={sell_id}"
+                          f" (SL={sell_sl_id}, TP={sell_tp_id})")
 
             state.buy_order_id = buy_id
             state.sell_order_id = sell_id
+            state.buy_sl_order_id = buy_sl_id
+            state.buy_tp_order_id = buy_tp_id
+            state.sell_sl_order_id = sell_sl_id
+            state.sell_tp_order_id = sell_tp_id
             state.orders_placed_time = now.isoformat()
             state.status = InstrumentState.ORDERS_PLACED
             state.save()
@@ -899,10 +933,39 @@ class InstrumentManager:
             return False
         if not self.conn.ensure_connected():
             return False
+        state = self.state
         try:
             self.conn.sleep(0)
+
+            # First, check if SL or TP child orders filled (gives us exact exit info)
+            sl_oid = (state.buy_sl_order_id if state.direction == "LONG"
+                      else state.sell_sl_order_id)
+            tp_oid = (state.buy_tp_order_id if state.direction == "LONG"
+                      else state.sell_tp_order_id)
+
+            for trade in self.conn.ib.trades():
+                oid = trade.order.orderId
+                if oid == tp_oid and trade.orderStatus.status == 'Filled':
+                    fill_px = trade.orderStatus.avgFillPrice
+                    self._exit_fill_price = fill_px
+                    self._exit_fill_type = 'TP'
+                    self.log.info(
+                        f"{self.tag} TP order {oid} filled at {fill_px:.{self.dec}f}")
+                    return True
+                if oid == sl_oid and trade.orderStatus.status == 'Filled':
+                    fill_px = trade.orderStatus.avgFillPrice
+                    self._exit_fill_price = fill_px
+                    if state.be_applied:
+                        self._exit_fill_type = 'BE'
+                    else:
+                        self._exit_fill_type = 'SL'
+                    self.log.info(
+                        f"{self.tag} {self._exit_fill_type} order {oid} filled "
+                        f"at {fill_px:.{self.dec}f}")
+                    return True
+
+            # Fallback: check if position simply vanished (unknown reason)
             positions = self.conn.ib.positions()
-            # Check if we still have a position in this instrument
             contract = self.conn.contracts.get(self.inst.name)
             if contract is None:
                 return False
@@ -911,8 +974,12 @@ class InstrumentManager:
                 for p in positions
             )
             if not has_pos:
-                self.log.info(f"{self.tag} Position closed (SL or TP filled)")
+                self._exit_fill_price = None
+                self._exit_fill_type = 'CLOSED'
+                self.log.warning(
+                    f"{self.tag} Position vanished without detected SL/TP fill")
                 return True
+
         except Exception as e:
             self.log.warning(f"{self.tag} check_exit error: {e}")
         return False
@@ -980,7 +1047,7 @@ class InstrumentManager:
                 return True
         return False
 
-    def _apply_breakeven(self, now: datetime):
+    def _apply_breakeven(self, now: datetime, current_price=None):
         state = self.state
         inst = self.inst
         be_offset = inst.be_offset
@@ -989,6 +1056,20 @@ class InstrumentManager:
             new_sl = round(state.entry_price + be_offset, self.dec)
         else:
             new_sl = round(state.entry_price - be_offset, self.dec)
+
+        # Guard: don't move SL to BE if price is already past it
+        # (would create an untriggerable stop and lock in a loss)
+        if current_price is not None:
+            if state.direction == "LONG" and current_price < new_sl:
+                self.log.info(
+                    f"{self.tag} BE skipped: price {current_price:.{self.dec}f}"
+                    f" < new_sl {new_sl:.{self.dec}f}, keeping original SL")
+                return
+            if state.direction == "SHORT" and current_price > new_sl:
+                self.log.info(
+                    f"{self.tag} BE skipped: price {current_price:.{self.dec}f}"
+                    f" > new_sl {new_sl:.{self.dec}f}, keeping original SL")
+                return
 
         if self.dry_run:
             self.log.info(
@@ -1069,6 +1150,64 @@ class InstrumentManager:
         except Exception as e:
             self.log.error(f"{self.tag} cancel_and_close failed: {e}")
 
+    def _time_exit_close(self, now: datetime):
+        """Time-based exit: cancel remaining orders, close position at market."""
+        self._cancel_and_close()
+        state = self.state
+        price = self.conn.get_price(self.inst.name) or state.entry_price
+        pnl = ((price - state.entry_price) if state.direction == "LONG"
+               else (state.entry_price - price))
+        # Final MFE/MAE update with closing price
+        if state.entry_price:
+            if state.direction == "LONG":
+                favor = price - state.entry_price
+                adverse = state.entry_price - price
+            else:
+                favor = state.entry_price - price
+                adverse = price - state.entry_price
+            if favor > state.mfe:
+                state.mfe = round(favor, self.dec)
+            if adverse > state.mae:
+                state.mae = round(adverse, self.dec)
+        pnl_total = round(pnl * self.inst.qty * self.inst.point_value, 2)
+        hold_m = (int((now - datetime.fromisoformat(
+            state.entry_time)).total_seconds() / 60)
+            if state.entry_time else 0)
+        self.log.info(
+            f"{self.tag} Time exit: {state.direction} | "
+            f"Entry={state.entry_price:.{self.dec}f} "
+            f"Exit={price:.{self.dec}f} | "
+            f"PnL={pnl:+.{self.dec}f}/unit | "
+            f"Total=${pnl_total:+.2f} | Hold={hold_m}min")
+        log_trade({
+            'timestamp': now.isoformat(),
+            'date': state.trade_date,
+            'instrument': self.inst.name,
+            'direction': state.direction,
+            'entry': state.entry_price,
+            'exit': price,
+            'sl': state.sl_price,
+            'tp': state.tp_price,
+            'range_high': state.range_high,
+            'range_low': state.range_low,
+            'range_size': state.range_size,
+            'qty': self.inst.qty,
+            'pnl_per_unit': round(pnl, self.dec),
+            'pnl_total': pnl_total,
+            'result': 'TIME_EXIT',
+            'hold_minutes': hold_m,
+            'mfe': state.mfe,
+            'mae': state.mae,
+            'account_mode': self.account_mode,
+        }, self.trade_log)
+        state.status = InstrumentState.DONE_TODAY
+        state.save()
+        # Guardrail: track P&L
+        if self.guardrails:
+            self.guardrails.on_trade_closed(
+                pnl_total, self.inst.name, state.direction,
+                'TIME_EXIT', state.entry_price, price)
+
     def _eod_close(self, now: datetime):
         """End-of-day close: cancel orders, close position, log trade."""
         self._cancel_and_close()
@@ -1088,7 +1227,7 @@ class InstrumentManager:
                 state.mfe = round(favor, self.dec)
             if adverse > state.mae:
                 state.mae = round(adverse, self.dec)
-        pnl_total = round(pnl * self.inst.qty, 2)
+        pnl_total = round(pnl * self.inst.qty * self.inst.point_value, 2)
         hold_m = (int((now - datetime.fromisoformat(
             state.entry_time)).total_seconds() / 60)
             if state.entry_time else 0)
@@ -1125,11 +1264,21 @@ class InstrumentManager:
         """Record a completed trade (SL/TP/BE exit)."""
         state = self.state
         if not self.dry_run:
-            price = self.conn.get_price(self.inst.name) or state.entry_price
-            pnl = ((price - state.entry_price) if state.direction == "LONG"
-                   else (state.entry_price - price))
-            result = 'TP' if pnl > 0 else 'SL'
-            exit_price = price
+            # Use actual fill info from _check_exit if available
+            fill_px = getattr(self, '_exit_fill_price', None)
+            fill_type = getattr(self, '_exit_fill_type', None)
+
+            if fill_px is not None:
+                # Got exact fill from IBKR order records
+                exit_price = fill_px
+                result = fill_type  # 'TP', 'SL', or 'BE'
+            else:
+                # Fallback: position vanished without detected order fill
+                exit_price = self.conn.get_price(self.inst.name) or state.entry_price
+                result = fill_type if fill_type else 'CLOSED'
+
+            pnl = ((exit_price - state.entry_price) if state.direction == "LONG"
+                   else (state.entry_price - exit_price))
         else:
             exit_price = getattr(self, '_exit_price', state.entry_price)
             result = getattr(self, '_exit_result', 'UNKNOWN')
@@ -1141,7 +1290,7 @@ class InstrumentManager:
             state.entry_time)).total_seconds() / 60)
             if state.entry_time else 0)
 
-        pnl_total = round(pnl * self.inst.qty, 2)
+        pnl_total = round(pnl * self.inst.qty * self.inst.point_value, 2)
         self.log.info(
             f"{self.tag} Trade closed: {state.direction} {result} | "
             f"Entry={state.entry_price:.{self.dec}f} "
@@ -1183,6 +1332,8 @@ class InstrumentManager:
         # Clean up temp attributes
         self._exit_price = None
         self._exit_result = None
+        self._exit_fill_price = None
+        self._exit_fill_type = None
 
 
 # ── Account Snapshot ──────────────────────────────────────────────────────────
@@ -1353,11 +1504,12 @@ def main():
           f"(clientId={cfg.ibkr.client_id})")
     print(f"  Instruments:")
     for name, inst in enabled.items():
+        te_str = f"TimeExit={inst.time_exit_minutes}min" if inst.time_exit_minutes > 0 else "TimeExit=off"
         print(f"    {name}: {inst.symbol} {inst.sec_type} | "
               f"range {inst.asian_start_hour}-{inst.asian_end_hour} -> "
               f"trade {inst.trade_start_hour}-{inst.trade_end_hour} UTC | "
               f"qty={inst.qty} | RR={inst.rr_ratio} | "
-              f"BE={inst.be_hours}h +{inst.be_offset}")
+              f"BE={inst.be_hours}h +{inst.be_offset} | {te_str}")
     print("=" * 65)
 
     if not args.dry_run:

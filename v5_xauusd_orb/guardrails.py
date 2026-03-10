@@ -292,17 +292,16 @@ def graceful_shutdown(managers: list, conn, log: logging.Logger,
             elif state.status == "IN_TRADE":
                 log.info(f"{tag} Closing open position...")
                 mgr._cancel_and_close()
-                # Record the forced exit
+                # Record the forced exit via _record_exit (writes to trade CSV)
                 now = datetime.now(tz=timezone.utc)
                 price = conn.get_price(mgr.inst.name) if conn.connected else None
                 if price and state.entry_price:
-                    pnl = ((price - state.entry_price)
-                           if state.direction == "LONG"
-                           else (state.entry_price - price))
-                    log.info(f"{tag} Forced exit at {price:.{mgr.dec}f} | "
-                             f"PnL={pnl:+.{mgr.dec}f}/unit")
-                state.status = "DONE_TODAY"
-                state.save()
+                    mgr._exit_fill_price = price
+                    mgr._exit_fill_type = 'CLOSED'
+                    mgr._record_exit(now, True)
+                else:
+                    state.status = "DONE_TODAY"
+                    state.save()
 
         except Exception as e:
             log.error(f"{mgr.tag} Shutdown error: {e}")
