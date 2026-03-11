@@ -67,6 +67,15 @@ orphaned order detection, email notifications, graceful shutdown. Built log-base
 reconciliation script that validates live trade math, fills, BE timing, exits, and P&L.
 **Files:** `v5_xauusd_orb/guardrails.py`, `v5_xauusd_orb/reconcile.py`
 
+### Phase 7: 1-Minute Data, Velocity Filter & TP/SL Optimization (Mar 7-11, 2026)
+**Breakthrough.** Downloaded Dukascopy raw tick data (.bi5), built 2.9M 1-minute bars (2018-2026).
+Discovered **velocity filter** (tick count per minute): filtering by P50 threshold doubles OOS Sharpe
+(0.91 → 1.87). Implemented in live script with real-time IBKR tick-by-tick counting.
+Raised RR from 2.0 to 2.5. Disabled time exit (proven harmful). Added velocity CSV logger for
+IBKR calibration. EURUSD disabled (dilutes returns at 1 oz sizing).
+**Files:** `v5_xauusd_orb/backtest_1m.py`, `v5_xauusd_orb/research_*.py`, `build_1m_from_bi5.py`, `download_bi5_direct.py`
+**Full details:** `docs/journal/2026-03-11_velocity_filter_and_1m_backtest.md`
+
 ---
 
 ## 3. Active System Architecture (v5 ORB)
@@ -74,14 +83,19 @@ reconciliation script that validates live trade math, fills, BE timing, exits, a
 ### Strategy Logic: Asian Range Breakout
 
 ```
+Script launch     Subscribe to IBKR tick-by-tick data → start counting ticks
 UTC 00:00-06:00   Observe Asian session → record High/Low of range
-UTC 07:00/08:00   Place bracket: BUY STOP above High, SELL STOP below Low
-                  Each with SL (opposite side of range) and TP (RR × range_size away)
-UTC 08:00-16:00   Wait for fill → monitor position:
+UTC 08:00         Place bracket: BUY STOP above High, SELL STOP below Low
+                  Each with SL (opposite side of range) and TP (2.5 × range_size away)
+UTC 08:00-16:00   Wait for fill → VELOCITY GATE:
+                    - Measure avg ticks/min over last 4 minutes
+                    - If >= 168 → accept entry, monitor position
+                    - If < 168 → REJECT: close at market, done for today
+                  Monitor accepted position:
                     - If SL hit → loss, done
                     - If TP hit → win, done
-                    - After be_hours (2h): move SL to entry + offset (breakeven rule)
                     - At trade_end_hour (16:00 UTC): close at market (EOD rule)
+                  Skip Wednesdays entirely (negative edge)
 ```
 
 ### State Machine (per instrument)
@@ -149,18 +163,24 @@ nautilus0/                              # Repository root
 │   ├── reconcile.py                    #   ★ Live trade parity validator (log-based)
 │   ├── status_report.py                #   ★ HTML dashboard generator
 │   ├── status.html                     #   Generated dashboard output (gitignored)
-│   ├── backtest.py                     #   Single-instrument XAUUSD backtest
+│   ├── backtest_1m.py                  #   ★ Definitive 1-min backtest (source of truth)
+│   ├── backtest.py                     #   Single-instrument XAUUSD backtest (legacy tick-bars)
 │   ├── backtest_exits.py               #   Exit-only backtest (test SL/TP/BE variants)
 │   ├── backtest_multi_fx.py            #   Multi-instrument backtest engine
+│   ├── research_tick_filters.py        #   ★ Velocity signal discovery
+│   ├── research_velocity_threshold.py  #   ★ Threshold sweep + walk-forward
+│   ├── research_tweaks.py              #   ★ Lookback timing + entry time optimization
+│   ├── research_tp_sl.py               #   ★ RR ratio sweep + conditioned exits
+│   ├── research_wednesday.py           #   Wednesday skip confirmation
+│   ├── research_start_time.py          #   Entry time precision test
+│   ├── research_*.py                   #   Additional research scripts (~13 total)
 │   ├── analyze_seasonality.py          #   Day-of-week / hour analysis
 │   ├── analyze_be_sensitivity.py       #   Breakeven parameter sensitivity
-│   ├── _tmp_backtest_stats.py          #   Temporary analysis script
-│   ├── _tmp_cutoff_sweep.py            #   Temporary analysis script
 │   ├── logs/                           #   Runtime logs (gitignored)
 │   │   ├── orb_multi_live.log          #     Main process log (STATUS lines every 10s)
 │   │   ├── orb_xauusd_trades.csv       #     Completed XAUUSD trade log
-│   │   ├── orb_eurusd_trades.csv       #     Completed EURUSD trade log
-│   │   └── backtest_trades.csv         #     Full backtest results (2,268 days)
+│   │   ├── velocity_xauusd.csv         #     ★ IBKR tick rate log (06:00-10:00 UTC, for calibration)
+│   │   └── backtest_trades.csv         #     Full backtest results
 │   └── state/                          #   Runtime state files (gitignored)
 │       ├── orb_xauusd_state.json       #     XAUUSD state machine snapshot
 │       ├── orb_eurusd_state.json       #     EURUSD state machine snapshot
@@ -198,7 +218,10 @@ nautilus0/                              # Repository root
 ├── backtest/                           # v2/v3 backtest infrastructure
 ├── tests/                              # Test files
 ├── utils/                              # Shared utilities
+├── download_bi5_direct.py              # Dukascopy .bi5 raw tick downloader
+├── build_1m_from_bi5.py               # .bi5 → 1-min bar aggregator with microstructure
 ├── data/                               # Historical data (gitignored)
+│   └── 1m_csv/xauusd_1m_tick.csv      #   ★ 2.9M 1-min bars from Dukascopy (306MB)
 │
 ├── trading_system_v4/                  # v4 tick-bar system (HISTORICAL — no edge found)
 │   ├── execution/                      #   Live execution layer
@@ -233,8 +256,8 @@ nautilus0/                              # Repository root
 ### 5.1 `v5_xauusd_orb/orb_multi_live.py` (~1,400 lines)
 The heart of the live system. Key classes:
 
-- **`SharedConnection`** — Manages single IBKR connection via `ib_insync`. Handles reconnection with exponential backoff. Provides `get_price()`, `get_asian_range()`, `place_bracket()`.
-- **`InstrumentManager`** — One per instrument. Contains the state machine (`tick()` method called every cycle). Handles: range computation, order placement, fill detection, SL/TP monitoring, breakeven application, EOD close. Receives `Guardrails` instance for pre-trade checks and post-trade P&L tracking.
+- **`SharedConnection`** — Manages single IBKR connection via `ib_insync`. Handles reconnection with exponential backoff. Provides `get_price()`, `get_asian_range()`, `place_bracket()`. Also manages **tick-by-tick subscriptions** for velocity filter: `start_tick_counter()`, `stop_tick_counter()`, `get_tick_velocity()`, `get_tick_counts_per_minute()`.
+- **`InstrumentManager`** — One per instrument. Contains the state machine (`tick()` method called every cycle). Handles: range computation, order placement, fill detection, **velocity gate** (reject entry if tick rate < threshold), SL/TP monitoring, breakeven application, EOD close. Receives `Guardrails` instance for pre-trade checks and post-trade P&L tracking.
 - **`InstrumentState`** — Persisted JSON state. Fields: `status`, `direction`, `entry_price`, `sl_price`, `tp_price`, `be_applied`, `entry_time`, order IDs, range data.
 - **`status_line()`** — Generates the periodic log line (parsed by dashboard).
 - **`run_day()`** — Orchestrates one trading day: init managers, guardrail daily reset, verify orders on startup, poll loop, cleanup.
@@ -243,8 +266,8 @@ The heart of the live system. Key classes:
 ### 5.2 `v5_xauusd_orb/config.yaml` (~170 lines)
 Single source of truth for all parameters. Three sections matter most:
 
-- **`instruments.XAUUSD`** — Gold config: London 08:00-16:00 UTC, RR=2.0, BE=2h/$2, skip Wed, 1 oz
-- **`instruments.EURUSD`** — FX config: London 07:00-16:00 UTC, RR=2.0, BE=2h/2pips, no skip days, 20k units
+- **`instruments.XAUUSD`** — Gold config: London 08:00-16:00 UTC, RR=2.5, BE disabled, skip Wed, velocity filter (P50=168), 1 oz
+- **`instruments.EURUSD`** — FX config: DISABLED (dilutes returns at 1 oz sizing)
 - **`guardrails`** — Safety config: daily loss limit ($50), max positions per instrument (1), orphan detection, email notification settings
 
 ### 5.3 `v5_xauusd_orb/status_report.py` (~1,240 lines)
@@ -350,20 +373,23 @@ but with additional `range_pct` and `hold_bars` columns.
 
 ### `v5_xauusd_orb/config.yaml` — Key Parameters
 
-| Parameter | XAUUSD | EURUSD | Description |
-|-----------|--------|--------|-------------|
-| `asian_start_hour` | 0 | 0 | UTC hour range observation starts |
-| `asian_end_hour` | 6 | 6 | UTC hour range observation ends |
-| `trade_start_hour` | 8 | 7 | UTC hour bracket orders placed |
-| `trade_end_hour` | 16 | 16 | UTC hour positions force-closed |
-| `rr_ratio` | 2.0 | 2.0 | TP = RR × range_size from entry |
-| `be_hours` | 2 | 2 | Hours in trade before breakeven applied |
-| `be_offset` | $2.0 | 2 pips | Distance SL moves past entry (covers costs) |
-| `skip_weekdays` | [2] (Wed) | [] | Days with no edge |
-| `max_pending_hours` | 4 | 4 | Cancel unfilled orders after N hours |
-| `qty` | 1 oz | 20,000 units | Position size |
-| `min_range_pct` | 0.05% | 0.01% | Skip if range too tight |
-| `max_range_pct` | 2.0% | 2.0% | Skip if range too wide |
+| Parameter | XAUUSD | Description |
+|-----------|--------|-------------|
+| `asian_start_hour` | 0 | UTC hour range observation starts |
+| `asian_end_hour` | 6 | UTC hour range observation ends |
+| `trade_start_hour` | 8 | UTC hour bracket orders placed |
+| `trade_end_hour` | 16 | UTC hour positions force-closed |
+| `rr_ratio` | **2.5** | TP = RR × range_size from entry (raised from 2.0) |
+| `be_hours` | 999 (disabled) | Breakeven rule disabled — cannot validate in backtest |
+| `time_exit_minutes` | 0 (disabled) | Time exit disabled — proven harmful (Sharpe 1.31→0.99) |
+| `velocity_filter_enabled` | **true** | Gate entries by tick rate |
+| `velocity_lookback_minutes` | 3 | Avg tick count over entry bar + 3 min before |
+| `velocity_threshold` | **168** | Min avg ticks/min (P50 from Dukascopy 1-min data) |
+| `skip_weekdays` | [2] (Wed) | Wednesdays have negative edge (Sharpe -1.08 OOS) |
+| `max_pending_hours` | 4 | Cancel unfilled orders after 4h |
+| `qty` | 1 oz | Position size |
+| `min_range_pct` | 0.05% | Skip if range too tight |
+| `max_range_pct` | 2.0% | Skip if range too wide |
 
 ### IBKR Connection
 - **Port 4002:** Paper trading (IB Gateway)
@@ -381,11 +407,14 @@ From `v5_xauusd_orb/logs/backtest_trades.csv`:
 - Config: 2h BE rule, $2 offset, RR=2.0, skip Wednesdays
 - Results documented in `docs/journal/2026-02-28_v5_orb_session_handover.md`
 
-### Key Backtest Metrics
-- **Sharpe ratio:** ~4.28 (with corrected cost model)
-- **Profit factor:** ~3.31
-- **Max drawdown:** ~$36
-- **Robust:** Neighboring parameter values (90min BE, no BE) perform similarly → not overfitted
+### Key Backtest Metrics (1-min Dukascopy data, definitive)
+- **OOS Sharpe ratio (2021-2026):** 1.87 (with velocity filter + RR=2.5)
+- **OOS Profit factor:** 1.34
+- **OOS Win rate:** 49.8%
+- **OOS Total P&L:** $1,213 (at 1 oz)
+- **Trades/year:** ~115 (after velocity filter removes ~50% of entries)
+- **Walk-forward:** Velocity filter helps in 6/6 test years
+- **Robust:** Neighboring RR values (2.0-3.0) all produce Sharpe >1.79
 
 ### EURUSD (Backtested Separately)
 - Lower edge than XAUUSD but still positive

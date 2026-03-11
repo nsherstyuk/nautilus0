@@ -153,6 +153,11 @@ class InstrumentConfig:
     be_offset: float = 0.0
     max_pending_hours: int = 4   # cancel unfilled entry after N hours (0=full window)
     time_exit_minutes: int = 0  # close at market after N minutes in trade (0=disabled, use trade_end_hour EOD)
+    # Velocity filter: reject entries when market tick rate is below threshold
+    velocity_filter_enabled: bool = False
+    velocity_lookback_minutes: int = 3  # avg tick count over entry bar + N minutes before
+    velocity_threshold: int = 0         # min avg ticks/min to accept entry (0 = use adaptive percentile)
+    velocity_threshold_percentile: int = 50  # if velocity_threshold=0, use rolling P50 of recent tick counts
     qty: int = 1
     point_value: float = 1.0    # multiplier to convert P&L to USD (1.0 for XXX/USD pairs, ~1/rate for USD/XXX)
     # Display

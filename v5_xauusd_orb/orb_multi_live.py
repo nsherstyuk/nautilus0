@@ -39,6 +39,7 @@ import os
 import signal as signal_mod
 import sys
 import time
+from collections import deque
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
@@ -101,6 +102,30 @@ def log_trade(trade: dict, trade_log_path: str):
         if is_new:
             writer.writeheader()
         writer.writerow(trade)
+
+
+# ── Velocity CSV logger ─────────────────────────────────────────────────────
+
+VELOCITY_FIELDS = [
+    'timestamp', 'date', 'instrument', 'hour', 'minute',
+    'ticks_1min', 'ticks_2min', 'ticks_3min', 'ticks_4min', 'ticks_5min',
+    'avg_4min', 'threshold', 'price', 'state',
+]
+
+# Log velocity from 06:00 to 10:00 UTC (covers pre-range-close through post-entry)
+VELOCITY_LOG_START_HOUR = 6
+VELOCITY_LOG_END_HOUR = 10
+
+
+def log_velocity(row: dict, log_dir: str, inst_name: str):
+    """Append one velocity sample to the instrument's velocity CSV."""
+    path = Path(log_dir) / f"velocity_{inst_name.lower()}.csv"
+    is_new = not path.exists()
+    with open(path, "a", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=VELOCITY_FIELDS)
+        if is_new:
+            writer.writeheader()
+        writer.writerow(row)
 
 
 # ── Per-instrument State ──────────────────────────────────────────────────────
@@ -229,6 +254,9 @@ class SharedConnection:
         # Per-instrument contracts and tickers
         self.contracts = {}       # inst_name -> Contract
         self.price_tickers = {}   # inst_name -> Ticker
+        # Tick counter for velocity filter: inst_name -> deque of tick timestamps
+        self._tick_timestamps = {}   # inst_name -> deque of float (unix timestamps)
+        self._tick_subscriptions = {}  # inst_name -> subscription object
 
     @property
     def connected(self) -> bool:
@@ -310,6 +338,8 @@ class SharedConnection:
         self._shutting_down = True
         for name in list(self.price_tickers):
             self._stop_price_ticker(name)
+        for name in list(self._tick_subscriptions):
+            self.stop_tick_counter(name)
         if self.ib is not None:
             try:
                 self.ib.disconnect()
@@ -461,12 +491,75 @@ class SharedConnection:
             except Exception:
                 pass
 
+    def start_tick_counter(self, inst_name: str):
+        """Subscribe to tick-by-tick data to count ticks for velocity filter."""
+        contract = self.contracts.get(inst_name)
+        if contract is None:
+            return
+        # Keep last 15 minutes of tick timestamps (generous buffer)
+        self._tick_timestamps[inst_name] = deque(maxlen=100000)
+        try:
+            ticker = self.ib.reqTickByTickData(
+                contract, 'BidAsk', numberOfTicks=0, ignoreSize=True)
+
+            def on_tick(tick):
+                self._tick_timestamps[inst_name].append(time.time())
+
+            ticker.updateEvent += on_tick
+            self._tick_subscriptions[inst_name] = ticker
+            self.log.info(f"[{inst_name}] Tick counter started (velocity filter)")
+        except Exception as e:
+            self.log.warning(f"[{inst_name}] Failed to start tick counter: {e}")
+
+    def stop_tick_counter(self, inst_name: str):
+        """Stop tick-by-tick subscription."""
+        ticker = self._tick_subscriptions.pop(inst_name, None)
+        if ticker is not None and self.ib is not None:
+            contract = self.contracts.get(inst_name)
+            if contract:
+                try:
+                    self.ib.cancelTickByTickData(contract, 'BidAsk')
+                except Exception:
+                    pass
+        self._tick_timestamps.pop(inst_name, None)
+
+    def get_tick_velocity(self, inst_name: str, lookback_minutes: int = 3) -> float:
+        """Get average ticks per minute over the last N+1 minutes (entry bar + lookback).
+        Returns 0 if no tick data available."""
+        ts_deque = self._tick_timestamps.get(inst_name)
+        if ts_deque is None or len(ts_deque) == 0:
+            return 0.0
+        now = time.time()
+        window_sec = (lookback_minutes + 1) * 60  # +1 for the current/entry bar
+        cutoff = now - window_sec
+        # Count ticks in window
+        count = sum(1 for ts in ts_deque if ts >= cutoff)
+        minutes = window_sec / 60
+        return count / minutes if minutes > 0 else 0.0
+
+    def get_tick_counts_per_minute(self, inst_name: str, minutes: int = 5) -> list[int]:
+        """Get tick counts for each of the last N completed minutes.
+        Returns list of N ints, oldest first. Useful for detailed logging."""
+        ts_deque = self._tick_timestamps.get(inst_name)
+        if ts_deque is None or len(ts_deque) == 0:
+            return [0] * minutes
+        now = time.time()
+        counts = []
+        for m in range(minutes, 0, -1):
+            lo = now - m * 60
+            hi = now - (m - 1) * 60
+            counts.append(sum(1 for ts in ts_deque if lo <= ts < hi))
+        return counts
+
     def _requalify_all(self):
         """Re-qualify all contracts after reconnect."""
         for inst_name in list(self.contracts.keys()):
             inst = self.cfg.instruments.get(inst_name)
             if inst:
                 self.qualify_contract(inst)
+                # Restart tick counter if velocity filter is enabled
+                if inst.velocity_filter_enabled:
+                    self.start_tick_counter(inst_name)
 
     def _on_disconnect(self):
         self._connected = False
@@ -507,6 +600,7 @@ class InstrumentManager:
         # Trade log path: per-instrument
         log_dir = Path(state_dir).parent / "logs"
         log_dir.mkdir(parents=True, exist_ok=True)
+        self.log_dir = str(log_dir)
         self.trade_log = str(log_dir / f"orb_{inst.name.lower()}_trades.csv")
 
     def verify_orders_on_startup(self):
@@ -592,8 +686,24 @@ class InstrumentManager:
                     state.status = InstrumentState.DONE_TODAY
                     state.save()
                     return
+
+                # Velocity gate: Option A (Pre-fill monitoring)
+                # Only place orders if market is currently active enough
+                if inst.velocity_filter_enabled:
+                    vel_ok, vel_val = self._check_velocity()
+                    if not vel_ok:
+                        # Log periodically but not every tick
+                        now_ts = now.timestamp()
+                        if not hasattr(self, '_last_vel_log') or now_ts - self._last_vel_log >= 60:
+                            self.log.info(
+                                f"{self.tag} Waiting for velocity: "
+                                f"{vel_val:.0f} < threshold {inst.velocity_threshold} "
+                                f"ticks/min")
+                            self._last_vel_log = now_ts
+                        return
+
                 self.log.info(
-                    f"{self.tag} Trade window check PASSED: "
+                    f"{self.tag} Trade window & velocity check PASSED: "
                     f"hour={hour} >= trade_start={inst.trade_start_hour}")
                 self._log_pre_placement(now)
                 self._place_bracket_orders(now)
@@ -622,17 +732,86 @@ class InstrumentManager:
                     state.save()
                     return
 
+            # Dynamic Velocity Gate: if velocity drops while orders are resting, pull them
+            if inst.velocity_filter_enabled:
+                vel_ok, vel_val = self._check_velocity()
+                if not vel_ok:
+                    self.log.warning(
+                        f"{self.tag} Velocity dropped ({vel_val:.0f} < {inst.velocity_threshold}). "
+                        f"Pulling resting orders to wait for activity.")
+                    self._cancel_and_close()
+                    # Revert to RANGE_COMPUTED so we keep watching
+                    # Reset orders_placed_time so max_pending_hours timer restarts on re-place
+                    state.status = InstrumentState.RANGE_COMPUTED
+                    state.buy_order_id = 0
+                    state.sell_order_id = 0
+                    state.orders_placed_time = None
+                    state.save()
+                    return
+
             filled = self._check_fills()
             if filled:
-                self.log.info(
-                    f"{self.tag} Entered {state.direction} at "
-                    f"{state.entry_price:.{self.dec}f} | "
-                    f"SL={state.sl_price:.{self.dec}f} "
-                    f"TP={state.tp_price:.{self.dec}f}")
+                # Post-fill safety check: catch race condition fills during velocity drop
+                if inst.velocity_filter_enabled:
+                    vel_ok, vel_val = self._check_velocity()
+                    per_min = self.conn.get_tick_counts_per_minute(inst.name, 5)
+                    per_min_str = ','.join(str(c) for c in per_min)
+                    
+                    if not vel_ok:
+                        self.log.warning(
+                            f"{self.tag} RACE CONDITION: Filled during velocity drop! "
+                            f"{state.direction} at {state.entry_price:.{self.dec}f} | "
+                            f"velocity={vel_val:.0f} < threshold {inst.velocity_threshold} | "
+                            f"per_min=[{per_min_str}] | Closing immediately.")
+                        self._log_velocity_at_fill(now, vel_val, per_min, 'FILL_REJECT_RACE')
+                        self._velocity_reject_close(now)
+                        return
+                    
+                    # Velocity OK, accept fill
+                    self._log_velocity_at_fill(now, vel_val, per_min, 'FILL_OK')
+                    self.log.info(
+                        f"{self.tag} Entered {state.direction} at "
+                        f"{state.entry_price:.{self.dec}f} | "
+                        f"SL={state.sl_price:.{self.dec}f} "
+                        f"TP={state.tp_price:.{self.dec}f} | "
+                        f"velocity={vel_val:.0f}/{inst.velocity_threshold} "
+                        f"ticks/min (OK) | per_min=[{per_min_str}]")
+                else:
+                    # No velocity filter, just log fill
+                    self.log.info(
+                        f"{self.tag} Entered {state.direction} at "
+                        f"{state.entry_price:.{self.dec}f} | "
+                        f"SL={state.sl_price:.{self.dec}f} "
+                        f"TP={state.tp_price:.{self.dec}f}")
 
             # Dry-run fill simulation
             if self.dry_run and not filled:
+                was_placed = state.status == InstrumentState.ORDERS_PLACED
                 self._dry_run_fill_check(now)
+                # If dry-run just filled, apply velocity gate (same as live)
+                if was_placed and state.status == InstrumentState.IN_TRADE:
+                    if inst.velocity_filter_enabled:
+                        vel_ok, vel_val = self._check_velocity()
+                        per_min = self.conn.get_tick_counts_per_minute(inst.name, 5)
+                        per_min_str = ','.join(str(c) for c in per_min)
+                        
+                        if not vel_ok:
+                            self.log.warning(
+                                f"{self.tag} [DRY RUN] VELOCITY REJECT: "
+                                f"{state.direction} at {state.entry_price:.{self.dec}f} | "
+                                f"velocity={vel_val:.0f} < threshold {inst.velocity_threshold} | "
+                                f"per_min=[{per_min_str}]")
+                            self._log_velocity_at_fill(now, vel_val, per_min, 'DRY_REJECT')
+                            self._velocity_reject_close(now)
+                            return
+                        
+                        self._log_velocity_at_fill(now, vel_val, per_min, 'DRY_OK')
+                        self.log.info(
+                            f"{self.tag} [DRY RUN] velocity={vel_val:.0f}/"
+                            f"{inst.velocity_threshold} ticks/min (OK) | "
+                            f"per_min=[{per_min_str}]")
+                    else:
+                        self.log.info(f"{self.tag} [DRY RUN] Fill accepted (no velocity filter)")
 
         # ── IN_TRADE: monitor SL/TP/BE/EOD/TIME_EXIT ──
         elif state.status == InstrumentState.IN_TRADE:
@@ -705,9 +884,13 @@ class InstrumentManager:
                     f"trade opens {self.inst.trade_start_hour}:00 UTC")
 
         elif state.status == InstrumentState.ORDERS_PLACED:
+            vel = self.conn.get_tick_velocity(
+                self.inst.name, self.inst.velocity_lookback_minutes)
+            vel_str = (f" | vel={vel:.0f}/{self.inst.velocity_threshold}"
+                       if self.inst.velocity_filter_enabled else "")
             return (f"{self.tag} WATCHING | price={p_str} | "
                     f"range H={state.range_high:.{self.dec}f} "
-                    f"L={state.range_low:.{self.dec}f}")
+                    f"L={state.range_low:.{self.dec}f}{vel_str}")
 
         elif state.status == InstrumentState.IN_TRADE:
             if price:
@@ -737,6 +920,91 @@ class InstrumentManager:
         self.state.reset_for_new_day(today_str)
 
     # ── Private helpers ───────────────────────────────────────────
+
+    def _check_velocity(self) -> tuple[bool, float]:
+        """Check if current tick velocity passes the filter.
+        Returns (passed: bool, velocity: float ticks/min)."""
+        inst = self.inst
+        if not inst.velocity_filter_enabled:
+            return True, 0.0
+
+        velocity = self.conn.get_tick_velocity(
+            inst.name, inst.velocity_lookback_minutes)
+
+        threshold = inst.velocity_threshold
+        if threshold <= 0:
+            # Adaptive threshold not implemented in live yet — use fixed
+            self.log.warning(
+                f"{self.tag} velocity_threshold=0 (adaptive) not supported "
+                f"in live mode. Skipping velocity check.")
+            return True, velocity
+
+        passed = velocity >= threshold
+        return passed, velocity
+
+    def _velocity_reject_close(self, now: datetime):
+        """Close position immediately after velocity rejection (Option B).
+        Logs the rejection and marks day as done."""
+        self._cancel_and_close()
+        state = self.state
+        price = self.conn.get_price(self.inst.name) or state.entry_price
+        pnl = ((price - state.entry_price) if state.direction == "LONG"
+               else (state.entry_price - price))
+        pnl_total = round(pnl * self.inst.qty * self.inst.point_value, 2)
+        self.log.info(
+            f"{self.tag} VELOCITY REJECT: {state.direction} | "
+            f"Entry={state.entry_price:.{self.dec}f} "
+            f"Exit={price:.{self.dec}f} | "
+            f"Spread cost=${pnl_total:+.2f}")
+        log_trade({
+            'timestamp': now.isoformat(),
+            'date': state.trade_date,
+            'instrument': self.inst.name,
+            'direction': state.direction,
+            'entry': state.entry_price,
+            'exit': price,
+            'sl': state.sl_price,
+            'tp': state.tp_price,
+            'range_high': state.range_high,
+            'range_low': state.range_low,
+            'range_size': state.range_size,
+            'qty': self.inst.qty,
+            'pnl_per_unit': round(pnl, self.dec),
+            'pnl_total': pnl_total,
+            'result': 'VELOCITY_REJECT',
+            'hold_minutes': 0,
+            'mfe': 0,
+            'mae': 0,
+            'account_mode': self.account_mode,
+        }, self.trade_log)
+        state.status = InstrumentState.DONE_TODAY
+        state.save()
+        if self.guardrails:
+            self.guardrails.on_trade_closed(
+                pnl_total, self.inst.name, state.direction,
+                'VELOCITY_REJECT', state.entry_price, price)
+
+    def _log_velocity_at_fill(self, now: datetime, avg_vel: float,
+                               per_min: list[int], event: str):
+        """Log a velocity CSV row at fill/rejection time for calibration analysis."""
+        inst = self.inst
+        price = self.conn.get_price(inst.name)
+        log_velocity({
+            'timestamp': now.isoformat(),
+            'date': self.state.trade_date,
+            'instrument': inst.name,
+            'hour': now.hour,
+            'minute': now.minute,
+            'ticks_1min': per_min[-1] if per_min else 0,
+            'ticks_2min': per_min[-2] if len(per_min) >= 2 else 0,
+            'ticks_3min': per_min[-3] if len(per_min) >= 3 else 0,
+            'ticks_4min': per_min[-4] if len(per_min) >= 4 else 0,
+            'ticks_5min': per_min[-5] if len(per_min) >= 5 else 0,
+            'avg_4min': round(avg_vel, 1),
+            'threshold': inst.velocity_threshold,
+            'price': round(price, inst.price_decimals) if price else '',
+            'state': event,
+        }, self.log_dir, inst.name)
 
     def _log_pre_placement(self, now: datetime):
         price = self.conn.get_price(self.inst.name)
@@ -1384,6 +1652,16 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
             log.info(f"{mgr.tag} New day: {today_str}")
             mgr.reset_for_new_day(today_str)
 
+    # Skip configured weekdays per instrument (do this EARLY, before any logic)
+    trade_date_dt = datetime.strptime(today_str, "%Y-%m-%d")
+    trade_weekday = trade_date_dt.weekday()
+    for mgr in managers:
+        if trade_weekday in mgr.inst.skip_weekdays:
+            day_name = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][trade_weekday]
+            log.info(f"{mgr.tag} {day_name} skipped (trade_date={today_str})")
+            mgr.state.status = InstrumentState.DONE_TODAY
+            mgr.state.save()
+
     # Guardrail: reset daily P&L tracker
     if guardrails:
         guardrails.on_new_day(today_str, cfg.paths.log_dir)
@@ -1395,7 +1673,6 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
     now = datetime.now(tz=timezone.utc)
 
     # Skip weekends (use trade_date, not wall-clock)
-    trade_date_dt = datetime.strptime(today_str, "%Y-%m-%d")
     if trade_date_dt.weekday() >= 5:
         log.info(f"Weekend ({today_str}) -- no trading")
         return
@@ -1405,7 +1682,6 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
              f"dry_run={managers[0].dry_run}")
 
     last_heartbeat = 0.0
-    trade_weekday = trade_date_dt.weekday()
 
     while True:
         now = datetime.now(tz=timezone.utc)
@@ -1415,17 +1691,12 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
             time.sleep(30)
             continue
 
-        # Skip configured weekdays per instrument
+        # Run state machine for each instrument
         all_done = True
         for mgr in managers:
             inst = mgr.inst
-            if trade_weekday in inst.skip_weekdays:
-                if mgr.state.status != InstrumentState.DONE_TODAY:
-                    day_name = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri',
-                                'Sat', 'Sun'][trade_weekday]
-                    log.info(f"{mgr.tag} {day_name} skipped (trade_date={today_str})")
-                    mgr.state.status = InstrumentState.DONE_TODAY
-                    mgr.state.save()
+            # Skip if already done (includes weekday skips set at startup)
+            if mgr.state.status == InstrumentState.DONE_TODAY:
                 continue
 
             try:
@@ -1453,6 +1724,34 @@ def run_day(managers: list[InstrumentManager], conn: SharedConnection,
             for mgr in managers:
                 if mgr.state.status != InstrumentState.DONE_TODAY:
                     log.info(f"[STATUS] {mgr.status_line(now)}")
+
+            # Velocity logging: record tick counts every minute during 06:00-10:00 UTC
+            if VELOCITY_LOG_START_HOUR <= now.hour < VELOCITY_LOG_END_HOUR:
+                for mgr in managers:
+                    inst = mgr.inst
+                    if not inst.velocity_filter_enabled:
+                        continue
+                    per_min = conn.get_tick_counts_per_minute(inst.name, 5)
+                    avg_4 = conn.get_tick_velocity(
+                        inst.name, inst.velocity_lookback_minutes)
+                    price = conn.get_price(inst.name)
+                    log_velocity({
+                        'timestamp': now.isoformat(),
+                        'date': today_str,
+                        'instrument': inst.name,
+                        'hour': now.hour,
+                        'minute': now.minute,
+                        'ticks_1min': per_min[-1] if per_min else 0,
+                        'ticks_2min': per_min[-2] if len(per_min) >= 2 else 0,
+                        'ticks_3min': per_min[-3] if len(per_min) >= 3 else 0,
+                        'ticks_4min': per_min[-4] if len(per_min) >= 4 else 0,
+                        'ticks_5min': per_min[-5] if len(per_min) >= 5 else 0,
+                        'avg_4min': round(avg_4, 1),
+                        'threshold': inst.velocity_threshold,
+                        'price': round(price, inst.price_decimals) if price else '',
+                        'state': mgr.state.status,
+                    }, cfg.paths.log_dir, inst.name)
+
             # Snapshot account balance to JSON for dashboard
             _snapshot_account(conn, cfg, log)
 
@@ -1505,11 +1804,13 @@ def main():
     print(f"  Instruments:")
     for name, inst in enabled.items():
         te_str = f"TimeExit={inst.time_exit_minutes}min" if inst.time_exit_minutes > 0 else "TimeExit=off"
+        vel_str = (f"VelFilter={inst.velocity_threshold}ticks/{inst.velocity_lookback_minutes+1}min"
+                   if inst.velocity_filter_enabled else "VelFilter=off")
         print(f"    {name}: {inst.symbol} {inst.sec_type} | "
               f"range {inst.asian_start_hour}-{inst.asian_end_hour} -> "
               f"trade {inst.trade_start_hour}-{inst.trade_end_hour} UTC | "
               f"qty={inst.qty} | RR={inst.rr_ratio} | "
-              f"BE={inst.be_hours}h +{inst.be_offset} | {te_str}")
+              f"BE={inst.be_hours}h +{inst.be_offset} | {te_str} | {vel_str}")
     print("=" * 65)
 
     if not args.dry_run:
@@ -1529,6 +1830,9 @@ def main():
         if not conn.qualify_contract(inst):
             log.error(f"Cannot qualify {name} -- removing from session")
             continue
+        # Start tick counter for velocity filter
+        if inst.velocity_filter_enabled:
+            conn.start_tick_counter(name)
 
     # Create managers (with guardrails)
     account_mode = 'live' if cfg.ibkr.port == 4001 else 'paper'

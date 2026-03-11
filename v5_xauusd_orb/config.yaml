@@ -31,8 +31,11 @@ strategy:
   be_hours: 1                 # 1h breakeven trigger (verified: Sharpe 7.08 vs 5.54 at 2h, holds OOS)
   be_offset_usd: 2.0          # move SL to entry + $2 (covers spread+slippage costs)
 
-  # Poll interval inside the main event loop (seconds)
-  poll_interval: 10
+  # Poll interval: how often to check state machine (seconds)
+  # Set to 2s (down from 10s) to minimize velocity detection gaps
+  # when velocity filter is enabled. Faster polling = quicker response
+  # to market going dead while orders are resting.
+  poll_interval: 2
 
 # ── Position sizing ──────────────────────────────────────────
 position:
@@ -97,14 +100,20 @@ instruments:
     trade_start_hour: 8       # London session
     trade_end_hour: 16
     # Strategy
-    rr_ratio: 2.0
+    rr_ratio: 2.5             # Raised from 2.0: Sharpe 1.87 OOS vs 1.79, +$160/yr (research_tp_sl.py)
     min_range_pct: 0.05
     max_range_pct: 2.0
     skip_weekdays: [2]
     be_hours: 999             # DISABLED — blind BE overstates backtest (see CLAUDE_RESPONSE_4.md)
     be_offset: 2.0            # $2 offset for Gold (unused while be_hours=999)
     max_pending_hours: 4      # cancel unfilled entry after 4h (backtested: improves Sharpe, cuts DD)
-    time_exit_minutes: 60      # close at market after 60min in trade (5m backtest: Sharpe 3.35→2.04 without)
+    time_exit_minutes: 0       # DISABLED — 1min backtest proves time exit hurts (Sharpe 1.81→lower)
+    # Velocity filter: skip entries when market is quiet (tick rate below threshold)
+    # Backtested: OOS Sharpe 1.81 filtered vs 0.91 unfiltered (2021-2026)
+    velocity_filter_enabled: true
+    velocity_lookback_minutes: 3   # avg tick count over entry bar + 3 min before (best separation=2.35)
+    velocity_threshold: 168        # P50 median ticks/min from 1-min backtest (OOS Sharpe 1.81)
+    velocity_threshold_percentile: 50  # fallback: adaptive P50 if threshold=0
     qty: 1                    # 1 oz
     # Display
     price_decimals: 2

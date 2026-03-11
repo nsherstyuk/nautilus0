@@ -1,0 +1,123 @@
+﻿Loaded 356,726 5-min bars (2015-01-01 to 2026-03-10)
+Total trades: 625
+
+===============================================================================================
+  1. ENTRY CATEGORIES
+===============================================================================================
+
+  Category A: Gap-open (crossed before 8:00, still past at 8:00, fills immediately)
+    N= 204 (32.6%) | Mean $ +3.32 | Sharpe  6.55 | WR 68% | Total $ +677.40
+
+  Category B: Returned (crossed before 8:00, but price came back to range by 8:00)
+    N= 167 (26.7%) | Mean $ +0.05 | Sharpe  0.13 | WR 50% | Total $   +9.05
+
+  Category C: Clean breakout (never crossed level before 8:00)
+    N= 254 (40.6%) | Mean $ +1.32 | Sharpe  2.61 | WR 54% | Total $ +335.21
+
+  Category D: Pre-crossed but entered on later bar (price pulled back, re-broke)
+    N=   0 (0.0%) | Mean $ +0.00 | Sharpe  0.00 | WR 0% | Total $   +0.00
+
+===============================================================================================
+  2. GAP-OPEN DISTANCE: How far past the level is price at 8:00?
+     (This is the extra slippage the backtest doesn't capture)
+===============================================================================================
+
+  Price gap (absolute $):
+    Mean: $ +2.98
+    Median: $ +1.55
+    P25: $ +0.20
+    P75: $ +3.85
+    P90: $ +7.07
+    Max: $+28.97
+
+  Price gap as % of range size:
+    Mean: +23.3%
+    Median: +14.3%
+    P75: +37.5%
+    P90: +63.1%
+
+  Distribution of gap distance (% of range):
+     <0 (inside range): N=  46 | Mean $ +0.86 | Sharpe  3.10 | WR 56%
+                 0-10%: N=  58 | Mean $ -0.18 | Sharpe -0.64 | WR 45%
+                10-25%: N=  56 | Mean $ +0.50 | Sharpe  1.88 | WR 57%
+                25-50%: N=  58 | Mean $ +6.60 | Sharpe  9.84 | WR 88%
+               50-100%: N=  28 | Mean $ +7.39 | Sharpe 15.69 | WR 89%
+                 >100%: N=   7 | Mean $+12.66 | Sharpe 26.36 | WR 100%
+
+===============================================================================================
+  3. REALISTIC FILL: What if gap-open entries fill at open price, not range level?
+     (Simulates the live script's actual fill for pre-crossed trades)
+===============================================================================================
+
+  Backtest (ideal fill at level):  Sharpe  3.35 | Mean $ +1.63 | Total $ +1021.66
+  Realistic (gap fill at market):  Sharpe  0.87 | Mean $ +0.38 | Total $  +238.14
+  Difference:                      Sharpe -2.48 | Mean $ -1.25 | Total $  -783.52
+
+  (Note: above includes 60min time exit)
+
+===============================================================================================
+  4. FILTER: What if we only trade clean breakouts (skip gap-opens)?
+===============================================================================================
+
+  All trades:     N= 625 | Sharpe  3.35 | Total $ +1021.66
+  Clean only:     N= 419 | Sharpe  1.66 | Total $  +325.57
+  Skipped:        N= 206
+
+  Filtering by max gap (keep trades where gap < X% of range):
+    Gap   <=0%: N= 418 | Sharpe  1.66 | Mean $ +0.78 | Total $  +324.95
+    Gap  <=10%: N= 476 | Sharpe  1.47 | Mean $ +0.66 | Total $  +314.69
+    Gap  <=25%: N= 532 | Sharpe  1.48 | Mean $ +0.64 | Total $  +342.94
+    Gap  <=50%: N= 590 | Sharpe  2.59 | Mean $ +1.23 | Total $  +726.03
+    Gap <=100%: N= 618 | Sharpe  3.13 | Mean $ +1.51 | Total $  +933.06
+    Gap    all: N= 625 | Sharpe  3.35 | Mean $ +1.63 | Total $ +1021.66
+
+===============================================================================================
+  5. GAP TIMELINE: When do levels get crossed during 6-8 UTC?
+===============================================================================================
+
+  First level cross time distribution (for 371 days with gap crosses):
+    06:00:   69 ( 18.6%) ##################
+    06:05:   41 ( 11.1%) ###########
+    06:10:   22 (  5.9%) #####
+    06:15:   18 (  4.9%) ####
+    06:20:   18 (  4.9%) ####
+    06:25:   19 (  5.1%) #####
+    06:30:   14 (  3.8%) ###
+    06:35:    7 (  1.9%) #
+    06:40:   14 (  3.8%) ###
+    06:45:   12 (  3.2%) ###
+    06:50:    8 (  2.2%) ##
+    06:55:   14 (  3.8%) ###
+    07:00:   11 (  3.0%) ##
+    07:05:   13 (  3.5%) ###
+    07:10:   12 (  3.2%) ###
+    07:15:    9 (  2.4%) ##
+    07:20:   13 (  3.5%) ###
+    07:25:    8 (  2.2%) ##
+    07:30:   13 (  3.5%) ###
+    07:35:    7 (  1.9%) #
+    07:40:    6 (  1.6%) #
+    07:45:    7 (  1.9%) #
+    07:50:   11 (  3.0%) ##
+    07:55:    5 (  1.3%) #
+
+===============================================================================================
+  6. OOS COMPARISON: Ideal fill vs Realistic fill
+===============================================================================================
+
+  OOS (2021-2026):
+    Ideal fill:    N= 381 | Sharpe  3.81 | Total $  +828.21
+    Realistic fill: N= 381 | Sharpe  1.24 | Total $  +240.92
+
+===============================================================================================
+  7. ALTERNATIVE: What if gap-open trades wait for pullback + re-cross?
+     (Skip the immediate fill, wait for price to touch range level again)
+===============================================================================================
+
+  Original gap-open trades:  N= 206 | Sharpe  6.66 | Mean $ +3.38
+  Pullback re-entry trades:  N= 202 | Sharpe -0.86 | Mean $ -0.25
+  (Trades with no pullback are skipped: 4 trades lost)
+
+===============================================================================================
+  DONE
+===============================================================================================

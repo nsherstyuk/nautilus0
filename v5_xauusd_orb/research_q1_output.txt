@@ -1,0 +1,216 @@
+﻿Loaded 415,511 tick bars
+
+====================================================================================================
+  1. Q1 vs Q2 PROFILE: What's different about them?
+====================================================================================================
+
+  Q1 (slowest) (N=350):
+    Velocity:      1.27 (range 0.48-1.69)
+    Sharpe:        1.43
+    Mean PnL:      $+0.62
+    Win rate:      50.0%
+    Entry hour dist:
+      08:xx  N= 259 ( 74.0%)  Sharpe   1.63  Mean $ +0.68
+      09:xx  N=  36 ( 10.3%)  Sharpe  -2.11  Mean $ -1.07
+      10:xx  N=  22 (  6.3%)  Sharpe   5.81  Mean $ +2.49
+      11:xx  N=  16 (  4.6%)  Sharpe   3.78  Mean $ +1.95
+      12:xx  N=  13 (  3.7%)  Sharpe  -0.03  Mean $ -0.02
+      13:xx  N=   2 (  0.6%)  Sharpe   0.00  Mean $ -1.46
+      14:xx  N=   1 (  0.3%)  Sharpe   0.00  Mean $ -1.95
+      15:xx  N=   1 (  0.3%)  Sharpe   0.00  Mean $ -1.44
+    Direction dist:
+      LONG:  N= 181  Sharpe   1.31
+      SHORT:  N= 169  Sharpe   1.60
+    Exit dist:
+         EOD: N= 136  Mean $ +1.58
+          SL: N= 116  Mean $ -6.00
+          TP: N=  98  Mean $ +7.12
+    Avg range size: $5.49
+    Avg hold (min): 304
+    Avg gap:        $0.65
+    Avg spread:     $0.155
+
+  Q2 (N=349):
+    Velocity:      1.98 (range 1.69-2.30)
+    Sharpe:        -1.76
+    Mean PnL:      $-0.82
+    Win rate:      41.3%
+    Entry hour dist:
+      08:xx  N= 261 ( 74.8%)  Sharpe  -1.84  Mean $ -0.83
+      09:xx  N=  28 (  8.0%)  Sharpe  -2.43  Mean $ -1.21
+      10:xx  N=  27 (  7.7%)  Sharpe   1.06  Mean $ +0.66
+      11:xx  N=  17 (  4.9%)  Sharpe  -6.79  Mean $ -3.13
+      12:xx  N=  10 (  2.9%)  Sharpe   3.13  Mean $ +1.46
+      13:xx  N=   4 (  1.1%)  Sharpe   0.00  Mean $ -1.48
+      14:xx  N=   2 (  0.6%)  Sharpe   0.00  Mean $ -5.12
+    Direction dist:
+      LONG:  N= 190  Sharpe  -1.48
+      SHORT:  N= 159  Sharpe  -2.09
+    Exit dist:
+         EOD: N= 154  Mean $ +0.29
+          SL: N= 129  Mean $ -7.22
+          TP: N=  66  Mean $ +9.08
+    Avg range size: $6.82
+    Avg hold (min): 328
+    Avg gap:        $0.93
+    Avg spread:     $0.164
+
+====================================================================================================
+  2. DATA RESOLUTION: How long are tick bars in minutes?
+     (1000-tick bar with low velocity = long time span)
+====================================================================================================
+
+  Tick bar duration (minutes) by velocity quintile:
+       Q1_slow: mean=  46.2min  median=  13.6min  P90=  28.0min  max=135470min
+            Q2: mean=  11.1min  median=   8.0min  P90=  11.6min  max= 46168min
+            Q3: mean=   6.2min  median=   5.7min  P90=   8.1min  max=  3015min
+            Q4: mean=   4.4min  median=   4.1min  P90=   5.7min  max=  4385min
+       Q5_fast: mean=   2.6min  median=   2.5min  P90=   3.6min  max=  2947min
+
+  During 08:xx-09:xx UTC (our primary entry window):
+       Q1_slow: mean= 13.0min  median= 11.9min  P90= 19.4min  (N=2,763 bars)
+            Q2: mean=  8.2min  median=  8.0min  P90= 11.0min  (N=5,282 bars)
+            Q3: mean=  6.0min  median=  5.8min  P90=  7.9min  (N=5,710 bars)
+            Q4: mean=  4.5min  median=  4.4min  P90=  5.9min  (N=4,103 bars)
+       Q5_fast: mean=  2.9min  median=  2.8min  P90=  4.1min  (N=1,812 bars)
+
+====================================================================================================
+  3. Q1 ENTRY BAR RESOLUTION: How precise is the entry?
+     (If a Q1 entry bar spans 15 minutes, we don't know when the cross happened)
+====================================================================================================
+
+  Q1 (slowest) entry bar duration (estimated 1000/velocity):
+    Mean:   14.1 min
+    Median:   12.9 min
+    P90:   19.7 min
+    Max:     35 min
+
+  Q2 entry bar duration (estimated 1000/velocity):
+    Mean:    8.5 min
+    Median:    8.4 min
+    P90:    9.6 min
+    Max:     10 min
+
+  Q4 entry bar duration (estimated 1000/velocity):
+    Mean:    4.8 min
+    Median:    4.7 min
+    P90:    5.4 min
+    Max:      6 min
+
+  Q5 (fastest) entry bar duration (estimated 1000/velocity):
+    Mean:    3.0 min
+    Median:    3.1 min
+    P90:    3.8 min
+    Max:      4 min
+
+====================================================================================================
+  4. Q1 CONTEXT: Is it happening on specific days/months?
+====================================================================================================
+
+  Q1 entry weekday distribution:
+    Mon: N=  98  Sharpe  -0.57  Mean $ -0.22
+    Tue: N=  87  Sharpe   3.07  Mean $ +1.30
+    Thu: N=  79  Sharpe   0.98  Mean $ +0.46
+    Fri: N=  86  Sharpe   2.32  Mean $ +1.03
+
+  Q2 entry weekday distribution:
+    Mon: N=  84  Sharpe  -3.96  Mean $ -1.54
+    Tue: N=  87  Sharpe  -3.80  Mean $ -1.74
+    Thu: N=  89  Sharpe  -0.95  Mean $ -0.48
+    Fri: N=  89  Sharpe   0.84  Mean $ +0.42
+
+  Q1 by month:
+    Month  1: N= 27  Sharpe   0.14
+    Month  2: N= 41  Sharpe  -0.59
+    Month  3: N= 35  Sharpe   2.31
+    Month  4: N= 29  Sharpe   3.36
+    Month  5: N= 32  Sharpe   2.65
+    Month  6: N= 34  Sharpe   1.75
+    Month  7: N= 22  Sharpe  -3.91
+    Month  8: N=  5  Sharpe  -2.20
+    Month  9: N= 36  Sharpe   1.41
+    Month 10: N= 30  Sharpe   0.80
+    Month 11: N= 23  Sharpe   3.48
+    Month 12: N= 36  Sharpe   5.59
+
+====================================================================================================
+  5. RESOLUTION IMPACT: What are we missing with 1000-tick bars?
+====================================================================================================
+    Q1: Gap-open% = 43.4%  Avg gap (when >0) = $1.50
+    Q2: Gap-open% = 46.7%  Avg gap (when >0) = $1.99
+    Q4: Gap-open% = 39.3%  Avg gap (when >0) = $3.05
+    Q5: Gap-open% = 24.1%  Avg gap (when >0) = $5.05
+
+====================================================================================================
+  6. Q1 HYPOTHESIS: Is it correlated with small range sizes?
+     (Small range = tight SL = less risk, but also larger RR moves)
+====================================================================================================
+    Q1: Avg range $  5.49  Median range $  4.67  TP hit%  28.0%  SL hit%  33.1%
+    Q2: Avg range $  6.82  Median range $  5.65  TP hit%  18.9%  SL hit%  37.0%
+    Q3: Avg range $  8.26  Median range $  7.01  TP hit%  19.5%  SL hit%  35.2%
+    Q4: Avg range $ 10.75  Median range $  8.20  TP hit%  18.6%  SL hit%  28.7%
+    Q5: Avg range $ 15.51  Median range $ 11.48  TP hit%  15.5%  SL hit%  21.8%
+
+====================================================================================================
+  7. VELOCITY MEASUREMENT ACCURACY
+     Is 'tick_velocity' of the entry bar measuring the right thing?
+====================================================================================================
+
+  Using PREVIOUS bar's velocity (conditions leading to breakout):
+  (Requires re-running backtest with prev_bar velocity capture)
+  ù Skipping for now, but this is a key follow-up.
+
+====================================================================================================
+  8. VELOCITY DECILE ANALYSIS (10 buckets instead of 5)
+====================================================================================================
+
+  Decile |     N |           VelRange | ~BarMin |  Sharpe |    PF |    WR |    Mean |      Total
+  -------+-------+--------------------+---------+---------+-------+-------+---------+-----------
+      D1 |   175 |    0.48 -    1.30 |  16.0m |    0.56 |  1.09 | 49.7% | $ +0.20 | $   +35.44
+      D2 |   175 |    1.30 -    1.69 |  10.9m |    2.10 |  1.41 | 50.3% | $ +1.03 | $  +181.01
+      D3 |   174 |    1.69 -    1.99 |   9.1m |   -0.44 |  0.93 | 44.3% | $ -0.20 | $   -34.88
+      D4 |   175 |    1.99 -    2.30 |   7.8m |   -2.99 |  0.63 | 38.3% | $ -1.44 | $  -251.86
+      D5 |   174 |    2.30 -    2.64 |   6.8m |   -1.62 |  0.78 | 42.0% | $ -0.74 | $  -128.64
+      D6 |   175 |    2.64 -    3.03 |   5.9m |    1.63 |  1.31 | 52.0% | $ +1.11 | $  +194.32
+      D7 |   174 |    3.03 -    3.52 |   5.2m |    1.21 |  1.22 | 50.0% | $ +0.85 | $  +147.39
+      D8 |   175 |    3.52 -    4.18 |   4.4m |    2.15 |  1.49 | 48.6% | $ +1.61 | $  +281.82
+      D9 |   174 |    4.18 -    5.38 |   3.6m |    2.22 |  1.45 | 55.7% | $ +1.62 | $  +281.83
+     D10 |   175 |    5.38 -   14.38 |   2.4m |    1.65 |  1.36 | 51.4% | $ +2.00 | $  +349.79
+
+  OOS (2021+) deciles:
+
+  Decile |     N |  Sharpe |    PF |    WR |    Mean |      Total
+  -------+-------+---------+-------+-------+---------+-----------
+      D1 |    78 |    1.28 |  1.21 | 44.9% | $ +0.71 | $   +55.28
+     D10 |    78 |    1.49 |  1.32 | 55.1% | $ +2.34 | $  +182.29
+      D2 |    77 |    1.51 |  1.27 | 49.4% | $ +1.04 | $   +79.92
+      D3 |    78 |   -3.70 |  0.58 | 34.6% | $ -2.07 | $  -161.09
+      D4 |    77 |   -0.65 |  0.90 | 44.2% | $ -0.37 | $   -28.81
+      D5 |    78 |    0.46 |  1.07 | 46.2% | $ +0.40 | $   +31.20
+      D6 |    77 |    3.59 |  1.75 | 59.7% | $ +3.15 | $  +242.34
+      D7 |    77 |    2.86 |  1.65 | 49.4% | $ +2.74 | $  +210.68
+      D8 |    78 |    1.82 |  1.32 | 52.6% | $ +1.42 | $  +110.72
+      D9 |    77 |    2.57 |  1.51 | 46.8% | $ +2.43 | $  +187.37
+
+====================================================================================================
+  10. RESOLUTION VERDICT
+====================================================================================================
+
+  Entry bar duration distribution:
+    Bar >  1min:  1746 trades (100.0%)
+    Bar >  2min:  1715 trades ( 98.2%)
+    Bar >  5min:  1164 trades ( 66.7%)
+    Bar > 10min:   330 trades ( 18.9%)
+    Bar > 15min:   113 trades (  6.5%)
+    Bar > 20min:    28 trades (  1.6%)
+    Bar > 30min:     1 trades (  0.1%)
+
+  Entry bar > 10min: N=330, Sharpe 1.17
+  Entry bar <=10min: N=1416, Sharpe 0.87
+
+  Entry bar > 5min: N=1164, Sharpe 0.02
+  Entry bar <=5min: N=582, Sharpe 1.99
+
+====================================================================================================
+  DONE
+====================================================================================================
