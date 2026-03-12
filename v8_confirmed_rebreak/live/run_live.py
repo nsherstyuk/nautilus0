@@ -450,55 +450,64 @@ class V8LiveTrader:
         last_bar_log = 0
 
         while not self._shutdown:
-            if not self.conn.ensure_connected():
-                self.log.error("Connection lost -- waiting 10s")
-                time.sleep(10)
-                continue
+            try:
+                if not self.conn.ensure_connected():
+                    self.log.error("Connection lost -- waiting 10s")
+                    time.sleep(10)
+                    continue
 
-            price = self.conn.get_mid_price()
-            if price is None:
-                self.conn.sleep(poll_interval)
-                continue
-
-            now = datetime.now(timezone.utc)
-            completed_bar = self.aggregator.on_price(price, now)
-
-            if completed_bar is not None:
-                self.engine.add_bar(completed_bar)
-
-                # Safety check
-                safety = self.engine.safety_check()
-                if safety:
-                    self.log.warning(f"SAFETY LIMIT: {safety}")
+                price = self.conn.get_mid_price()
+                if price is None:
                     self.conn.sleep(poll_interval)
                     continue
 
-                result = self.engine.on_bar()
+                now = datetime.now(timezone.utc)
+                completed_bar = self.aggregator.on_price(price, now)
 
-                bars_in_buf = len(self.engine.buffer)
-                if time.time() - last_bar_log > 300:
-                    pivot_status = self.engine.get_pivot_status()
-                    if pivot_status:
-                        ph = pivot_status.get('pivot_high')
-                        pl = pivot_status.get('pivot_low')
-                        status_msg = f"Buffer: {bars_in_buf} bars, price={price:.2f}, daily_trades={self.engine.daily_trades}"
-                        if ph is not None:
-                            dist_h = pivot_status['dist_to_high']
-                            status_msg += f" | PivotH={ph:.2f} (${dist_h:+.2f})"
-                        if pl is not None:
-                            dist_l = pivot_status['dist_to_low']
-                            status_msg += f" | PivotL={pl:.2f} (${dist_l:+.2f} above)"
-                        self.log.info(status_msg)
-                    else:
-                        self.log.info(f"Buffer: {bars_in_buf} bars, "
-                                      f"price={price:.2f}, "
-                                      f"daily_trades={self.engine.daily_trades}")
-                    last_bar_log = time.time()
+                if completed_bar is not None:
+                    self.engine.add_bar(completed_bar)
 
-                if result is not None:
-                    self._handle_signal(result)
+                    # Safety check
+                    safety = self.engine.safety_check()
+                    if safety:
+                        self.log.warning(f"SAFETY LIMIT: {safety}")
+                        self.conn.sleep(poll_interval)
+                        continue
 
-            self.conn.sleep(poll_interval)
+                    result = self.engine.on_bar()
+
+                    bars_in_buf = len(self.engine.buffer)
+                    if time.time() - last_bar_log > 300:
+                        pivot_status = self.engine.get_pivot_status()
+                        if pivot_status:
+                            ph = pivot_status.get('pivot_high')
+                            pl = pivot_status.get('pivot_low')
+                            status_msg = f"Buffer: {bars_in_buf} bars, price={price:.2f}, daily_trades={self.engine.daily_trades}"
+                            if ph is not None:
+                                dist_h = pivot_status['dist_to_high']
+                                status_msg += f" | PivotH={ph:.2f} (${dist_h:+.2f})"
+                            if pl is not None:
+                                dist_l = pivot_status['dist_to_low']
+                                status_msg += f" | PivotL={pl:.2f} (${dist_l:+.2f} above)"
+                            self.log.info(status_msg)
+                        else:
+                            self.log.info(f"Buffer: {bars_in_buf} bars, "
+                                          f"price={price:.2f}, "
+                                          f"daily_trades={self.engine.daily_trades}")
+                        last_bar_log = time.time()
+
+                    if result is not None:
+                        self._handle_signal(result)
+
+                self.conn.sleep(poll_interval)
+                
+            except KeyboardInterrupt:
+                self.log.info("Keyboard interrupt received")
+                self._shutdown = True
+            except Exception as e:
+                self.log.error(f"ERROR in main loop: {e}", exc_info=True)
+                self.log.error("Waiting 10s before retry...")
+                time.sleep(10)
 
         self.log.info("Shutting down...")
         self._cleanup()
