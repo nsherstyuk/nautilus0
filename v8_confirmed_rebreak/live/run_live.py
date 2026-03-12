@@ -477,9 +477,22 @@ class V8LiveTrader:
 
                 bars_in_buf = len(self.engine.buffer)
                 if time.time() - last_bar_log > 300:
-                    self.log.info(f"Buffer: {bars_in_buf} bars, "
-                                  f"price={price:.2f}, "
-                                  f"daily_trades={self.engine.daily_trades}")
+                    pivot_status = self.engine.get_pivot_status()
+                    if pivot_status:
+                        ph = pivot_status.get('pivot_high')
+                        pl = pivot_status.get('pivot_low')
+                        status_msg = f"Buffer: {bars_in_buf} bars, price={price:.2f}, daily_trades={self.engine.daily_trades}"
+                        if ph is not None:
+                            dist_h = pivot_status['dist_to_high']
+                            status_msg += f" | PivotH={ph:.2f} (${dist_h:+.2f})"
+                        if pl is not None:
+                            dist_l = pivot_status['dist_to_low']
+                            status_msg += f" | PivotL={pl:.2f} (${dist_l:+.2f} above)"
+                        self.log.info(status_msg)
+                    else:
+                        self.log.info(f"Buffer: {bars_in_buf} bars, "
+                                      f"price={price:.2f}, "
+                                      f"daily_trades={self.engine.daily_trades}")
                     last_bar_log = time.time()
 
                 if result is not None:

@@ -338,9 +338,54 @@ class LiveEngine:
         self.daily_pnl = 0.0
 
     def safety_check(self) -> Optional[str]:
-        """Check daily safety limits. Returns reason string if breached."""
-        if self.daily_trades >= self.config.max_daily_trades:
-            return f"MAX_DAILY_TRADES ({self.config.max_daily_trades})"
-        if self.daily_pnl <= -self.config.max_daily_loss:
-            return f"MAX_DAILY_LOSS (${self.config.max_daily_loss})"
+        """Check if daily trade limit exceeded."""
+        if self.config.max_daily_trades > 0:
+            if self.daily_trades >= self.config.max_daily_trades:
+                return f"Daily trade limit reached: {self.daily_trades}/{self.config.max_daily_trades}"
         return None
+
+    def get_pivot_status(self) -> Optional[dict]:
+        """Get current pivot levels and distance from current price.
+        
+        Returns:
+            dict with keys: current_price, pivot_high, pivot_low, 
+                           dist_to_high, dist_to_low, pct_to_high, pct_to_low
+            None if not enough bars yet
+        """
+        pw = self.config.pivot_window
+        imb_w = self.config.imbalance_window
+        buf_len = len(self.buffer)
+        min_bars = 2 * pw + 1 + imb_w
+
+        if buf_len < min_bars:
+            return None
+
+        # Get arrays
+        highs, lows, closes, _, _, _ = self.buffer.get_arrays()
+        
+        # Compute pivots
+        pivot_high, pivot_low = rolling_centered(
+            highs, lows,
+            window=pw,
+            shift=self.config.confirm_bars,
+        )
+        
+        # Current price and pivot levels at delayed position
+        process_idx = buf_len - 1 - imb_w
+        current_price = float(closes[-1])  # Most recent bar
+        ph = float(pivot_high[process_idx]) if not np.isnan(pivot_high[process_idx]) else None
+        pl = float(pivot_low[process_idx]) if not np.isnan(pivot_low[process_idx]) else None
+        
+        result = {'current_price': current_price}
+        
+        if ph is not None:
+            result['pivot_high'] = ph
+            result['dist_to_high'] = ph - current_price
+            result['pct_to_high'] = ((ph - current_price) / current_price) * 100
+        
+        if pl is not None:
+            result['pivot_low'] = pl
+            result['dist_to_low'] = current_price - pl
+            result['pct_to_low'] = ((current_price - pl) / pl) * 100
+        
+        return result
