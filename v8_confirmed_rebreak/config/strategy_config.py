@@ -28,7 +28,7 @@ class StrategyConfig:
     atr_period: int = 60            # bars for ATR computation
 
     # Volume quality filter
-    min_bar_ticks: int = 50         # min tick_count per bar in imbalance window
+    min_bar_ticks: int = 75         # min tick_count per bar in imbalance window
 
     # Costs
     spread_cost: float = 0.30       # round-trip spread for XAUUSD
