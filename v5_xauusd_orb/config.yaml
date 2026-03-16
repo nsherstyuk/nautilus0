@@ -112,7 +112,7 @@ instruments:
     # Backtested: OOS Sharpe 1.81 filtered vs 0.91 unfiltered (2021-2026)
     velocity_filter_enabled: true
     velocity_lookback_minutes: 3   # avg tick count over entry bar + 3 min before (best separation=2.35)
-    velocity_threshold: 168        # P50 median ticks/min from 1-min backtest (OOS Sharpe 1.81)
+    velocity_threshold: 200        # IBKR-calibrated: London P30 from 40h reqMktData data (Dukascopy 168 = IBKR ~P10, too permissive)
     velocity_threshold_percentile: 50  # fallback: adaptive P50 if threshold=0
     qty: 1                    # 1 oz
     # Display
@@ -209,7 +209,7 @@ guardrails:
   # If we find open orders or positions at IBKR that don't belong
   # to any active instrument state, log a warning and optionally cancel.
   cancel_orphaned_orders: true
-  close_orphaned_positions: false    # false = log warning only, true = auto-close
+  close_orphaned_positions: true     # auto-close orphans on startup (safer after overnight orphan incident)
 
   # Email notifications (via SMTP).
   # Set enabled: true and fill in credentials to activate.

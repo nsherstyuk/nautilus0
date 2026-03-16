@@ -34,6 +34,7 @@ import argparse
 import csv
 import json
 import logging
+from logging.handlers import RotatingFileHandler
 import math
 import os
 import signal as signal_mod
@@ -73,7 +74,8 @@ def setup_logging(cfg: Config) -> logging.Logger:
     log.addHandler(sh)
 
     log_path = Path(cfg.paths.log_dir) / "orb_multi_live.log"
-    fh = logging.FileHandler(str(log_path))
+    fh = RotatingFileHandler(
+        str(log_path), maxBytes=10_000_000, backupCount=5)
     fh.setFormatter(fmt)
     fh.setLevel(logging.DEBUG)
     log.addHandler(fh)
@@ -196,7 +198,11 @@ class InstrumentState:
             'sell_sl_order_id': self.sell_sl_order_id,
             'sell_tp_order_id': self.sell_tp_order_id,
         }
-        self.state_file.write_text(json.dumps(data, indent=2))
+        # Atomic write: write to temp file then rename to prevent
+        # corruption if the process crashes mid-write.
+        tmp = self.state_file.with_suffix('.tmp')
+        tmp.write_text(json.dumps(data, indent=2))
+        tmp.replace(self.state_file)
 
     def reset_for_new_day(self, today_str: str):
         self.status = self.IDLE
@@ -257,6 +263,9 @@ class SharedConnection:
         # Tick counter for velocity filter: inst_name -> deque of tick timestamps
         self._tick_timestamps = {}   # inst_name -> deque of float (unix timestamps)
         self._tick_subscriptions = {}  # inst_name -> subscription object
+        self._tick_last_bid = {}     # inst_name -> last bid price (for change detection)
+        self._tick_last_ask = {}     # inst_name -> last ask price (for change detection)
+        self._velocity_handler_registered = False
 
     @property
     def connected(self) -> bool:
@@ -279,6 +288,7 @@ class SharedConnection:
                 self.ib = IB()
                 self.ib.errorEvent += self._on_ib_error
                 self.ib.disconnectedEvent += self._on_disconnect
+                self._velocity_handler_registered = False  # re-register after new IB instance
 
                 self.ib.connect(self.host, self.port,
                                 clientId=self.client_id,
@@ -492,36 +502,65 @@ class SharedConnection:
                 pass
 
     def start_tick_counter(self, inst_name: str):
-        """Subscribe to tick-by-tick data to count ticks for velocity filter."""
+        """Enable velocity tick counting for an instrument.
+
+        Uses the existing reqMktData price ticker + pendingTickersEvent
+        to count bid/ask changes. Works for ALL instruments including
+        XAUUSD CMDTY (reqTickByTickData is NOT supported for CMDTY).
+        """
         contract = self.contracts.get(inst_name)
         if contract is None:
             return
         # Keep last 15 minutes of tick timestamps (generous buffer)
         self._tick_timestamps[inst_name] = deque(maxlen=100000)
-        try:
-            ticker = self.ib.reqTickByTickData(
-                contract, 'BidAsk', numberOfTicks=0, ignoreSize=True)
+        self._tick_last_bid[inst_name] = None
+        self._tick_last_ask[inst_name] = None
+        self._tick_subscriptions[inst_name] = True  # mark as active
 
-            def on_tick(tick):
-                self._tick_timestamps[inst_name].append(time.time())
+        # Register ONE global handler for all instruments (idempotent)
+        if not self._velocity_handler_registered:
+            self.ib.pendingTickersEvent += self._on_velocity_tick
+            self._velocity_handler_registered = True
 
-            ticker.updateEvent += on_tick
-            self._tick_subscriptions[inst_name] = ticker
-            self.log.info(f"[{inst_name}] Tick counter started (velocity filter)")
-        except Exception as e:
-            self.log.warning(f"[{inst_name}] Failed to start tick counter: {e}")
+        self.log.info(f"[{inst_name}] Tick counter started (reqMktData velocity)")
+
+    def _on_velocity_tick(self, tickers):
+        """Global pendingTickersEvent handler for velocity tick counting.
+
+        Fires on every market data update from reqMktData. We check which
+        instruments had bid/ask changes and record timestamps.
+        """
+        for ticker in tickers:
+            if ticker.contract is None:
+                continue
+            # Match by conId against our known contracts
+            for inst_name, contract in self.contracts.items():
+                if (inst_name not in self._tick_subscriptions
+                        or contract.conId != ticker.contract.conId):
+                    continue
+                bid = ticker.bid
+                ask = ticker.ask
+                # Skip invalid prices
+                if (not isinstance(bid, (int, float)) or not isinstance(ask, (int, float))
+                        or math.isnan(bid) or math.isnan(ask)
+                        or bid <= 0 or ask <= 0):
+                    continue
+                # Only count if bid or ask actually changed
+                if (bid != self._tick_last_bid.get(inst_name)
+                        or ask != self._tick_last_ask.get(inst_name)):
+                    self._tick_last_bid[inst_name] = bid
+                    self._tick_last_ask[inst_name] = ask
+                    ts_deque = self._tick_timestamps.get(inst_name)
+                    if ts_deque is not None:
+                        ts_deque.append(time.time())
+                break  # found the matching instrument
 
     def stop_tick_counter(self, inst_name: str):
-        """Stop tick-by-tick subscription."""
-        ticker = self._tick_subscriptions.pop(inst_name, None)
-        if ticker is not None and self.ib is not None:
-            contract = self.contracts.get(inst_name)
-            if contract:
-                try:
-                    self.ib.cancelTickByTickData(contract, 'BidAsk')
-                except Exception:
-                    pass
+        """Stop velocity counting for an instrument."""
+        self._tick_subscriptions.pop(inst_name, None)
         self._tick_timestamps.pop(inst_name, None)
+        self._tick_last_bid.pop(inst_name, None)
+        self._tick_last_ask.pop(inst_name, None)
 
     def get_tick_velocity(self, inst_name: str, lookback_minutes: int = 3) -> float:
         """Get average ticks per minute over the last N+1 minutes (entry bar + lookback).
@@ -710,7 +749,12 @@ class InstrumentManager:
 
         # ── ORDERS_PLACED: wait for fill or window close ──
         elif state.status == InstrumentState.ORDERS_PLACED:
-            if hour >= inst.trade_end_hour:
+            # ── CRITICAL: Check fills FIRST, before any cancel logic ──
+            # If IBKR filled our entry between ticks, we must detect it
+            # before any cancel path can miss it and orphan the position.
+            filled = self._check_fills()
+
+            if not filled and hour >= inst.trade_end_hour:
                 self.log.info(f"{self.tag} Trade window closed. Cancelling.")
                 self._cancel_and_close()
                 state.status = InstrumentState.DONE_TODAY
@@ -719,7 +763,8 @@ class InstrumentManager:
                 return
 
             # Max pending hours: cancel if orders haven't filled in time
-            if (inst.max_pending_hours > 0 and state.orders_placed_time):
+            if (not filled and inst.max_pending_hours > 0
+                    and state.orders_placed_time):
                 elapsed = (now - datetime.fromisoformat(
                     state.orders_placed_time)).total_seconds()
                 if elapsed >= inst.max_pending_hours * 3600:
@@ -733,11 +778,16 @@ class InstrumentManager:
                     return
 
             # Dynamic Velocity Gate: if velocity drops while orders are resting, pull them
-            if inst.velocity_filter_enabled:
+            # Use 90% of threshold (hysteresis) to avoid rapid place/cancel cycling
+            # when velocity fluctuates around the exact threshold boundary.
+            # NOTE: This block only runs if no fill was detected above.
+            if not filled and inst.velocity_filter_enabled:
                 vel_ok, vel_val = self._check_velocity()
-                if not vel_ok:
+                cancel_threshold = inst.velocity_threshold * 0.9
+                if vel_val < cancel_threshold:
                     self.log.warning(
-                        f"{self.tag} Velocity dropped ({vel_val:.0f} < {inst.velocity_threshold}). "
+                        f"{self.tag} Velocity dropped ({vel_val:.0f} < {cancel_threshold:.0f} "
+                        f"[90% of {inst.velocity_threshold}]). "
                         f"Pulling resting orders to wait for activity.")
                     self._cancel_and_close()
                     # Revert to RANGE_COMPUTED so we keep watching
@@ -748,8 +798,6 @@ class InstrumentManager:
                     state.orders_placed_time = None
                     state.save()
                     return
-
-            filled = self._check_fills()
             if filled:
                 # Post-fill safety check: catch race condition fills during velocity drop
                 if inst.velocity_filter_enabled:
@@ -945,9 +993,9 @@ class InstrumentManager:
     def _velocity_reject_close(self, now: datetime):
         """Close position immediately after velocity rejection (Option B).
         Logs the rejection and marks day as done."""
-        self._cancel_and_close()
+        close_fill = self._cancel_and_close()
         state = self.state
-        price = self.conn.get_price(self.inst.name) or state.entry_price
+        price = close_fill or self.conn.get_price(self.inst.name) or state.entry_price
         pnl = ((price - state.entry_price) if state.direction == "LONG"
                else (state.entry_price - price))
         pnl_total = round(pnl * self.inst.qty * self.inst.point_value, 2)
@@ -1077,7 +1125,7 @@ class InstrumentManager:
             self.log.error(f"{self.tag} No contract available")
             return
 
-        oca_group = f"ORB_{inst.name}_{state.trade_date}"
+        oca_group = f"ORB_{inst.name}_{state.trade_date}_{now.strftime('%H%M%S')}"
         trade_end_utc = now.replace(
             hour=inst.trade_end_hour, minute=0, second=0, microsecond=0)
         gtd_time = trade_end_utc.strftime("%Y%m%d %H:%M:%S %Z")
@@ -1233,6 +1281,14 @@ class InstrumentManager:
                     return True
 
             # Fallback: check if position simply vanished (unknown reason)
+            # Grace period: skip this check for 30s after entry to avoid
+            # false positives from ib.positions() cache lag after fill.
+            if state.entry_time:
+                entry_dt = datetime.fromisoformat(state.entry_time)
+                secs_in_trade = (datetime.now(tz=timezone.utc) - entry_dt).total_seconds()
+                if secs_in_trade < 30:
+                    return False
+
             positions = self.conn.ib.positions()
             contract = self.conn.contracts.get(self.inst.name)
             if contract is None:
@@ -1241,6 +1297,14 @@ class InstrumentManager:
                 p.contract.conId == contract.conId and abs(p.position) > 0
                 for p in positions
             )
+            if not has_pos:
+                # Double-check with a fresh positions request
+                self.conn.sleep(2)
+                positions = self.conn.ib.positions()
+                has_pos = any(
+                    p.contract.conId == contract.conId and abs(p.position) > 0
+                    for p in positions
+                )
             if not has_pos:
                 self._exit_fill_price = None
                 self._exit_fill_type = 'CLOSED'
@@ -1357,34 +1421,43 @@ class InstrumentManager:
         if contract is None:
             return
 
-        sl_action = "SELL" if state.direction == "LONG" else "BUY"
+        # Match by exact order ID to avoid modifying another instrument's SL
+        target_sl_oid = (state.buy_sl_order_id if state.direction == "LONG"
+                         else state.sell_sl_order_id)
+        if not target_sl_oid:
+            self.log.warning(f"{self.tag} BE: No SL order ID saved in state")
+            return
+
         try:
-            for order in self.conn.ib.openOrders():
-                if order.action == sl_action and order.orderType == "STP":
-                    old_sl = order.auxPrice
-                    order.auxPrice = new_sl
-                    self.conn.ib.placeOrder(contract, order)
+            for trade in self.conn.ib.openTrades():
+                if trade.order.orderId == target_sl_oid:
+                    old_sl = trade.order.auxPrice
+                    trade.order.auxPrice = new_sl
+                    self.conn.ib.placeOrder(contract, trade.order)
                     self.conn.sleep(0.5)
                     state.sl_price = new_sl
                     state.be_applied = True
                     state.save()
                     self.log.info(
-                        f"{self.tag} BE rule: SL {old_sl:.{self.dec}f} -> "
-                        f"{new_sl:.{self.dec}f}")
+                        f"{self.tag} BE rule: SL order {target_sl_oid} "
+                        f"{old_sl:.{self.dec}f} -> {new_sl:.{self.dec}f}")
                     return
-            self.log.warning(f"{self.tag} BE: SL order not found")
+            self.log.warning(
+                f"{self.tag} BE: SL order {target_sl_oid} not found in open trades")
         except Exception as e:
             self.log.error(f"{self.tag} BE failed: {e}")
 
-    def _cancel_and_close(self):
+    def _cancel_and_close(self) -> Optional[float]:
+        """Cancel all orders for this instrument and close any position.
+        Returns the actual fill price if a position was closed, None otherwise."""
         if self.dry_run:
             self.log.info(f"{self.tag} [DRY RUN] Would cancel/close")
-            return
+            return None
         if not self.conn.ensure_connected():
-            return
+            return None
         contract = self.conn.contracts.get(self.inst.name)
         if contract is None:
-            return
+            return None
 
         # Only cancel orders belonging to THIS instrument
         my_order_ids = set()
@@ -1406,23 +1479,65 @@ class InstrumentManager:
                         pass
             self.conn.sleep(2)
 
+            # Close any remaining position with verification
+            actual_fill_price = None
             for pos in self.conn.ib.positions():
                 if (pos.contract.conId == contract.conId
                         and abs(pos.position) > 0):
                     from ib_insync import MarketOrder
                     action = "SELL" if pos.position > 0 else "BUY"
                     close_order = MarketOrder(action, abs(pos.position))
-                    self.conn.ib.placeOrder(contract, close_order)
+                    close_trade = self.conn.ib.placeOrder(contract, close_order)
                     self.conn.sleep(3)
-                    self.log.info(f"{self.tag} Position closed at market")
+
+                    # Verify fill: check trade status
+                    fill_verified = False
+                    for attempt in range(3):
+                        self.conn.sleep(0)  # pump events
+                        if close_trade.orderStatus.status == 'Filled':
+                            actual_fill_price = close_trade.orderStatus.avgFillPrice
+                            self.log.info(
+                                f"{self.tag} Position closed at market "
+                                f"(fill price={actual_fill_price})")
+                            fill_verified = True
+                            break
+                        # Also check if position is gone
+                        self.conn.sleep(2)
+                        still_open = any(
+                            p.contract.conId == contract.conId
+                            and abs(p.position) > 0
+                            for p in self.conn.ib.positions()
+                        )
+                        if not still_open:
+                            # Position gone but didn't catch fill price —
+                            # use avgFillPrice if available, else streaming price
+                            actual_fill_price = (
+                                close_trade.orderStatus.avgFillPrice
+                                or self.conn.get_price(self.inst.name))
+                            self.log.info(
+                                f"{self.tag} Position confirmed closed (attempt {attempt+1})"
+                                f" fill_price={actual_fill_price}")
+                            fill_verified = True
+                            break
+                        self.log.warning(
+                            f"{self.tag} Close order not yet filled "
+                            f"(attempt {attempt+1}/3, status={close_trade.orderStatus.status})")
+
+                    if not fill_verified:
+                        self.log.error(
+                            f"{self.tag} CRITICAL: Position may still be open after "
+                            f"close attempt! Manual check required. "
+                            f"Close order status={close_trade.orderStatus.status}")
+            return actual_fill_price
         except Exception as e:
             self.log.error(f"{self.tag} cancel_and_close failed: {e}")
+            return None
 
     def _time_exit_close(self, now: datetime):
         """Time-based exit: cancel remaining orders, close position at market."""
-        self._cancel_and_close()
+        close_fill = self._cancel_and_close()
         state = self.state
-        price = self.conn.get_price(self.inst.name) or state.entry_price
+        price = close_fill or self.conn.get_price(self.inst.name) or state.entry_price
         pnl = ((price - state.entry_price) if state.direction == "LONG"
                else (state.entry_price - price))
         # Final MFE/MAE update with closing price
@@ -1478,9 +1593,9 @@ class InstrumentManager:
 
     def _eod_close(self, now: datetime):
         """End-of-day close: cancel orders, close position, log trade."""
-        self._cancel_and_close()
+        close_fill = self._cancel_and_close()
         state = self.state
-        price = self.conn.get_price(self.inst.name) or state.entry_price
+        price = close_fill or self.conn.get_price(self.inst.name) or state.entry_price
         pnl = ((price - state.entry_price) if state.direction == "LONG"
                else (state.entry_price - price))
         # Final MFE/MAE update with closing price

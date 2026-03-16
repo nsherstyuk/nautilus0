@@ -291,10 +291,10 @@ def graceful_shutdown(managers: list, conn, log: logging.Logger,
 
             elif state.status == "IN_TRADE":
                 log.info(f"{tag} Closing open position...")
-                mgr._cancel_and_close()
+                close_fill = mgr._cancel_and_close()
                 # Record the forced exit via _record_exit (writes to trade CSV)
                 now = datetime.now(tz=timezone.utc)
-                price = conn.get_price(mgr.inst.name) if conn.connected else None
+                price = close_fill or (conn.get_price(mgr.inst.name) if conn.connected else None)
                 if price and state.entry_price:
                     mgr._exit_fill_price = price
                     mgr._exit_fill_type = 'CLOSED'
