@@ -1,0 +1,61 @@
+﻿Loading XAUUSD data...
+  2,876,848 bars
+  Pivots: 32,295 H, 32,564 L
+
+======================================================================
+MIN_TICK_COUNT = 0
+  OOS confirmed_rebreak: 1,419
+  OOS clean_first: 8,447
+
+  Confirmed rebreak OOS P&L (after spread):
+      10m: +0.385 (50%)  15m: +0.454 (51%)  30m: +0.611 (53%)  60m: +0.655 (53%)
+  Clean first OOS P&L (after spread):
+      10m: +0.002 (44%)  15m: +0.030 (45%)  30m: +0.012 (46%)  60m: +0.003 (47%)
+  Edge (confirmed - clean):
+      10m: +0.383  15m: +0.424  30m: +0.599  60m: +0.653
+       up confirmed (n= 763):  10m=+0.415(51%)  15m=+0.408(51%)  30m=+0.574(54%)  60m=+0.966(56%)
+     down confirmed (n= 656):  10m=+0.350(50%)  15m=+0.507(51%)  30m=+0.654(52%)  60m=+0.294(50%)
+
+======================================================================
+MIN_TICK_COUNT = 20
+  OOS confirmed_rebreak: 1,369
+  OOS clean_first: 8,158
+
+  Confirmed rebreak OOS P&L (after spread):
+      10m: +0.400 (51%)  15m: +0.475 (51%)  30m: +0.625 (53%)  60m: +0.668 (53%)
+  Clean first OOS P&L (after spread):
+      10m: +0.008 (44%)  15m: +0.033 (45%)  30m: +0.024 (46%)  60m: +0.016 (47%)
+  Edge (confirmed - clean):
+      10m: +0.392  15m: +0.443  30m: +0.600  60m: +0.652
+       up confirmed (n= 729):  10m=+0.424(52%)  15m=+0.425(51%)  30m=+0.580(53%)  60m=+0.973(55%)
+     down confirmed (n= 640):  10m=+0.372(50%)  15m=+0.532(52%)  30m=+0.676(53%)  60m=+0.321(51%)
+
+======================================================================
+MIN_TICK_COUNT = 50
+  OOS confirmed_rebreak: 1,191
+  OOS clean_first: 7,177
+
+  Confirmed rebreak OOS P&L (after spread):
+      10m: +0.491 (52%)  15m: +0.551 (52%)  30m: +0.701 (54%)  60m: +0.694 (53%)
+  Clean first OOS P&L (after spread):
+      10m: +0.042 (45%)  15m: +0.073 (46%)  30m: +0.060 (47%)  60m: +0.048 (47%)
+  Edge (confirmed - clean):
+      10m: +0.449  15m: +0.478  30m: +0.641  60m: +0.645
+       up confirmed (n= 634):  10m=+0.524(53%)  15m=+0.535(54%)  30m=+0.700(55%)  60m=+1.005(55%)
+     down confirmed (n= 557):  10m=+0.454(50%)  15m=+0.570(50%)  30m=+0.701(52%)  60m=+0.339(52%)
+
+======================================================================
+MIN_TICK_COUNT = 100
+  OOS confirmed_rebreak: 840
+  OOS clean_first: 5,548
+
+  Confirmed rebreak OOS P&L (after spread):
+      10m: +0.689 (55%)  15m: +0.836 (54%)  30m: +0.992 (56%)  60m: +0.949 (55%)
+  Clean first OOS P&L (after spread):
+      10m: +0.067 (46%)  15m: +0.090 (47%)  30m: +0.077 (48%)  60m: +0.067 (48%)
+  Edge (confirmed - clean):
+      10m: +0.622  15m: +0.746  30m: +0.915  60m: +0.882
+       up confirmed (n= 461):  10m=+0.663(55%)  15m=+0.734(55%)  30m=+1.020(57%)  60m=+1.489(57%)
+     down confirmed (n= 379):  10m=+0.722(56%)  15m=+0.959(53%)  30m=+0.958(55%)  60m=+0.292(51%)
+
+Done.
