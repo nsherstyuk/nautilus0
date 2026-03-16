@@ -1131,72 +1131,38 @@ class InstrumentManager:
         gtd_time = trade_end_utc.strftime("%Y%m%d %H:%M:%S %Z")
 
         try:
-            # Buy stop bracket
-            buy_parent = Order(
+            # Two-phase bracket: place ONLY entry stops now.
+            # SL/TP are placed AFTER fill is confirmed (see _place_sl_tp).
+            # This prevents orphaned SL/TP orders from opening unwanted positions.
+            buy_entry = Order(
                 action="BUY", orderType="STP", totalQuantity=inst.qty,
                 auxPrice=long_entry, tif="GTD", goodTillDate=gtd_time,
                 ocaGroup=oca_group, ocaType=1, transmit=False)
-            buy_sl = Order(
-                action="SELL", orderType="STP", totalQuantity=inst.qty,
-                auxPrice=long_sl, tif="GTC", transmit=False)
-            buy_tp = Order(
-                action="SELL", orderType="LMT", totalQuantity=inst.qty,
-                lmtPrice=long_tp, tif="GTC", transmit=False)
 
-            buy_trade = self.conn.ib.placeOrder(contract, buy_parent)
+            sell_entry = Order(
+                action="SELL", orderType="STP", totalQuantity=inst.qty,
+                auxPrice=short_entry, tif="GTD", goodTillDate=gtd_time,
+                ocaGroup=oca_group, ocaType=1, transmit=True)
+
+            buy_trade = self.conn.ib.placeOrder(contract, buy_entry)
             self.conn.sleep(1)
             buy_id = buy_trade.order.orderId
 
-            buy_sl.parentId = buy_id
-            buy_sl_trade = self.conn.ib.placeOrder(contract, buy_sl)
-            self.conn.sleep(0.5)
-
-            buy_tp.parentId = buy_id
-            buy_tp.transmit = True
-            buy_tp_trade = self.conn.ib.placeOrder(contract, buy_tp)
-            self.conn.sleep(1)
-
-            buy_sl_id = buy_sl_trade.order.orderId
-            buy_tp_id = buy_tp_trade.order.orderId
-            self.log.info(f"{self.tag} Buy bracket placed: id={buy_id}"
-                          f" (SL={buy_sl_id}, TP={buy_tp_id})")
-
-            # Sell stop bracket
-            sell_parent = Order(
-                action="SELL", orderType="STP", totalQuantity=inst.qty,
-                auxPrice=short_entry, tif="GTD", goodTillDate=gtd_time,
-                ocaGroup=oca_group, ocaType=1, transmit=False)
-            sell_sl = Order(
-                action="BUY", orderType="STP", totalQuantity=inst.qty,
-                auxPrice=short_sl, tif="GTC", transmit=False)
-            sell_tp = Order(
-                action="BUY", orderType="LMT", totalQuantity=inst.qty,
-                lmtPrice=short_tp, tif="GTC", transmit=True)
-
-            sell_trade = self.conn.ib.placeOrder(contract, sell_parent)
+            sell_trade = self.conn.ib.placeOrder(contract, sell_entry)
             self.conn.sleep(1)
             sell_id = sell_trade.order.orderId
 
-            sell_sl.parentId = sell_id
-            sell_sl_trade = self.conn.ib.placeOrder(contract, sell_sl)
-            self.conn.sleep(0.5)
-
-            sell_tp.parentId = sell_id
-            sell_tp.transmit = True
-            sell_tp_trade = self.conn.ib.placeOrder(contract, sell_tp)
-            self.conn.sleep(1)
-
-            sell_sl_id = sell_sl_trade.order.orderId
-            sell_tp_id = sell_tp_trade.order.orderId
-            self.log.info(f"{self.tag} Sell bracket placed: id={sell_id}"
-                          f" (SL={sell_sl_id}, TP={sell_tp_id})")
+            self.log.info(f"{self.tag} Entry stops placed: "
+                          f"BUY id={buy_id} @ {long_entry}, "
+                          f"SELL id={sell_id} @ {short_entry} "
+                          f"(OCA={oca_group})")
 
             state.buy_order_id = buy_id
             state.sell_order_id = sell_id
-            state.buy_sl_order_id = buy_sl_id
-            state.buy_tp_order_id = buy_tp_id
-            state.sell_sl_order_id = sell_sl_id
-            state.sell_tp_order_id = sell_tp_id
+            state.buy_sl_order_id = 0
+            state.buy_tp_order_id = 0
+            state.sell_sl_order_id = 0
+            state.sell_tp_order_id = 0
             state.orders_placed_time = now.isoformat()
             state.status = InstrumentState.ORDERS_PLACED
             state.save()
@@ -1227,6 +1193,8 @@ class InstrumentManager:
                     state.entry_time = datetime.now(tz=timezone.utc).isoformat()
                     state.status = InstrumentState.IN_TRADE
                     state.save()
+                    # Phase 2: place SL/TP now that fill is confirmed
+                    self._place_sl_tp()
                     return True
                 elif (oid == state.sell_order_id
                       and trade.orderStatus.status == 'Filled'):
@@ -1239,10 +1207,74 @@ class InstrumentManager:
                     state.entry_time = datetime.now(tz=timezone.utc).isoformat()
                     state.status = InstrumentState.IN_TRADE
                     state.save()
+                    # Phase 2: place SL/TP now that fill is confirmed
+                    self._place_sl_tp()
                     return True
         except Exception as e:
             self.log.warning(f"{self.tag} check_fills error: {e}")
         return False
+
+    def _place_sl_tp(self):
+        """Place SL + TP orders AFTER entry fill is confirmed.
+
+        Two-phase bracket pattern (V6 architecture):
+        Phase 1: entry stops placed in _place_bracket_orders (OCA pair)
+        Phase 2: SL/TP placed here after one entry fills
+
+        SL and TP are in their own OCA group so when one fills,
+        the other is auto-cancelled. They are NOT bracket children,
+        so they cannot create orphaned positions.
+        """
+        from ib_insync import Order
+        state = self.state
+        contract = self.conn.contracts.get(self.inst.name)
+        if contract is None:
+            self.log.error(f"{self.tag} _place_sl_tp: no contract")
+            return
+
+        oca_exit = f"ORB_EXIT_{self.inst.name}_{state.trade_date}_{datetime.now(tz=timezone.utc).strftime('%H%M%S')}"
+
+        if state.direction == "LONG":
+            sl_action, tp_action = "SELL", "SELL"
+        else:
+            sl_action, tp_action = "BUY", "BUY"
+
+        sl_order = Order(
+            action=sl_action, orderType="STP", totalQuantity=self.inst.qty,
+            auxPrice=state.sl_price, tif="GTC",
+            ocaGroup=oca_exit, ocaType=1, transmit=False)
+
+        tp_order = Order(
+            action=tp_action, orderType="LMT", totalQuantity=self.inst.qty,
+            lmtPrice=state.tp_price, tif="GTC",
+            ocaGroup=oca_exit, ocaType=1, transmit=True)
+
+        try:
+            sl_trade = self.conn.ib.placeOrder(contract, sl_order)
+            self.conn.sleep(0.5)
+            tp_trade = self.conn.ib.placeOrder(contract, tp_order)
+            self.conn.sleep(1)
+
+            sl_id = sl_trade.order.orderId
+            tp_id = tp_trade.order.orderId
+
+            # Store SL/TP IDs in the correct direction fields
+            # (keeps _apply_breakeven working unchanged)
+            if state.direction == "LONG":
+                state.buy_sl_order_id = sl_id
+                state.buy_tp_order_id = tp_id
+            else:
+                state.sell_sl_order_id = sl_id
+                state.sell_tp_order_id = tp_id
+            state.save()
+
+            self.log.info(
+                f"{self.tag} SL/TP placed after fill: "
+                f"SL id={sl_id} @ {state.sl_price:.{self.dec}f}, "
+                f"TP id={tp_id} @ {state.tp_price:.{self.dec}f} "
+                f"(OCA={oca_exit})")
+        except Exception as e:
+            self.log.error(f"{self.tag} _place_sl_tp failed: {e}")
 
     def _check_exit(self) -> bool:
         if self.dry_run:
@@ -1447,6 +1479,35 @@ class InstrumentManager:
         except Exception as e:
             self.log.error(f"{self.tag} BE failed: {e}")
 
+    def _cancel_all_for_contract(self):
+        """Cancel ALL orders for this contract (by conId match).
+
+        Lightweight cancel-only method (no position close).
+        Used as safety cleanup on exit paths to prevent orphaned orders.
+        """
+        if self.dry_run or not self.conn.ensure_connected():
+            return
+        contract = self.conn.contracts.get(self.inst.name)
+        if contract is None:
+            return
+        try:
+            cancelled = 0
+            for trade in self.conn.ib.openTrades():
+                if (hasattr(trade.contract, 'conId')
+                        and trade.contract.conId == contract.conId):
+                    try:
+                        self.conn.ib.cancelOrder(trade.order)
+                        cancelled += 1
+                        self.conn.sleep(0.3)
+                    except Exception:
+                        pass
+            if cancelled:
+                self.log.info(
+                    f"{self.tag} Safety cleanup: cancelled {cancelled} "
+                    f"orders for {self.inst.name}")
+        except Exception as e:
+            self.log.error(f"{self.tag} _cancel_all_for_contract failed: {e}")
+
     def _cancel_and_close(self) -> Optional[float]:
         """Cancel all orders for this instrument and close any position.
         Returns the actual fill price if a position was closed, None otherwise."""
@@ -1459,24 +1520,21 @@ class InstrumentManager:
         if contract is None:
             return None
 
-        # Only cancel orders belonging to THIS instrument
-        my_order_ids = set()
-        if self.state.buy_order_id:
-            my_order_ids.add(self.state.buy_order_id)
-        if self.state.sell_order_id:
-            my_order_ids.add(self.state.sell_order_id)
-
+        # Cancel ALL orders for this contract (by conId match).
+        # This catches orphans from velocity cycling, stale IDs, etc.
         try:
+            cancelled = 0
             for trade in self.conn.ib.openTrades():
-                oid = trade.order.orderId
-                parent = trade.order.parentId
-                # Cancel if it's our parent order or a child of our parent
-                if oid in my_order_ids or parent in my_order_ids:
+                if (hasattr(trade.contract, 'conId')
+                        and trade.contract.conId == contract.conId):
                     try:
                         self.conn.ib.cancelOrder(trade.order)
-                        self.conn.sleep(0.5)
+                        cancelled += 1
+                        self.conn.sleep(0.3)
                     except Exception:
                         pass
+            if cancelled:
+                self.log.info(f"{self.tag} Cancelled {cancelled} orders for {self.inst.name}")
             self.conn.sleep(2)
 
             # Close any remaining position with verification
@@ -1645,6 +1703,11 @@ class InstrumentManager:
 
     def _record_exit(self, now: datetime, done: bool):
         """Record a completed trade (SL/TP/BE exit)."""
+        # Safety: cancel ALL remaining orders for this contract before recording.
+        # Prevents orphaned SL/TP orders that could open unwanted positions.
+        if not self.dry_run:
+            self._cancel_all_for_contract()
+
         state = self.state
         if not self.dry_run:
             # Use actual fill info from _check_exit if available
