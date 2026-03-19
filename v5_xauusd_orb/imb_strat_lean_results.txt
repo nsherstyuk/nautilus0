@@ -1,0 +1,42 @@
+﻿Loaded 2,876,848 bars (2018-01-01 to 2026-02-25)
+Precomputing daily structures...
+  2114 trading days
+
+==============================================================================================================
+  STRATEGY 1: LIQUIDITY GRAB FADE
+==============================================================================================================
+
+  Config: Conservative (div=0.35, SL=30x, TP=15x, hold=45m)
+             Conservative (full): N=  482 | Sh   1.60 | PF  1.31 | WR  56.4% | Mean $  +0.57 | Total $   +273.50 | DD $   -83.29 | MCL  7
+              Conservative (OOS): N=  372 | Sh   2.52 | PF  1.52 | WR  59.1% | Mean $  +0.96 | Total $   +356.89 | DD $   -61.80 | MCL  6
+       prev_high: N= 181 full Sh= 2.58 | N= 137 OOS Sh= 3.44
+        prev_low: N= 143 full Sh= 1.77 | N= 108 OOS Sh= 2.49
+           round: N= 158 full Sh= 0.72 | N= 127 OOS Sh= 1.89
+    Annual: 2018:-3.20 | 2019:-4.27 | 2020:-2.55 | 2021:+1.78 | 2022:+5.20 | 2023:+2.51 | 2024:+0.92 | 2025:+3.16 | 2026:+9.67
+    SL: N=26, mean=$-11.21
+    TIME: N=329, mean=$-0.89
+    TP: N=127, mean=$+6.74
+
+  Config: Baseline (div=0.4, SL=30x, TP=20x, hold=60m)
+                 Baseline (full): N=  774 | Sh   0.88 | PF  1.17 | WR  52.6% | Mean $  +0.38 | Total $   +290.71 | DD $  -116.69 | MCL  7
+                  Baseline (OOS): N=  573 | Sh   1.40 | PF  1.27 | WR  53.4% | Mean $  +0.65 | Total $   +373.72 | DD $  -116.69 | MCL  7
+       prev_high: N= 274 full Sh= 1.91 | N= 198 OOS Sh= 2.85
+        prev_low: N= 226 full Sh= 1.04 | N= 168 OOS Sh= 1.19
+           round: N= 274 full Sh= 0.03 | N= 207 OOS Sh= 0.60
+    Annual: 2018:-4.41 | 2019:-3.40 | 2020:-0.01 | 2021:+2.43 | 2022:+1.82 | 2023:+1.65 | 2024:+0.60 | 2025:+0.73 | 2026:+6.60
+    SL: N=52, mean=$-12.15
+    TIME: N=578, mean=$-0.79
+    TP: N=144, mean=$+9.56
+
+  Config: Aggressive (div=0.45, SL=20x, TP=25x, hold=90m)
+               Aggressive (full): N= 1168 | Sh   0.37 | PF  1.06 | WR  52.5% | Mean $  +0.16 | Total $   +189.51 | DD $  -150.61 | MCL  6
+                Aggressive (OOS): N=  848 | Sh   0.58 | PF  1.10 | WR  53.2% | Mean $  +0.28 | Total $   +237.04 | DD $  -145.11 | MCL  6
+       prev_high: N= 425 full Sh= 0.71 | N= 301 OOS Sh= 0.77
+        prev_low: N= 361 full Sh= 0.79 | N= 260 OOS Sh= 1.31
+           round: N= 382 full Sh=-0.14 | N= 287 OOS Sh= 0.04
+    Annual: 2018:-1.34 | 2019:-3.44 | 2020:+0.99 | 2021:+1.61 | 2022:+0.94 | 2023:-0.40 | 2024:+0.37 | 2025:+0.56 | 2026:+1.34
+    SL: N=248, mean=$-8.71
+    TIME: N=756, mean=$+0.72
+    TP: N=164, mean=$+10.99
+
+  --- Quick div_threshold sweep (SL=30, TP=20, hold=60) ---

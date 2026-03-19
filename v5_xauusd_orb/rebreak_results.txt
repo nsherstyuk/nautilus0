@@ -1,0 +1,95 @@
+﻿Loaded 2,876,848 1-min bars (2018-01-01 to 2026-02-25)
+Total trades: 1613
+                             ALL: N= 1613 | Sh   0.76 | PF  1.14 | WR  47.2% | Mean $  +0.59 | Total $   +949.72 | DD $  -210.16 | MCL 11
+                         ALL OOS: N= 1013 | Sh   0.91 | PF  1.17 | WR  47.1% | Mean $  +0.82 | Total $   +829.94 | DD $  -210.16 | MCL 11
+
+==============================================================================================================
+  TEST 1: ENTRY BAR DIRECTION vs TRADE OUTCOME
+  (Does the close-vs-open of the entry bar predict if the trade wins?)
+==============================================================================================================
+
+  Bar direction ALIGNED with trade direction (bullish bar + LONG, bearish bar + SHORT):
+                  Aligned (full): N= 1171 | Sh   1.03 | PF  1.20 | WR  48.2% | Mean $  +0.78 | Total $   +912.75 | DD $  -296.23 | MCL  8
+                   Aligned (OOS): N=  743 | Sh   1.13 | PF  1.21 | WR  47.4% | Mean $  +0.99 | Total $   +736.65 | DD $  -296.23 | MCL  8
+
+  Bar direction OPPOSED to trade direction:
+                  Opposed (full): N=  442 | Sh   0.10 | PF  1.02 | WR  44.6% | Mean $  +0.08 | Total $    +36.97 | DD $  -343.83 | MCL 12
+                   Opposed (OOS): N=  270 | Sh   0.36 | PF  1.07 | WR  46.3% | Mean $  +0.35 | Total $    +93.29 | DD $  -343.83 | MCL  9
+
+==============================================================================================================
+  TEST 2: ENTRY BAR BUY_RATIO ALIGNMENT vs TRADE OUTCOME
+  (Do buyers dominate on LONG entries that win? Sellers on SHORT winners?)
+==============================================================================================================
+
+  Buy_ratio MATCHING trade direction (buyers on LONG, sellers on SHORT):
+                 Matching (full): N=  792 | Sh   0.62 | PF  1.12 | WR  46.3% | Mean $  +0.49 | Total $   +391.83 | DD $  -225.64 | MCL 16
+                  Matching (OOS): N=  501 | Sh   0.81 | PF  1.15 | WR  45.7% | Mean $  +0.76 | Total $   +382.62 | DD $  -225.64 | MCL 16
+
+  Buy_ratio DIVERGENT from trade direction:
+                Divergent (full): N=  821 | Sh   0.91 | PF  1.17 | WR  48.1% | Mean $  +0.68 | Total $   +557.89 | DD $  -169.60 | MCL 12
+                 Divergent (OOS): N=  512 | Sh   1.02 | PF  1.19 | WR  48.4% | Mean $  +0.87 | Total $   +447.32 | DD $  -169.60 | MCL 12
+
+==============================================================================================================
+  TEST 3: ENTRY BUY_RATIO QUINTILES (for LONG and SHORT separately)
+==============================================================================================================
+
+  LONG trades (N=853):
+    Q1 br=0.136-0.406   most selling: N= 171 | Sh   0.35 | WR  45.6% | Mean $  +0.22 | Total $   +36.97
+    Q2 br=0.406-0.481               : N= 170 | Sh  -0.07 | WR  45.3% | Mean $  -0.05 | Total $    -8.78
+    Q3 br=0.481-0.517               : N= 171 | Sh   1.89 | WR  49.7% | Mean $  +1.44 | Total $  +246.39
+    Q4 br=0.517-0.603               : N= 170 | Sh   1.79 | WR  49.4% | Mean $  +1.37 | Total $  +233.08
+    Q5 br=0.603-0.835    most buying: N= 171 | Sh   1.40 | WR  49.7% | Mean $  +1.04 | Total $  +178.08
+
+  SHORT trades (N=760):
+    Q1 br=0.148-0.399   most selling: N= 152 | Sh   0.24 | WR  44.7% | Mean $  +0.16 | Total $   +24.85
+    Q2 br=0.399-0.482               : N= 152 | Sh   0.54 | WR  46.7% | Mean $  +0.53 | Total $   +80.91
+    Q3 br=0.482-0.525               : N= 152 | Sh  -1.78 | WR  38.8% | Mean $  -1.47 | Total $  -222.69
+    Q4 br=0.525-0.588               : N= 152 | Sh   0.18 | WR  46.1% | Mean $  +0.14 | Total $   +21.54
+    Q5 br=0.588-0.977    most buying: N= 152 | Sh   2.99 | WR  55.9% | Mean $  +2.36 | Total $  +359.38
+
+==============================================================================================================
+  TEST 4: POST-ENTRY BUY_RATIO (avg of bars 1-3 after entry)
+  (Does order flow right after entry predict if the trade wins?)
+==============================================================================================================
+
+  Post-entry flow MATCHING:
+               Post-match (full): N=  753 | Sh   0.62 | PF  1.11 | WR  46.5% | Mean $  +0.45 | Total $   +335.56 | DD $  -243.76 | MCL  9
+                Post-match (OOS): N=  472 | Sh   0.65 | PF  1.11 | WR  46.2% | Mean $  +0.53 | Total $   +252.17 | DD $  -243.76 | MCL  8
+
+  Post-entry flow DIVERGENT:
+                 Post-div (full): N=  860 | Sh   0.88 | PF  1.18 | WR  47.9% | Mean $  +0.71 | Total $   +614.16 | DD $  -153.21 | MCL  9
+                  Post-div (OOS): N=  541 | Sh   1.11 | PF  1.22 | WR  47.9% | Mean $  +1.07 | Total $   +577.77 | DD $  -153.21 | MCL  9
+
+  Direction-normalized post-entry buy_ratio:
+    Winners: mean=0.4894 (>0.5 = flow supports trade)
+    Losers:  mean=0.4881
+
+==============================================================================================================
+  TEST 5: RE-BREAK PATTERN (break -> pullback -> re-break)
+  (Skip first touch; only enter if price breaks, pulls back, re-breaks)
+==============================================================================================================
+
+  Re-break trades: 1346
+                  Rebreak (full): N= 1346 | Sh   0.51 | PF  1.09 | WR  44.9% | Mean $  +0.37 | Total $   +492.76 | DD $  -267.55 | MCL 16
+                   Rebreak (OOS): N=  861 | Sh   0.58 | PF  1.10 | WR  44.5% | Mean $  +0.48 | Total $   +415.43 | DD $  -267.55 | MCL 16
+
+  Comparison to standard stop entry:
+                     Stop (full): N= 1613 | Sh   0.76 | PF  1.14 | WR  47.2% | Mean $  +0.59 | Total $   +949.72 | DD $  -210.16 | MCL 11
+                      Stop (OOS): N= 1013 | Sh   0.91 | PF  1.17 | WR  47.1% | Mean $  +0.82 | Total $   +829.94 | DD $  -210.16 | MCL 11
+
+==============================================================================================================
+  TEST 6: RE-BREAK + MATCHING FLOW (V8-style confirmation)
+  (Re-break entry AND buy_ratio must align with direction)
+==============================================================================================================
+
+  Re-break + matching flow:
+                 RB+match (full): N=  700 | Sh   0.44 | PF  1.08 | WR  44.6% | Mean $  +0.30 | Total $   +209.10 | DD $  -247.86 | MCL 10
+                  RB+match (OOS): N=  439 | Sh   0.41 | PF  1.07 | WR  44.6% | Mean $  +0.33 | Total $   +142.93 | DD $  -247.86 | MCL 10
+
+  Re-break + divergent flow:
+                   RB+div (full): N=  646 | Sh   0.57 | PF  1.11 | WR  45.4% | Mean $  +0.44 | Total $   +283.66 | DD $  -137.70 | MCL 11
+                    RB+div (OOS): N=  422 | Sh   0.73 | PF  1.14 | WR  44.3% | Mean $  +0.65 | Total $   +272.50 | DD $  -137.70 | MCL 11
+
+==============================================================================================================
+  DONE
+==============================================================================================================

@@ -1,0 +1,541 @@
+﻿Loading 1-min XAUUSD data...
+  Loaded 2,876,848 bars from 2018-01-01 23:00:00 to 2026-02-25 21:59:00
+  After filtering zero-tick bars: 2,876,848
+
+================================================================================
+Detecting pivots with window=15 bars each side...
+  Found 63,785 pivot highs, 64,016 pivot lows
+Finding breakout events...
+  Found 47,579 breakouts (24,439 up, 23,140 down)
+
+  Computing imbalance (window=1 bars after breakout)...
+
+  *** FULL SAMPLE ***
+
+  --- UP breakouts (pivot_win=15, imb_win=1) ---
+  Total: 24,439  |  Divergent: 12,059 (49.3%)  |  Non-div: 12,380
+       5m:  Divergent mean=$+0.107 med=$+0.040 rev_rate=47.0%  |  Non-div mean=$+0.164 med=$+0.040 rev_rate=46.6%  |  edge=$-0.057
+      10m:  Divergent mean=$+0.142 med=$+0.060 rev_rate=46.8%  |  Non-div mean=$+0.223 med=$+0.080 rev_rate=46.0%  |  edge=$-0.081
+      15m:  Divergent mean=$+0.187 med=$+0.090 rev_rate=46.0%  |  Non-div mean=$+0.238 med=$+0.078 rev_rate=46.7%  |  edge=$-0.051
+      30m:  Divergent mean=$+0.176 med=$+0.049 rev_rate=48.7%  |  Non-div mean=$+0.264 med=$+0.086 rev_rate=47.6%  |  edge=$-0.088
+      60m:  Divergent mean=$+0.101 med=$+0.035 rev_rate=49.3%  |  Non-div mean=$+0.246 med=$+0.085 rev_rate=48.2%  |  edge=$-0.145
+
+  --- DOWN breakouts (pivot_win=15, imb_win=1) ---
+  Total: 23,140  |  Divergent: 11,679 (50.5%)  |  Non-div: 11,461
+       5m:  Divergent mean=$+0.130 med=$+0.019 rev_rate=48.4%  |  Non-div mean=$+0.126 med=$+0.030 rev_rate=47.7%  |  edge=$+0.004
+      10m:  Divergent mean=$+0.145 med=$+0.033 rev_rate=48.2%  |  Non-div mean=$+0.149 med=$+0.045 rev_rate=47.5%  |  edge=$-0.005
+      15m:  Divergent mean=$+0.156 med=$+0.024 rev_rate=48.8%  |  Non-div mean=$+0.161 med=$+0.045 rev_rate=48.2%  |  edge=$-0.005
+      30m:  Divergent mean=$+0.116 med=$-0.020 rev_rate=50.6%  |  Non-div mean=$+0.162 med=$-0.002 rev_rate=50.1%  |  edge=$-0.046
+      60m:  Divergent mean=$+0.089 med=$-0.087 rev_rate=51.8%  |  Non-div mean=$+0.086 med=$-0.065 rev_rate=51.2%  |  edge=$+0.003
+
+  === Imbalance strength analysis (pivot=15, imb=1) ===
+
+  UP breakouts - divergence strength quintiles:
+        weak (n= 4020):  5m=$+0.108 10m=$+0.126 15m=$+0.163 30m=$+0.096
+      medium (n= 4019):  5m=$+0.133 10m=$+0.172 15m=$+0.234 30m=$+0.286
+      strong (n= 4020):  5m=$+0.080 10m=$+0.129 15m=$+0.163 30m=$+0.145
+
+  DOWN breakouts - divergence strength quintiles:
+        weak (n= 3893):  5m=$+0.144 10m=$+0.190 15m=$+0.205 30m=$+0.143
+      medium (n= 3893):  5m=$+0.172 10m=$+0.178 15m=$+0.155 30m=$+0.098
+      strong (n= 3893):  5m=$+0.075 10m=$+0.065 15m=$+0.108 30m=$+0.106
+
+  *** OOS (2023-2026, n=18,586) ***
+
+  --- UP breakouts (pivot_win=15, imb_win=1) ---
+  Total: 9,742  |  Divergent: 4,212 (43.2%)  |  Non-div: 5,530
+       5m:  Divergent mean=$+0.148 med=$+0.065 rev_rate=47.0%  |  Non-div mean=$+0.258 med=$+0.077 rev_rate=46.1%  |  edge=$-0.110
+      10m:  Divergent mean=$+0.190 med=$+0.080 rev_rate=47.1%  |  Non-div mean=$+0.319 med=$+0.100 rev_rate=46.5%  |  edge=$-0.129
+      15m:  Divergent mean=$+0.281 med=$+0.167 rev_rate=45.2%  |  Non-div mean=$+0.359 med=$+0.103 rev_rate=46.9%  |  edge=$-0.079
+      30m:  Divergent mean=$+0.309 med=$+0.126 rev_rate=47.4%  |  Non-div mean=$+0.418 med=$+0.135 rev_rate=46.9%  |  edge=$-0.110
+      60m:  Divergent mean=$+0.178 med=$+0.167 rev_rate=47.6%  |  Non-div mean=$+0.401 med=$+0.200 rev_rate=47.2%  |  edge=$-0.223
+
+  --- DOWN breakouts (pivot_win=15, imb_win=1) ---
+  Total: 8,844  |  Divergent: 3,982 (45.0%)  |  Non-div: 4,862
+       5m:  Divergent mean=$+0.181 med=$+0.000 rev_rate=49.8%  |  Non-div mean=$+0.172 med=$+0.060 rev_rate=47.3%  |  edge=$+0.009
+      10m:  Divergent mean=$+0.184 med=$-0.010 rev_rate=50.3%  |  Non-div mean=$+0.194 med=$+0.064 rev_rate=47.6%  |  edge=$-0.010
+      15m:  Divergent mean=$+0.184 med=$-0.017 rev_rate=50.4%  |  Non-div mean=$+0.226 med=$+0.059 rev_rate=48.3%  |  edge=$-0.042
+      30m:  Divergent mean=$+0.153 med=$-0.082 rev_rate=51.6%  |  Non-div mean=$+0.237 med=$-0.020 rev_rate=50.3%  |  edge=$-0.084
+      60m:  Divergent mean=$+0.124 med=$-0.130 rev_rate=51.8%  |  Non-div mean=$+0.070 med=$-0.088 rev_rate=51.3%  |  edge=$+0.054
+
+  Computing imbalance (window=3 bars after breakout)...
+
+  *** FULL SAMPLE ***
+
+  --- UP breakouts (pivot_win=15, imb_win=3) ---
+  Total: 24,439  |  Divergent: 12,600 (51.6%)  |  Non-div: 11,839
+       5m:  Divergent mean=$+0.111 med=$+0.033 rev_rate=47.4%  |  Non-div mean=$+0.163 med=$+0.049 rev_rate=46.1%  |  edge=$-0.051
+      10m:  Divergent mean=$+0.148 med=$+0.055 rev_rate=47.1%  |  Non-div mean=$+0.220 med=$+0.085 rev_rate=45.7%  |  edge=$-0.072
+      15m:  Divergent mean=$+0.186 med=$+0.080 rev_rate=46.8%  |  Non-div mean=$+0.241 med=$+0.090 rev_rate=45.9%  |  edge=$-0.054
+      30m:  Divergent mean=$+0.195 med=$+0.042 rev_rate=48.9%  |  Non-div mean=$+0.246 med=$+0.093 rev_rate=47.3%  |  edge=$-0.051
+      60m:  Divergent mean=$+0.105 med=$+0.030 rev_rate=49.4%  |  Non-div mean=$+0.249 med=$+0.088 rev_rate=48.1%  |  edge=$-0.144
+
+  --- DOWN breakouts (pivot_win=15, imb_win=3) ---
+  Total: 23,140  |  Divergent: 12,102 (52.3%)  |  Non-div: 11,038
+       5m:  Divergent mean=$+0.133 med=$+0.018 rev_rate=48.5%  |  Non-div mean=$+0.123 med=$+0.031 rev_rate=47.6%  |  edge=$+0.009
+      10m:  Divergent mean=$+0.150 med=$+0.035 rev_rate=48.2%  |  Non-div mean=$+0.144 med=$+0.043 rev_rate=47.5%  |  edge=$+0.006
+      15m:  Divergent mean=$+0.151 med=$+0.026 rev_rate=48.7%  |  Non-div mean=$+0.166 med=$+0.040 rev_rate=48.3%  |  edge=$-0.016
+      30m:  Divergent mean=$+0.115 med=$-0.005 rev_rate=50.1%  |  Non-div mean=$+0.165 med=$-0.017 rev_rate=50.5%  |  edge=$-0.050
+      60m:  Divergent mean=$+0.079 med=$-0.085 rev_rate=51.7%  |  Non-div mean=$+0.098 med=$-0.072 rev_rate=51.4%  |  edge=$-0.019
+
+  === Imbalance strength analysis (pivot=15, imb=3) ===
+
+  UP breakouts - divergence strength quintiles:
+        weak (n= 4200):  5m=$+0.149 10m=$+0.172 15m=$+0.202 30m=$+0.274
+      medium (n= 4200):  5m=$+0.107 10m=$+0.152 15m=$+0.206 30m=$+0.177
+      strong (n= 4200):  5m=$+0.077 10m=$+0.122 15m=$+0.151 30m=$+0.135
+
+  DOWN breakouts - divergence strength quintiles:
+        weak (n= 4034):  5m=$+0.144 10m=$+0.157 15m=$+0.123 30m=$+0.042
+      medium (n= 4034):  5m=$+0.219 10m=$+0.264 15m=$+0.264 30m=$+0.242
+      strong (n= 4034):  5m=$+0.035 10m=$+0.028 15m=$+0.065 30m=$+0.060
+
+  *** OOS (2023-2026, n=18,586) ***
+
+  --- UP breakouts (pivot_win=15, imb_win=3) ---
+  Total: 9,742  |  Divergent: 4,696 (48.2%)  |  Non-div: 5,046
+       5m:  Divergent mean=$+0.139 med=$+0.028 rev_rate=48.8%  |  Non-div mean=$+0.277 med=$+0.114 rev_rate=44.3%  |  edge=$-0.138
+      10m:  Divergent mean=$+0.185 med=$+0.040 rev_rate=48.4%  |  Non-div mean=$+0.336 med=$+0.140 rev_rate=45.2%  |  edge=$-0.151
+      15m:  Divergent mean=$+0.260 med=$+0.105 rev_rate=46.8%  |  Non-div mean=$+0.387 med=$+0.145 rev_rate=45.6%  |  edge=$-0.127
+      30m:  Divergent mean=$+0.332 med=$+0.101 rev_rate=48.1%  |  Non-div mean=$+0.407 med=$+0.162 rev_rate=46.3%  |  edge=$-0.075
+      60m:  Divergent mean=$+0.123 med=$+0.104 rev_rate=48.5%  |  Non-div mean=$+0.474 med=$+0.250 rev_rate=46.3%  |  edge=$-0.351
+
+  --- DOWN breakouts (pivot_win=15, imb_win=3) ---
+  Total: 8,844  |  Divergent: 4,493 (50.8%)  |  Non-div: 4,351
+       5m:  Divergent mean=$+0.157 med=$-0.020 rev_rate=51.2%  |  Non-div mean=$+0.195 med=$+0.088 rev_rate=45.6%  |  edge=$-0.037
+      10m:  Divergent mean=$+0.168 med=$-0.034 rev_rate=51.1%  |  Non-div mean=$+0.211 med=$+0.085 rev_rate=46.4%  |  edge=$-0.043
+      15m:  Divergent mean=$+0.159 med=$-0.036 rev_rate=50.8%  |  Non-div mean=$+0.257 med=$+0.084 rev_rate=47.5%  |  edge=$-0.099
+      30m:  Divergent mean=$+0.110 med=$-0.115 rev_rate=52.0%  |  Non-div mean=$+0.291 med=$+0.010 rev_rate=49.7%  |  edge=$-0.181
+      60m:  Divergent mean=$+0.058 med=$-0.187 rev_rate=52.4%  |  Non-div mean=$+0.132 med=$-0.047 rev_rate=50.6%  |  edge=$-0.074
+
+  Computing imbalance (window=5 bars after breakout)...
+
+  *** FULL SAMPLE ***
+
+  --- UP breakouts (pivot_win=15, imb_win=5) ---
+  Total: 24,439  |  Divergent: 12,697 (52.0%)  |  Non-div: 11,742
+       5m:  Divergent mean=$+0.109 med=$+0.036 rev_rate=47.2%  |  Non-div mean=$+0.166 med=$+0.043 rev_rate=46.3%  |  edge=$-0.057
+      10m:  Divergent mean=$+0.137 med=$+0.050 rev_rate=47.2%  |  Non-div mean=$+0.233 med=$+0.090 rev_rate=45.5%  |  edge=$-0.095
+      15m:  Divergent mean=$+0.160 med=$+0.074 rev_rate=47.0%  |  Non-div mean=$+0.269 med=$+0.095 rev_rate=45.7%  |  edge=$-0.109
+      30m:  Divergent mean=$+0.154 med=$+0.032 rev_rate=49.2%  |  Non-div mean=$+0.292 med=$+0.102 rev_rate=47.0%  |  edge=$-0.138
+      60m:  Divergent mean=$+0.062 med=$+0.020 rev_rate=49.6%  |  Non-div mean=$+0.297 med=$+0.095 rev_rate=47.9%  |  edge=$-0.235
+
+  --- DOWN breakouts (pivot_win=15, imb_win=5) ---
+  Total: 23,140  |  Divergent: 12,106 (52.3%)  |  Non-div: 11,034
+       5m:  Divergent mean=$+0.120 med=$+0.020 rev_rate=48.4%  |  Non-div mean=$+0.137 med=$+0.030 rev_rate=47.7%  |  edge=$-0.017
+      10m:  Divergent mean=$+0.126 med=$+0.030 rev_rate=48.4%  |  Non-div mean=$+0.170 med=$+0.050 rev_rate=47.2%  |  edge=$-0.043
+      15m:  Divergent mean=$+0.144 med=$+0.020 rev_rate=48.9%  |  Non-div mean=$+0.173 med=$+0.049 rev_rate=48.1%  |  edge=$-0.029
+      30m:  Divergent mean=$+0.127 med=$-0.015 rev_rate=50.4%  |  Non-div mean=$+0.151 med=$-0.010 rev_rate=50.2%  |  edge=$-0.023
+      60m:  Divergent mean=$+0.106 med=$-0.073 rev_rate=51.4%  |  Non-div mean=$+0.068 med=$-0.084 rev_rate=51.6%  |  edge=$+0.039
+
+  === Imbalance strength analysis (pivot=15, imb=5) ===
+
+  UP breakouts - divergence strength quintiles:
+        weak (n= 4233):  5m=$+0.101 10m=$+0.091 15m=$+0.112 30m=$+0.116
+      medium (n= 4232):  5m=$+0.171 10m=$+0.223 15m=$+0.244 30m=$+0.226
+      strong (n= 4232):  5m=$+0.054 10m=$+0.098 15m=$+0.124 30m=$+0.119
+
+  DOWN breakouts - divergence strength quintiles:
+        weak (n= 4036):  5m=$+0.140 10m=$+0.126 15m=$+0.127 30m=$+0.097
+      medium (n= 4035):  5m=$+0.163 10m=$+0.213 15m=$+0.249 30m=$+0.227
+      strong (n= 4035):  5m=$+0.056 10m=$+0.040 15m=$+0.057 30m=$+0.058
+
+  *** OOS (2023-2026, n=18,586) ***
+
+  --- UP breakouts (pivot_win=15, imb_win=5) ---
+  Total: 9,742  |  Divergent: 4,882 (50.1%)  |  Non-div: 4,860
+       5m:  Divergent mean=$+0.122 med=$+0.011 rev_rate=49.5%  |  Non-div mean=$+0.299 med=$+0.131 rev_rate=43.5%  |  edge=$-0.177
+      10m:  Divergent mean=$+0.148 med=$+0.007 rev_rate=49.6%  |  Non-div mean=$+0.379 med=$+0.185 rev_rate=43.9%  |  edge=$-0.231
+      15m:  Divergent mean=$+0.200 med=$+0.072 rev_rate=47.7%  |  Non-div mean=$+0.451 med=$+0.177 rev_rate=44.6%  |  edge=$-0.251
+      30m:  Divergent mean=$+0.229 med=$+0.061 rev_rate=49.0%  |  Non-div mean=$+0.513 med=$+0.224 rev_rate=45.3%  |  edge=$-0.284
+      60m:  Divergent mean=$+0.041 med=$+0.096 rev_rate=48.7%  |  Non-div mean=$+0.570 med=$+0.262 rev_rate=46.0%  |  edge=$-0.529
+
+  --- DOWN breakouts (pivot_win=15, imb_win=5) ---
+  Total: 8,844  |  Divergent: 4,654 (52.6%)  |  Non-div: 4,190
+       5m:  Divergent mean=$+0.115 med=$-0.034 rev_rate=51.6%  |  Non-div mean=$+0.243 med=$+0.100 rev_rate=44.9%  |  edge=$-0.127
+      10m:  Divergent mean=$+0.118 med=$-0.050 rev_rate=51.6%  |  Non-div mean=$+0.268 med=$+0.106 rev_rate=45.7%  |  edge=$-0.149
+      15m:  Divergent mean=$+0.146 med=$-0.041 rev_rate=51.1%  |  Non-div mean=$+0.276 med=$+0.104 rev_rate=47.1%  |  edge=$-0.130
+      30m:  Divergent mean=$+0.151 med=$-0.125 rev_rate=52.2%  |  Non-div mean=$+0.252 med=$+0.035 rev_rate=49.4%  |  edge=$-0.101
+      60m:  Divergent mean=$+0.133 med=$-0.151 rev_rate=51.9%  |  Non-div mean=$+0.051 med=$-0.068 rev_rate=51.0%  |  edge=$+0.082
+
+================================================================================
+Detecting pivots with window=30 bars each side...
+  Found 32,295 pivot highs, 32,564 pivot lows
+Finding breakout events...
+  Found 25,482 breakouts (13,174 up, 12,308 down)
+
+  Computing imbalance (window=1 bars after breakout)...
+
+  *** FULL SAMPLE ***
+
+  --- UP breakouts (pivot_win=30, imb_win=1) ---
+  Total: 13,174  |  Divergent: 6,706 (50.9%)  |  Non-div: 6,468
+       5m:  Divergent mean=$+0.070 med=$+0.015 rev_rate=48.7%  |  Non-div mean=$+0.170 med=$+0.036 rev_rate=47.3%  |  edge=$-0.100
+      10m:  Divergent mean=$+0.126 med=$+0.033 rev_rate=48.2%  |  Non-div mean=$+0.267 med=$+0.075 rev_rate=46.5%  |  edge=$-0.142
+      15m:  Divergent mean=$+0.178 med=$+0.040 rev_rate=48.1%  |  Non-div mean=$+0.266 med=$+0.080 rev_rate=46.7%  |  edge=$-0.088
+      30m:  Divergent mean=$+0.236 med=$+0.077 rev_rate=48.0%  |  Non-div mean=$+0.320 med=$+0.121 rev_rate=46.9%  |  edge=$-0.085
+      60m:  Divergent mean=$+0.195 med=$+0.031 rev_rate=49.3%  |  Non-div mean=$+0.308 med=$+0.106 rev_rate=48.1%  |  edge=$-0.113
+
+  --- DOWN breakouts (pivot_win=30, imb_win=1) ---
+  Total: 12,308  |  Divergent: 6,342 (51.5%)  |  Non-div: 5,966
+       5m:  Divergent mean=$+0.050 med=$-0.014 rev_rate=51.3%  |  Non-div mean=$+0.143 med=$+0.020 rev_rate=48.3%  |  edge=$-0.092
+      10m:  Divergent mean=$+0.098 med=$-0.018 rev_rate=50.7%  |  Non-div mean=$+0.156 med=$+0.018 rev_rate=49.1%  |  edge=$-0.058
+      15m:  Divergent mean=$+0.149 med=$-0.023 rev_rate=50.7%  |  Non-div mean=$+0.221 med=$+0.012 rev_rate=49.4%  |  edge=$-0.072
+      30m:  Divergent mean=$+0.167 med=$-0.008 rev_rate=50.2%  |  Non-div mean=$+0.187 med=$+0.011 rev_rate=49.6%  |  edge=$-0.020
+      60m:  Divergent mean=$+0.201 med=$-0.049 rev_rate=51.0%  |  Non-div mean=$+0.129 med=$-0.090 rev_rate=51.6%  |  edge=$+0.072
+
+  === Imbalance strength analysis (pivot=30, imb=1) ===
+
+  UP breakouts - divergence strength quintiles:
+        weak (n= 2236):  5m=$+0.102 10m=$+0.133 15m=$+0.188 30m=$+0.290
+      medium (n= 2235):  5m=$+0.073 10m=$+0.159 15m=$+0.212 30m=$+0.258
+      strong (n= 2235):  5m=$+0.036 10m=$+0.085 15m=$+0.134 30m=$+0.159
+
+  DOWN breakouts - divergence strength quintiles:
+        weak (n= 2114):  5m=$+0.071 10m=$+0.123 15m=$+0.162 30m=$+0.268
+      medium (n= 2114):  5m=$+0.068 10m=$+0.103 15m=$+0.183 30m=$+0.140
+      strong (n= 2114):  5m=$+0.012 10m=$+0.069 15m=$+0.102 30m=$+0.093
+
+  *** OOS (2023-2026, n=9,977) ***
+
+  --- UP breakouts (pivot_win=30, imb_win=1) ---
+  Total: 5,272  |  Divergent: 2,398 (45.5%)  |  Non-div: 2,874
+       5m:  Divergent mean=$+0.087 med=$+0.005 rev_rate=49.7%  |  Non-div mean=$+0.262 med=$+0.100 rev_rate=46.0%  |  edge=$-0.174
+      10m:  Divergent mean=$+0.197 med=$+0.054 rev_rate=48.2%  |  Non-div mean=$+0.363 med=$+0.100 rev_rate=46.3%  |  edge=$-0.166
+      15m:  Divergent mean=$+0.282 med=$+0.075 rev_rate=47.4%  |  Non-div mean=$+0.378 med=$+0.110 rev_rate=46.8%  |  edge=$-0.095
+      30m:  Divergent mean=$+0.408 med=$+0.188 rev_rate=46.7%  |  Non-div mean=$+0.423 med=$+0.175 rev_rate=46.8%  |  edge=$-0.014
+      60m:  Divergent mean=$+0.304 med=$+0.100 rev_rate=48.4%  |  Non-div mean=$+0.450 med=$+0.160 rev_rate=47.7%  |  edge=$-0.146
+
+  --- DOWN breakouts (pivot_win=30, imb_win=1) ---
+  Total: 4,705  |  Divergent: 2,251 (47.8%)  |  Non-div: 2,454
+       5m:  Divergent mean=$-0.006 med=$-0.065 rev_rate=53.0%  |  Non-div mean=$+0.226 med=$+0.060 rev_rate=47.2%  |  edge=$-0.233
+      10m:  Divergent mean=$+0.088 med=$-0.065 rev_rate=51.8%  |  Non-div mean=$+0.228 med=$-0.002 rev_rate=50.0%  |  edge=$-0.140
+      15m:  Divergent mean=$+0.191 med=$-0.092 rev_rate=52.2%  |  Non-div mean=$+0.322 med=$-0.018 rev_rate=50.7%  |  edge=$-0.131
+      30m:  Divergent mean=$+0.171 med=$-0.109 rev_rate=52.1%  |  Non-div mean=$+0.238 med=$-0.029 rev_rate=50.7%  |  edge=$-0.067
+      60m:  Divergent mean=$+0.306 med=$-0.120 rev_rate=52.0%  |  Non-div mean=$+0.142 med=$-0.162 rev_rate=52.3%  |  edge=$+0.164
+
+  Computing imbalance (window=3 bars after breakout)...
+
+  *** FULL SAMPLE ***
+
+  --- UP breakouts (pivot_win=30, imb_win=3) ---
+  Total: 13,174  |  Divergent: 7,008 (53.2%)  |  Non-div: 6,166
+       5m:  Divergent mean=$+0.085 med=$+0.012 rev_rate=49.0%  |  Non-div mean=$+0.158 med=$+0.040 rev_rate=47.0%  |  edge=$-0.073
+      10m:  Divergent mean=$+0.153 med=$+0.039 rev_rate=48.1%  |  Non-div mean=$+0.243 med=$+0.070 rev_rate=46.4%  |  edge=$-0.090
+      15m:  Divergent mean=$+0.196 med=$+0.045 rev_rate=48.1%  |  Non-div mean=$+0.250 med=$+0.075 rev_rate=46.6%  |  edge=$-0.054
+      30m:  Divergent mean=$+0.254 med=$+0.068 rev_rate=48.3%  |  Non-div mean=$+0.303 med=$+0.131 rev_rate=46.6%  |  edge=$-0.049
+      60m:  Divergent mean=$+0.196 med=$+0.033 rev_rate=49.3%  |  Non-div mean=$+0.312 med=$+0.106 rev_rate=48.0%  |  edge=$-0.116
+
+  --- DOWN breakouts (pivot_win=30, imb_win=3) ---
+  Total: 12,308  |  Divergent: 6,537 (53.1%)  |  Non-div: 5,771
+       5m:  Divergent mean=$+0.059 med=$-0.010 rev_rate=50.7%  |  Non-div mean=$+0.136 med=$+0.015 rev_rate=48.9%  |  edge=$-0.077
+      10m:  Divergent mean=$+0.109 med=$-0.016 rev_rate=50.7%  |  Non-div mean=$+0.146 med=$+0.015 rev_rate=49.1%  |  edge=$-0.037
+      15m:  Divergent mean=$+0.169 med=$-0.009 rev_rate=50.2%  |  Non-div mean=$+0.201 med=$+0.001 rev_rate=49.9%  |  edge=$-0.032
+      30m:  Divergent mean=$+0.156 med=$+0.003 rev_rate=49.9%  |  Non-div mean=$+0.200 med=$+0.001 rev_rate=49.9%  |  edge=$-0.044
+      60m:  Divergent mean=$+0.223 med=$-0.040 rev_rate=50.8%  |  Non-div mean=$+0.102 med=$-0.100 rev_rate=51.9%  |  edge=$+0.120
+
+  === Imbalance strength analysis (pivot=30, imb=3) ===
+
+  UP breakouts - divergence strength quintiles:
+        weak (n= 2336):  5m=$+0.157 10m=$+0.228 15m=$+0.263 30m=$+0.373
+      medium (n= 2336):  5m=$+0.051 10m=$+0.121 15m=$+0.162 30m=$+0.219
+      strong (n= 2336):  5m=$+0.049 10m=$+0.110 15m=$+0.163 30m=$+0.171
+
+  DOWN breakouts - divergence strength quintiles:
+        weak (n= 2179):  5m=$+0.116 10m=$+0.170 15m=$+0.224 30m=$+0.127
+      medium (n= 2179):  5m=$+0.124 10m=$+0.167 15m=$+0.238 30m=$+0.355
+      strong (n= 2179):  5m=$-0.062 10m=$-0.010 15m=$+0.046 30m=$-0.014
+
+  *** OOS (2023-2026, n=9,977) ***
+
+  --- UP breakouts (pivot_win=30, imb_win=3) ---
+  Total: 5,272  |  Divergent: 2,693 (51.1%)  |  Non-div: 2,579
+       5m:  Divergent mean=$+0.113 med=$-0.014 rev_rate=50.7%  |  Non-div mean=$+0.254 med=$+0.120 rev_rate=44.6%  |  edge=$-0.141
+      10m:  Divergent mean=$+0.225 med=$+0.045 rev_rate=48.6%  |  Non-div mean=$+0.352 med=$+0.125 rev_rate=45.7%  |  edge=$-0.127
+      15m:  Divergent mean=$+0.309 med=$+0.093 rev_rate=47.4%  |  Non-div mean=$+0.361 med=$+0.105 rev_rate=46.8%  |  edge=$-0.052
+      30m:  Divergent mean=$+0.472 med=$+0.211 rev_rate=46.4%  |  Non-div mean=$+0.358 med=$+0.151 rev_rate=47.2%  |  edge=$+0.115
+      60m:  Divergent mean=$+0.312 med=$+0.080 rev_rate=48.8%  |  Non-div mean=$+0.458 med=$+0.210 rev_rate=47.3%  |  edge=$-0.146
+
+  --- DOWN breakouts (pivot_win=30, imb_win=3) ---
+  Total: 4,705  |  Divergent: 2,526 (53.7%)  |  Non-div: 2,179
+       5m:  Divergent mean=$+0.009 med=$-0.090 rev_rate=54.2%  |  Non-div mean=$+0.238 med=$+0.100 rev_rate=45.2%  |  edge=$-0.230
+      10m:  Divergent mean=$+0.099 med=$-0.107 rev_rate=52.9%  |  Non-div mean=$+0.233 med=$+0.045 rev_rate=48.5%  |  edge=$-0.134
+      15m:  Divergent mean=$+0.223 med=$-0.115 rev_rate=52.9%  |  Non-div mean=$+0.301 med=$+0.006 rev_rate=49.7%  |  edge=$-0.079
+      30m:  Divergent mean=$+0.130 med=$-0.125 rev_rate=52.5%  |  Non-div mean=$+0.293 med=$-0.003 rev_rate=50.1%  |  edge=$-0.163
+      60m:  Divergent mean=$+0.328 med=$-0.122 rev_rate=51.9%  |  Non-div mean=$+0.095 med=$-0.165 rev_rate=52.5%  |  edge=$+0.233
+
+  Computing imbalance (window=5 bars after breakout)...
+
+  *** FULL SAMPLE ***
+
+  --- UP breakouts (pivot_win=30, imb_win=5) ---
+  Total: 13,174  |  Divergent: 7,021 (53.3%)  |  Non-div: 6,153
+       5m:  Divergent mean=$+0.079 med=$+0.018 rev_rate=48.5%  |  Non-div mean=$+0.165 med=$+0.034 rev_rate=47.5%  |  edge=$-0.086
+      10m:  Divergent mean=$+0.141 med=$+0.045 rev_rate=47.8%  |  Non-div mean=$+0.257 med=$+0.065 rev_rate=46.9%  |  edge=$-0.117
+      15m:  Divergent mean=$+0.179 med=$+0.048 rev_rate=48.0%  |  Non-div mean=$+0.269 med=$+0.073 rev_rate=46.8%  |  edge=$-0.090
+      30m:  Divergent mean=$+0.215 med=$+0.062 rev_rate=48.5%  |  Non-div mean=$+0.349 med=$+0.141 rev_rate=46.2%  |  edge=$-0.134
+      60m:  Divergent mean=$+0.149 med=$+0.042 rev_rate=49.1%  |  Non-div mean=$+0.366 med=$+0.091 rev_rate=48.2%  |  edge=$-0.217
+
+  --- DOWN breakouts (pivot_win=30, imb_win=5) ---
+  Total: 12,308  |  Divergent: 6,595 (53.6%)  |  Non-div: 5,713
+       5m:  Divergent mean=$+0.063 med=$-0.006 rev_rate=50.5%  |  Non-div mean=$+0.132 med=$+0.013 rev_rate=49.1%  |  edge=$-0.069
+      10m:  Divergent mean=$+0.118 med=$-0.010 rev_rate=50.5%  |  Non-div mean=$+0.135 med=$+0.010 rev_rate=49.4%  |  edge=$-0.017
+      15m:  Divergent mean=$+0.187 med=$-0.010 rev_rate=50.3%  |  Non-div mean=$+0.181 med=$+0.005 rev_rate=49.8%  |  edge=$+0.006
+      30m:  Divergent mean=$+0.197 med=$-0.002 rev_rate=50.0%  |  Non-div mean=$+0.153 med=$+0.005 rev_rate=49.8%  |  edge=$+0.044
+      60m:  Divergent mean=$+0.260 med=$-0.030 rev_rate=50.6%  |  Non-div mean=$+0.057 med=$-0.115 rev_rate=52.1%  |  edge=$+0.203
+
+  === Imbalance strength analysis (pivot=30, imb=5) ===
+
+  UP breakouts - divergence strength quintiles:
+        weak (n= 2341):  5m=$+0.096 10m=$+0.120 15m=$+0.140 30m=$+0.201
+      medium (n= 2340):  5m=$+0.111 10m=$+0.199 15m=$+0.223 30m=$+0.259
+      strong (n= 2340):  5m=$+0.031 10m=$+0.103 15m=$+0.173 30m=$+0.183
+
+  DOWN breakouts - divergence strength quintiles:
+        weak (n= 2199):  5m=$+0.108 10m=$+0.165 15m=$+0.261 30m=$+0.265
+      medium (n= 2198):  5m=$+0.106 10m=$+0.184 15m=$+0.265 30m=$+0.330
+      strong (n= 2198):  5m=$-0.025 10m=$+0.006 15m=$+0.036 30m=$-0.005
+
+  *** OOS (2023-2026, n=9,977) ***
+
+  --- UP breakouts (pivot_win=30, imb_win=5) ---
+  Total: 5,272  |  Divergent: 2,781 (52.8%)  |  Non-div: 2,491
+       5m:  Divergent mean=$+0.073 med=$-0.024 rev_rate=51.1%  |  Non-div mean=$+0.305 med=$+0.135 rev_rate=43.9%  |  edge=$-0.232
+      10m:  Divergent mean=$+0.168 med=$+0.020 rev_rate=49.0%  |  Non-div mean=$+0.421 med=$+0.160 rev_rate=45.1%  |  edge=$-0.253
+      15m:  Divergent mean=$+0.247 med=$+0.058 rev_rate=48.1%  |  Non-div mean=$+0.432 med=$+0.145 rev_rate=46.0%  |  edge=$-0.185
+      30m:  Divergent mean=$+0.337 med=$+0.157 rev_rate=47.4%  |  Non-div mean=$+0.504 med=$+0.205 rev_rate=46.0%  |  edge=$-0.167
+      60m:  Divergent mean=$+0.157 med=$+0.069 rev_rate=49.1%  |  Non-div mean=$+0.637 med=$+0.223 rev_rate=46.8%  |  edge=$-0.480
+
+  --- DOWN breakouts (pivot_win=30, imb_win=5) ---
+  Total: 4,705  |  Divergent: 2,626 (55.8%)  |  Non-div: 2,079
+       5m:  Divergent mean=$+0.012 med=$-0.085 rev_rate=54.0%  |  Non-div mean=$+0.244 med=$+0.105 rev_rate=44.9%  |  edge=$-0.232
+      10m:  Divergent mean=$+0.126 med=$-0.114 rev_rate=53.2%  |  Non-div mean=$+0.206 med=$+0.060 rev_rate=48.0%  |  edge=$-0.080
+      15m:  Divergent mean=$+0.264 med=$-0.122 rev_rate=53.2%  |  Non-div mean=$+0.253 med=$+0.030 rev_rate=49.2%  |  edge=$+0.011
+      30m:  Divergent mean=$+0.207 med=$-0.148 rev_rate=52.9%  |  Non-div mean=$+0.204 med=$+0.026 rev_rate=49.4%  |  edge=$+0.003
+      60m:  Divergent mean=$+0.379 med=$-0.125 rev_rate=52.1%  |  Non-div mean=$+0.020 med=$-0.159 rev_rate=52.3%  |  edge=$+0.358
+
+================================================================================
+Detecting pivots with window=60 bars each side...
+  Found 16,353 pivot highs, 16,468 pivot lows
+Finding breakout events...
+  Found 13,481 breakouts (7,004 up, 6,477 down)
+
+  Computing imbalance (window=1 bars after breakout)...
+
+  *** FULL SAMPLE ***
+
+  --- UP breakouts (pivot_win=60, imb_win=1) ---
+  Total: 7,004  |  Divergent: 3,661 (52.3%)  |  Non-div: 3,343
+       5m:  Divergent mean=$+0.075 med=$+0.010 rev_rate=49.2%  |  Non-div mean=$+0.124 med=$+0.012 rev_rate=49.1%  |  edge=$-0.049
+      10m:  Divergent mean=$+0.167 med=$+0.032 rev_rate=48.8%  |  Non-div mean=$+0.203 med=$+0.065 rev_rate=47.0%  |  edge=$-0.036
+      15m:  Divergent mean=$+0.165 med=$+0.025 rev_rate=49.0%  |  Non-div mean=$+0.237 med=$+0.077 rev_rate=47.4%  |  edge=$-0.072
+      30m:  Divergent mean=$+0.216 med=$+0.050 rev_rate=48.9%  |  Non-div mean=$+0.281 med=$+0.075 rev_rate=48.5%  |  edge=$-0.065
+      60m:  Divergent mean=$+0.185 med=$+0.070 rev_rate=48.5%  |  Non-div mean=$+0.514 med=$+0.205 rev_rate=46.0%  |  edge=$-0.329
+
+  --- DOWN breakouts (pivot_win=60, imb_win=1) ---
+  Total: 6,477  |  Divergent: 3,387 (52.3%)  |  Non-div: 3,090
+       5m:  Divergent mean=$+0.029 med=$-0.065 rev_rate=54.5%  |  Non-div mean=$+0.166 med=$+0.005 rev_rate=49.6%  |  edge=$-0.137
+      10m:  Divergent mean=$+0.042 med=$-0.069 rev_rate=53.3%  |  Non-div mean=$+0.172 med=$+0.016 rev_rate=49.5%  |  edge=$-0.131
+      15m:  Divergent mean=$+0.116 med=$-0.072 rev_rate=52.3%  |  Non-div mean=$+0.271 med=$-0.005 rev_rate=50.1%  |  edge=$-0.155
+      30m:  Divergent mean=$+0.180 med=$-0.033 rev_rate=50.9%  |  Non-div mean=$+0.300 med=$-0.014 rev_rate=50.3%  |  edge=$-0.120
+      60m:  Divergent mean=$+0.295 med=$+0.060 rev_rate=48.7%  |  Non-div mean=$+0.294 med=$-0.039 rev_rate=50.6%  |  edge=$+0.001
+
+  === Imbalance strength analysis (pivot=60, imb=1) ===
+
+  UP breakouts - divergence strength quintiles:
+        weak (n= 1221):  5m=$+0.136 10m=$+0.220 15m=$+0.205 30m=$+0.385
+      medium (n= 1220):  5m=$+0.087 10m=$+0.175 15m=$+0.145 30m=$+0.111
+      strong (n= 1220):  5m=$+0.003 10m=$+0.105 15m=$+0.144 30m=$+0.151
+
+  DOWN breakouts - divergence strength quintiles:
+        weak (n= 1129):  5m=$+0.090 10m=$+0.029 15m=$+0.104 30m=$+0.188
+      medium (n= 1129):  5m=$+0.101 10m=$+0.169 15m=$+0.251 30m=$+0.210
+      strong (n= 1129):  5m=$-0.105 10m=$-0.073 15m=$-0.007 30m=$+0.143
+
+  *** OOS (2023-2026, n=5,233) ***
+
+  --- UP breakouts (pivot_win=60, imb_win=1) ---
+  Total: 2,785  |  Divergent: 1,335 (47.9%)  |  Non-div: 1,450
+       5m:  Divergent mean=$+0.083 med=$-0.006 rev_rate=50.3%  |  Non-div mean=$+0.212 med=$+0.079 rev_rate=46.7%  |  edge=$-0.129
+      10m:  Divergent mean=$+0.307 med=$+0.058 rev_rate=48.3%  |  Non-div mean=$+0.239 med=$+0.080 rev_rate=47.5%  |  edge=$+0.068
+      15m:  Divergent mean=$+0.257 med=$+0.085 rev_rate=47.8%  |  Non-div mean=$+0.322 med=$+0.115 rev_rate=47.7%  |  edge=$-0.064
+      30m:  Divergent mean=$+0.273 med=$+0.075 rev_rate=49.2%  |  Non-div mean=$+0.352 med=$+0.091 rev_rate=48.0%  |  edge=$-0.078
+      60m:  Divergent mean=$+0.161 med=$+0.070 rev_rate=49.3%  |  Non-div mean=$+0.757 med=$+0.322 rev_rate=44.8%  |  edge=$-0.596
+
+  --- DOWN breakouts (pivot_win=60, imb_win=1) ---
+  Total: 2,448  |  Divergent: 1,211 (49.5%)  |  Non-div: 1,237
+       5m:  Divergent mean=$-0.037 med=$-0.175 rev_rate=56.7%  |  Non-div mean=$+0.252 med=$+0.010 rev_rate=49.6%  |  edge=$-0.289
+      10m:  Divergent mean=$-0.029 med=$-0.155 rev_rate=54.6%  |  Non-div mean=$+0.223 med=$-0.075 rev_rate=52.0%  |  edge=$-0.251
+      15m:  Divergent mean=$+0.116 med=$-0.190 rev_rate=55.5%  |  Non-div mean=$+0.314 med=$-0.165 rev_rate=53.8%  |  edge=$-0.198
+      30m:  Divergent mean=$+0.221 med=$-0.149 rev_rate=52.8%  |  Non-div mean=$+0.295 med=$-0.110 rev_rate=51.8%  |  edge=$-0.073
+      60m:  Divergent mean=$+0.578 med=$+0.120 rev_rate=48.6%  |  Non-div mean=$+0.259 med=$-0.215 rev_rate=52.5%  |  edge=$+0.320
+
+  Computing imbalance (window=3 bars after breakout)...
+
+  *** FULL SAMPLE ***
+
+  --- UP breakouts (pivot_win=60, imb_win=3) ---
+  Total: 7,004  |  Divergent: 3,776 (53.9%)  |  Non-div: 3,228
+       5m:  Divergent mean=$+0.071 med=$+0.005 rev_rate=49.5%  |  Non-div mean=$+0.131 med=$+0.017 rev_rate=48.8%  |  edge=$-0.059
+      10m:  Divergent mean=$+0.171 med=$+0.034 rev_rate=48.6%  |  Non-div mean=$+0.200 med=$+0.062 rev_rate=47.1%  |  edge=$-0.029
+      15m:  Divergent mean=$+0.200 med=$+0.048 rev_rate=48.5%  |  Non-div mean=$+0.198 med=$+0.057 rev_rate=47.9%  |  edge=$+0.002
+      30m:  Divergent mean=$+0.280 med=$+0.055 rev_rate=48.7%  |  Non-div mean=$+0.209 med=$+0.064 rev_rate=48.6%  |  edge=$+0.071
+      60m:  Divergent mean=$+0.272 med=$+0.076 rev_rate=48.4%  |  Non-div mean=$+0.425 med=$+0.208 rev_rate=46.1%  |  edge=$-0.154
+
+  --- DOWN breakouts (pivot_win=60, imb_win=3) ---
+  Total: 6,477  |  Divergent: 3,495 (54.0%)  |  Non-div: 2,982
+       5m:  Divergent mean=$+0.021 med=$-0.050 rev_rate=53.4%  |  Non-div mean=$+0.180 med=$-0.010 rev_rate=50.8%  |  edge=$-0.159
+      10m:  Divergent mean=$+0.046 med=$-0.054 rev_rate=52.4%  |  Non-div mean=$+0.172 med=$-0.016 rev_rate=50.4%  |  edge=$-0.126
+      15m:  Divergent mean=$+0.125 med=$-0.060 rev_rate=51.7%  |  Non-div mean=$+0.265 med=$-0.025 rev_rate=50.8%  |  edge=$-0.140
+      30m:  Divergent mean=$+0.202 med=$-0.025 rev_rate=50.7%  |  Non-div mean=$+0.279 med=$-0.015 rev_rate=50.5%  |  edge=$-0.077
+      60m:  Divergent mean=$+0.319 med=$+0.039 rev_rate=49.0%  |  Non-div mean=$+0.266 med=$-0.017 rev_rate=50.4%  |  edge=$+0.052
+
+  === Imbalance strength analysis (pivot=60, imb=3) ===
+
+  UP breakouts - divergence strength quintiles:
+        weak (n= 1259):  5m=$+0.139 10m=$+0.239 15m=$+0.254 30m=$+0.408
+      medium (n= 1258):  5m=$+0.074 10m=$+0.179 15m=$+0.232 30m=$+0.342
+      strong (n= 1259):  5m=$+0.000 10m=$+0.094 15m=$+0.114 30m=$+0.089
+
+  DOWN breakouts - divergence strength quintiles:
+        weak (n= 1165):  5m=$+0.099 10m=$+0.131 15m=$+0.184 30m=$+0.157
+      medium (n= 1165):  5m=$+0.142 10m=$+0.172 15m=$+0.282 30m=$+0.515
+      strong (n= 1165):  5m=$-0.179 10m=$-0.165 15m=$-0.090 30m=$-0.067
+
+  *** OOS (2023-2026, n=5,233) ***
+
+  --- UP breakouts (pivot_win=60, imb_win=3) ---
+  Total: 2,785  |  Divergent: 1,471 (52.8%)  |  Non-div: 1,314
+       5m:  Divergent mean=$+0.066 med=$-0.025 rev_rate=51.2%  |  Non-div mean=$+0.245 med=$+0.107 rev_rate=45.3%  |  edge=$-0.178
+      10m:  Divergent mean=$+0.256 med=$+0.020 rev_rate=49.4%  |  Non-div mean=$+0.289 med=$+0.118 rev_rate=46.2%  |  edge=$-0.033
+      15m:  Divergent mean=$+0.300 med=$+0.090 rev_rate=47.9%  |  Non-div mean=$+0.280 med=$+0.121 rev_rate=47.5%  |  edge=$+0.021
+      30m:  Divergent mean=$+0.447 med=$+0.130 rev_rate=47.9%  |  Non-div mean=$+0.165 med=$+0.024 rev_rate=49.3%  |  edge=$+0.282
+      60m:  Divergent mean=$+0.391 med=$+0.135 rev_rate=48.7%  |  Non-div mean=$+0.562 med=$+0.304 rev_rate=44.9%  |  edge=$-0.171
+
+  --- DOWN breakouts (pivot_win=60, imb_win=3) ---
+  Total: 2,448  |  Divergent: 1,359 (55.5%)  |  Non-div: 1,089
+       5m:  Divergent mean=$-0.074 med=$-0.175 rev_rate=57.1%  |  Non-div mean=$+0.337 med=$+0.037 rev_rate=48.2%  |  edge=$-0.410
+      10m:  Divergent mean=$-0.059 med=$-0.195 rev_rate=55.0%  |  Non-div mean=$+0.295 med=$-0.042 rev_rate=51.1%  |  edge=$-0.355
+      15m:  Divergent mean=$+0.110 med=$-0.206 rev_rate=56.0%  |  Non-div mean=$+0.348 med=$-0.140 rev_rate=52.9%  |  edge=$-0.238
+      30m:  Divergent mean=$+0.251 med=$-0.194 rev_rate=53.3%  |  Non-div mean=$+0.267 med=$-0.070 rev_rate=51.0%  |  edge=$-0.016
+      60m:  Divergent mean=$+0.553 med=$+0.000 rev_rate=50.0%  |  Non-div mean=$+0.247 med=$-0.097 rev_rate=51.3%  |  edge=$+0.306
+
+  Computing imbalance (window=5 bars after breakout)...
+
+  *** FULL SAMPLE ***
+
+  --- UP breakouts (pivot_win=60, imb_win=5) ---
+  Total: 7,004  |  Divergent: 3,741 (53.4%)  |  Non-div: 3,263
+       5m:  Divergent mean=$+0.060 med=$+0.010 rev_rate=49.3%  |  Non-div mean=$+0.143 med=$+0.015 rev_rate=49.0%  |  edge=$-0.084
+      10m:  Divergent mean=$+0.169 med=$+0.055 rev_rate=47.8%  |  Non-div mean=$+0.201 med=$+0.040 rev_rate=48.0%  |  edge=$-0.032
+      15m:  Divergent mean=$+0.193 med=$+0.058 rev_rate=48.2%  |  Non-div mean=$+0.206 med=$+0.040 rev_rate=48.3%  |  edge=$-0.013
+      30m:  Divergent mean=$+0.252 med=$+0.049 rev_rate=48.8%  |  Non-div mean=$+0.242 med=$+0.079 rev_rate=48.5%  |  edge=$+0.010
+      60m:  Divergent mean=$+0.263 med=$+0.062 rev_rate=48.7%  |  Non-div mean=$+0.434 med=$+0.211 rev_rate=45.8%  |  edge=$-0.171
+
+  --- DOWN breakouts (pivot_win=60, imb_win=5) ---
+  Total: 6,477  |  Divergent: 3,516 (54.3%)  |  Non-div: 2,961
+       5m:  Divergent mean=$+0.028 med=$-0.041 rev_rate=53.1%  |  Non-div mean=$+0.172 med=$-0.018 rev_rate=51.1%  |  edge=$-0.144
+      10m:  Divergent mean=$+0.054 med=$-0.056 rev_rate=52.4%  |  Non-div mean=$+0.164 med=$-0.017 rev_rate=50.4%  |  edge=$-0.110
+      15m:  Divergent mean=$+0.131 med=$-0.067 rev_rate=52.2%  |  Non-div mean=$+0.260 med=$-0.005 rev_rate=50.2%  |  edge=$-0.128
+      30m:  Divergent mean=$+0.242 med=$-0.038 rev_rate=51.2%  |  Non-div mean=$+0.231 med=$+0.000 rev_rate=49.9%  |  edge=$+0.011
+      60m:  Divergent mean=$+0.362 med=$+0.032 rev_rate=49.1%  |  Non-div mean=$+0.214 med=$-0.016 rev_rate=50.3%  |  edge=$+0.148
+
+  === Imbalance strength analysis (pivot=60, imb=5) ===
+
+  UP breakouts - divergence strength quintiles:
+        weak (n= 1247):  5m=$+0.064 10m=$+0.140 15m=$+0.127 30m=$+0.174
+      medium (n= 1247):  5m=$+0.099 10m=$+0.220 15m=$+0.251 30m=$+0.380
+      strong (n= 1247):  5m=$+0.015 10m=$+0.147 15m=$+0.200 30m=$+0.200
+
+  DOWN breakouts - divergence strength quintiles:
+        weak (n= 1172):  5m=$+0.135 10m=$+0.168 15m=$+0.231 30m=$+0.373
+      medium (n= 1172):  5m=$+0.098 10m=$+0.146 15m=$+0.224 30m=$+0.349
+      strong (n= 1172):  5m=$-0.149 10m=$-0.152 15m=$-0.061 30m=$+0.005
+
+  *** OOS (2023-2026, n=5,233) ***
+
+  --- UP breakouts (pivot_win=60, imb_win=5) ---
+  Total: 2,785  |  Divergent: 1,506 (54.1%)  |  Non-div: 1,279
+       5m:  Divergent mean=$+0.024 med=$-0.035 rev_rate=51.5%  |  Non-div mean=$+0.300 med=$+0.120 rev_rate=44.7%  |  edge=$-0.276
+      10m:  Divergent mean=$+0.213 med=$+0.020 rev_rate=49.4%  |  Non-div mean=$+0.341 med=$+0.127 rev_rate=46.1%  |  edge=$-0.128
+      15m:  Divergent mean=$+0.244 med=$+0.057 rev_rate=48.5%  |  Non-div mean=$+0.346 med=$+0.146 rev_rate=46.8%  |  edge=$-0.102
+      30m:  Divergent mean=$+0.335 med=$+0.098 rev_rate=48.7%  |  Non-div mean=$+0.290 med=$+0.088 rev_rate=48.4%  |  edge=$+0.045
+      60m:  Divergent mean=$+0.304 med=$+0.053 rev_rate=49.5%  |  Non-div mean=$+0.668 med=$+0.371 rev_rate=43.9%  |  edge=$-0.364
+
+  --- DOWN breakouts (pivot_win=60, imb_win=5) ---
+  Total: 2,448  |  Divergent: 1,402 (57.3%)  |  Non-div: 1,046
+       5m:  Divergent mean=$-0.066 med=$-0.169 rev_rate=56.5%  |  Non-div mean=$+0.342 med=$+0.028 rev_rate=48.7%  |  edge=$-0.408
+      10m:  Divergent mean=$-0.029 med=$-0.204 rev_rate=54.7%  |  Non-div mean=$+0.269 med=$-0.043 rev_rate=51.3%  |  edge=$-0.298
+      15m:  Divergent mean=$+0.121 med=$-0.224 rev_rate=56.3%  |  Non-div mean=$+0.343 med=$-0.110 rev_rate=52.3%  |  edge=$-0.222
+      30m:  Divergent mean=$+0.312 med=$-0.210 rev_rate=53.9%  |  Non-div mean=$+0.186 med=$-0.031 rev_rate=50.2%  |  edge=$+0.126
+      60m:  Divergent mean=$+0.573 med=$-0.033 rev_rate=50.4%  |  Non-div mean=$+0.207 med=$-0.072 rev_rate=50.8%  |  edge=$+0.367
+
+
+================================================================================
+SUMMARY: Best divergence edges across all configs
+================================================================================
+
+  Horizon: 15m
+    dir   pw   iw  div_n nodiv_n   div_mean  nodiv_mean  div_rev% nodiv_rev%     edge
+   down   60    1   3387    3090     +0.116      +0.271    52.3%     50.1%   -0.155
+   down   60    3   3495    2982     +0.125      +0.265    51.7%     50.8%   -0.140
+   down   60    5   3516    2961     +0.131      +0.260    52.2%     50.2%   -0.128
+     up   15    5  12697   11742     +0.160      +0.269    47.0%     45.7%   -0.109
+     up   30    5   7021    6153     +0.179      +0.269    48.0%     46.8%   -0.090
+     up   30    1   6706    6468     +0.178      +0.266    48.1%     46.7%   -0.088
+     up   60    1   3661    3343     +0.165      +0.237    49.0%     47.4%   -0.072
+   down   30    1   6342    5966     +0.149      +0.221    50.7%     49.4%   -0.072
+     up   15    3  12600   11839     +0.186      +0.241    46.8%     45.9%   -0.054
+     up   30    3   7008    6166     +0.196      +0.250    48.1%     46.6%   -0.054
+     up   15    1  12059   12380     +0.187      +0.238    46.0%     46.7%   -0.051
+   down   30    3   6537    5771     +0.169      +0.201    50.2%     49.9%   -0.032
+   down   15    5  12106   11034     +0.144      +0.173    48.9%     48.1%   -0.029
+   down   15    3  12102   11038     +0.151      +0.166    48.7%     48.3%   -0.016
+     up   60    5   3741    3263     +0.193      +0.206    48.2%     48.3%   -0.013
+   down   15    1  11679   11461     +0.156      +0.161    48.8%     48.2%   -0.005
+     up   60    3   3776    3228     +0.200      +0.198    48.5%     47.9%   +0.002
+   down   30    5   6595    5713     +0.187      +0.181    50.3%     49.8%   +0.006
+
+  Horizon: 30m
+    dir   pw   iw  div_n nodiv_n   div_mean  nodiv_mean  div_rev% nodiv_rev%     edge
+     up   15    5  12697   11742     +0.154      +0.292    49.2%     47.0%   -0.138
+     up   30    5   7021    6153     +0.215      +0.349    48.5%     46.2%   -0.134
+   down   60    1   3387    3090     +0.180      +0.300    50.9%     50.3%   -0.120
+     up   15    1  12059   12380     +0.176      +0.264    48.7%     47.6%   -0.088
+     up   30    1   6706    6468     +0.236      +0.320    48.0%     46.9%   -0.085
+   down   60    3   3495    2982     +0.202      +0.279    50.7%     50.5%   -0.077
+     up   60    1   3661    3343     +0.216      +0.281    48.9%     48.5%   -0.065
+     up   15    3  12600   11839     +0.195      +0.246    48.9%     47.3%   -0.051
+   down   15    3  12102   11038     +0.115      +0.165    50.1%     50.5%   -0.050
+     up   30    3   7008    6166     +0.254      +0.303    48.3%     46.6%   -0.049
+   down   15    1  11679   11461     +0.116      +0.162    50.6%     50.1%   -0.046
+   down   30    3   6537    5771     +0.156      +0.200    49.9%     49.9%   -0.044
+   down   15    5  12106   11034     +0.127      +0.151    50.4%     50.2%   -0.023
+   down   30    1   6342    5966     +0.167      +0.187    50.2%     49.6%   -0.020
+     up   60    5   3741    3263     +0.252      +0.242    48.8%     48.5%   +0.010
+   down   60    5   3516    2961     +0.242      +0.231    51.2%     49.9%   +0.011
+   down   30    5   6595    5713     +0.197      +0.153    50.0%     49.8%   +0.044
+     up   60    3   3776    3228     +0.280      +0.209    48.7%     48.6%   +0.071
+
+  Horizon: 60m
+    dir   pw   iw  div_n nodiv_n   div_mean  nodiv_mean  div_rev% nodiv_rev%     edge
+     up   60    1   3661    3343     +0.185      +0.514    48.5%     46.0%   -0.329
+     up   15    5  12697   11742     +0.062      +0.297    49.6%     47.9%   -0.235
+     up   30    5   7021    6153     +0.149      +0.366    49.1%     48.2%   -0.217
+     up   60    5   3741    3263     +0.263      +0.434    48.7%     45.8%   -0.171
+     up   60    3   3776    3228     +0.272      +0.425    48.4%     46.1%   -0.154
+     up   15    1  12059   12380     +0.101      +0.246    49.3%     48.2%   -0.145
+     up   15    3  12600   11839     +0.105      +0.249    49.4%     48.1%   -0.144
+     up   30    3   7008    6166     +0.196      +0.312    49.3%     48.0%   -0.116
+     up   30    1   6706    6468     +0.195      +0.308    49.3%     48.1%   -0.113
+   down   15    3  12102   11038     +0.079      +0.098    51.7%     51.4%   -0.019
+   down   60    1   3387    3090     +0.295      +0.294    48.7%     50.6%   +0.001
+   down   15    1  11679   11461     +0.089      +0.086    51.8%     51.2%   +0.003
+   down   15    5  12106   11034     +0.106      +0.068    51.4%     51.6%   +0.039
+   down   60    3   3495    2982     +0.319      +0.266    49.0%     50.4%   +0.052
+   down   30    1   6342    5966     +0.201      +0.129    51.0%     51.6%   +0.072
+   down   30    3   6537    5771     +0.223      +0.102    50.8%     51.9%   +0.120
+   down   60    5   3516    2961     +0.362      +0.214    49.1%     50.3%   +0.148
+   down   30    5   6595    5713     +0.260      +0.057    50.6%     52.1%   +0.203
+
+Done.
