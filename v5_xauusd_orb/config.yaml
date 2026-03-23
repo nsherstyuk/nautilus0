@@ -115,6 +115,14 @@ instruments:
     velocity_threshold: 200        # IBKR-calibrated: London P30 from 40h reqMktData data (Dukascopy 168 = IBKR ~P10, too permissive)
     velocity_threshold_percentile: 50  # fallback: adaptive P50 if threshold=0
     qty: 1                    # 1 oz
+    # Gap filter: skip days when 06:00-08:00 UTC gap period is too quiet
+    # Rolling P50 volatility threshold over 60 days (cold start passes all for first ~30 days)
+    gap_filter_enabled: true
+    gap_vol_percentile: 50.0
+    gap_range_filter_enabled: false   # add later after 30+ filtered trades
+    gap_rolling_days: 60
+    gap_start_hour: 6
+    gap_end_hour: 8
     # Display
     price_decimals: 2
     pip_label: "$"
@@ -145,25 +153,28 @@ instruments:
     pip_label: "pip"
 
   USDJPY:
-    enabled: false             # DISABLED — marginal edge (Sharpe 0.86 true no-BE), dilutes portfolio
-    # IB contract
-    symbol: "JPY"
+    enabled: true              # V6 paper test — strongest V6 pair (Sharpe +3.08 OOS with BE=2h)
+    # IB contract — USD is base, JPY is quote
+    symbol: "USD"
     sec_type: "CASH"
     exchange: "IDEALPRO"
-    currency: "USD"
+    currency: "JPY"
     # Session times (UTC hours)
     asian_start_hour: 0
     asian_end_hour: 6
     trade_start_hour: 7       # London session (matches EURUSD)
     trade_end_hour: 16
-    # Strategy
+    # Strategy — research-validated (Phase 8/10/11)
     rr_ratio: 2.0
     min_range_pct: 0.01
     max_range_pct: 2.0
-    skip_weekdays: [2]         # Wed skip (consistent with other pairs)
-    be_hours: 999             # DISABLED — blind BE overstates backtest (see CLAUDE_RESPONSE_4.md)
-    be_offset: 0.02           # 2 pips offset (unused while be_hours=999)
+    skip_weekdays: [2]         # Wed skip — Phase 11: helps USDJPY OOS
+    be_hours: 2.0              # Phase 8: 120min optimal for USDJPY (Sharpe +3.08 OOS)
+    be_offset: 0.02           # 2 pips offset (~$0.13 at USDJPY 150)
     max_pending_hours: 4
+    # Velocity filter — Phase 10: HURTS USDJPY (best trades are quiet structural breaks)
+    velocity_filter_enabled: false
+    gap_filter_enabled: false
     qty: 20000                # 20k units (mini lot, ~$2/pip at USD/JPY ~150)
     point_value: 0.00667      # 1/USDJPY (~150) to convert JPY P&L to USD
     # Display

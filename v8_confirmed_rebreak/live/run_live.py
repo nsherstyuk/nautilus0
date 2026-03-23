@@ -381,12 +381,13 @@ class V8LiveTrader:
         self.sl_order = None
         self._shutdown = False
 
-        # State persistence
+        # State persistence (per-symbol to avoid collisions)
+        sym_lower = live_cfg.symbol.lower()
         self.state_dir = ROOT / "v8_confirmed_rebreak" / "live" / "state"
         self.state_dir.mkdir(parents=True, exist_ok=True)
         self.log_dir = ROOT / "v8_confirmed_rebreak" / "live" / "logs"
         self.log_dir.mkdir(parents=True, exist_ok=True)
-        self.trade_log_path = self.log_dir / "trades.csv"
+        self.trade_log_path = self.log_dir / f"trades_{sym_lower}.csv"
 
     def seed_buffer(self):
         """Load historical bars to seed the rolling buffer."""
@@ -406,15 +407,26 @@ class V8LiveTrader:
             ts = pd.Timestamp(row['date'])
             if ts.tzinfo is None:
                 ts = ts.tz_localize('UTC')
+            vol = row.get('volume', 0)
+            if vol > 0:
+                bv = vol / 2
+                sv = vol / 2
+                tc = int(vol)
+            else:
+                # MIDPOINT bars have volume=-1; mark as invalid
+                # so min_bar_ticks filter returns NaN for buy_ratio
+                bv = 0.0
+                sv = 0.0
+                tc = 0
             bar = LiveBar(
                 timestamp=ts.to_pydatetime(),
                 open=row['open'],
                 high=row['high'],
                 low=row['low'],
                 close=row['close'],
-                buy_volume=row.get('volume', 0) / 2,
-                sell_volume=row.get('volume', 0) / 2,
-                tick_count=max(int(row.get('volume', 50)), 50),
+                buy_volume=bv,
+                sell_volume=sv,
+                tick_count=tc,
             )
             self.engine.add_bar(bar)
             count += 1
@@ -609,6 +621,13 @@ def main():
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=4002)
     parser.add_argument("--client-id", type=int, default=99)
+    parser.add_argument("--symbol", default="XAUUSD",
+                        help="Instrument symbol (XAUUSD, EUR, JPY, etc.)")
+    parser.add_argument("--sec-type", default="CMDTY",
+                        help="Security type (CMDTY, CASH)")
+    parser.add_argument("--exchange", default="SMART",
+                        help="Exchange (SMART, IDEALPRO)")
+    parser.add_argument("--currency", default="USD")
     parser.add_argument("--qty", type=float, default=1.0)
     parser.add_argument("--pw", type=int, default=60)
     parser.add_argument("--confirm", type=int, default=3)
@@ -617,20 +636,25 @@ def main():
     parser.add_argument("--min-ticks", type=int, default=50)
     args = parser.parse_args()
 
+    # Auto-size buffer for larger pivot windows
+    min_buffer = 2 * args.pw + 1 + 50
+    buffer_size = max(500, min_buffer)
+
     live_cfg = LiveConfig(
         ibkr_host=args.host,
         ibkr_port=args.port,
         ibkr_client_id=args.client_id,
-        symbol="XAUUSD",
-        sec_type="CMDTY",
-        exchange="SMART",
-        currency="USD",
+        symbol=args.symbol,
+        sec_type=args.sec_type,
+        exchange=args.exchange,
+        currency=args.currency,
         quantity=args.qty,
         pivot_window=args.pw,
         confirm_bars=args.confirm,
         max_hold_bars=args.max_hold,
         sl_atr_multiple=args.sl,
         min_bar_ticks=args.min_ticks,
+        buffer_size=buffer_size,
         dry_run=args.dry_run,
     )
     live_cfg.validate()

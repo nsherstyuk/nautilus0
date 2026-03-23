@@ -193,25 +193,63 @@ class LiveEngine:
 
         # Buy ratio callback (closure over buffer arrays)
         min_ticks = self.config.min_bar_ticks
+        # Offset to remap logical (monotonic) indices to buffer indices
+        idx_offset = logical_idx - process_idx
 
         def get_buy_ratio(start: int, end: int) -> float:
-            # Remap: PatternDetector thinks in buffer-relative indices
-            if end > n or start >= end:
+            # Remap: PatternDetector uses logical indices, arrays are buffer-relative
+            buf_start = start - idx_offset
+            buf_end = end - idx_offset
+            if buf_end > n or buf_start < 0 or buf_start >= buf_end:
                 return float("nan")
-            ticks = tick_counts[start:end]
+            ticks = tick_counts[buf_start:buf_end]
             if min_ticks > 0 and np.any(ticks < min_ticks):
+                self.logger.debug(
+                    f"BR NaN: ticks={list(ticks)} < min={min_ticks} "
+                    f"[{buf_start}:{buf_end}]")
                 return float("nan")
-            bv = buy_vols[start:end].sum()
-            sv = sell_vols[start:end].sum()
+            bv = buy_vols[buf_start:buf_end].sum()
+            sv = sell_vols[buf_start:buf_end].sum()
             total = bv + sv
             if total == 0:
+                self.logger.debug(
+                    f"BR NaN: total=0 bv={bv:.1f} sv={sv:.1f} "
+                    f"[{buf_start}:{buf_end}]")
                 return float("nan")
-            return bv / total
+            br = bv / total
+            self.logger.debug(
+                f"BR={br:.4f} bv={bv:.1f} sv={sv:.1f} "
+                f"ticks={list(ticks)} [{buf_start}:{buf_end}]")
+            return br
+
+        # Periodic diagnostic: log buy_ratio sample + pattern state
+        if self._bar_count % 60 == 0:
+            # Sample buy_ratio for last 3 bars at process_idx
+            sample_br = get_buy_ratio(logical_idx - 2, logical_idx + 1)
+            last_ticks = list(tick_counts[-5:])
+            last_bv = list(buy_vols[-5:])
+            last_sv = list(sell_vols[-5:])
+            det = self.detector
+            self.logger.info(
+                f"[DIAG] bar#{self._bar_count} "
+                f"close={float(closes[process_idx]):.2f} "
+                f"ph={float(pivot_high[process_idx]):.2f} "
+                f"pl={float(pivot_low[process_idx]):.2f} "
+                f"sample_br={sample_br:.4f} "
+                f"ticks(last5)={last_ticks} "
+                f"bv(last5)={[f'{v:.1f}' for v in last_bv]} "
+                f"sv(last5)={[f'{v:.1f}' for v in last_sv]} "
+                f"| H: lvl={det._h_level:.2f} broke={det._h_broke} "
+                f"pb={det._h_pb} div={det._h_div} "
+                f"| L: lvl={det._l_level:.2f} broke={det._l_broke} "
+                f"pb={det._l_pb} div={det._l_div}"
+            )
 
         # Pattern detection (SAME deep module as backtest)
+        # Pass logical_idx (monotonic) so gap tracking works correctly
         signal = self.detector.process_bar(
             float(closes[process_idx]),
-            process_idx,
+            logical_idx,
             float(pivot_high[process_idx]),
             float(pivot_low[process_idx]),
             get_buy_ratio,

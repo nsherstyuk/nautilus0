@@ -39,6 +39,15 @@ class Fill:
     reason: str     # "ENTRY", "SL", "TP", "MARKET"
 
 @dataclass(frozen=True)
+class GapMetrics:
+    """Pre-trade gap period (e.g. 06:00-08:00 UTC) analysis results."""
+    gap_volatility: float       # std of 1-min log returns during gap
+    gap_range: float            # (high - low) / overnight_range during gap
+    vol_passes: bool            # True if gap_volatility >= rolling percentile
+    range_passes: bool          # True if gap_range >= rolling percentile
+
+
+@dataclass(frozen=True)
 class RangeInfo:
     """Calculated Asian Range metrics."""
     high: float

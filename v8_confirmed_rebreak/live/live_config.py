@@ -33,7 +33,7 @@ class LiveConfig:
     tp_atr_multiple: float = 99.0
     max_hold_bars: int = 60
     atr_period: int = 60
-    min_bar_ticks: int = 50
+    min_bar_ticks: int = 5
     spread_cost: float = 0.30
 
     # Rolling buffer

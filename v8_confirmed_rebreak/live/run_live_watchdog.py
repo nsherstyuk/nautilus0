@@ -55,7 +55,7 @@ def main():
     parser.add_argument("--confirm", type=int, default=3)
     parser.add_argument("--max-hold", type=int, default=60)
     parser.add_argument("--sl", type=float, default=10.0)
-    parser.add_argument("--min-ticks", type=int, default=75)
+    parser.add_argument("--min-ticks", type=int, default=5)
     parser.add_argument("--qty", type=float, default=1.0)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--max-restarts", type=int, default=10,

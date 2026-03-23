@@ -1,6 +1,6 @@
 # Session Notes: Loss Trade Reduction Research
 **Date:** 2026-03-18
-**Status:** Paused — walk-forward complete, decision point reached, awaiting GBPUSD/USDCHF data
+**Status:** CONCLUDED — all candidate filters investigated, research question answered
 **Research Standards:** layer1-research-standards.md governs this work
 
 ---
@@ -174,29 +174,27 @@ POC misalignment is robust on EURUSD (78%) but not XAUUSD (44%). Options:
 
 ---
 
-## Next Steps (Updated)
-
-1. **Human decision needed:** Which deployment approach? (see options above)
-2. **Investigate 2021 XAUUSD regime** — what made POC misalignment fail that year?
-3. **Broader FX validation** — can we approximate POC on 5-min data (using OHLC proxy)?
-
----
-
 ## Key Decisions Made
 
 1. **Prevention > Management:** Focus on pre-entry filtering rather than in-trade management
 2. **Trade count tradeoff accepted:** OK with 2-3 trades/week if win rate improves significantly
 3. **Volume imbalance deprioritized:** Empirical null result outweighs theoretical appeal
 4. **Cat B filter is moderate, not a slam-dunk:** 1-min data shows Cat B has small positive edge (Sharpe 0.44), not zero as 5-min suggested
-5. **Literature predictions inverted empirically:** NR4, POC alignment, VWAP alignment all show opposite effects. Empirical data takes priority over literature predictions (per authority order: primary data > expert synthesis).
+5. **Literature predictions inverted empirically:** NR4, POC alignment, VWAP alignment all show opposite effects. Empirical data takes priority over literature predictions (per authority order: primary data > expert synthesis)
+6. **Direction-conditional filter rejected:** Neither LONG nor SHORT misaligned is independently stable — both fail in different years. Combined diversification is the source of robustness
+7. **Volume-shape features rejected for deployment:** Kurtosis/entropy look great on gold but INVERT on EURUSD. Cross-instrument validation kills them as universal signals
+8. **Gap context permanently deprioritized:** 99% of gold trades have prior close inside today's range — no usable signal
+9. **Research concluded:** All investigated filter candidates either fail cross-validation or provide marginal benefit. Deployment decision is now a risk-tolerance judgment, not a research question
 
 ---
 
 ## Mismatches Surfaced (per research standards)
 
 1. **5-min vs 1-min Cat A/B performance:** 5-min overstated Cat A (ideal fills) and understated Cat B. 1-min is more trustworthy. Classification: **evidential** — resolved in favor of 1-min data.
-2. **Crabel NR4 vs empirical NR4:** Literature says narrow ranges → better breakouts. Data says opposite for XAUUSD. Classification: **evidential** — needs multi-instrument check before concluding.
-3. **Market Profile POC theory vs empirical POC:** Literature says aligned POC → better breakouts. Data says opposite. Classification: **evidential** — same resolution needed.
+2. **Crabel NR4 vs empirical NR4:** Literature says narrow ranges → better breakouts. Data says opposite for XAUUSD. Classification: **evidential** — resolved: XAUUSD-specific artifact, does not hold on EURUSD. NR4 is not a universal signal for intra-session ORB.
+3. **Market Profile POC theory vs empirical POC:** Literature says aligned POC → better breakouts. Data says opposite. Classification: **evidential** — resolved: POC misalignment cross-validates on 2 instruments. The inversion is real and likely reflects that breakouts against consensus represent genuine institutional flow.
+4. **XAUUSD vs EURUSD kurtosis direction:** High kurtosis improves gold (Sharpe 1.44) but hurts EURUSD (Sharpe -0.24). The 2×2 grids are inverted. Classification: **evidential** — resolved: kurtosis captures gold-specific microstructure (concentrated Asian physical demand), not a universal volume profile property.
+5. **POC misalignment: gold-specific risk vs cross-instrument robustness:** POC misalignment is cross-instrument (both gold and EURUSD show the same direction), but the MAGNITUDE of failure in down-gold regimes is gold-specific. Classification: **structural** — surfaced to human. The deployment decision depends on which property weighs more.
 
 ---
 
@@ -213,17 +211,22 @@ POC misalignment is robust on EURUSD (78%) but not XAUUSD (44%). Options:
 
 ---
 
-## Open Questions
+## Open Questions (Resolved & Remaining)
 
 1. ~~Does the Category B filter hold on 1-min data?~~ → Partially. Moderate, not definitive.
 2. ~~Do any range quality features show predictive power?~~ → YES, POC/VWAP misalignment cross-validated.
-3. ~~Are the inversions XAUUSD-specific or universal?~~ → NR4 is XAUUSD-specific. POC misalignment is cross-instrument.
+3. ~~Are the inversions XAUUSD-specific or universal?~~ → NR4 is XAUUSD-specific. POC misalignment is cross-instrument. Kurtosis/entropy are XAUUSD-specific.
 4. ~~Walk-forward POC misalignment~~ → EURUSD robust (78%), XAUUSD borderline (44%).
 5. ~~Cat B + POC orthogonal?~~ → Partially. Cat B behavior differs by instrument.
 6. ~~Trade count feasible?~~ → YES. Portfolio combined filter = 2.4/wk, right on target.
-7. **DECISION NEEDED:** Deployment approach — EURUSD-only POC vs. both instruments
-8. **Why did 2021 fail on XAUUSD?** Regime investigation needed.
-9. **Causal question:** WHY does POC misalignment predict better breakouts?
+7. ~~Why did 2021 fail on XAUUSD?~~ → Regime-dependent: LONG misaligned fails in down-gold years. N=1.
+8. ~~Can direction-splitting fix 2021?~~ → NO. Neither direction is independently stable.
+9. ~~Are volume-shape features (kurtosis/entropy) useful?~~ → On gold only. Fail EURUSD cross-validation.
+10. ~~Is gap context useful?~~ → NO. Null result, 99% of trades have no true gap.
+11. ~~Is time-of-breakout useful?~~ → Pattern exists but not robust enough (56% WF).
+12. **REMAINING — Deployment decision:** Deploy POC misalignment on XAUUSD (accept risk), EURUSD only (robust), or both?
+13. **REMAINING — Causal question:** WHY does POC misalignment predict better breakouts? (plausible story exists, unverified)
+14. **REMAINING — Regime detection:** Can down-gold regimes be detected forward-looking? (not investigated)
 
 ---
 
@@ -300,18 +303,209 @@ No Cat B + POC mis  | 1.3/wk    | 1.1/wk    | 2.4/wk  ← target range
 
 ---
 
-## Pending Work for Next Session
+## XAUUSD 2021 Regime Investigation
 
-1. **GBPUSD and USDCHF tick data** being downloaded. When ready, place in `C:/nautilus0/data/1m_csv/` as `gbpusd_1m_tick.csv` and `usdchf_1m_tick.csv` with same column format as existing files.
-2. Run `research_range_quality_multi.py` on each new pair to verify POC misalignment cross-validates:
-   ```
-   cd C:/nautilus0
-   "C:\Users\nsher\AppData\Local\Programs\Python\Python313\python.exe" -m v5_xauusd_orb.research_range_quality_multi gbpusd
-   ```
-   Note: you must first add the instrument to `INSTRUMENT_CONFIG` dict in `research_range_quality_multi.py` with appropriate pip_size and spread_cost.
-3. If POC misalignment confirms on 3+ instruments, run `research_poc_walkforward.py` extended to include the new pairs.
-4. **Human decision needed:** deployment approach (see Tension to Resolve section above).
-5. **Investigate XAUUSD 2021** — what made POC misalignment catastrophically fail that year? Was there a gold-specific regime (e.g., post-COVID inflation trade, unusual Asian session behavior)?
+**Script:** `research_2021_xauusd.py`
+
+The 2021 XAUUSD failure was the critical open question: POC misalignment walk-forward was only 44% on gold, dragged down by 2021 (Sharpe -2.86 for misaligned vs +0.14 baseline).
+
+### Root Cause Found: Regime-Dependent Failure
+
+2021 was gold's only DOWN year (-5.2%) in the dataset. The failure was specifically **LONG misaligned trades in a down market**:
+
+| Year | LONG mis Sharpe | SHORT mis Sharpe | Combined mis Sharpe | Regime |
+|------|----------------|-----------------|---------------------|--------|
+| 2020 | 3.20 | 2.67 | 2.98 | UP +25% |
+| **2021** | **-5.32** | **0.05** | **-2.86** | **DOWN -5%** |
+| 2022 | -0.21 | 1.83 | 0.77 | FLAT -1% |
+| 2023 | 2.39 | 3.95 | 3.18 | UP +13% |
+
+The causal story: in trending UP markets, Asian POC is "stale" so breakouts against it join the trend (institutional flow). In DOWN/ranging markets, the Asian POC is more informative about true value, so breakouts against it fight real flow and fail.
+
+### Direction-Split Investigation
+
+Tested whether keeping only SHORT misaligned (which appeared regime-stable) would work:
+- SHORT misaligned alone: Sharpe 0.99, walk-forward **3/9 years (33%)** — NOT stable
+- LONG misaligned alone: Sharpe 1.15, walk-forward **5/9 years (56%)**
+- Combined (both directions): Sharpe 1.34 — diversification benefit
+
+**Conclusion:** Neither direction is independently stable. The combined filter works because LONG and SHORT fail in different years and complement each other. The direction-conditional approach is a dead end.
+
+### Confidence Assessment (POC Misalignment + 2021 Regime)
+
+- `context_complete`: **FAVORABLE** — full year-by-year regime analysis across 8+ years, two instruments
+- `no_unstated_assumptions`: **MIXED** — causal story is plausible but retrospective. Regime classification is trivial after the fact. We have N=1 down year. Detection lag is an open question.
+- `evaluator_agreement`: **FAVORABLE** — the pattern in the data is unambiguous
+- **Status: converging toward defensible**
+
+---
+
+## New Feature Investigation: Time-of-Breakout, Gap Context, Volume Profile Shape
+
+**Script:** `research_new_features.py`
+
+Investigated three new loss trade reduction features on XAUUSD:
+
+### Feature 1: Time of Breakout — INTERESTING PATTERN, NOT FILTERABLE
+
+| Time Bucket | N | % | Sharpe | SL% | TP% |
+|-------------|---|---|--------|-----|-----|
+| 08:00-08:30 | 1044 | 64.2% | 0.94 | 32.1% | 23.6% |
+| 08:30-09:00 | 124 | 7.6% | -0.56 | 37.9% | 12.9% |
+| 09:00-10:00 | 126 | 7.7% | -2.24 | 42.9% | 11.9% |
+| 10:00-11:00 | 86 | 5.3% | 1.33 | 23.3% | 15.1% |
+| 11:00-12:00 | 63 | 3.9% | 2.88 | 28.6% | 11.1% |
+| 12:00+ | 184 | 11.3% | 1.59 | 16.3% | 6.0% |
+
+**Pattern:** Immediate breakouts (first 30 min) and very late breakouts (10:00+) work. The 08:30-10:00 window is toxic (Sharpe -0.56 to -2.24). But as a filter, early-only helps only 5/9 years (56%) walk-forward — not robust enough.
+
+### Feature 2: Gap Context — NULL RESULT
+
+99% of trades have prior close inside today's Asian range. Only 17 trades had a true gap. No usable signal. **Deprioritized permanently.**
+
+### Feature 3: Volume Profile Shape — TWO CANDIDATES EMERGED
+
+**Kurtosis:** Monotonic trend — flat profiles (Q1) Sharpe -0.08, peaked profiles (Q5) Sharpe 1.97. Sessions where volume concentrates in a few bins produce better breakouts.
+
+**Low entropy (bottom 40%):** Sharpe 1.17, walk-forward **6/9 years (67%)**. When Asian session has a clear, concentrated volume structure (not evenly spread), breakouts are better quality.
+
+**Key distinction from POC misalignment:** Entropy/kurtosis measures *how decisive* the Asian session's opinion was (shape), not *where* it was (position). They are nearly orthogonal (correlation -0.06).
+
+---
+
+## Deep Entropy/Kurtosis Investigation
+
+**Script:** `research_entropy_deep.py`
+
+### Orthogonality Confirmed
+
+- Correlation(entropy, poc_position): -0.06
+- Low entropy trades that are POC-misaligned: 47.2% vs 45.5% for high entropy
+- **They measure different dimensions of the same volume profile**
+
+### 2×2 Grid — Entropy × POC Alignment (XAUUSD)
+
+| | Low Entropy | High Entropy |
+|---|---|---|
+| **POC Misaligned** | **Sharpe 1.78**, PF 1.51, N=384 | Sharpe 0.74, N=370 |
+| **POC Aligned** | Sharpe 0.94, N=430 | **Sharpe -0.45**, N=443 |
+
+Best trades: concentrated Asian volume AND in the wrong place (low entropy + misaligned).
+Worst trades: spread-out Asian volume AND in the right place (high entropy + aligned).
+
+### Critical Finding: Entropy Does NOT Have the 2021 Problem
+
+| Filter | 2021 Sharpe | Survives? |
+|--------|-------------|-----------|
+| POC misaligned | -2.86 | ❌ Catastrophic failure |
+| Low entropy 40% | **+0.43** | ✅ Survives |
+| Combined (LowEnt+Mis) | -1.14 | ❌ POC component drags it down |
+
+Low entropy is regime-resilient where POC misalignment fails.
+
+### Threshold Sensitivity
+
+| Entropy Percentile | Sharpe | Walk-forward |
+|-------------------|--------|-------------|
+| 20th | 1.58 | 4/9 (44%) |
+| 40th | 1.17 | **6/9 (67%)** |
+| 50th | 1.40 | 5/9 (56%) |
+| 60th | 1.30 | **6/9 (67%)** |
+
+40th and 60th percentile both peak at 67% walk-forward.
+
+### Final Scoreboard (XAUUSD)
+
+| Filter | N | Sharpe | WR | PF | Total | MaxDD | WF |
+|--------|---|--------|-----|-----|-------|-------|------|
+| Baseline | 1627 | 0.81 | 47.3% | 1.17 | $1,138 | -$210 | — |
+| POC misaligned | 754 | 1.34 | 47.6% | 1.32 | $998 | -$209 | 5/9 |
+| Low entropy 40% | 651 | 1.17 | 48.1% | 1.28 | $746 | -$280 | **6/9** |
+| High kurtosis 40% | 651 | 1.44 | 48.2% | 1.36 | $930 | -$177 | 5/9 |
+| LowEnt50+POC mis | 384 | **1.78** | 49.2% | 1.51 | $773 | **-$120** | 5/9 |
+
+---
+
+## Kurtosis Cross-Instrument Validation (DECISIVE)
+
+**Script:** `research_kurtosis_deep.py`
+
+### EURUSD Results: Kurtosis FAILS Cross-Validation
+
+| Filter | XAU Sharpe | XAU WF | EUR Sharpe | EUR WF | Cross-validates? |
+|--------|-----------|--------|-----------|--------|-----------------|
+| POC misaligned | 1.34 | 5/9 | 0.19 | **7/9** | ✅ YES |
+| High kurtosis 40% | 1.44 | 5/9 | -0.24 | 6/9 | ❌ NO |
+| HiKurt + POC mis | **1.79** | **6/9** | **-1.27** | **2/9** | ❌ NO |
+| Low entropy 40% | 1.17 | 6/9 | -0.35 | 5/9 | ❌ NO |
+| LowEnt40 + POC mis | 1.53 | 5/9 | -0.38 | 5/9 | ❌ NO |
+
+**The EURUSD 2×2 grid is INVERTED relative to XAUUSD:**
+
+| EURUSD | High Kurtosis | Low Kurtosis |
+|--------|--------------|-------------|
+| POC Misaligned | **Sharpe -1.27** (worst) | **Sharpe 1.08** (best) |
+| POC Aligned | Sharpe 0.54 | Sharpe -0.89 |
+
+On EURUSD, LOW kurtosis + misaligned is the best group — the exact opposite of gold. This means kurtosis is capturing something about gold's specific microstructure (possibly concentrated Asian physical demand) that does not generalize to FX.
+
+### 2021 Deeper: Combined Filter Makes It WORSE
+
+HiKurt + POC misaligned in 2021: Sharpe **-5.16** (vs -2.86 for POC alone). LONG combined in 2021: Sharpe **-12.46**. The kurtosis filter amplifies the failure by concentrating trades into fewer, more leveraged bets that all fail in the same direction.
+
+---
+
+## Research Conclusions
+
+### What Was Established
+
+1. **POC misalignment is the only cross-instrument signal.** Validated on gold and EURUSD. Clear economic interpretation (breakouts against Asian volume consensus = genuine institutional flow). Walk-forward: EURUSD 78%, XAUUSD 56% (POC-only baseline 44% but combined with Cat B removal reaches 56%).
+
+2. **All volume-shape features (entropy, kurtosis, concentration) are gold-specific artifacts.** They look great on XAUUSD but fail or invert on EURUSD. Per Layer 1 standards, they do not meet the evidence bar for deployment.
+
+3. **The 2021 XAUUSD failure is regime-dependent.** POC misalignment fails catastrophically in gold's only down year. Neither direction-splitting nor volume-shape overlays fix it. The regime-dependence claim rests on N=1 down year.
+
+4. **Gap context is a null result.** 99% of gold trades have prior close inside today's range.
+
+5. **Time-of-breakout shows a real pattern** (30-120 min dead zone) but is not robust enough as a filter (56% walk-forward).
+
+### What Was NOT Established
+
+- Whether a regime overlay could pre-detect down-gold years in real time
+- Whether POC misalignment works on GBP/CHF pairs (data not yet available)
+- Whether the 2021 failure mode would repeat in another down-gold year (N=1)
+
+### Practical Assessment
+
+POC misalignment on XAUUSD: **marginal benefit with a known risk.**
+- Sharpe improvement: 0.81 → 1.34 (+65% risk-adjusted)
+- PnL cost: $1,138 → $998 (-12% absolute)
+- Trade frequency: 5.0/wk → 2.3/wk
+- Known failure: catastrophic in down-gold regimes (1 in 8 years historically)
+
+The filter improves risk-adjusted returns but not absolute returns, and introduces a failure mode the baseline doesn't have. Whether this tradeoff is acceptable is a deployment decision, not a research question.
+
+### Confidence (Final)
+
+**Core claim: POC misalignment is a real structural signal for ORB strategies.**
+- `context_complete`: **FAVORABLE** — 8+ years, 2 instruments, multiple feature interactions tested
+- `no_unstated_assumptions`: **MIXED** — regime-dependence on N=1. Causal story plausible but retrospective. Volume-shape features inverted cross-instrument, which could mean POC misalignment also has hidden instrument-specificity we haven't detected
+- `evaluator_agreement`: **FAVORABLE** — data patterns are unambiguous across all analyses
+- **Status: DEFENSIBLE with stated limitations**
+
+**Core claim: Volume-shape features (kurtosis, entropy) are gold-specific, not universal.**
+- `context_complete`: **FAVORABLE** — tested on 2 instruments with clear inversion
+- `no_unstated_assumptions`: **FAVORABLE** — the EURUSD inversion is strong disconfirming evidence
+- `evaluator_agreement`: **FAVORABLE** — no reasonable reading of the data supports cross-instrument validity
+- **Status: DEFENSIBLE**
+
+---
+
+## Open Questions (Final)
+
+1. **Deployment decision needed:** Deploy POC misalignment on XAUUSD (accept 2021 risk), EURUSD only (robust but few trades), or both?
+2. **Additional FX pairs:** If GBPUSD/USDCHF data becomes available, POC misalignment validation on those pairs would strengthen/weaken the "universal signal" claim
+3. **Regime detection:** Is there a forward-looking indicator that could have identified 2021-type conditions before they produced losses? (Not investigated — likely a new research thread)
 
 ---
 
@@ -336,3 +530,18 @@ All in `C:/nautilus0/v5_xauusd_orb/`:
 - `range_quality_results.txt` — Range quality feature exploration (1-min)
 - `range_quality_eurusd_results.txt` — EURUSD range quality cross-validation
 - `poc_walkforward_results.txt` — Walk-forward + orthogonality + portfolio analysis
+
+## Research Scripts
+
+All in `C:/nautilus0/v5_xauusd_orb/`:
+- `research_category_b_filter.py` — Category B filter validation
+- `research_range_quality.py` — Range quality feature exploration (NR4, POC, touch count, etc.)
+- `research_range_quality_multi.py` — Multi-instrument range quality cross-validation
+- `research_poc_walkforward.py` — Walk-forward + orthogonality + portfolio analysis
+- `research_precross_imbalance.py` — Pre-crossing volume imbalance (null result)
+- `analyze_cumulative_imbalance.py` — Cumulative volume delta (null result)
+- `research_2021_xauusd.py` — 2021 XAUUSD regime investigation
+- `research_2021_eurusd.py` — EURUSD regime investigation (not run — research pivoted)
+- `research_new_features.py` — Time-of-breakout, gap context, volume profile shape
+- `research_entropy_deep.py` — Deep entropy/kurtosis investigation + orthogonality with POC
+- `research_kurtosis_deep.py` — Kurtosis cross-instrument validation (decisive negative result)

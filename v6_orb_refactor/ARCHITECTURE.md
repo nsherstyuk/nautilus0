@@ -152,6 +152,44 @@ To prevent environment bleed, configurations are strictly separated:
 * `BacktestConfig`: File paths, slippage models. Injected into BacktestRunner.
 * `LiveConfig`: Risk limits, IBKR ports, JSON paths. Injected into LiveRunner.
 
+## 5. Gap Filter (Pre-Trade Window Analysis)
+
+Based on Claude's research (ORB_GAP_FILTER_FINDINGS.md), the 06:00-08:00 UTC gap period
+predicts breakout quality. Active gaps (higher volatility) produce better breakouts.
+
+### Design (Ousterhout Deep Module Pattern)
+- **Strategy asks one question:** `context.get_gap_metrics()` → pass/fail
+- **MarketContext hides everything:** rolling percentile history, 1-min return computation, std dev math
+- **Runner feeds data:** computes gap_volatility and gap_range from bars, injects into context
+- **Config controls:** `gap_filter_enabled`, `gap_vol_percentile`, `gap_rolling_days`
+- **No environment awareness:** Strategy doesn't know if metrics came from CSV or IBKR bars
+
+### Data Flow
+```
+Runner (orchestrator)
+  ├── Computes gap_volatility = std(1-min log returns, 06:00-08:00)
+  ├── Computes gap_range = (gap_high - gap_low) / overnight_range
+  └── Calls context.inject_gap_data(date, vol, range, ...)
+        └── Context maintains rolling deque of past values
+            └── Computes percentile thresholds from trailing N days
+            └── Caches GapMetrics(vol_passes, range_passes) for today
+
+Strategy._handle_idle()
+  └── gap = context.get_gap_metrics(...)
+      └── if not gap.vol_passes → DONE_TODAY (skip)
+      └── else → RANGE_READY (proceed)
+```
+
+### Verified Results (XAUUSD 1m, no velocity filter)
+| Metric | No Filter | Gap Vol>P50 |
+|--------|-----------|-------------|
+| Trades | 1,613 | 780 (48%) |
+| Mean PnL/trade | $0.70 | $1.52 |
+| Win Rate | 46.4% | 50.6% |
+| Total PnL | $1,137 | $1,187 |
+
+---
+
 ## SimExecutor Fill Specification (Crucial for Parity)
 To ensure the backtest matches v5, the `SimExecutionEngine` must strictly follow:
 1. **Fill Condition:** High >= stop (long), Low <= stop (short)
