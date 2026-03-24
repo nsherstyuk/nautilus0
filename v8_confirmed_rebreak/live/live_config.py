@@ -5,6 +5,7 @@ Separates broker/environment settings from pure strategy parameters.
 Strategy parameters are in config/strategy_config.py.
 """
 from dataclasses import dataclass, field
+from functools import cached_property
 
 
 @dataclass
@@ -35,6 +36,8 @@ class LiveConfig:
     atr_period: int = 60
     min_bar_ticks: int = 5
     spread_cost: float = 0.30
+    tick_size: float = 0.01         # minimum price increment for orders
+    market_data_type: int = 1        # 1=live, 2=frozen, 3=delayed, 4=delayed-frozen
 
     # Rolling buffer
     buffer_size: int = 500         # bars to maintain in rolling buffer
@@ -49,6 +52,14 @@ class LiveConfig:
 
     # Dry run mode (log signals but don't submit orders)
     dry_run: bool = True
+
+    @cached_property
+    def pair_name(self) -> str:
+        """Full pair name (e.g. XAUUSD, EURUSD, USDJPY)."""
+        if self.sec_type == "CMDTY":
+            return self.symbol.upper()
+        # CASH: symbol=EUR currency=USD -> EURUSD
+        return f"{self.symbol}{self.currency}".upper()
 
     def validate(self) -> None:
         """Sanity check config values."""

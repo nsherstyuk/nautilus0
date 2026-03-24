@@ -45,9 +45,10 @@ from v8_confirmed_rebreak.live.live_engine import LiveEngine, LiveBar
 
 # ── Logging ──────────────────────────────────────────────────────────────────
 
-def setup_logging(log_dir: Path) -> logging.Logger:
+def setup_logging(log_dir: Path, symbol: str = "") -> logging.Logger:
     log_dir.mkdir(parents=True, exist_ok=True)
-    log = logging.getLogger("v8_live")
+    sym = symbol.lower() or "unknown"
+    log = logging.getLogger(f"v8_live_{sym}")
     if log.handlers:
         return log
     log.setLevel(logging.DEBUG)
@@ -61,7 +62,7 @@ def setup_logging(log_dir: Path) -> logging.Logger:
     log.addHandler(sh)
 
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    fh = logging.FileHandler(str(log_dir / f"v8_live_{ts}.log"))
+    fh = logging.FileHandler(str(log_dir / f"v8_live_{sym}_{ts}.log"))
     fh.setFormatter(fmt)
     fh.setLevel(logging.DEBUG)
     log.addHandler(fh)
@@ -190,7 +191,7 @@ class IBKRConnection:
     def _start_price_stream(self):
         if self.contract is None:
             return
-        self.ib.reqMarketDataType(3)
+        self.ib.reqMarketDataType(self.cfg.market_data_type)
         self.price_ticker = self.ib.reqMktData(
             self.contract, '', snapshot=False, regulatorySnapshot=False)
         self.ib.sleep(2)
@@ -233,14 +234,32 @@ class IBKRConnection:
         order = MarketOrder(action, quantity)
         trade = self.ib.placeOrder(self.contract, order)
         self.log.info(f"ORDER SUBMITTED: {action} {quantity} @ MARKET")
+        self.ib.sleep(3)
+        status = trade.orderStatus.status
+        if status not in ('Filled', 'Submitted', 'PreSubmitted'):
+            self.log.error(f"ORDER FAILED: {action} {quantity} status={status} "
+                           f"msg={trade.orderStatus}")
+            return None
+        self.log.info(f"ORDER CONFIRMED: {action} {quantity} status={status}")
         return trade
 
     def submit_stop_order(self, direction: str, quantity: float, stop_price: float):
         from ib_insync import StopOrder
         action = "SELL" if direction == "long" else "BUY"
+        # Round to tick size to avoid IBKR "price does not conform" errors
+        tick = self.cfg.tick_size
+        if tick > 0:
+            stop_price = round(round(stop_price / tick) * tick, 10)
         order = StopOrder(action, quantity, stop_price)
         trade = self.ib.placeOrder(self.contract, order)
-        self.log.info(f"SL ORDER: {action} {quantity} @ {stop_price:.2f}")
+        self.log.info(f"SL ORDER: {action} {quantity} @ {stop_price}")
+        self.ib.sleep(3)
+        status = trade.orderStatus.status
+        if status not in ('Filled', 'Submitted', 'PreSubmitted'):
+            self.log.error(f"SL ORDER FAILED: {action} {quantity} @ {stop_price} "
+                           f"status={status} msg={trade.orderStatus}")
+            return None
+        self.log.info(f"SL ORDER CONFIRMED: status={status}")
         return trade
 
     def close_position(self, direction: str, quantity: float):
@@ -249,6 +268,13 @@ class IBKRConnection:
         order = MarketOrder(action, quantity)
         trade = self.ib.placeOrder(self.contract, order)
         self.log.info(f"CLOSE: {action} {quantity} @ MARKET")
+        self.ib.sleep(3)
+        status = trade.orderStatus.status
+        if status not in ('Filled', 'Submitted', 'PreSubmitted'):
+            self.log.error(f"CLOSE FAILED: {action} {quantity} status={status} "
+                           f"msg={trade.orderStatus}")
+            return None
+        self.log.info(f"CLOSE CONFIRMED: status={status}")
         return trade
 
     def cancel_all_orders(self):
@@ -381,6 +407,10 @@ class V8LiveTrader:
         self.sl_order = None
         self._shutdown = False
 
+        # Price display precision derived from tick_size
+        import math
+        self._pdec = max(0, -int(math.floor(math.log10(live_cfg.tick_size))))
+
         # State persistence (per-symbol to avoid collisions)
         sym_lower = live_cfg.symbol.lower()
         self.state_dir = ROOT / "v8_confirmed_rebreak" / "live" / "state"
@@ -388,6 +418,44 @@ class V8LiveTrader:
         self.log_dir = ROOT / "v8_confirmed_rebreak" / "live" / "logs"
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.trade_log_path = self.log_dir / f"trades_{sym_lower}.csv"
+
+    def _has_broker_position(self) -> bool:
+        """Query broker for actual position on this instrument."""
+        try:
+            positions = self.conn.ib.positions()
+            return any(
+                p.contract.symbol == self.live_cfg.symbol and
+                p.contract.secType == self.live_cfg.sec_type and
+                abs(p.position) > 0
+                for p in positions
+            )
+        except Exception as e:
+            self.log.warning(f"Position query failed: {e}")
+            return True  # assume position exists if we can't check
+
+    def _check_existing_positions(self):
+        """Check for existing positions on startup to prevent orphaned trades."""
+        try:
+            positions = self.conn.ib.positions()
+            for pos in positions:
+                c = pos.contract
+                if (c.symbol == self.live_cfg.symbol and
+                        c.secType == self.live_cfg.sec_type):
+                    qty = pos.position
+                    avg_cost = pos.avgCost
+                    self.log.warning(
+                        f"EXISTING POSITION FOUND: {c.symbol} {c.secType} "
+                        f"qty={qty} avgCost={avg_cost}")
+                    self.log.warning(
+                        "Engine state is FLAT but broker has a position. "
+                        "This may indicate an orphaned position from a previous run. "
+                        "Manual intervention may be needed.")
+            if not any(p.contract.symbol == self.live_cfg.symbol and
+                       p.contract.secType == self.live_cfg.sec_type
+                       for p in positions):
+                self.log.info("Position reconciliation: OK (no existing positions)")
+        except Exception as e:
+            self.log.warning(f"Position reconciliation check failed: {e}")
 
     def seed_buffer(self):
         """Load historical bars to seed the rolling buffer."""
@@ -453,6 +521,9 @@ class V8LiveTrader:
             self.conn.disconnect()
             return
 
+        # Position reconciliation: check for existing positions on this instrument
+        self._check_existing_positions()
+
         self.conn._start_price_stream()
         seeded = self.seed_buffer()
         self.log.info(f"Engine ready. Buffer: {len(self.engine.buffer)} bars. "
@@ -483,6 +554,21 @@ class V8LiveTrader:
                     safety = self.engine.safety_check()
                     if safety:
                         self.log.warning(f"SAFETY LIMIT: {safety}")
+                        if self.engine.in_trade and not self.live_cfg.dry_run:
+                            self.log.warning("Closing open position due to safety limit")
+                            if self.sl_order:
+                                try:
+                                    self.conn.ib.cancelOrder(self.sl_order.order)
+                                except Exception as e:
+                                    self.log.warning(f"SL cancel on safety halt: {e}")
+                                self.sl_order = None
+                            # Verify position exists before closing to prevent double-exit
+                            if self._has_broker_position():
+                                self.conn.close_position(
+                                    self.engine.trade_direction, self.live_cfg.quantity)
+                            else:
+                                self.log.info("No position found at broker -- SL may have already filled")
+                            self.engine._reset_trade_state()
                         self.conn.sleep(poll_interval)
                         continue
 
@@ -494,17 +580,18 @@ class V8LiveTrader:
                         if pivot_status:
                             ph = pivot_status.get('pivot_high')
                             pl = pivot_status.get('pivot_low')
-                            status_msg = f"Buffer: {bars_in_buf} bars, price={price:.2f}, daily_trades={self.engine.daily_trades}"
+                            d = self._pdec
+                            status_msg = f"Buffer: {bars_in_buf} bars, price={price:.{d}f}, daily_trades={self.engine.daily_trades}"
                             if ph is not None:
                                 dist_h = pivot_status['dist_to_high']
-                                status_msg += f" | PivotH={ph:.2f} (${dist_h:+.2f})"
+                                status_msg += f" | PivotH={ph:.{d}f} (${dist_h:+.{d}f})"
                             if pl is not None:
                                 dist_l = pivot_status['dist_to_low']
-                                status_msg += f" | PivotL={pl:.2f} (${dist_l:+.2f} above)"
+                                status_msg += f" | PivotL={pl:.{d}f} (${dist_l:+.{d}f} above)"
                             self.log.info(status_msg)
                         else:
                             self.log.info(f"Buffer: {bars_in_buf} bars, "
-                                          f"price={price:.2f}, "
+                                          f"price={price:.{self._pdec}f}, "
                                           f"daily_trades={self.engine.daily_trades}")
                         last_bar_log = time.time()
 
@@ -549,13 +636,24 @@ class V8LiveTrader:
 
         entry_trade = self.conn.submit_market_order(
             direction, self.live_cfg.quantity)
-        self.conn.sleep(3)
+
+        if entry_trade is None:
+            self.log.error("ENTRY ORDER FAILED -- resetting engine state")
+            self.engine._reset_trade_state()
+            return
 
         # Submit SL order
         sl_price = signal.get('sl_price', 0)
         if sl_price > 0:
             self.sl_order = self.conn.submit_stop_order(
                 direction, self.live_cfg.quantity, sl_price)
+            if self.sl_order is None:
+                self.log.warning("SL ORDER FAILED -- retrying in 5s")
+                self.conn.sleep(5)
+                self.sl_order = self.conn.submit_stop_order(
+                    direction, self.live_cfg.quantity, sl_price)
+                if self.sl_order is None:
+                    self.log.error("SL ORDER FAILED TWICE -- position open without stop loss!")
 
     def _handle_exit(self, exit_info: dict):
         """Execute exit."""
@@ -590,13 +688,17 @@ class V8LiveTrader:
         if self.sl_order:
             try:
                 self.conn.ib.cancelOrder(self.sl_order.order)
-            except Exception:
-                pass
+            except Exception as e:
+                self.log.warning(f"SL cancel failed on exit: {e}")
             self.sl_order = None
 
         # Only close at market if not SL (SL order handles itself)
         if reason != 'CATASTROPHE_SL':
-            self.conn.close_position(direction, self.live_cfg.quantity)
+            # Verify position exists to prevent double-exit
+            if self._has_broker_position():
+                self.conn.close_position(direction, self.live_cfg.quantity)
+            else:
+                self.log.info("No position at broker -- already flat")
 
     def _cleanup(self):
         """Clean up on shutdown."""
@@ -608,8 +710,8 @@ class V8LiveTrader:
                 if self.sl_order:
                     try:
                         self.conn.ib.cancelOrder(self.sl_order.order)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        self.log.warning(f"SL cancel failed on shutdown: {e}")
 
 
 # ── Entry point ─────────────────────────────────────────────────────────────
@@ -634,6 +736,12 @@ def main():
     parser.add_argument("--max-hold", type=int, default=60)
     parser.add_argument("--sl", type=float, default=10.0)
     parser.add_argument("--min-ticks", type=int, default=50)
+    parser.add_argument("--tick-size", type=float, default=0.01,
+                        help="Min price increment for orders (0.01 XAUUSD, 0.00005 FX)")
+    parser.add_argument("--spread-cost", type=float, default=0.30,
+                        help="Spread cost in price units (0.30 XAUUSD, 0.00010 EURUSD, 0.01 USDJPY)")
+    parser.add_argument("--market-data-type", type=int, default=1,
+                        help="IBKR market data type: 1=live, 2=frozen, 3=delayed, 4=delayed-frozen")
     args = parser.parse_args()
 
     # Auto-size buffer for larger pivot windows
@@ -654,17 +762,20 @@ def main():
         max_hold_bars=args.max_hold,
         sl_atr_multiple=args.sl,
         min_bar_ticks=args.min_ticks,
+        tick_size=args.tick_size,
+        spread_cost=args.spread_cost,
+        market_data_type=args.market_data_type,
         buffer_size=buffer_size,
         dry_run=args.dry_run,
     )
     live_cfg.validate()
 
     log_dir = ROOT / "v8_confirmed_rebreak" / "live" / "logs"
-    log = setup_logging(log_dir)
+    log = setup_logging(log_dir, symbol=live_cfg.pair_name)
 
     log.info("=" * 60)
     log.info("V8 Confirmed Rebreak -- Live Trader")
-    log.info(f"  Symbol:    {live_cfg.symbol}")
+    log.info(f"  Pair:      {live_cfg.pair_name}")
     log.info(f"  Dry-run:   {live_cfg.dry_run}")
     log.info(f"  Qty:       {live_cfg.quantity}")
     log.info(f"  PW={live_cfg.pivot_window} Confirm={live_cfg.confirm_bars} "

@@ -345,6 +345,18 @@ class LiveEngine:
 
         return None
 
+    def _reset_trade_state(self):
+        """Clear all trade state fields. Called on failed entry or after exit."""
+        self.in_trade = False
+        self.trade_direction = ""
+        self.trade_entry_price = 0.0
+        self.trade_entry_bar = 0
+        self.trade_sl_price = 0.0
+        self.trade_tp_price = 0.0
+        self.trade_pivot = 0.0
+        self.trade_br = 0.0
+        self.trade_gap = 0
+
     def _close_trade(self, reason: str, exit_price: float,
                      pnl: float, bars_held: int) -> Dict:
         """Close current trade and return exit signal."""
@@ -364,7 +376,7 @@ class LiveEngine:
             'buy_ratio': self.trade_br,
             'gap': self.trade_gap,
         }
-        self.in_trade = False
+        self._reset_trade_state()
         self._cooldown = self.config.imbalance_window
         self.daily_trades += 1
         self.daily_pnl += pnl
@@ -376,10 +388,13 @@ class LiveEngine:
         self.daily_pnl = 0.0
 
     def safety_check(self) -> Optional[str]:
-        """Check if daily trade limit exceeded."""
+        """Check if daily trade or loss limit exceeded."""
         if self.config.max_daily_trades > 0:
             if self.daily_trades >= self.config.max_daily_trades:
                 return f"Daily trade limit reached: {self.daily_trades}/{self.config.max_daily_trades}"
+        if self.config.max_daily_loss > 0:
+            if self.daily_pnl <= -self.config.max_daily_loss:
+                return f"DAILY_LOSS_LIMIT: PnL={self.daily_pnl:.2f} <= -{self.config.max_daily_loss:.2f}"
         return None
 
     def get_pivot_status(self) -> Optional[dict]:
