@@ -278,8 +278,11 @@ class LiveEngine:
                     sl_price = entry_price + sl_mult * atr
                     tp_price = entry_price - self.config.tp_atr_multiple * atr
 
-                pivot_price = float(pivot_high[process_idx]) if direction == "long" \
-                    else float(pivot_low[process_idx])
+                # Use detector's internal level (always valid when signal fires)
+                # NOT pivot_high/low[process_idx] which can be NaN when
+                # the centered pivot window shifts between breakout and rebreak
+                pivot_price = self.detector._h_level if direction == "long" \
+                    else self.detector._l_level
 
                 self.in_trade = True
                 self.trade_direction = direction
